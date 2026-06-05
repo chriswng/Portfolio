@@ -1,0 +1,1871 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Christopher Wang &#x2014; Sustainability Advisor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{
+  /* Corporate Matcha — Coconut, Matcha, Mango, Strawberry, Blueberry */
+  --black:#F5F0E8;       /* Background Base — Warm Coconut Cream */
+  --mid:#64574A;         /* Muted Text — warm brown-grey */
+  --subtle:#8C7F73;      /* Meta Info — soft warm neutral */
+  --rule-dk:#CBBFB4;     /* Structural Borders — warm parchment */
+  --rule-lt:#DDD6CC;     /* Soft Borders */
+  --white:#1A1410;       /* Primary Text — deep warm charcoal */
+  --warm:#EAE4D8;        /* Tinted Secondary Background */
+  --red:#3E6E34;         /* Primary — Matcha (deep, cool green) */
+  --red-dark:#64A358;    /* Secondary — Lighter Matcha */
+  --red-bg:#E8F0E5;      /* Highlight — Matcha Tint */
+  --mango:#C4761E;       /* Mango — warm amber */
+  --strawberry:#B84460;  /* Strawberry — muted berry */
+  --blueberry:#405E8C;   /* Blueberry — refined navy */
+  --cream:#F5F0E8;       /* Coconut cream alias */
+  --sans:'Inter',system-ui,sans-serif;
+  --mono:'JetBrains Mono','Courier New',monospace;
+  --disp:'Space Grotesk',sans-serif;
+  --max:960px;
+  --pad:clamp(1rem,4vw,1.5rem);
+  --ease:cubic-bezier(0.25,1,0.5,1);
+  --tab-h:2.5rem;
+}
+body{font-family:var(--sans);font-weight:300;font-size:0.9rem;color:#1A1410;background:#F5F0E8;line-height:1.75;-webkit-font-smoothing:antialiased}
+.nav{position:sticky;top:0;z-index:100;background:#F5F0E8;border-bottom:1px solid #CBBFB4}
+.nav-inner{max-width:var(--max);margin:0 auto;padding:0 var(--pad);display:flex;justify-content:space-between;align-items:center;height:48px}
+.nav-links{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-links a{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;color:#666666;text-decoration:none;height:48px;display:inline-flex;align-items:flex-start;border-bottom:none;margin-bottom:0;overflow:hidden;padding:0;transition:color 0.3s var(--ease)}
+.nav-links a:hover{color:var(--red);border-bottom-color:rgba(62,110,52,0.4)}
+.nav-links a.active .ntl>span{color:var(--red)}
+.nav-links a:hover .ntl>span{color:#111111}
+.nav-links a:hover .ntl{transform:translateY(-50%)}
+.ntl{display:flex;flex-direction:column;transition:transform 0.35s var(--ease)}
+.ntl>span{height:48px;display:flex;align-items:center;padding:0 0.9rem;flex-shrink:0;line-height:1;white-space:nowrap}
+.nav-logo{font-family:var(--mono);font-size:0.95rem;font-weight:500;color:var(--red);text-decoration:none;letter-spacing:-0.02em;transition:opacity 0.25s;flex-shrink:0}
+.nav-logo:hover{opacity:0.55}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--pad)}
+section{border-bottom:1px solid #D5D5D5}
+section:last-of-type{border-bottom:none}
+.label{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--red);margin-bottom:2.5rem;display:flex;align-items:center;gap:0.75rem}
+.label::after{content:'';flex:1;height:1px;background:#D5D5D5;min-width:20px}
+#about{background:#EAE4D8;border-bottom:1px solid #CBBFB4;padding:clamp(5rem,11vw,8rem) 0 clamp(3rem,6vw,5rem);position:relative;overflow:hidden}
+#about .label::after{background:#B8B0A4}
+.hero-name{font-family:var(--disp);font-size:clamp(2.8rem,9vw,5rem);font-weight:800;line-height:0.95;letter-spacing:-0.04em;color:#1A1410;margin-bottom:0.6rem}
+.hero-name em{color:var(--red);font-style:normal}
+.hero-meta{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.08em;color:#555555;text-transform:uppercase;margin-bottom:2.5rem;display:flex;flex-wrap:wrap;gap:0.3rem 1.2rem}
+.hero-meta a{color:var(--mid);text-decoration:none;transition:color 0.3s var(--ease)}
+.hero-meta a:hover{color:var(--red)}
+.hero-prop{font-weight:300;font-size:clamp(1rem,2.2vw,1.2rem);line-height:1.65;color:#4A3E35;max-width:620px;margin-bottom:3rem;padding-left:1rem;border-left:2px solid var(--red)}
+.hero-cycle{margin-bottom:2.2rem;overflow:hidden}
+#role-cycle{font-family:var(--disp);font-size:clamp(1.5rem,4.5vw,2.8rem);font-weight:600;letter-spacing:-0.03em;color:var(--red);display:inline-block;line-height:1.05;transition:opacity 0.28s ease,transform 0.28s ease}
+.instr-grid{display:grid;grid-template-columns:repeat(2,1fr);border-top:1px solid var(--rule-dk);border-left:1px solid var(--rule-dk);margin-bottom:1.5rem}
+.instr{padding:1.25rem 1.5rem;border-right:1px solid var(--rule-dk);border-bottom:1px solid var(--rule-dk);background:#FAF6EE}
+.instr-lbl{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);line-height:1.4;margin-bottom:0.5rem}
+.instr-val{font-family:var(--disp);font-size:clamp(1.8rem,4vw,2.4rem);font-weight:700;color:var(--red);line-height:1;letter-spacing:-0.02em;transition:opacity 0.5s ease,transform 0.5s ease}
+.live-strip{display:flex;align-items:center;gap:1.25rem;padding:0.85rem 1.25rem;border:1px solid var(--rule-dk);background:#FAF6EE}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0;animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.25}}
+.live-label{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mid)}
+.live-val{font-family:var(--disp);font-size:1.15rem;font-weight:700;color:var(--red);margin-left:auto;line-height:1}
+.live-unit{font-family:var(--mono);font-size:0.6rem;color:var(--mid);margin-left:0.4rem;align-self:flex-end;padding-bottom:0.1rem}
+#bio{background:#F5F0E8;padding:clamp(4rem,9vw,6.5rem) 0}
+.bio-inner{max-width:660px}
+.bio-text{font-size:0.9rem;font-weight:400;color:#4A3E35;line-height:1.8}
+.pipeline{display:flex;align-items:stretch;gap:4px;margin-top:2rem;width:100%}
+
+.pipe-node{font-family:var(--mono);font-size:0.57rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);background:var(--warm);padding:0.6rem 0.4rem;flex:1;min-width:0;border:1.5px solid var(--rule-dk);display:flex;align-items:center;justify-content:center;text-align:center;white-space:normal;line-height:1.35;transition:color 0.3s var(--ease),background 0.3s var(--ease)}
+
+.pipe-node:hover{color:var(--red);background:var(--red-bg)}
+.pipe-node.hl{color:var(--red);border-color:var(--red);font-weight:600;background:var(--red-bg)}
+.pipe-arrow{font-family:var(--sans);font-size:1.1rem;color:var(--mid);background:transparent;padding:0;flex-shrink:0;display:flex;align-items:center;border:none;opacity:0.6}
+.ticker-band{overflow:hidden;border-top:1px solid #C4BAB0;border-bottom:1px solid #C4BAB0;padding:0.75rem 0;background:#E3DDD4;cursor:default;position:relative}
+.ticker-track{display:flex;white-space:nowrap;animation:tick 40s linear infinite;will-change:transform}
+.ticker-band:hover .ticker-track{animation-play-state:paused}
+.ticker-run{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.13em;text-transform:uppercase;color:#5A4E42;flex-shrink:0}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+#expertise{background:#EAE4D8;padding:clamp(4.5rem,10vw,7rem) 0}
+.exp-cols{display:grid;gap:3rem}
+@media(min-width:700px){.exp-cols{grid-template-columns:1fr 1fr;gap:3rem}}@media(min-width:960px){.exp-cols{grid-template-columns:1fr 1fr 1fr;gap:2.5rem}}
+.fw-table{width:100%;border-collapse:collapse;font-size:0.82rem}
+.fw-table thead tr{background:#DDD7CC}
+.fw-table thead th{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:#2A211A;padding:0.65rem 0.9rem;text-align:left;font-weight:600}
+.fw-table thead th:first-child{width:36%;}
+.fw-table tbody tr{background:#F5F0E8;border-bottom:1px solid var(--rule-dk);transition:background 0.3s var(--ease)}
+.fw-table tbody tr:nth-child(even){background:#FAF6EE}
+.fw-table tbody tr:hover{background:var(--red-bg)}
+.fw-table tbody td{padding:0.65rem 0.9rem;vertical-align:top;line-height:1.55;color:#4A3E35}
+.fw-table tbody td:first-child{font-weight:600;color:#1A1410;font-size:0.8rem;white-space:nowrap}
+.cap-dl{margin-top:0}
+.cap-entry{display:grid;grid-template-columns:36px 1fr;gap:0 1rem;padding:1.25rem 0;border-bottom:1px solid var(--rule-dk);transition:border-color 0.3s var(--ease)}
+.cap-entry:first-child{padding-top:0}
+.cap-entry:last-child{border-bottom:none}
+.cap-entry:hover{border-bottom-color:var(--red)}
+.cap-entry:hover .cap-num{color:var(--red)}
+.cap-num{font-family:var(--mono);font-size:0.62rem;color:var(--subtle);padding-top:0.15rem;transition:color 0.3s var(--ease)}
+.cap-title{font-weight:600;font-size:0.88rem;color:#1A1410;margin-bottom:0.35rem}
+.cap-body{font-size:0.82rem;font-weight:400;color:#4A3E35;line-height:1.65}
+#artefacts{background:#F5F0E8;padding:4rem 0}
+.artefacts-intro{font-size:0.88rem;font-weight:400;color:var(--mid);max-width:560px;line-height:1.8;margin-bottom:2rem}
+.artefact-grid{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule-dk);border:1px solid var(--rule-dk);overflow:hidden}
+@media(min-width:640px){.artefact-grid{grid-template-columns:1fr 1fr}}
+.artefact-card{background:#FAF6EE;padding:1.5rem;position:relative;transition:background 0.3s var(--ease)}
+.artefact-card:hover{background:#EBF3E7}
+.artefact-full{grid-column:1 / -1}
+.artefact-num{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--subtle);margin-bottom:0.75rem}
+.artefact-name{font-family:var(--disp);font-size:0.95rem;font-weight:700;color:#1A1410;margin-bottom:0.3rem;line-height:1.25}
+.artefact-what{font-size:0.78rem;font-weight:400;color:#4A3E35;margin-bottom:0.75rem;line-height:1.65}
+.artefact-outcome{font-family:var(--mono);font-size:0.62rem;color:var(--red);letter-spacing:0.04em;padding-top:0.65rem;border-top:1px solid var(--rule-lt);line-height:1.5;font-weight:600;}
+#work{background:#EAE4D8;padding:clamp(4.5rem,10vw,7rem) 0}
+.tabs{display:flex;border-bottom:1px solid var(--rule-dk);margin-bottom:2.5rem;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.07em;text-transform:uppercase;border:none;background:none;color:#666666;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:color 0.3s var(--ease),border-color 0.3s var(--ease);font-weight:600;overflow:hidden;height:var(--tab-h);padding:0;display:inline-block;vertical-align:top}
+.tl{display:flex;flex-direction:column;transition:transform 0.35s var(--ease)}
+.tl>span{display:flex;align-items:center;height:var(--tab-h);padding:0 1.1rem;flex-shrink:0;line-height:1}
+.tab.on{color:var(--red);border-bottom-color:var(--red)}
+.tab:hover:not(.on){color:#111111}
+.tab:hover:not(.on) .tl{transform:translateY(-50%)}
+.tl-lt{font-family:var(--disp);font-size:0.9rem;font-weight:700;color:#888888;margin-right:0.3rem;transition:color 0.2s}
+.tab.on .tl-lt{color:var(--red)}
+.panel{display:none}
+.panel.on{display:block}
+.bl-banner{background:#DDD7CC;padding:1.75rem 1.5rem;margin-bottom:1px}
+.bl-claim{font-style:normal;font-weight:700;font-size:clamp(0.95rem,2vw,1.3rem);color:#1A1410;line-height:1.3;max-width:600px;margin-bottom:0.65rem}
+.bl-meta{font-family:var(--mono);font-size:0.62rem;color:#555555;letter-spacing:0.04em}
+.baseline-ctrl{display:flex;align-items:center;gap:0.75rem;background:#EDE8DC;padding:0.65rem 1.5rem;border-bottom:1px solid var(--rule-dk)}
+.baseline-ctrl-lbl{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);white-space:nowrap;font-weight:600}
+.baseline-ctrl select{font-family:var(--mono);font-size:0.7rem;background:#F5F0E8;border:1px solid var(--rule-dk);color:#1A1410;padding:0.3rem 1.8rem 0.3rem 0.5rem;appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23111'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0.4rem center;outline:none;transition:border-color 0.3s var(--ease);border-radius:0}
+.baseline-ctrl select:focus{border-color:var(--red)}
+.scope-grid{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule-dk);border:1px solid var(--rule-dk);border-top:none;margin-bottom:2rem}
+@media(min-width:560px){.scope-grid{grid-template-columns:repeat(3,1fr)}}
+.scope-cell{background:#FAF6EE;padding:1.25rem 1.5rem}
+.scope-tag{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);margin-bottom:0.4rem;font-weight:600;}
+.scope-pct{font-family:var(--disp);font-size:2.2rem;font-weight:700;line-height:1;margin-bottom:0.4rem;color:var(--red)}
+.scope-cell:nth-child(2) .scope-pct{color:#555555}
+.scope-cell:nth-child(3) .scope-pct{color:#333333}
+.scope-body{font-size:0.8rem;font-weight:400;color:#4A3E35;line-height:1.6}
+.s3-row{display:grid;grid-template-columns:1fr 48px 140px;gap:0.75rem;align-items:center;padding:0.65rem 0;border-bottom:1px solid #D5D5D5}
+.s3-row:last-child{border-bottom:none}
+.s3-name{font-size:0.82rem;font-weight:600;color:#1A1410}
+.s3-sub{font-family:var(--mono);font-size:0.6rem;color:var(--mid);display:block;font-weight:400}
+.s3-pct{font-family:var(--mono);font-size:0.78rem;font-weight:600;color:var(--red);text-align:right}
+.s3-bar-wrap{height:4px;background:#DDD7CC;overflow:hidden}
+.s3-bar-fill{height:100%;background:var(--red)}
+.sankey-wrap{margin:2rem 0 0;overflow-x:auto}
+.impl-grid{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule-dk);border:1px solid var(--rule-dk);overflow:hidden;margin-top:2rem}
+@media(min-width:560px){.impl-grid{grid-template-columns:repeat(3,1fr)}}
+.impl{background:#FAF6EE;padding:1.25rem 1.5rem;border-left:3px solid var(--red);transition:background 0.3s var(--ease)}
+.impl:hover{background:#EBF3E7}
+.impl-head{font-weight:700;font-size:0.85rem;color:#1A1410;margin-bottom:0.35rem}
+.impl-body{font-size:0.78rem;font-weight:400;color:#4A3E35;line-height:1.6}
+.panel-intro{font-size:0.88rem;font-weight:400;color:#4A3E35;max-width:640px;line-height:1.8;margin-bottom:2rem}
+.stage-grid{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule-dk);border:1px solid var(--rule-dk);overflow:hidden;margin-bottom:2rem;align-items:stretch}
+@media(min-width:600px){.stage-grid{grid-template-columns:repeat(3,1fr)}}
+.stage{background:#FAF6EE;padding:1.5rem;transition:background 0.3s var(--ease);display:flex;flex-direction:column;height:100%}
+.stage:hover{background:#EBF3E7}
+.stage-n{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);margin-bottom:0.4rem;font-weight:600;}
+.stage-title{font-size:0.9rem;font-weight:700;color:#1A1410;padding-bottom:0.6rem;border-bottom:2px solid var(--red);margin-bottom:0.75rem}
+.stage-obj{font-family:var(--mono);font-size:0.62rem;color:var(--red);opacity:0.9;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:0.6rem;font-weight:600;}
+.stage-pts{list-style:none;padding:0;margin-bottom:0.75rem}
+.stage-pts li{font-size:0.78rem;font-weight:400;color:#4A3E35;line-height:1.6;padding-left:0.9rem;position:relative;margin-bottom:0.25rem}
+.stage-pts li::before{content:'›';position:absolute;left:0;color:var(--red);font-size:1rem;line-height:1.5}
+.stage-note{font-size:0.72rem;color:var(--mid);line-height:1.5;border-top:1px solid #EBEBEB;padding-top:0.6rem;margin-top:auto}
+.c-table{width:100%;border-collapse:collapse;font-size:0.82rem}
+.c-table thead tr{background:#DDD7CC}
+.c-table thead th{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;color:#2A211A;padding:0.6rem 0.9rem;text-align:left;font-weight:600}
+.c-table tbody tr{background:#F5F0E8;border-bottom:1px solid var(--rule-dk);transition:background 0.2s}
+.c-table tbody tr:nth-child(even){background:#FAF6EE}
+.c-table tbody tr:hover{background:var(--red-bg)}
+.c-table tbody td{padding:0.6rem 0.9rem;vertical-align:top;line-height:1.55;font-weight:400;color:#4A3E35}
+.c-table tbody td:first-child{font-weight:600;color:#1A1410;white-space:nowrap}
+.mca-grid{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule-dk);border:1px solid var(--rule-dk);overflow:hidden;margin-bottom:2rem}
+@media(min-width:560px){.mca-grid{grid-template-columns:1fr 1fr}}
+@media(min-width:800px){.mca-grid{grid-template-columns:repeat(3,1fr)}}
+.mca{background:#FAF6EE;padding:1.25rem 1.5rem;transition:background 0.3s var(--ease)}
+.mca:hover{background:#EBF3E7}
+.mca-crit{font-weight:700;font-size:0.88rem;color:#1A1410;margin-bottom:0.2rem}
+.mca-metric{font-family:var(--mono);font-size:0.62rem;color:var(--red);letter-spacing:0.02em;margin-bottom:0.4rem;font-weight:600;}
+.mca-body{font-size:0.78rem;font-weight:400;color:#4A3E35;line-height:1.6}
+.lc-modules{display:flex;gap:1px;margin:1.5rem 0;background:var(--rule-dk);border:1px solid var(--rule-dk);overflow:hidden}
+.lcm{flex:1;padding:0.75rem 0.4rem;background:#F5F0E8;text-align:center;min-width:56px;transition:background 0.3s var(--ease)}
+.lcm.active{background:var(--red-bg);border-bottom:2px solid var(--red)}
+.lcm.noted{background:#EAE4D8;border-bottom:2px solid rgba(62,110,52,0.3)}
+.lcm.out{opacity:0.4;background:#EDE8DC;}
+.lcm-ref{font-family:var(--mono);font-size:0.65rem;font-weight:700;color:#111111;display:block;margin-bottom:0.2rem}
+.lcm.active .lcm-ref{color:var(--red)}
+.lcm.noted .lcm-ref{color:rgba(62,110,52,0.85)}
+.lcm-label{font-family:var(--mono);font-size:0.5rem;letter-spacing:0.04em;text-transform:uppercase;color:var(--mid);line-height:1.3;font-weight:600;}
+.lcm-legend{display:flex;gap:1.25rem;margin-top:0.6rem;flex-wrap:wrap}
+.lcm-leg-item{display:flex;align-items:center;gap:0.4rem;font-family:var(--mono);font-size:0.58rem;color:var(--mid);font-weight:600;}
+.lcm-leg-dot{width:8px;height:8px;flex-shrink:0}
+.lcm-leg-dot.act{background:var(--red)}
+.lcm-leg-dot.not{background:rgba(62,110,52,0.35)}
+.lcm-leg-dot.oot{background:#CBBFB4}
+.bench-wrap{margin:1.5rem 0 2rem;padding:1.25rem 1.5rem;background:#FAF6EE;border:1px solid var(--rule-dk)}
+.bench-head{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:#2A211A;margin-bottom:1.25rem;font-weight:600;}
+.bench-scale{position:relative;height:64px;margin-bottom:1.75rem}
+.bench-bar-bg{position:absolute;top:24px;left:0;right:0;height:8px;background:#DDD7CC}
+.bench-range{position:absolute;top:24px;height:8px;background:rgba(0,0,0,0.05);left:50%;width:37.5%;border-left:1px solid #B8B0A4;border-right:1px solid #B8B0A4}
+.bench-mark{position:absolute;top:18px;width:2px;height:20px}
+.bench-mark.this-b{background:var(--red);left:65%}
+.bench-mark.target-b{background:rgba(62,110,52,0.45);left:47.5%}
+.bench-mark-label{position:absolute;font-family:var(--mono);font-size:0.55rem;white-space:nowrap;transform:translateX(-50%);font-weight:600;}
+.bench-mark.this-b .bench-mark-label{color:var(--red);top:-16px}
+.bench-mark.target-b .bench-mark-label{color:rgba(62,110,52,0.8);top:26px}
+.bench-ticks{display:flex;justify-content:space-between}
+.bench-tick{font-family:var(--mono);font-size:0.52rem;color:var(--mid)}
+.bench-note{font-family:var(--mono);font-size:0.6rem;color:var(--mid);line-height:1.6;margin-top:0.75rem}
+.bench-legend{display:flex;gap:1.25rem;margin-top:0.65rem;flex-wrap:wrap}
+.bench-leg-item{display:flex;align-items:center;gap:0.4rem;font-family:var(--mono);font-size:0.58rem;color:var(--mid);font-weight:600;}
+.bench-leg-line{width:16px;height:2px;flex-shrink:0}
+#experience{background:#F5F0E8;padding:clamp(4.5rem,10vw,7rem) 0}
+.exp-entry{padding:2.5rem 0;border-top:1px solid var(--rule-dk);position:relative;overflow:hidden}
+.exp-entry:first-child{border-top:none;padding-top:0}
+.exp-entry::before{font-family:var(--disp);font-size:clamp(5.5rem,10vw,8.5rem);font-weight:800;color:rgba(0,0,0,0.03);position:absolute;right:0;top:1rem;line-height:1;pointer-events:none;letter-spacing:-0.04em;user-select:none;z-index:0}
+.exp-entry:nth-of-type(1)::before{content:'01'}
+.exp-entry:nth-of-type(2)::before{content:'02'}
+.exp-entry:nth-of-type(3)::before{content:'03'}
+.exp-hd{display:grid;gap:1rem;margin-bottom:1.25rem}
+@media(min-width:640px){.exp-hd{grid-template-columns:1fr auto;align-items:start}}
+.exp-org-name{font-family:var(--disp);font-size:1.25rem;font-weight:700;color:#1A1410;line-height:1.1;margin-bottom:0.1rem;display:inline-flex;align-items:baseline;gap:0.4rem}
+.exp-arrow{font-family:var(--sans);font-style:normal;font-size:1rem;color:var(--red);opacity:0;transform:translateX(-8px);transition:opacity 0.3s var(--ease),transform 0.3s var(--ease);line-height:1}
+.exp-entry:hover .exp-arrow{opacity:1;transform:translateX(0)}
+.exp-dept{font-size:0.8rem;color:var(--mid);font-weight:400;margin-bottom:0.6rem}
+.exp-meta{display:flex;flex-direction:column;gap:0.2rem}
+.exp-meta-row{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap}
+.exp-role-title{font-weight:700;font-size:0.85rem;color:#1A1410}
+.exp-date{font-family:var(--mono);font-size:0.65rem;color:var(--mid);white-space:nowrap}
+.exp-bullets{list-style:none;padding:0;display:flex;flex-direction:column;gap:0.6rem}
+.exp-bullets li{font-size:0.85rem;font-weight:400;color:#4A3E35;line-height:1.7;padding-left:1.1rem;position:relative}
+.exp-bullets li::before{content:'›';position:absolute;left:0;color:var(--red);font-size:1rem;line-height:1.5}
+.exp-bullets li strong{font-weight:600;color:#111111}
+.exp-section-lbl-li{list-style:none;margin-top:1.1rem;padding-left:0 !important}.exp-section-lbl-li::before{content:"" !important}.exp-section-lbl{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--red);margin-bottom:0.5rem;font-weight:600;display:block}
+.edu-block{margin-top:3rem;background:#EAE4D8;border:1px solid var(--rule-dk);padding:1.5rem;display:flex;flex-direction:column;gap:0.65rem}
+.edu-row{font-size:0.85rem}
+.edu-inst{font-weight:700;color:#1A1410}
+.edu-deg{font-weight:400;color:#4A3E35}
+.cred{font-family:var(--mono);font-size:0.68rem;color:var(--red);padding-top:0.5rem;border-top:1px solid var(--rule-dk);letter-spacing:0.04em;line-height:1.6;font-weight:600;}
+#scenario{background:#F5F0E8;border-bottom:1px solid var(--rule-dk);padding:clamp(5rem,11vw,8rem) 0}
+#scenario .label::after{background:var(--rule-dk)}
+.tool-decl{font-family:var(--sans);font-size:clamp(1.1rem,2.5vw,1.5rem);font-weight:400;color:#1A1410;max-width:640px;line-height:1.45;margin-bottom:0.75rem}
+.tool-decl strong{font-weight:700;color:var(--red)}
+.tool-sub{font-size:0.82rem;font-weight:400;color:var(--mid);max-width:600px;line-height:1.65;margin-bottom:0.75rem}
+.tool-disc{display:inline-block;font-family:var(--mono);font-size:0.6rem;color:var(--mid);border:1px solid var(--rule-dk);padding:0.25rem 0.7rem;margin-bottom:1.5rem}
+.sector-desc{font-family:var(--mono);font-size:0.62rem;color:var(--red);margin-bottom:2rem;line-height:1.5;max-width:580px;font-weight:600;}
+.kpi-strip{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--rule-dk);border:1px solid var(--rule-dk);margin-bottom:1.5rem;overflow:hidden}
+@media(min-width:580px){.kpi-strip{grid-template-columns:repeat(4,1fr)}}
+.kpi{background:#FAF6EE;padding:1.1rem 1.25rem}
+.kpi.live{background:var(--red-bg)}
+.kpi-l{font-family:var(--mono);font-size:0.56rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);margin-bottom:0.35rem;font-weight:600;}
+.kpi-v{font-family:var(--disp);font-size:1.5rem;font-weight:700;color:#1A1410;line-height:1}
+.kpi.live .kpi-v{color:var(--red)}
+.chart-card{background:#FAF6EE;border:1px solid var(--rule-dk);padding:1.25rem;margin-bottom:1.5rem}
+.chart-wrap{position:relative;height:260px}
+@media(min-width:600px){.chart-wrap{height:320px}}
+.controls-card{background:#FAF6EE;border:1px solid var(--rule-dk);overflow:hidden;margin-bottom:1.5rem}
+.controls-head{background:var(--red);color:#F5F0E8;padding:0.5rem 1.1rem;font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;}
+.lever-grid{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule-dk)}
+@media(min-width:580px){.lever-grid{grid-template-columns:1fr 1fr}}
+.lever{background:#F5F0E8;padding:0.9rem 1.1rem}
+.lever-name{font-size:0.82rem;font-weight:700;color:#1A1410;margin-bottom:0.1rem}
+.lever-src{font-family:var(--mono);font-size:0.58rem;color:var(--red);margin-bottom:0.5rem;letter-spacing:0.02em}
+.lever-rev{grid-column:1 / -1;background:#EDE8DC;border-top:1px solid var(--rule-dk)}
+.lever-sector{grid-column:1 / -1;background:#EDE8DC;border-bottom:1px solid var(--rule-dk)}
+.lever-select{width:100%;padding:0.45rem 2rem 0.45rem 0.65rem;border:1px solid var(--rule-dk);background:transparent;color:#1A1410;font-family:var(--sans);font-size:0.78rem;font-weight:400;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%231A1410'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0.65rem center;border-radius:0;transition:border-color 0.3s var(--ease),color 0.3s var(--ease)}
+.lever-select:focus{border-color:var(--red)}
+.lever-select.changed{border-color:var(--red);color:var(--red)}
+.lever-select option{background:#F5F0E8;color:#1A1410}
+.contrib-card{background:#FAF6EE;border:1px solid var(--rule-dk);padding:1.25rem 1.5rem}
+.contrib-head{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--mid);margin-bottom:1.1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--rule-dk);font-weight:600;}
+.cbar{display:grid;grid-template-columns:110px 1fr 56px;gap:0.75rem;align-items:center;margin-bottom:0.65rem}
+.cbar:last-child{margin-bottom:0}
+.cbar-name{font-size:0.75rem;color:#4A3E35;font-weight:600}
+.cbar-track{height:4px;background:#DDD7CC;overflow:hidden}
+.cbar-fill{height:100%;background:var(--red);transition:width 0.35s var(--ease)}
+.cbar-val{font-family:var(--mono);font-size:0.65rem;color:#4A3E35;text-align:right}
+#contact{background:#EAE4D8;padding:clamp(4.5rem,10vw,7rem) 0;overflow:hidden}
+.contact-bgword{font-family:var(--disp);font-weight:700;font-size:clamp(5rem,18vw,13rem);color:rgba(0,0,0,0.03);line-height:0.85;letter-spacing:-0.05em;pointer-events:none;user-select:none;margin-bottom:-1rem;overflow:hidden;white-space:nowrap}
+.contact-avail{font-family:var(--disp);font-size:clamp(1.2rem,3vw,1.75rem);font-weight:700;color:#1A1410;margin-bottom:0.5rem;line-height:1.2}
+.contact-loc{font-family:var(--mono);font-size:0.68rem;letter-spacing:0.04em;color:#4A3E35;margin-bottom:2.5rem}
+.avail-badge{display:inline-flex;align-items:center;gap:0.5rem;font-family:var(--mono);font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--mid);margin-bottom:1.5rem;padding:0.4rem 0.8rem 0.4rem 0.55rem;border:1px solid var(--rule-dk);background:#FAF6EE;font-weight:600;}
+.avail-dot{width:7px;height:7px;border-radius:50%;background:var(--red);flex-shrink:0;animation:avail-pulse 2.2s ease-in-out infinite}
+@keyframes avail-pulse{0%,100%{box-shadow:0 0 0 0 rgba(62,110,52,0.5)}60%{box-shadow:0 0 0 5px rgba(62,110,52,0)}}
+.btns{display:flex;gap:0.75rem;flex-wrap:wrap}
+.btn{display:inline-flex;padding:0.75rem 1.75rem;font-family:var(--sans);font-size:0.85rem;font-weight:600;text-decoration:none;cursor:pointer;transition:background 0.3s var(--ease),border-color 0.3s var(--ease),color 0.3s var(--ease);min-height:44px;align-items:center}
+.btn-primary{background:var(--red);color:#F5F0E8;border:1px solid var(--red)}
+.btn-primary:hover{background:#2E5826;border-color:#2E5826;color:#F5F0E8}
+.btn-secondary{background:transparent;color:#1A1410;border:1px solid var(--mid)}
+.btn-secondary:hover{border-color:var(--red);color:var(--red)}
+footer{padding:1.4rem 0;border-top:1px solid var(--rule-dk);background:#F5F0E8;}
+.footer-inner{max-width:var(--max);margin:0 auto;padding:0 var(--pad);display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.footer-home{font-family:var(--mono);font-size:0.88rem;color:var(--red);text-decoration:none;opacity:0.7;transition:opacity 0.2s}
+.footer-home:hover{opacity:1}
+.footer-name{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.06em;color:var(--mid);white-space:nowrap}
+.footer-links{display:flex;gap:1.4rem}
+.footer-links a{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);text-decoration:none;transition:color 0.25s;font-weight:600;}
+.footer-links a:hover{color:var(--red)}
+.cta-strip{overflow:hidden;background:var(--red)}
+.cta-strip-track{display:flex;white-space:nowrap;animation:tick 22s linear infinite;padding:10px 0}
+.cta-strip:hover .cta-strip-track{animation-play-state:paused}
+.csi{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.13em;text-transform:uppercase;color:#FFFFFF;font-weight:700;flex-shrink:0}
+.csd{font-family:var(--mono);font-size:0.62rem;color:rgba(255,255,255,0.4);flex-shrink:0}
+.scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.mt1{margin-top:1rem}.mt2{margin-top:2rem}.mt3{margin-top:2.5rem}
+.sec-sub{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);margin-bottom:0.75rem;margin-top:2.5rem;font-weight:600;}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease}
+.reveal.revealed{opacity:1;transform:none}
+#cursor-dot{position:fixed;width:5px;height:5px;border-radius:50%;background:var(--red);pointer-events:none;z-index:9999;left:0;top:0;transform:translate(-50%,-50%);opacity:0;transition:opacity 0.3s}
+#cursor-ring{position:fixed;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--red);pointer-events:none;z-index:9998;left:0;top:0;transform:translate(-50%,-50%);opacity:0;transition:width 0.35s var(--ease),height 0.35s var(--ease),opacity 0.3s}
+body.cur-on #cursor-dot,body.cur-on #cursor-ring{opacity:0.65}
+body.cur-on #cursor-ring.cx{width:44px;height:44px;opacity:0.4}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:#F5F0E8}
+::-webkit-scrollbar-thumb{background:#C4BAB0;border-radius:2px}
+::-webkit-scrollbar-thumb:hover{background:var(--red)}
+@media(max-width:559px){.s3-row{grid-template-columns:1fr 44px 100px}.cbar{grid-template-columns:90px 1fr 44px}.kpi-strip{grid-template-columns:repeat(2,1fr)}.lc-modules{flex-wrap:wrap}.lcm{min-width:48px}}
+@media(min-width:800px){section{padding:5rem 0}#about{padding:5.5rem 0 3.5rem}#scenario{padding:5.5rem 0}}
+
+/* ---- Film grain overlay ---- */
+.grain-overlay{position:fixed;inset:0;pointer-events:none;z-index:9990;mix-blend-mode:multiply;opacity:1;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)' opacity='0.042'/%3E%3C/svg%3E")}
+
+/* ---- Watercolor bloom elements ---- */
+.bloom-wrap{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.bloom{position:absolute;border-radius:50%;filter:blur(80px);mix-blend-mode:multiply;pointer-events:none}
+.bloom-a{width:560px;height:380px;background:radial-gradient(ellipse,rgba(78,122,66,0.18) 0%,transparent 70%);top:-60px;left:-80px;opacity:0.9;animation:floatA 18s ease-in-out infinite}
+.bloom-b{width:440px;height:340px;background:radial-gradient(ellipse,rgba(196,118,30,0.12) 0%,transparent 70%);top:30px;right:-60px;opacity:0.75;animation:floatB 22s ease-in-out infinite}
+.bloom-c{width:320px;height:220px;background:radial-gradient(ellipse,rgba(64,94,140,0.1) 0%,transparent 70%);bottom:0;left:40%;opacity:0.6;animation:floatC 26s ease-in-out infinite}
+
+/* ---- Content sits above blooms ---- */
+#about .wrap{position:relative;z-index:1}
+
+/* ---- Asymmetric hero layout ---- */
+.hero-offset-rule{width:1px;height:clamp(4rem,8vw,6rem);background:var(--red);opacity:0.4;margin-bottom:2rem;margin-left:2px}
+.section-ident{font-family:var(--mono);font-size:0.55rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(26,20,16,0.22);margin-bottom:clamp(1.5rem,4vw,3rem);display:block}
+.hero-ghost{font-family:var(--disp);font-weight:800;font-size:clamp(8rem,18vw,14rem);color:rgba(26,20,16,0.03);position:absolute;right:-1rem;top:0;line-height:0.85;letter-spacing:-0.06em;pointer-events:none;user-select:none;z-index:0;white-space:nowrap}
+
+/* Artefact stagger removed for visual balance */
+
+/* ---- Ticker interactive terms ---- */
+.t-term{cursor:default;padding:0 0.12em;border-radius:1px;transition:background 0.18s ease,color 0.18s ease;letter-spacing:0.13em}
+.t-term:hover{background:var(--red);color:#F5F0E8}
+.t-sep{color:#888888;letter-spacing:0;flex-shrink:0}
+.ticker-tip{position:fixed;background:#1A1410;color:#F5F0E8;font-family:var(--mono);font-size:0.58rem;letter-spacing:0.03em;padding:0.5rem 0.8rem;z-index:10001;pointer-events:none;max-width:260px;line-height:1.6;border-left:2px solid var(--red);opacity:0;transition:opacity 0.15s;white-space:normal}
+.ticker-tip.vis{opacity:1}
+
+/* ---- Scenario mode toggle ---- */
+.mode-toggle{display:flex;gap:1px;background:#D5D5D5;border:1px solid #D5D5D5;margin-bottom:1.75rem;overflow:hidden;width:fit-content}
+.mode-btn{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;border:none;background:#DDD7CC;color:var(--mid);cursor:pointer;padding:0.55rem 1.1rem;font-weight:600;transition:background 0.25s,color 0.25s;white-space:nowrap}
+.mode-btn.on{background:var(--red);color:#F5F0E8}
+.mode-badge{display:inline-block;font-family:var(--mono);font-size:0.52rem;letter-spacing:0.12em;text-transform:uppercase;background:var(--red-bg);color:var(--red);border:1px solid rgba(62,110,52,0.3);padding:0.2rem 0.55rem;margin-left:0.75rem;vertical-align:middle;font-weight:700}
+
+/* ---- Lever visibility toggle ---- */
+.lever-group-infra,.lever-group-textile{display:contents}
+.lever-group-textile .lever{display:none}
+body.mode-textile .lever-group-infra .lever{display:none}
+body.mode-textile .lever-group-textile .lever{display:block}
+
+/* ---- Responsive padding fixes ---- */
+@media(min-width:800px){section{padding:clamp(5rem,10vw,7rem) 0}#about{padding:clamp(5.5rem,12vw,9rem) 0 clamp(3.5rem,6vw,5rem)}#scenario{padding:clamp(5.5rem,12vw,9rem) 0}}
+
+/* ---- Pipeline step progression — matcha/mango/strawberry/blueberry ---- */
+:root{
+  --step-raw:#405E8C;
+  --step-calc:#3E6E34;
+  --step-report:#C4761E;
+  --step-strategy:#B84460;
+  --step-comms:#7A5A8A;
+}
+.pipe-node[data-step="raw"]{border-color:var(--step-raw);color:var(--step-raw);border-width:2px}
+.pipe-node[data-step="raw"]:hover{background:rgba(64,94,140,0.09);color:var(--step-raw)}
+.pipe-node[data-step="calc"]{border-color:var(--step-calc);color:var(--step-calc);border-width:2px}
+.pipe-node[data-step="calc"]:hover{background:rgba(62,110,52,0.09);color:var(--step-calc)}
+.pipe-node[data-step="report"]{border-color:var(--step-report);color:var(--step-report);border-width:2px}
+.pipe-node[data-step="report"]:hover{background:rgba(196,118,30,0.09);color:var(--step-report)}
+.pipe-node[data-step="strategy"]{border-color:var(--step-strategy);color:var(--step-strategy);border-width:2px}
+.pipe-node[data-step="strategy"]:hover{background:rgba(184,68,96,0.09);color:var(--step-strategy)}
+.pipe-node[data-step="comms"]{border-color:var(--step-comms);color:var(--step-comms);border-width:2px}
+.pipe-node[data-step="comms"]:hover{background:rgba(122,90,138,0.09);color:var(--step-comms)}
+
+/* ---- Lever accent colours ---- */
+/* Grid / Renewable Energy (Scope 2) — blueberry */
+#lev-grid{border-left:3px solid var(--blueberry);background:rgba(64,94,140,0.04)}
+#lev-grid .lever-src{color:var(--blueberry)}
+#lev-grid .lever-select:focus{border-color:var(--blueberry)}
+#lev-grid .lever-select.changed{border-color:var(--blueberry);color:var(--blueberry)}
+
+/* LV Fleet / Enzyme Dyeing — matcha */
+#lev-lv{border-left:3px solid var(--red);background:rgba(62,110,52,0.04)}
+#lev-lv .lever-src{color:var(--red)}
+#lev-lv .lever-select:focus{border-color:var(--red)}
+#lev-lv .lever-select.changed{border-color:var(--red);color:var(--red)}
+
+/* HV Fleet / Freight Modal Shift — mango */
+#lev-hv{border-left:3px solid var(--mango);background:rgba(196,118,30,0.04)}
+#lev-hv .lever-src{color:var(--mango)}
+#lev-hv .lever-select:focus{border-color:var(--mango)}
+#lev-hv .lever-select.changed{border-color:var(--mango);color:var(--mango)}
+
+/* Plant Electrification / Biosynthetics — strawberry */
+#lev-plant{border-left:3px solid var(--strawberry);background:rgba(184,68,96,0.04)}
+#lev-plant .lever-src{color:var(--strawberry)}
+
+/* Sector selector row — lighter matcha */
+#infra-sector-row{border-left:3px solid var(--red-dark);background:rgba(100,163,88,0.06)}
+#infra-sector-row .lever-src{color:var(--red-dark)}
+
+/* Revenue / Volume row — plum */
+.lever-rev{border-left:3px solid var(--step-comms)}
+.lever-rev .lever-src{color:var(--step-comms)}
+
+/* ---- Contrib bar names match lever colours ---- */
+#cbar-name-grid{color:var(--blueberry)}
+#cbar-name-lv{color:var(--red)}
+#cbar-name-hv{color:var(--mango)}
+#cbar-name-plant{color:var(--strawberry)}
+
+/* ---- Float animations for hero blooms ---- */
+@keyframes floatA{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(22px,-16px) scale(1.04)}66%{transform:translate(-10px,12px) scale(0.97)}}
+@keyframes floatB{0%,100%{transform:translate(0,0) scale(1)}40%{transform:translate(-18px,20px) scale(1.03)}70%{transform:translate(14px,-8px) scale(0.98)}}
+@keyframes floatC{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(10px,14px) scale(1.04)}}
+
+/* ---- Entrance animation classes ---- */
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+@keyframes fadeLeft{from{opacity:0;transform:translateX(-24px)}to{opacity:1;transform:none}}
+@keyframes scaleIn{from{opacity:0;transform:scale(0.92)}to{opacity:1;transform:none}}
+
+.anim-fadeup{animation:fadeUp 0.7s var(--ease) both}
+.anim-fadeleft{animation:fadeLeft 0.6s var(--ease) both}
+.anim-scalein{animation:scaleIn 0.5s var(--ease) both}
+
+/* ---- Philosophy / Principles section ---- */
+#principles{background:#1A1410;padding:clamp(4rem,9vw,6.5rem) 0;overflow:hidden;position:relative}
+#principles .label{color:var(--red-dark)}
+#principles .label::after{background:rgba(100,163,88,0.3)}
+.princ-bg-word{font-family:var(--disp);font-weight:800;font-size:clamp(7rem,18vw,13rem);color:rgba(255,255,255,0.025);position:absolute;right:-1rem;bottom:-1rem;line-height:0.85;letter-spacing:-0.06em;pointer-events:none;user-select:none}
+.princ-grid{display:grid;grid-template-columns:1fr;gap:0;border-top:1px solid rgba(255,255,255,0.08);margin-top:1.5rem}
+@media(min-width:640px){.princ-grid{grid-template-columns:repeat(3,1fr)}}
+.princ{padding:2rem 0 2rem;border-bottom:1px solid rgba(255,255,255,0.08);transition:border-color 0.3s}
+@media(min-width:640px){.princ{padding:2rem 2rem 2rem 0;border-bottom:none;border-right:1px solid rgba(255,255,255,0.08)}}
+@media(min-width:640px){.princ:last-child{border-right:none;padding-right:0}}
+.princ:hover{border-color:rgba(100,163,88,0.4)}
+.princ-num{font-family:var(--mono);font-size:0.55rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(100,163,88,0.7);margin-bottom:1.1rem}
+.princ-title{font-family:var(--disp);font-size:clamp(0.95rem,2vw,1.15rem);font-weight:700;color:#F5F0E8;line-height:1.25;margin-bottom:0.75rem;letter-spacing:-0.01em}
+.princ-body{font-size:0.82rem;font-weight:400;color:rgba(245,240,232,0.6);line-height:1.75}
+
+/* ---- Framework card grid ---- */
+.fw-card-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--rule-dk);border:1px solid var(--rule-dk);margin-bottom:2.5rem;overflow:hidden}
+@media(min-width:800px){.fw-card-grid{grid-template-columns:repeat(4,1fr)}}
+.fw-card{background:#FAF6EE;padding:1.25rem 1.4rem;border-left:3px solid var(--card-accent,var(--rule-dk));position:relative;transition:background 0.3s var(--ease),border-color 0.3s;overflow:hidden}
+.fw-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 40%,rgba(255,255,255,0.35) 60%,transparent 80%);opacity:0;transition:opacity 0.4s}
+.fw-card:hover{background:var(--red-bg);border-left-color:var(--card-accent,var(--red))}
+.fw-card:hover::before{opacity:1;animation:shimmer 0.55s ease forwards}
+@keyframes shimmer{from{background-position:-200% -200%}to{background-position:200% 200%}}
+.fw-cat{font-family:var(--mono);font-size:0.5rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--card-accent,var(--mid));margin-bottom:0.5rem;font-weight:700}
+.fw-acro{font-family:var(--disp);font-size:1.3rem;font-weight:800;color:#1A1410;line-height:1;margin-bottom:0.15rem;letter-spacing:-0.03em}
+.fw-fullname{font-size:0.68rem;color:var(--mid);margin-bottom:0.6rem;line-height:1.4}
+.fw-applied{font-family:var(--mono);font-size:0.58rem;color:#4A3E35;letter-spacing:0.02em;line-height:1.6}
+
+/* ---- Built items within expertise ---- */
+.built-list{display:flex;flex-direction:column;gap:0}
+.built-item{padding:1.1rem 0;border-bottom:1px solid var(--rule-dk);position:relative;transition:border-color 0.3s}
+.built-item:first-child{padding-top:0}
+.built-item:last-child{border-bottom:none}
+.built-item:hover{border-bottom-color:var(--red)}
+.built-item:hover .built-num{color:var(--red)}
+.built-num{font-family:var(--mono);font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--subtle);margin-bottom:0.3rem;transition:color 0.3s}
+.built-name{font-family:var(--disp);font-size:0.88rem;font-weight:700;color:#1A1410;margin-bottom:0.2rem;line-height:1.2}
+.built-outcome{font-family:var(--mono);font-size:0.6rem;color:var(--red);letter-spacing:0.03em;line-height:1.5}
+
+/* ---- Enhanced scenario section ---- */
+#scenario{background:#1C1814;border-bottom:none;padding:clamp(5rem,11vw,8rem) 0;position:relative;overflow:hidden}
+#scenario .label{color:var(--red-dark)}
+#scenario .label::after{background:rgba(100,163,88,0.3)}
+#scenario .wrap{position:relative;z-index:1}
+.scenario-bg-mesh{position:absolute;inset:0;opacity:0.04;background-image:repeating-linear-gradient(0deg,transparent,transparent 40px,rgba(255,255,255,1) 40px,rgba(255,255,255,1) 41px),repeating-linear-gradient(90deg,transparent,transparent 40px,rgba(255,255,255,1) 40px,rgba(255,255,255,1) 41px);pointer-events:none}
+.tool-decl{color:#F5F0E8 !important}
+.tool-decl strong{color:var(--red-dark) !important}
+.tool-sub{color:rgba(245,240,232,0.65) !important}
+.tool-disc{color:rgba(245,240,232,0.45) !important;border-color:rgba(255,255,255,0.12) !important}
+.sector-desc{color:rgba(100,163,88,0.85) !important}
+.kpi{background:#2A241E !important}
+.kpi.live{background:#1E2C1A !important}
+.kpi-l{color:rgba(245,240,232,0.5) !important}
+.kpi-v{color:#F5F0E8 !important}
+.kpi.live .kpi-v{color:var(--red-dark) !important}
+.chart-card{background:#2A241E !important;border-color:rgba(255,255,255,0.08) !important}
+.controls-card{background:#2A241E !important;border-color:rgba(255,255,255,0.08) !important}
+.lever{background:#1C1814 !important}
+.lever-name{color:#F5F0E8 !important}
+.lever-grid{background:rgba(255,255,255,0.06) !important}
+.lever-select{color:#F5F0E8 !important;border-color:rgba(255,255,255,0.15) !important;background:transparent !important}
+.lever-select option{background:#2A241E !important;color:#F5F0E8 !important}
+.lever-rev{background:#1C1814 !important;border-color:rgba(255,255,255,0.06) !important}
+.lever-sector{background:#1C1814 !important;border-color:rgba(255,255,255,0.06) !important}
+.contrib-card{background:#2A241E !important;border-color:rgba(255,255,255,0.08) !important}
+.contrib-head{color:rgba(245,240,232,0.5) !important;border-color:rgba(255,255,255,0.08) !important}
+.cbar-name{color:rgba(245,240,232,0.75) !important}
+.cbar-track{background:rgba(255,255,255,0.1) !important}
+.cbar-val{color:rgba(245,240,232,0.7) !important}
+.mode-toggle{background:rgba(255,255,255,0.08) !important;border-color:rgba(255,255,255,0.12) !important}
+.mode-btn{background:rgba(255,255,255,0.05) !important;color:rgba(245,240,232,0.5) !important}
+.mode-btn.on{background:var(--red) !important;color:#F5F0E8 !important}
+.kpi-strip{background:rgba(255,255,255,0.08) !important;border-color:rgba(255,255,255,0.08) !important}
+#infra-sector-row{background:rgba(100,163,88,0.08) !important}
+#lev-grid{background:rgba(64,94,140,0.1) !important}
+#lev-lv{background:rgba(62,110,52,0.1) !important}
+#lev-hv{background:rgba(196,118,30,0.1) !important}
+#lev-plant{background:rgba(184,68,96,0.1) !important}
+
+/* hover override on scenario levers */
+.lever select:focus{border-color:var(--red-dark) !important}
+
+/* ---- Scroll indicator — hero ---- */
+.scroll-hint{display:flex;align-items:center;gap:0.6rem;font-family:var(--mono);font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--subtle);margin-top:2.5rem;animation:fadeUp 1s 1.2s var(--ease) both}
+.scroll-hint-line{width:32px;height:1px;background:var(--rule-dk)}
+
+/* ---- Live dot pulse update ---- */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.2}}
+
+/* ---- Hero rule ---- */
+.hero-offset-rule{width:1px;height:clamp(4rem,8vw,6rem);background:var(--red);opacity:0.35;margin-bottom:2rem;margin-left:2px;animation:fadeUp 0.8s 0.3s var(--ease) both}
+
+/* ---- CTA strip dark version in scenario section ---- */
+.cta-strip{background:var(--red)}
+
+/* ---- Responsive fix for new pipeline ---- */
+@media(max-width:559px){
+  .pipeline{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .pipe-node{min-width:80px}
+}
+
+
+/* ---- Additional motion polish ---- */
+
+/* Animated gradient border on hovered exp-entry */
+.exp-entry::after{content:'';position:absolute;left:0;bottom:0;right:0;height:1px;background:linear-gradient(90deg,var(--red),var(--mango),var(--strawberry));opacity:0;transition:opacity 0.4s}
+.exp-entry:hover::after{opacity:0.5}
+
+/* Section reveal stagger for principles */
+.princ{opacity:0;transform:translateY(24px);transition:opacity 0.65s var(--ease),transform 0.65s var(--ease)}
+.princ.revealed{opacity:1;transform:none}
+
+/* fw-card reveal */
+.fw-card{opacity:0;transform:translateY(16px);transition:opacity 0.5s var(--ease),transform 0.5s var(--ease),background 0.3s var(--ease)}
+.fw-card.revealed{opacity:1;transform:none}
+
+/* built-item reveal */
+.built-item{opacity:0;transform:translateX(-12px);transition:opacity 0.5s var(--ease),transform 0.5s var(--ease),border-color 0.3s}
+.built-item.revealed{opacity:1;transform:none}
+
+/* Animated underline on section labels */
+.label{position:relative;overflow:visible}
+
+/* Scenario dark mode — update chart tooltip bg */
+#scenario .chart-wrap canvas{border-radius:2px}
+
+/* KPI strip values animate on scenario load */
+.kpi-v{transition:color 0.3s}
+
+/* Bio pipeline nodes — letter spacing hover */
+.pipe-node{letter-spacing:0.08em;transition:color 0.3s var(--ease),background 0.3s var(--ease),letter-spacing 0.3s var(--ease)}
+.pipe-node:hover{letter-spacing:0.12em}
+
+/* Contact section bg word float */
+.contact-bgword{animation:floatA 20s ease-in-out infinite;display:block}
+
+/* Scroll-reveal base for instr */
+.instr{opacity:0;transform:translateY(16px);transition:opacity 0.6s var(--ease),transform 0.6s var(--ease),background 0.3s var(--ease)}
+.instr.revealed{opacity:1;transform:none}
+
+</style>
+</head><body>
+<div class="grain-overlay" aria-hidden="true"></div>
+<nav class="nav" aria-label="Primary">
+  <div class="nav-inner">
+    <a href="#about" class="nav-logo">./</a>
+    <div class="nav-links" role="navigation">
+      <a href="#about"><span class="ntl"><span>[ About ]</span><span aria-hidden="true">[ About ]</span></span></a>
+      <a href="#scenario"><span class="ntl"><span>[ Model ]</span><span aria-hidden="true">[ Model ]</span></span></a>
+      <a href="#principles"><span class="ntl"><span>[ Approach ]</span><span aria-hidden="true">[ Approach ]</span></span></a>
+      <a href="#expertise"><span class="ntl"><span>[ Expertise ]</span><span aria-hidden="true">[ Expertise ]</span></span></a>
+      <a href="#work"><span class="ntl"><span>[ Work ]</span><span aria-hidden="true">[ Work ]</span></span></a>
+      <a href="#experience"><span class="ntl"><span>[ Experience ]</span><span aria-hidden="true">[ Experience ]</span></span></a>
+      <a href="#contact"><span class="ntl"><span>[ Contact ]</span><span aria-hidden="true">[ Contact ]</span></span></a>
+    </div>
+  </div>
+</nav>
+
+<section id="about">
+<div class="bloom-wrap" aria-hidden="true"><div class="bloom bloom-a"></div><div class="bloom bloom-b"></div><div class="bloom bloom-c"></div></div>
+<div class="wrap">
+  <span class="section-ident" aria-hidden="true">Senior Sustainability Advisor &nbsp;&#x2022;&nbsp; Melbourne, AU</span>
+  <div class="label">Profile</div>
+  <h1 class="hero-name">Christopher <em>Wang</em></h1>
+  <div class="hero-cycle"><span id="role-cycle">Sustainability Advisor</span></div>
+  <div class="hero-meta">
+    <a href="mailto:cywang2910@gmail.com">cywang2910@gmail.com</a>
+    <span>0426 081 029</span>
+    <a href="https://linkedin.com/in/chriswang0" target="_blank" rel="noopener">linkedin.com/in/chriswang0</a>
+    <span>Melbourne, Australia</span>
+  </div>
+  <p class="hero-prop">I help large organisations turn emissions data into governed reporting infrastructure and credible decarbonisation pathways. The work is repeatable, auditable, and built to be owned by the team.</p>
+  <div class="instr-grid">
+    <div class="instr">
+      <div class="instr-lbl">Years sustainability<br>&amp; climate advisory</div>
+      <div class="instr-val" data-target="5" data-suffix="+">5+</div>
+    </div>
+    <div class="instr">
+      <div class="instr-lbl">Reporting frameworks<br>applied</div>
+      <div class="instr-val" data-target="8" data-suffix="+">8+</div>
+    </div>
+  </div>
+  <div class="live-strip">
+    <span class="live-dot" aria-hidden="true"></span>
+    <span class="live-label">NEM grid intensity, est. <span id="nem-year">FY26</span></span>
+    <span class="live-val" id="nem-val">0.722</span>
+    <span class="live-unit">tCO&#x2082;-e/MWh</span>
+  </div>
+  <div class="scroll-hint" aria-hidden="true"><span class="scroll-hint-line"></span>Scroll to explore</div>
+</div>
+</section>
+
+<section id="bio">
+<div class="wrap">
+  <div class="bio-inner">
+    <p class="bio-text">Senior Sustainability Advisor with experience across GHG emissions accounting, ESG reporting, decarbonisation modelling, and supply chain emissions across infrastructure, property, and government sectors. I support both regulatory reporting (NGER, AASB S2, GHG Protocol) and strategic planning, building the tools and documentation that make that work defensible under assurance. Career direction: sustainability leadership in a high-growth or global organisation.</p>
+    <div class="pipeline" aria-label="Capability pipeline">
+      <div class="pipe-node hl" data-step="raw">Raw Data</div><div class="pipe-arrow">&#x2192;</div>
+      <div class="pipe-node hl" data-step="calc">Calculation</div><div class="pipe-arrow">&#x2192;</div>
+      <div class="pipe-node hl" data-step="report">Reporting</div><div class="pipe-arrow">&#x2192;</div>
+      <div class="pipe-node hl" data-step="strategy">Strategy</div><div class="pipe-arrow">&#x2192;</div>
+      <div class="pipe-node hl" data-step="comms">Communication</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="ticker-band" aria-hidden="true">
+  <div id="ticker-tip" class="ticker-tip" aria-hidden="true"></div>
+  <div class="ticker-track">
+    <span class="ticker-run"><span class="t-term" data-tip="Corporate value chain accounting standard – defines Scope 1, 2, and 3 emission boundaries and reporting methodology.">GHG Protocol</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="National Greenhouse and Energy Reporting Act – mandatory Australian corporate emissions reporting to DCCEEW.">NGER Act</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Australian mandatory climate disclosure standard aligned to ISSB S2 – effective for large entities from FY2025.">AASB S2 / ISSB</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Annual supplier emissions disclosure programme managed on behalf of large buyer organisations via the CDP platform.">CDP Supply Chain</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Real assets ESG benchmark used by infrastructure fund managers and institutional investors for annual performance comparison.">GRESB Infrastructure</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Task Force on Climate-related Financial Disclosures – scenario analysis framework for transition and physical risk disclosure.">TCFD</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Science Based Targets initiative – validates near-term and long-term emission reduction targets against 1.5°C pathways.">SBTi</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="GRI Emissions standard – Scope 1, 2, and 3 disclosure requirements, methodology, and intensity metrics.">GRI 305</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="DCCEEW National Greenhouse Accounts emission factors – used for NGER fuel combustion and grid electricity calculations.">DCCEEW NGA Factors</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="PwC external limited assurance over Group-level Scope 1 and 2 emissions for statutory and market reporting.">PwC Assured</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="IBM Envizi ESG Suite – platform for emissions data ingestion, normalisation, audit trail, and regulatory output.">Envizi</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Cloud-based platform for connected ESG and financial reporting with linked data, narrative, and disclosure workflow.">Workiva</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Net-zero Scope 1 and 2 emissions target by FY2050, with interim milestones and lever-tracked abatement pathways.">Net Zero FY2050</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Gross emissions scaled proportionally to revenue growth – isolates abatement impact from business volume changes.">Revenue-Indexed Forecasting</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Scope 2 accounting using supplier-specific emission rates or energy attribute certificates rather than grid averages.">Market-Based Scope 2</span><span class="t-sep"> &nbsp;&nbsp; </span></span>
+    <span class="ticker-run"><span class="t-term" data-tip="Corporate value chain accounting standard – defines Scope 1, 2, and 3 emission boundaries and reporting methodology.">GHG Protocol</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="National Greenhouse and Energy Reporting Act – mandatory Australian corporate emissions reporting to DCCEEW.">NGER Act</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Australian mandatory climate disclosure standard aligned to ISSB S2 – effective for large entities from FY2025.">AASB S2 / ISSB</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Annual supplier emissions disclosure programme managed on behalf of large buyer organisations via the CDP platform.">CDP Supply Chain</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Real assets ESG benchmark used by infrastructure fund managers and institutional investors for annual performance comparison.">GRESB Infrastructure</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Task Force on Climate-related Financial Disclosures – scenario analysis framework for transition and physical risk disclosure.">TCFD</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Science Based Targets initiative – validates near-term and long-term emission reduction targets against 1.5°C pathways.">SBTi</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="GRI Emissions standard – Scope 1, 2, and 3 disclosure requirements, methodology, and intensity metrics.">GRI 305</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="DCCEEW National Greenhouse Accounts emission factors – used for NGER fuel combustion and grid electricity calculations.">DCCEEW NGA Factors</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="PwC external limited assurance over Group-level Scope 1 and 2 emissions for statutory and market reporting.">PwC Assured</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="IBM Envizi ESG Suite – platform for emissions data ingestion, normalisation, audit trail, and regulatory output.">Envizi</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Cloud-based platform for connected ESG and financial reporting with linked data, narrative, and disclosure workflow.">Workiva</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Net-zero Scope 1 and 2 emissions target by FY2050, with interim milestones and lever-tracked abatement pathways.">Net Zero FY2050</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Gross emissions scaled proportionally to revenue growth – isolates abatement impact from business volume changes.">Revenue-Indexed Forecasting</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Scope 2 accounting using supplier-specific emission rates or energy attribute certificates rather than grid averages.">Market-Based Scope 2</span><span class="t-sep"> &nbsp;&nbsp; </span></span>
+  </div>
+</div>
+
+<section id="scenario">
+<div class="scenario-bg-mesh" aria-hidden="true"></div>
+<div class="wrap">
+  <div class="label">Interactive Tool</div>
+  <div class="mode-toggle">
+    <button class="mode-btn on" id="mode-btn-infra" onclick="setMode('industrial')">Industrial Supply Chain</button>
+    <button class="mode-btn" id="mode-btn-textile" onclick="setMode('textile')">Boutique Textile Retail</button>
+  </div>
+  <p class="tool-decl" id="tool-decl-text">Every lever has a number. <strong>Here is what the model shows.</strong></p>
+  <p class="tool-sub" id="tool-sub-text">Adjust the controls below to explore how different abatement strategies shift a Scope&nbsp;1 and&nbsp;2 emissions trajectory. Lever assumptions are drawn from DCCEEW 2025 grid emission factor tables, the NVES Act 2024 (LV fleet), CSIRO Net Zero Pathways (HV fleet), and published plant electrification analysis &#x2013; the same sources used in production pathway models. Select a sector to see how lever weights shift by asset class.</p>
+  <span class="tool-disc">Illustrative model &middot; stylised numbers &middot; not client data</span>
+  <div id="sector-desc" class="sector-desc">Infrastructure: heavy plant, diesel fleet, and mechanical processes drive the Scope&nbsp;1 footprint. Grid decarbonisation delivers Scope&nbsp;2 reduction.</div>
+  <div class="kpi-strip">
+    <div class="kpi"><div class="kpi-l">FY20 Baseline</div><div class="kpi-v" id="kpi-base-v">347k t</div></div>
+    <div class="kpi"><div class="kpi-l">FY25 Actuals</div><div class="kpi-v" id="kpi-fy25-v">277k t</div></div>
+    <div class="kpi live"><div class="kpi-l">FY32 Net</div><div class="kpi-v" id="kpi-net">&#x2013;</div></div>
+    <div class="kpi live"><div class="kpi-l">FY32 vs FY20</div><div class="kpi-v" id="kpi-pct">&#x2013;</div></div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-wrap"><canvas id="mainChart"></canvas></div>
+  </div>
+  <div class="controls-card">
+    <div class="controls-head">Scenario Controls &#x2013; select a scenario for each lever</div>
+    <div class="lever-grid">
+      <!-- INDUSTRIAL: sector + 4 levers -->
+      <div class="lever lever-sector lever-group-infra" id="infra-sector-row" style="grid-column:1/-1">
+        <div class="lever-name">Sector / Organisation Type</div>
+        <div class="lever-src">Changes emission share weights by asset class</div>
+        <select id="sel-sector" class="lever-select" onchange="changeSector()">
+          <option value="infrastructure">Infrastructure</option>
+          <option value="property">Commercial Property</option>
+          <option value="government">Government Operations</option>
+        </select>
+      </div>
+      <div class="lever lever-group-infra" id="lev-grid">
+        <div class="lever-name" id="lev-grid-name">Grid Decarbonisation (Scope 2)</div>
+        <div class="lever-src" id="lev-grid-src">Source: DCCEEW 2025 Table 42 NEM trajectory</div>
+        <select id="sel-grid" class="lever-select" onchange="run()">
+          <option value="base">Base &#x2013; DCCEEW NEM trajectory</option>
+          <option value="faster">Faster &#x2013; REC-based, 90% renewable by FY32</option>
+          <option value="slower">Slower &#x2013; 10% higher residual intensity</option>
+          <option value="off">Off &#x2013; no grid decarbonisation</option>
+        </select>
+      </div>
+      <div class="lever lever-group-infra" id="lev-lv">
+        <div class="lever-name" id="lev-lv-name">LV Fleet Transition</div>
+        <div class="lever-src" id="lev-lv-src">Source: NVES Act 2024 &middot; 1-yr adoption lag (Base)</div>
+        <select id="sel-lv" class="lever-select" onchange="run()">
+          <option value="base">Base &#x2013; NVES 1-yr lag</option>
+          <option value="faster">Faster &#x2013; NVES no lag</option>
+          <option value="slower">Slower &#x2013; NVES 2-yr lag</option>
+        </select>
+      </div>
+      <div class="lever lever-group-infra" id="lev-hv">
+        <div class="lever-name" id="lev-hv-name">HV Fleet Transition</div>
+        <div class="lever-src" id="lev-hv-src">Source: CSIRO Net Zero Pathways 2023 &middot; 1-yr lag</div>
+        <select id="sel-hv" class="lever-select" onchange="run()">
+          <option value="base">Base &#x2013; CSIRO 1-yr lag</option>
+          <option value="faster">Faster &#x2013; CSIRO no lag</option>
+          <option value="slower">Slower &#x2013; CSIRO 3-yr lag</option>
+        </select>
+      </div>
+      <div class="lever lever-group-infra" id="lev-plant">
+        <div class="lever-name" id="lev-plant-name">Plant Electrification</div>
+        <div class="lever-src" id="lev-plant-src">Source: Industry plant electrification analysis</div>
+        <select id="sel-plant" class="lever-select" onchange="run()">
+          <option value="base">Base &#x2013; industry pathway</option>
+          <option value="faster">Faster &#x2013; 25% more reduction</option>
+          <option value="slower">Slower &#x2013; 10% less reduction</option>
+          <option value="off">Off &#x2013; no plant electrification</option>
+        </select>
+      </div>
+      <div class="lever lever-rev" style="grid-column:1/-1">
+        <div class="lever-name" id="lev-rev-name">Volume / Revenue Growth Assumption</div>
+        <div class="lever-src">Scales gross emissions pre-abatement</div>
+        <select id="sel-rev" class="lever-select" onchange="run()">
+          <option value="flat">Flat &#x2013; no growth</option>
+          <option value="moderate" selected>Moderate &#x2013; +1.5% per year</option>
+          <option value="high">High &#x2013; +3.0% per year</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="contrib-card">
+    <div class="contrib-head" id="contrib-head-text">Abatement contribution by lever at FY32 &#x2013; tCO&#x2082;-e avoided vs. gross pathway</div>
+    <div class="cbar"><div class="cbar-name" id="cbar-name-grid">Grid (Scope 2)</div><div class="cbar-track"><div class="cbar-fill" id="cb-grid" style="width:0%;background:#405E8C"></div></div><div class="cbar-val" id="cv-grid">&#x2013;</div></div>
+    <div class="cbar"><div class="cbar-name" id="cbar-name-lv">LV Fleet</div><div class="cbar-track"><div class="cbar-fill" id="cb-lv" style="width:0%;background:#3E6E34"></div></div><div class="cbar-val" id="cv-lv">&#x2013;</div></div>
+    <div class="cbar"><div class="cbar-name" id="cbar-name-hv">HV Fleet</div><div class="cbar-track"><div class="cbar-fill" id="cb-hv" style="width:0%;background:#C4761E"></div></div><div class="cbar-val" id="cv-hv">&#x2013;</div></div>
+    <div class="cbar"><div class="cbar-name" id="cbar-name-plant">Plant Electrification</div><div class="cbar-track"><div class="cbar-fill" id="cb-plant" style="width:0%;background:#B84460"></div></div><div class="cbar-val" id="cv-plant">&#x2013;</div></div>
+  </div>
+</div>
+</section>
+
+<div class="cta-strip" aria-hidden="true">
+  <div class="cta-strip-track">
+    <span class="csi">Available from March 2027</span><span class="csd">&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
+    <span class="csi">Senior sustainability advisory</span><span class="csd">&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
+    <span class="csi">ESG reporting &amp; decarbonisation strategy</span><span class="csd">&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
+    <span class="csi">Open to conversations now</span><span class="csd">&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
+    <span class="csi">Available from March 2027</span><span class="csd">&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
+    <span class="csi">Senior sustainability advisory</span><span class="csd">&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
+    <span class="csi">ESG reporting &amp; decarbonisation strategy</span><span class="csd">&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
+    <span class="csi">Open to conversations now</span><span class="csd">&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
+  </div>
+</div>
+
+<section id="principles">
+<div class="wrap" style="position:relative;z-index:1">
+  <div class="label" style="color:var(--red-dark)">My Practice</div>
+  <div class="princ-grid">
+    <div class="princ reveal">
+      <div class="princ-num">01</div>
+      <div class="princ-title">Data integrity before narrative.</div>
+      <div class="princ-body">Without a defensible emissions inventory, every net zero commitment is a target without a foundation. I build the measurement infrastructure before the story is written.</div>
+    </div>
+    <div class="princ reveal">
+      <div class="princ-num">02</div>
+      <div class="princ-title">Systems that outlast their builders.</div>
+      <div class="princ-body">Good sustainability work is transferable. I document methodology, embed logic into templates, and hand over infrastructure that teams can run and defend without me in the room.</div>
+    </div>
+    <div class="princ reveal">
+      <div class="princ-num">03</div>
+      <div class="princ-title">Strategy is constrained by what is measurable.</div>
+      <div class="princ-body">The credibility of a decarbonisation pathway depends entirely on the quality of its inputs. Ambition is only as real as the data that supports it. I close that gap.</div>
+    </div>
+  </div>
+  <div class="princ-bg-word" aria-hidden="true">DATA</div>
+</div>
+</section>
+
+<section id="expertise">
+<div class="wrap">
+  <div class="label">Expertise &amp; Craft</div>
+  <div class="exp-cols">
+    <div>
+      <div class="sec-sub" style="margin-top:0">Framework Fluency</div>
+      <div class="fw-card-grid">
+        <div class="fw-card reveal" style="--card-accent:var(--blueberry)">
+          <div class="fw-cat">Data Accounting</div>
+          <div class="fw-acro">GHG Protocol</div>
+          <div class="fw-fullname">Corporate Value Chain Standard</div>
+          <div class="fw-applied">Scope 1&#x2013;3 boundary-setting and category accounting for infrastructure portfolios. Built subcontractor proxy methodology; reconciled Group calculations against Envizi for PwC external assurance.</div>
+        </div>
+        <div class="fw-card reveal" style="--card-accent:var(--mango)">
+          <div class="fw-cat">Regulatory</div>
+          <div class="fw-acro">NGER</div>
+          <div class="fw-fullname">National Greenhouse &amp; Energy Reporting Act</div>
+          <div class="fw-applied">Scope 1 and 2 reporting under the Measurement Determination. Drafted and submitted a Section 13E statutory compliance response to DCCEEW under POFRA 2017 within a 30-day deadline.</div>
+        </div>
+        <div class="fw-card reveal" style="--card-accent:var(--mango)">
+          <div class="fw-cat">Mandatory Disclosure</div>
+          <div class="fw-acro">AASB S2</div>
+          <div class="fw-fullname">Australian Sustainability Reporting Standard / ISSB</div>
+          <div class="fw-applied">Climate disclosure drafting for mandatory Australian reporting. Developed transition and physical risk scenario framing; contributed GHG intensity metrics to Appendix A requirements.</div>
+        </div>
+        <div class="fw-card reveal" style="--card-accent:var(--red)">
+          <div class="fw-cat">Reporting</div>
+          <div class="fw-acro">GRI</div>
+          <div class="fw-fullname">GRI Standards — GRI 305 Emissions</div>
+          <div class="fw-applied">ESG Impact Report development including GRI 305 disclosures. Facilitated a 10-participant content workshop with a General Manager; coordinated four-BU disclosure review through Workiva.</div>
+        </div>
+        <div class="fw-card reveal" style="--card-accent:var(--red)">
+          <div class="fw-cat">Supply Chain</div>
+          <div class="fw-acro">CDP</div>
+          <div class="fw-fullname">CDP Supply Chain Programme</div>
+          <div class="fw-applied">Full annual cycle management: portal administration, questionnaire distribution, supplier coordination, and data quality review from setup through to aggregated disclosure.</div>
+        </div>
+        <div class="fw-card reveal" style="--card-accent:var(--red)">
+          <div class="fw-cat">Real Assets</div>
+          <div class="fw-acro">GRESB</div>
+          <div class="fw-fullname">GRESB Infrastructure Assessment</div>
+          <div class="fw-applied">Full submission management for a major Australian energy distributor. Led data collection reform and stakeholder uplift. Delivered a 35% performance improvement in year one.</div>
+        </div>
+        <div class="fw-card reveal" style="--card-accent:var(--strawberry)">
+          <div class="fw-cat">Strategy</div>
+          <div class="fw-acro">TCFD</div>
+          <div class="fw-fullname">Task Force on Climate-related Financial Disclosures</div>
+          <div class="fw-applied">Scenario analysis framing and transition risk narrative for infrastructure portfolios. Aligned physical and transition risk disclosures to AASB S2 requirements for ASRS Phase 1.</div>
+        </div>
+        <div class="fw-card reveal" style="--card-accent:var(--strawberry)">
+          <div class="fw-cat">Targets</div>
+          <div class="fw-acro">SBTi</div>
+          <div class="fw-fullname">Science Based Targets Initiative</div>
+          <div class="fw-applied">Near-term target pathway alignment including FLAG sector guidance. Translated target boundaries into lever-level abatement requirements across Scope 1, 2, and material Scope 3 categories.</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="sec-sub" style="margin-top:0">Technical Capabilities</div>
+      <dl class="cap-dl">
+        <div class="cap-entry reveal">
+          <dt class="cap-num">01</dt>
+          <dd>
+            <div class="cap-title">Emissions Data Infrastructure</div>
+            <div class="cap-body">Design and build reusable GHG data pipelines, automated anomaly review frameworks, and platform-integrated reporting templates. Reduces per-quarter effort and embeds auditable methodology at the data layer, not the spreadsheet.</div>
+          </dd>
+        </div>
+        <div class="cap-entry reveal">
+          <dt class="cap-num">02</dt>
+          <dd>
+            <div class="cap-title">Decarbonisation Modelling</div>
+            <div class="cap-body">Scenario-driven pathway models with toggle-controlled levers sourced from DCCEEW, NVES, and CSIRO data. BU-level abatement tracking and revenue-indexed gross emissions forecasting to FY2050.</div>
+          </dd>
+        </div>
+        <div class="cap-entry reveal">
+          <dt class="cap-num">03</dt>
+          <dd>
+            <div class="cap-title">Regulatory Disclosure</div>
+            <div class="cap-body">End-to-end support for NGER, AASB S2, and GRI reporting including data chain of custody, methodology documentation, and external assurance readiness.</div>
+          </dd>
+        </div>
+        <div class="cap-entry reveal">
+          <dt class="cap-num">04</dt>
+          <dd>
+            <div class="cap-title">Supply Chain Emissions</div>
+            <div class="cap-body">Scope 3 Category 1 and 4 quantification using spend-based and activity-based methods. Subcontractor survey design, proxy methodology documentation, and pre-configured template systems with automated calculation logic.</div>
+          </dd>
+        </div>
+      </dl>
+    </div>
+    <div>
+      <div class="sec-sub" style="margin-top:0">What I&#x2019;ve Actually Built</div>
+      <div class="built-list">
+        <div class="built-item reveal">
+          <div class="built-num">01 &nbsp;&#x2014;&nbsp; Net Zero Model</div>
+          <div class="built-name">Net Zero Pathway Model (FY2050)</div>
+          <div class="built-outcome">Scenario analysis presented to the Downer board by senior leadership</div>
+        </div>
+        <div class="built-item reveal">
+          <div class="built-num">02 &nbsp;&#x2014;&nbsp; Templates</div>
+          <div class="built-name">Subcontractor Diesel Template Suite</div>
+          <div class="built-outcome">Eliminated manual reporting across three business units</div>
+        </div>
+        <div class="built-item reveal">
+          <div class="built-num">03 &nbsp;&#x2014;&nbsp; Assurance</div>
+          <div class="built-name">GHG Recalculation Module</div>
+          <div class="built-outcome">Delivered PwC external assurance readiness for Group-level emissions</div>
+        </div>
+        <div class="built-item reveal">
+          <div class="built-num">04 &nbsp;&#x2014;&nbsp; Learning</div>
+          <div class="built-name">Climate Change eLearning Module</div>
+          <div class="built-outcome">Deployed company-wide across all-employee cohort</div>
+        </div>
+        <div class="built-item reveal">
+          <div class="built-num">05 &nbsp;&#x2014;&nbsp; GRESB</div>
+          <div class="built-name">GRESB Infrastructure Submission</div>
+          <div class="built-outcome">35% performance improvement in the first year of ownership</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<section id="work">
+<div class="wrap">
+  <div class="label">Work Samples</div>
+  <div class="tabs" role="tablist">
+    <button class="tab on" onclick="showTab('baseline')" role="tab" aria-selected="true">
+      <span class="tl"><span><span class="tl-lt">A&nbsp;</span>./EMISSIONS-BASELINE</span><span aria-hidden="true"><span class="tl-lt">A&nbsp;</span>./EMISSIONS-BASELINE</span></span>
+    </button>
+    <button class="tab" onclick="showTab('roadmap')" role="tab" aria-selected="false">
+      <span class="tl"><span><span class="tl-lt">B&nbsp;</span>./DECARB-ROADMAP</span><span aria-hidden="true"><span class="tl-lt">B&nbsp;</span>./DECARB-ROADMAP</span></span>
+    </button>
+    <button class="tab" onclick="showTab('mca')" role="tab" aria-selected="false">
+      <span class="tl"><span><span class="tl-lt">C&nbsp;</span>./MCA-FRAMEWORK</span><span aria-hidden="true"><span class="tl-lt">C&nbsp;</span>./MCA-FRAMEWORK</span></span>
+    </button>
+    <button class="tab" onclick="showTab('lca')" role="tab" aria-selected="false">
+      <span class="tl"><span><span class="tl-lt">D&nbsp;</span>./LIFECYCLE-CARBON</span><span aria-hidden="true"><span class="tl-lt">D&nbsp;</span>./LIFECYCLE-CARBON</span></span>
+    </button>
+  </div>
+
+  <div id="p-baseline" class="panel on">
+    <div class="bl-banner">
+      <div class="bl-claim" id="bl-claim-text">Value chain emissions dominate the footprint, shaping where Net Zero action must focus.</div>
+      <div class="bl-meta" id="bl-meta-text">FY25 Baseline &nbsp;&middot;&nbsp; Scope 1&#x2013;3 &nbsp;&middot;&nbsp; Illustrative &#x2013; representative infrastructure portfolio. Not client data.</div>
+    </div>
+    <div class="baseline-ctrl">
+      <span class="baseline-ctrl-lbl">Organisation type</span>
+      <select id="sel-baseline-sector" onchange="updateBaseline(this.value)">
+        <option value="infrastructure">Infrastructure</option>
+        <option value="property">Commercial Office</option>
+        <option value="government">Government</option>
+      </select>
+    </div>
+    <div class="scope-grid">
+      <div class="scope-cell">
+        <div class="scope-tag">Scope 1 &#x2013; Direct</div>
+        <div class="scope-pct" id="bl-s1">11.5%</div>
+        <div class="scope-body" id="bl-s1-body">Stationary combustion, fleet, and process emissions. Highest direct control. Largest lever is fleet electrification.</div>
+      </div>
+      <div class="scope-cell">
+        <div class="scope-tag">Scope 2 &#x2013; Electricity</div>
+        <div class="scope-pct" id="bl-s2">5.8%</div>
+        <div class="scope-body" id="bl-s2-body">Driven by grid emission factor trajectory and on-site renewable procurement (PPA / GreenPower).</div>
+      </div>
+      <div class="scope-cell">
+        <div class="scope-tag">Scope 3 &#x2013; Value chain</div>
+        <div class="scope-pct" id="bl-s3">82.7%</div>
+        <div class="scope-body" id="bl-s3-body">Embodied carbon (Cat 1), transport and distribution (Cat 4), and downstream leased assets (Cat 13). Reduction requires design choices and supplier collaboration.</div>
+      </div>
+    </div>
+    <div class="sankey-wrap" id="sankey-container">
+      <!-- Sankey drawn by JS -->
+    </div>
+    <div class="sec-sub mt2">Scope 3 category breakdown</div>
+    <div class="s3-row" style="border-bottom:1px solid #D5D5D5;padding-bottom:0.35rem;margin-bottom:0.15rem">
+      <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;color:#444">Category</div>
+      <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;color:#444;text-align:right">Share</div>
+      <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;color:#444">Scale</div>
+    </div>
+    <div class="s3-row">
+      <div class="s3-name">Cat 1 &#x2013; Purchased goods &amp; services<span class="s3-sub">Construction materials dominant</span></div>
+      <div class="s3-pct" id="bl-cat1-pct">42.5%</div>
+      <div class="s3-bar-wrap"><div class="s3-bar-fill" id="bl-cat1-bar" style="width:100%"></div></div>
+    </div>
+    <div class="s3-row">
+      <div class="s3-name">Cat 4 &#x2013; Transport &amp; distribution<span class="s3-sub">Supplier logistics</span></div>
+      <div class="s3-pct" id="bl-cat4-pct">20.4%</div>
+      <div class="s3-bar-wrap"><div class="s3-bar-fill" id="bl-cat4-bar" style="width:48%"></div></div>
+    </div>
+    <div class="s3-row">
+      <div class="s3-name">Cat 13 &#x2013; Downstream leased assets<span class="s3-sub">Building operational emissions</span></div>
+      <div class="s3-pct" id="bl-cat13-pct">19.9%</div>
+      <div class="s3-bar-wrap"><div class="s3-bar-fill" id="bl-cat13-bar" style="width:47%"></div></div>
+    </div>
+    <div class="impl-grid mt2">
+      <div class="impl">
+        <div class="impl-head">83% of emissions sit outside direct control</div>
+        <div class="impl-body">Reduction depends on design choices and supplier collaboration &#x2013; not operations management alone. The playbook is different.</div>
+      </div>
+      <div class="impl">
+        <div class="impl-head">Embodied carbon is the dominant driver</div>
+        <div class="impl-body">Category 1 is primarily driven by construction materials. Two materials &#x2013; concrete and steel &#x2013; represent roughly 26% of the total footprint. Highest leverage occurs before construction begins.</div>
+      </div>
+      <div class="impl">
+        <div class="impl-head">Use-phase performance affects long-term value</div>
+        <div class="impl-body">~20% of emissions occur during building operation &#x2013; more than what is within direct control. Strong influence via all-electric design, NABERS ratings, and green lease structures.</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="p-roadmap" class="panel">
+    <p class="panel-intro">A structured three-stage methodology for moving from emissions data to a sequenced decarbonisation roadmap with CAPEX implications. Applied across infrastructure, property, and government sector engagements.</p>
+    <div class="stage-grid">
+      <div class="stage">
+        <div class="stage-n">Stage 01</div>
+        <div class="stage-title">Establish Baseline &amp; Constraints</div>
+        <div class="stage-obj">Objective: Understand starting point and limits</div>
+        <ul class="stage-pts">
+          <li>Confirm Scope 1&#x2013;3 boundaries, data confidence, and material gaps</li>
+          <li>Identify constraints: regulatory, commercial, operational</li>
+          <li>Map key stakeholders: portfolio managers, facility managers, procurement</li>
+          <li>Understand existing decarbonisation efforts and commitments</li>
+        </ul>
+        <div class="stage-note">Potential data gaps at this stage: capital goods, business travel, waste in operations &#x2013; flagged for proxy methodology or exclusion with rationale.</div>
+      </div>
+      <div class="stage">
+        <div class="stage-n">Stage 02</div>
+        <div class="stage-title">Identify &amp; Quantify Mitigation Options</div>
+        <div class="stage-obj">Objective: Generate and evaluate options</div>
+        <ul class="stage-pts">
+          <li>Develop long-list of initiatives across Scope 1&#x2013;3</li>
+          <li>Quantify abatement, cost, and timing for each option</li>
+          <li>Identify initiatives to avoid, reduce, and replace emissions</li>
+          <li>Cover operations, design, supply chain, and asset use-phase</li>
+        </ul>
+        <div class="stage-note">Acknowledge ongoing decarbonisation scenarios: national grid trajectory, material and technology changes, policy pipeline.</div>
+      </div>
+      <div class="stage">
+        <div class="stage-n">Stage 03</div>
+        <div class="stage-title">Screen &amp; Build the Roadmap</div>
+        <div class="stage-obj">Objective: Narrow options into a sequenced plan</div>
+        <ul class="stage-pts">
+          <li>Short-list options with stakeholders using MCA (see next tab)</li>
+          <li>Build sequenced roadmap with CAPEX implications by year</li>
+          <li>Set interim targets aligned to SBTi or AASB S2 scenarios</li>
+          <li>Define governance, ownership, and monitoring cadence</li>
+        </ul>
+        <div class="stage-note">Output: a pathway model where scenario toggles show how lever choices affect the trajectory &#x2013; gross vs. net, by scope and business unit.</div>
+      </div>
+    </div>
+    <div class="sec-sub">Example mitigation levers by scope</div>
+    <div class="scroll-x">
+    <table class="c-table">
+      <thead><tr><th>Lever</th><th>Scope</th><th>Timing</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Renewable electricity (PPA / GreenPower)</td><td>Scope 2</td><td>Near-term</td><td>Highest leverage early. Addresses purchased electricity entirely with credible instruments.</td></tr>
+        <tr><td>LV fleet transition (EV)</td><td>Scope 1</td><td>Near-to-mid</td><td>NVES trajectory sets baseline expectation. Faster procurement cycles accelerate.</td></tr>
+        <tr><td>HV fleet transition</td><td>Scope 1</td><td>Mid-term</td><td>CSIRO pathway. Technology readiness constrains pace &#x2013; most impact post-FY2029.</td></tr>
+        <tr><td>Low-carbon materials procurement</td><td>Scope 3 Cat 1</td><td>Mid-term</td><td>Specification and supplier engagement. Locks in embodied carbon reductions at design stage.</td></tr>
+        <tr><td>Supplier engagement programme</td><td>Scope 3 Cat 1/4</td><td>Ongoing</td><td>CDP supply chain, contractual requirements, capacity building for key suppliers.</td></tr>
+        <tr><td>Asset performance upgrades</td><td>Scope 3 Cat 13</td><td>Long-term</td><td>NABERS ratings, all-electric design, green lease provisions. Aligned to capital planning cycles.</td></tr>
+        <tr><td>Offsetting programmes</td><td>Residual</td><td>Long-term</td><td>Applied to residual hard-to-abate emissions only. Not a substitute for reduction.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div id="p-mca" class="panel">
+    <p class="panel-intro">A multi-criteria analysis framework for prioritising decarbonisation initiatives. Applied to move from a long-list of options to a sequenced roadmap with CAPEX implications. Weighting factors are agreed with stakeholders following engagement &#x2013; the framework structures the decision, it does not make it.</p>
+    <div class="mca-grid">
+      <div class="mca"><div class="mca-crit">Impact (Carbon)</div><div class="mca-metric">Metric: total tCO&#x2082;-e reduction to 2050</div><div class="mca-body">Will the option deliver significant carbon reductions toward net zero targets? Primary quantitative screen.</div></div>
+      <div class="mca"><div class="mca-crit">Cost Effectiveness</div><div class="mca-metric">Metric: Net Present Cost / tCO&#x2082;-e avoided</div><div class="mca-body">Is the initiative cost-effective in achieving carbon reductions? Levelised cost of abatement used to identify the efficiency frontier before CAPEX commitments.</div></div>
+      <div class="mca"><div class="mca-crit">Readiness</div><div class="mca-metric">Metric: technology and commercial maturity</div><div class="mca-body">Is the option technically and commercially ready to deploy at scale? What time horizon does it become feasible? Informs sequencing.</div></div>
+      <div class="mca"><div class="mca-crit">Ability to Influence</div><div class="mca-metric">Metric: organisational control vs. external dependency</div><div class="mca-body">Does the organisation have direct ability to act, or is collaboration and third-party decisions required? Determines ownership model.</div></div>
+      <div class="mca"><div class="mca-crit">Risks &amp; Constraints</div><div class="mca-metric">Metric: safety, regulatory, reputational exposure</div><div class="mca-body">Significant safety, licensing, regulatory, or community risks? Go/no-go screen for initiatives with material downside exposure.</div></div>
+      <div class="mca"><div class="mca-crit">Co-benefits</div><div class="mca-metric">Metric: value beyond carbon savings</div><div class="mca-body">Associated environmental, community, or strategic value beyond carbon savings. Includes resilience, regulatory positioning, and commercial differentiation.</div></div>
+    </div>
+    <div class="sec-sub mt2">Further analysis to support prioritisation</div>
+    <div class="scroll-x">
+    <table class="c-table">
+      <thead><tr><th>Analysis</th><th>Purpose</th><th>Key data sources</th></tr></thead>
+      <tbody>
+        <tr><td>Embodied Carbon Assessments</td><td>Quantify upfront emissions by building typology; identify material hotspots and assess impact of material and construction alternatives</td><td>LCA databases, supplier EPDs, BIM models, QS schedules</td></tr>
+        <tr><td>Marginal Abatement Cost Curve</td><td>Prioritise initiatives by cost-effectiveness and scale of emissions reduction</td><td>Supplier quotes, CAPEX estimates, financial models, market benchmarks</td></tr>
+        <tr><td>Use-Phase Performance Modelling</td><td>Project operational emissions over 30 years; validate NABERS and Green Star targets</td><td>NatHERS, FirstRate5, NABERS forecasting, utility benchmarks</td></tr>
+        <tr><td>Capital Planning Alignment</td><td>Align decarbonisation measures with existing asset lifecycles and CAPEX planning</td><td>CAPEX plans, maintenance schedules, climate risk assessments</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div id="p-lca" class="panel">
+    <div class="bl-banner">
+      <div class="bl-claim">Upfront embodied carbon is front-loaded in the construction phase. The window to reduce it closes at design stage.</div>
+      <div class="bl-meta">Illustrative &nbsp;&middot;&nbsp; representative commercial office typology &nbsp;&middot;&nbsp; not client data</div>
+    </div>
+    <div style="background:#FFFFFF;padding:1.25rem 1.5rem;margin-bottom:1px;border-bottom:1px solid #D5D5D5;">
+      <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:#555555;margin-bottom:0.75rem;font-weight:600;">System boundary &#x2013; lifecycle modules in scope</div>
+      <div class="lc-modules">
+        <div class="lcm active"><span class="lcm-ref">A1&#x2013;A3</span><span class="lcm-label">Product stage</span></div>
+        <div class="lcm active"><span class="lcm-ref">A4</span><span class="lcm-label">Transport to site</span></div>
+        <div class="lcm active"><span class="lcm-ref">A5</span><span class="lcm-label">Construction</span></div>
+        <div class="lcm out"><span class="lcm-ref">B1&#x2013;B7</span><span class="lcm-label">Use stage</span></div>
+        <div class="lcm out"><span class="lcm-ref">C1&#x2013;C4</span><span class="lcm-label">End of life</span></div>
+        <div class="lcm noted"><span class="lcm-ref">D</span><span class="lcm-label">Beyond boundary</span></div>
+      </div>
+      <div class="lcm-legend">
+        <div class="lcm-leg-item"><div class="lcm-leg-dot act"></div>In scope (A1&#x2013;A5)</div>
+        <div class="lcm-leg-item"><div class="lcm-leg-dot not"></div>Module D &#x2013; noted, not included in total</div>
+        <div class="lcm-leg-item"><div class="lcm-leg-dot oot"></div>Out of scope for this assessment</div>
+      </div>
+    </div>
+    <div class="scope-grid" style="margin-top:1px">
+      <div class="scope-cell">
+        <div class="scope-tag">Structural frame</div>
+        <div class="scope-pct">65%</div>
+        <div class="scope-body">Concrete (in-situ and precast) and reinforcing steel. Primary hotspot. Reduction via structural efficiency, low-carbon concrete specification, and supplier EPD procurement.</div>
+      </div>
+      <div class="scope-cell">
+        <div class="scope-tag">Envelope &amp; MEP</div>
+        <div class="scope-pct">27%</div>
+        <div class="scope-body">Building envelope (cladding, glazing, roofing) plus mechanical, electrical, and hydraulic services. Reduction via specification choices and system right-sizing.</div>
+      </div>
+      <div class="scope-cell">
+        <div class="scope-tag">Internal fit-out</div>
+        <div class="scope-pct">8%</div>
+        <div class="scope-body">Partitions, finishes, and fitments. Smallest upfront contribution. Circular economy and demountable design reduce end-of-life impact.</div>
+      </div>
+    </div>
+    <div class="sec-sub mt2">Material hotspot breakdown &#x2013; upfront embodied carbon (A1&#x2013;A5)</div>
+    <div class="s3-row" style="border-bottom:1px solid #D5D5D5;padding-bottom:0.35rem;margin-bottom:0.15rem">
+      <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;color:#555555;font-weight:600;">Material / system</div>
+      <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;color:#555555;text-align:right;font-weight:600;">Share</div>
+      <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;color:#555555;font-weight:600;">Scale</div>
+    </div>
+    <div class="s3-row"><div class="s3-name">In-situ concrete &amp; precast<span class="s3-sub">Post-tensioned slabs, cores, columns</span></div><div class="s3-pct">42%</div><div class="s3-bar-wrap"><div class="s3-bar-fill" style="width:100%;background:#3E6E34"></div></div></div>
+    <div class="s3-row"><div class="s3-name">Reinforcing and structural steel<span class="s3-sub">Rebar, fabricated sections</span></div><div class="s3-pct">23%</div><div class="s3-bar-wrap"><div class="s3-bar-fill" style="width:55%;background:rgba(62,110,52,0.8)"></div></div></div>
+    <div class="s3-row"><div class="s3-name">Building envelope<span class="s3-sub">Curtain wall, cladding, roofing</span></div><div class="s3-pct">16%</div><div class="s3-bar-wrap"><div class="s3-bar-fill" style="width:38%;background:rgba(62,110,52,0.6)"></div></div></div>
+    <div class="s3-row"><div class="s3-name">MEP systems<span class="s3-sub">Mechanical, electrical, hydraulic</span></div><div class="s3-pct">11%</div><div class="s3-bar-wrap"><div class="s3-bar-fill" style="width:26%;background:rgba(62,110,52,0.4)"></div></div></div>
+    <div class="s3-row"><div class="s3-name">Internal fit-out &amp; other<span class="s3-sub">Partitions, finishes, landscaping</span></div><div class="s3-pct">8%</div><div class="s3-bar-wrap"><div class="s3-bar-fill" style="width:19%;background:rgba(62,110,52,0.25)"></div></div></div>
+    <div class="bench-wrap mt2">
+      <div class="bench-head">Benchmark comparison &#x2013; upfront embodied carbon intensity (kgCO&#x2082;-e/m&#xB2; GFA)</div>
+      <div class="bench-scale">
+        <div class="bench-bar-bg"></div>
+        <div class="bench-range"></div>
+        <div class="bench-mark this-b"><div class="bench-mark-label">520 &#x2013; this building</div></div>
+        <div class="bench-mark target-b"><div class="bench-mark-label">&lt;400 target</div></div>
+      </div>
+      <div class="bench-ticks"><span class="bench-tick">0</span><span class="bench-tick">200</span><span class="bench-tick">400</span><span class="bench-tick">600</span><span class="bench-tick">800</span></div>
+      <div class="bench-legend">
+        <div class="bench-leg-item"><div class="bench-leg-line" style="background:#CBBFB4"></div>GBCA / IStructE reference range (400&#x2013;700 kgCO&#x2082;-e/m&#xB2;)</div>
+        <div class="bench-leg-item"><div class="bench-leg-line" style="background:#3E6E34"></div>Illustrative building (520 kgCO&#x2082;-e/m&#xB2;)</div>
+        <div class="bench-leg-item"><div class="bench-leg-line" style="background:rgba(62,110,52,0.45)"></div>Best practice target (&lt;400 kgCO&#x2082;-e/m&#xB2;)</div>
+      </div>
+      <div class="bench-note">Reference ranges sourced from GBCA Carbon Positive Roadmap and IStructE How to Calculate Embodied Carbon (2nd ed.). Commercial office, GFA basis, A1&#x2013;A5 boundary.</div>
+    </div>
+    <div class="sec-sub">Reduction levers</div>
+    <div class="scroll-x">
+    <table class="c-table">
+      <thead><tr><th>Lever</th><th>Module</th><th>Reduction potential</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Structural efficiency (design-led)</td><td>A1&#x2013;A3</td><td>10&#x2013;15%</td><td>Optimised structural form, reduced over-design, post-tensioning to reduce concrete volume. Requires early engagement with structural engineer.</td></tr>
+        <tr><td>Low-carbon concrete specification</td><td>A1&#x2013;A3</td><td>15&#x2013;30%</td><td>Supplementary cementitious materials (fly ash, GGBFS) to reduce clinker ratio. EPD-backed specification. Feasible now on most projects.</td></tr>
+        <tr><td>EPD-informed procurement</td><td>A1&#x2013;A3</td><td>5&#x2013;20%</td><td>Require supplier Environmental Product Declarations. Compare across steel grades, concrete mixes, and envelope systems. Drives market signal.</td></tr>
+        <tr><td>Whole-life carbon assessment</td><td>A1&#x2013;C4</td><td>Varies</td><td>Extends boundary to include operational and end-of-life emissions. Informs all-electric design decisions and material durability trade-offs.</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="impl-grid mt2">
+      <div class="impl"><div class="impl-head">Embodied carbon is front-loaded</div><div class="impl-body">65% of the lifecycle carbon footprint is locked in before practical completion. Procurement and specification decisions &#x2013; not operational management &#x2013; determine the outcome.</div></div>
+      <div class="impl"><div class="impl-head">Operational carbon is addressable</div><div class="impl-body">All-electric design paired with a grid decarbonisation trajectory can drive use-phase Scope 2 emissions to near-zero by the mid-2030s. This is the primary lever for buildings with long asset lives.</div></div>
+      <div class="impl"><div class="impl-head">Module D credits are real, but not a substitute</div><div class="impl-body">Beyond-boundary credits from reuse, recycling, and energy recovery (Module D) are valid in whole-life assessments. They should not be used to offset A1&#x2013;A5 hotspots.</div></div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<section id="experience">
+<div class="wrap">
+  <div class="label">Experience</div>
+
+  <div class="exp-entry">
+    <div class="exp-hd">
+      <div>
+        <div class="exp-org-name">Downer Group</div>
+        <span class="exp-arrow">&#x2192;</span>
+        <div class="exp-dept">Group Environment, Sustainability &amp; Reporting</div>
+      </div>
+      <div class="exp-meta">
+        <div class="exp-meta-row">
+          <span class="exp-role-title">Senior Sustainability Advisor</span>
+          <span class="exp-date">Mar 2026 &#x2013; Mar 2027</span>
+        </div>
+      </div>
+    </div>
+    <ul class="exp-bullets">
+      <li class="exp-section-lbl-li"><span class="exp-section-lbl">Facilitation &amp; Stakeholder Influence</span></li>
+      <li>Facilitated an ESG Impact Report content workshop with 10 participants including a General Manager, aligning business unit narrative to group-level disclosure priorities.</li>
+      <li class="exp-section-lbl-li"><span class="exp-section-lbl">Data Tools &amp; Systems</span></li>
+      <li>Built a toggle-based decarbonisation scenario model incorporating DCCEEW 2025 grid emission factor projections, NVES fleet trajectories, and BU-filtered pathway curves.</li>
+      <li>Redesigned FY emissions data review tools with cross-BU anomaly detection, site completeness tracking, and emission factor verification logic.</li>
+      <li>Rebuilt the Scope 3 subcontractor data collection pipeline, incorporating proxy rate calculations, prior-period response pooling, and CPI inflation adjustment.</li>
+      <li>Eliminated manual subcontractor diesel reporting across three business units through pre-configured quarterly templates and automated Envizi upload generation.</li>
+      <li>Developed an independent GHG recalculation module with operational control filtering to support PwC limited assurance readiness.</li>
+      <li class="exp-section-lbl-li"><span class="exp-section-lbl">Portfolio &amp; Governance</span></li>
+      <li>Managed 12+ concurrent workstreams from Month 1, spanning GHG reporting, disclosure preparation, emissions modelling, and eLearning development.</li>
+      <li>Built a cross-BU stakeholder cadence from scratch, establishing fortnightly check-ins with six business unit contacts within the first six weeks.</li>
+      <li>Co-developed an all-employee climate change eLearning module with an external learning design provider, covering three role clusters and two delivery formats.</li>
+      <li>Applied AI tooling to emission factor matching and prior-period discrepancy triage, reducing manual review time across quarterly data cycles.</li>
+    </ul>
+  </div>
+
+  <div class="exp-entry">
+    <div class="exp-hd">
+      <div>
+        <div class="exp-org-name">WSP in Australia</div>
+        <span class="exp-arrow">&#x2192;</span>
+        <div class="exp-dept">Sustainability &amp; Climate Change Advisory</div>
+      </div>
+      <div class="exp-meta">
+        <div class="exp-meta-row">
+          <span class="exp-role-title">Project Consultant</span>
+          <span class="exp-date">Oct 2025 &#x2013; Feb 2026</span>
+        </div>
+        <div class="exp-meta-row">
+          <span class="exp-role-title">Design Consultant</span>
+          <span class="exp-date">Oct 2023 &#x2013; Oct 2025</span>
+        </div>
+        <div class="exp-meta-row">
+          <span class="exp-role-title">Sustainability Consultant</span>
+          <span class="exp-date">Feb 2022 &#x2013; Oct 2023</span>
+        </div>
+      </div>
+    </div>
+    <ul class="exp-bullets">
+      <li>Delivered Scope 1&#x2013;3 baselining and decarbonisation modelling engagements for government and private sector clients across infrastructure and built environment portfolios.</li>
+      <li>Led GRESB Infrastructure assessment process for a major client, achieving a 35-percentage-point improvement in year one through gap analysis and targeted disclosure uplift.</li>
+      <li>Built automated Excel and Python reporting tools that reduced recurring GHG inventory preparation time by approximately 40% across active client accounts.</li>
+      <li>Contributed technical input to the NSW Treasury Net Zero Government Operations Policy, covering emissions boundary definition and reporting methodology.</li>
+      <li>Delivered lifecycle carbon assessments for hospital and commercial fitout projects, including embodied carbon quantification and module A1&#x2013;A5 boundary analysis.</li>
+    </ul>
+  </div>
+
+  <div class="exp-entry">
+    <div class="exp-hd">
+      <div>
+        <div class="exp-org-name">Department of Defence</div>
+        <span class="exp-arrow">&#x2192;</span>
+        <div class="exp-dept">Capital Facilities &amp; Infrastructure Branch</div>
+      </div>
+      <div class="exp-meta">
+        <div class="exp-meta-row">
+          <span class="exp-role-title">Assistant Project Officer</span>
+          <span class="exp-date">Feb 2020 &#x2013; Jan 2022</span>
+        </div>
+      </div>
+    </div>
+    <ul class="exp-bullets">
+      <li>Supported delivery of infrastructure upgrade projects across Defence sites, managing procurement documentation and progress reporting.</li>
+      <li>Coordinated across multidisciplinary project teams including engineers, consultants, and internal stakeholders to maintain programme delivery and resolve site-level issues.</li>
+    </ul>
+  </div>
+
+  <div class="edu-block">
+    <div class="edu-row">
+      <div class="edu-inst">University of New South Wales</div>
+      <div class="edu-deg">Bachelor of Engineering (Civil Engineering with Architecture), Honours Class&nbsp;1</div>
+    </div>
+    <div class="cred">First Class Honours thesis (UNSW) &nbsp;&middot;&nbsp; First in class, computational design course (2020)</div>
+  </div>
+
+</div>
+</section>
+
+<section id="contact">
+<div class="wrap">
+  <div class="contact-bgword" aria-hidden="true">AVAILABLE</div>
+  <div class="label">Contact</div>
+  <div class="avail-badge">
+    <span class="avail-dot"></span>
+    Available from March 2027 &nbsp;&middot;&nbsp; Open to conversations now
+  </div>
+  <div class="contact-avail">Open to senior advisory and lead sustainability roles.</div>
+  <div class="contact-loc">Melbourne, Victoria &nbsp;&middot;&nbsp; Flexible on arrangement</div>
+  <div class="btns">
+    <a href="mailto:cywang2910@gmail.com" class="btn btn-primary">Email directly</a>
+    <a href="https://linkedin.com/in/chriswang0" target="_blank" rel="noopener" class="btn btn-secondary">LinkedIn</a>
+  </div>
+</div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <a href="#about" class="footer-home">./</a>
+    <span class="footer-name">Christopher Wang &nbsp;&middot;&nbsp; 2026</span>
+    <div class="footer-links">
+      <a href="mailto:cywang2910@gmail.com">Email</a>
+      <a href="https://linkedin.com/in/chriswang0" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ---- A. Tab switching ---- */
+function showTab(id){
+  var ids=['baseline','roadmap','mca','lca'];
+  document.querySelectorAll('.tab').forEach(function(t,i){
+    t.classList.toggle('on',ids[i]===id);
+    t.setAttribute('aria-selected',ids[i]===id?'true':'false');
+  });
+  ids.forEach(function(k){
+    var p=document.getElementById('p-'+k);
+    if(p) p.classList.toggle('on',k===id);
+  });
+}
+
+/* ---- B. Sector profiles + mutable state ---- */
+var SECTOR_PROFILES={
+  infrastructure:{label:'Infrastructure',FY20:347000,FY25:277000,
+    SH:{s2:0.112,lv:0.224,hv:0.273,plant:0.391},
+    desc:'Infrastructure: heavy plant, diesel fleet, and mechanical processes drive the Scope 1 footprint. Grid decarbonisation delivers Scope 2 reduction.'},
+  property:{label:'Commercial Property',FY20:210000,FY25:168000,
+    SH:{s2:0.580,lv:0.150,hv:0.010,plant:0.260},
+    desc:'Commercial property: grid electricity dominates Scope 2. Building systems and plant electrification are the primary reduction levers.'},
+  government:{label:'Government Operations',FY20:185000,FY25:148000,
+    SH:{s2:0.420,lv:0.340,hv:0.080,plant:0.160},
+    desc:'Government: office electricity (Scope 2) and light vehicle fleet (Scope 1) are primary sources. Procurement emissions drive Scope 3.'}
+};
+var HIST_BASE=[347000,359000,361000,337000,299000,277000];
+var FY20=347000,FY25=277000;
+var SH={s2:0.112,lv:0.224,hv:0.273,plant:0.391};
+var HIST=[347000,359000,361000,337000,299000,277000];
+
+/* ---- C. Model constants ---- */
+var F={
+  grid:{
+    base:[0.891,0.813,0.672,0.453,0.266,0.250,0.234,0.219,0.188,0.188,0.188,0.172,0.172,0.172,0.172,0.163,0.155,0.147,0.140,0.133,0.126,0.120,0.114,0.108,0.103],
+    faster:[0.623,0.447,0.269,0.136,0.053,0.038,0.023,0.022,0.019,0.019,0.019,0.017,0.017,0.017,0.017,0.016,0.016,0.015,0.014,0.013,0.013,0.012,0.011,0.011,0.010],
+    slower:[0.980,0.894,0.739,0.498,0.292,0.275,0.258,0.241,0.206,0.206,0.206,0.189,0.189,0.189,0.189,0.180,0.171,0.162,0.154,0.146,0.139,0.132,0.125,0.119,0.113],
+    off:(function(){var a=[];for(var i=0;i<25;i++)a.push(1.0);return a;})()
+  },
+  lv:{
+    base:[1.000,0.940,0.780,0.613,0.453,0.387,0.348,0.313,0.282,0.254,0.228,0.205,0.185,0.166,0.150,0.135,0.121,0.109,0.098,0.088,0.080,0.072,0.064,0.058,0.052],
+    faster:[0.940,0.780,0.613,0.453,0.387,0.348,0.313,0.282,0.254,0.228,0.205,0.185,0.166,0.150,0.135,0.121,0.109,0.098,0.088,0.080,0.072,0.064,0.058,0.052,0.047],
+    slower:[1.000,1.000,0.940,0.780,0.613,0.453,0.387,0.348,0.313,0.282,0.254,0.228,0.205,0.185,0.166,0.150,0.135,0.121,0.109,0.098,0.088,0.080,0.072,0.064,0.058]
+  },
+  hv:{
+    base:[1.000,0.968,0.937,0.905,0.874,0.842,0.789,0.737,0.684,0.632,0.579,0.526,0.474,0.421,0.368,0.316,0.263,0.211,0.158,0.105,0.053,0.000,0.000,0.000,0.000],
+    faster:[0.968,0.937,0.905,0.874,0.842,0.789,0.737,0.684,0.632,0.579,0.526,0.474,0.421,0.368,0.316,0.263,0.211,0.158,0.105,0.053,0.000,0.000,0.000,0.000,0.000],
+    slower:[1.000,1.000,0.968,0.937,0.905,0.874,0.842,0.789,0.737,0.684,0.632,0.579,0.526,0.474,0.421,0.368,0.316,0.263,0.211,0.158,0.105,0.053,0.000,0.000,0.000]
+  },
+  plant:{
+    base:[0.938,0.875,0.812,0.750,0.687,0.625,0.563,0.530,0.498,0.466,0.434,0.402,0.369,0.337,0.305,0.273,0.241,0.208,0.176,0.144,0.112,0.080,0.047,0.015,0.000],
+    faster:[0.703,0.656,0.609,0.563,0.516,0.469,0.422,0.398,0.374,0.349,0.325,0.301,0.277,0.253,0.229,0.205,0.180,0.156,0.132,0.108,0.084,0.060,0.036,0.011,0.000],
+    slower:[1.000,1.000,1.000,0.938,0.859,0.781,0.703,0.663,0.623,0.582,0.542,0.502,0.462,0.421,0.381,0.341,0.301,0.260,0.220,0.180,0.140,0.100,0.059,0.019,0.000],
+    off:(function(){var a=[];for(var i=0;i<25;i++)a.push(1.0);return a;})()
+  }
+};
+var REV={flat:1.000,moderate:1.015,high:1.030};
+
+/* ---- D. changeSector() ---- */
+function changeSector(){
+  if(_currentMode==='textile') return;
+  var sk=document.getElementById('sel-sector').value;
+  var prof=SECTOR_PROFILES[sk];
+  FY20=prof.FY20; FY25=prof.FY25; SH=prof.SH;
+  var scale=prof.FY25/277000;
+  HIST=HIST_BASE.map(function(h){return Math.round(h*scale);});
+  document.getElementById('kpi-base-v').textContent=Math.round(FY20/1000)+'k t';
+  document.getElementById('kpi-fy25-v').textContent=Math.round(FY25/1000)+'k t';
+  var descEl=document.getElementById('sector-desc');
+  if(descEl) descEl.textContent=prof.desc;
+  run();
+}
+
+/* ---- E. BASELINE_SECTORS + updateBaseline() ---- */
+var BASELINE_SECTORS={
+  infrastructure:{
+    claim:'Value chain emissions dominate the footprint, shaping where Net Zero action must focus.',
+    meta:'FY25 Baseline \u00b7 Scope 1\u20133 \u00b7 Illustrative \u2013 representative infrastructure portfolio. Not client data.',
+    s1:'11.5%',s2:'5.8%',s3:'82.7%',
+    s1b:'Stationary combustion, fleet, and process emissions. Highest direct control. Largest lever is fleet electrification.',
+    s2b:'Driven by grid emission factor trajectory and on-site renewable procurement (PPA / GreenPower).',
+    s3b:'Embodied carbon (Cat 1), transport and distribution (Cat 4), and downstream leased assets (Cat 13). Reduction requires design choices and supplier collaboration.',
+    cat1:'42.5%',cat4:'20.4%',cat13:'19.9%',cat1w:100,cat4w:48,cat13w:47,sk:[11.5,5.8,82.7,42.5,20.4,19.9]
+  },
+  property:{
+    claim:'Grid electricity and leased building operations drive the footprint. All-electric design and energy procurement are the primary reduction levers.',
+    meta:'FY25 Baseline \u00b7 Scope 1\u20133 \u00b7 Illustrative \u2013 representative commercial office portfolio. Not client data.',
+    s1:'8.2%',s2:'22.4%',s3:'69.4%',
+    s1b:'On-site plant and minor combustion sources. Lower direct emissions than infrastructure-heavy portfolios.',
+    s2b:'Dominant category. Building electricity drives most Scope 2 exposure. Grid decarbonisation and renewable procurement (PPA) are the primary levers.',
+    s3b:'Purchased goods and services (Cat 1), supplier transport (Cat 4), and downstream leased assets (Cat 13 \u2013 tenant electricity) dominate.',
+    cat1:'22.0%',cat4:'12.6%',cat13:'34.8%',cat1w:63,cat4w:36,cat13w:100,sk:[8.2,22.4,69.4,22.0,12.6,34.8]
+  },
+  government:{
+    claim:'Scope 2 and light vehicle fleet are the primary decarbonisation targets; supply chain engagement is needed for material Scope 3 reduction.',
+    meta:'FY25 Baseline \u00b7 Scope 1\u20133 \u00b7 Illustrative \u2013 representative government operations portfolio. Not client data.',
+    s1:'12.1%',s2:'31.8%',s3:'56.1%',
+    s1b:'Primarily light vehicle fleet. Fleet electrification aligned to NVES trajectory is the primary Scope 1 lever.',
+    s2b:'Office buildings and facilities. Grid decarbonisation and GreenPower procurement provide the most immediate pathway to net-zero Scope 2.',
+    s3b:'Purchased goods and services (Cat 1), supplier logistics (Cat 4), and leased property (Cat 13). Supply chain engagement and procurement policy drive reduction.',
+    cat1:'25.4%',cat4:'18.2%',cat13:'12.5%',cat1w:100,cat4w:72,cat13w:49,sk:[12.1,31.8,56.1,25.4,18.2,12.5]
+  }
+};
+function updateBaseline(sector){
+  var d=BASELINE_SECTORS[sector];
+  if(!d) return;
+  document.getElementById('bl-claim-text').textContent=d.claim;
+  document.getElementById('bl-meta-text').textContent=d.meta;
+  document.getElementById('bl-s1').textContent=d.s1;
+  document.getElementById('bl-s2').textContent=d.s2;
+  document.getElementById('bl-s3').textContent=d.s3;
+  document.getElementById('bl-s1-body').textContent=d.s1b;
+  document.getElementById('bl-s2-body').textContent=d.s2b;
+  document.getElementById('bl-s3-body').textContent=d.s3b;
+  document.getElementById('bl-cat1-pct').textContent=d.cat1;
+  document.getElementById('bl-cat4-pct').textContent=d.cat4;
+  document.getElementById('bl-cat13-pct').textContent=d.cat13;
+  document.getElementById('bl-cat1-bar').style.width=d.cat1w+'%';
+  document.getElementById('bl-cat4-bar').style.width=d.cat4w+'%';
+  document.getElementById('bl-cat13-bar').style.width=d.cat13w+'%';
+  if(d.sk) drawSankey(d.sk[0],d.sk[1],d.sk[2],d.sk[3],d.sk[4],d.sk[5]);
+}
+
+/* ---- N. drawSankey() – regenerates SVG based on sector percentages ---- */
+function drawSankey(s1p,s2p,s3p,cat1p,cat4p,cat13p){
+  var container=document.getElementById('sankey-container');
+  if(!container) return;
+  var TH=140,yS=40,yE=180;
+  var s1h=Math.max(7,(s1p/100)*TH);
+  var s2h=Math.max(5,(s2p/100)*TH);
+  var s3h=TH-s1h-s2h;
+  var s1y=yS,s2y=s1y+s1h,s3y=s2y+s2h;
+  var totalCat=cat1p+cat4p+cat13p||1;
+  var c1h=Math.max(12,(cat1p/totalCat)*s3h);
+  var c4h=Math.max(10,(cat4p/totalCat)*s3h);
+  var c13h=s3h-c1h-c4h;
+  if(c13h<8){c13h=8;c1h=s3h-c4h-c13h;}
+  var c1y=s3y,c4y=c1y+c1h,c13y=c4y+c4h;
+  var acc='#3E6E34',accM='rgba(62,110,52,0.55)';
+  var s='<svg viewBox="0 0 720 210" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;max-height:200px" role="img" aria-label="Emissions flow diagram">';
+  // Flow paths
+  s+='<path d="M36,'+s1y+' C130,'+s1y+' 130,'+s1y+' 220,'+s1y+' L220,'+(s1y+s1h)+' C130,'+(s1y+s1h)+' 130,'+(s1y+s1h)+' 36,'+(s1y+s1h)+' Z" fill="rgba(122,135,26,0.3)"/>';
+  s+='<path d="M36,'+s2y+' C130,'+s2y+' 130,'+s3y+' 220,'+s2y+' L220,'+(s2y+s2h)+' C130,'+(s2y+s2h)+' 130,'+s3y+' 36,'+(s2y+s2h)+' Z" fill="rgba(122,135,26,0.15)"/>';
+  s+='<path d="M36,'+s3y+' C130,'+s3y+' 130,'+s3y+' 220,'+s3y+' L220,'+yE+' C130,'+yE+' 130,'+yE+' 36,'+yE+' Z" fill="rgba(0,0,0,0.05)"/>';
+  s+='<path d="M236,'+s3y+' C333,'+s3y+' 333,'+s3y+' 430,'+s3y+' L430,'+(c1y+c1h)+' C333,'+(c1y+c1h)+' 333,'+(c1y+c1h)+' 236,'+(c1y+c1h)+' Z" fill="rgba(0,0,0,0.09)"/>';
+  s+='<path d="M236,'+(c1y+c1h)+' C333,'+(c1y+c1h)+' 333,'+(c1y+c1h)+' 430,'+(c1y+c1h)+' L430,'+(c4y+c4h)+' C333,'+(c4y+c4h)+' 333,'+(c4y+c4h)+' 236,'+(c4y+c4h)+' Z" fill="rgba(0,0,0,0.06)"/>';
+  s+='<path d="M236,'+(c4y+c4h)+' C333,'+(c4y+c4h)+' 333,'+(c4y+c4h)+' 430,'+(c4y+c4h)+' L430,'+yE+' C333,'+yE+' 333,'+yE+' 236,'+yE+' Z" fill="rgba(0,0,0,0.04)"/>';
+  // Bar nodes
+  s+='<rect x="20" y="'+yS+'" width="16" height="'+TH+'" fill="#D5D5D5"/>';
+  s+='<rect x="220" y="'+s1y+'" width="16" height="'+s1h+'" fill="'+acc+'"/>';
+  s+='<rect x="220" y="'+s2y+'" width="16" height="'+s2h+'" fill="'+accM+'"/>';
+  s+='<rect x="220" y="'+s3y+'" width="16" height="'+s3h+'" fill="#CCCCCC"/>';
+  s+='<rect x="430" y="'+c1y+'" width="16" height="'+c1h+'" fill="#BBBBBB"/>';
+  s+='<rect x="430" y="'+c4y+'" width="16" height="'+c4h+'" fill="#CCCCCC"/>';
+  s+='<rect x="430" y="'+c13y+'" width="16" height="'+c13h+'" fill="#D5D5D5"/>';
+  // Scope labels
+  var s1cy=(s1y+s1h/2+3).toFixed(0),s2cy=(s2y+s2h/2+3).toFixed(0),s3ty=(s3y+13).toFixed(0),s3py=(s3y+33).toFixed(0),s3sy=(s3y+49).toFixed(0);
+  s+='<text x="240" y="'+s1cy+'" font-family="JetBrains Mono,monospace" font-size="9" fill="'+acc+'" letter-spacing="0.08em">SCOPE 1</text>';
+  s+='<text x="315" y="'+s1cy+'" font-family="JetBrains Mono,monospace" font-size="9" fill="'+acc+'" text-anchor="end">'+s1p.toFixed(1)+'%</text>';
+  s+='<text x="240" y="'+s2cy+'" font-family="JetBrains Mono,monospace" font-size="9" fill="rgba(122,135,26,0.8)">SCOPE 2</text>';
+  s+='<text x="315" y="'+s2cy+'" font-family="JetBrains Mono,monospace" font-size="9" fill="rgba(122,135,26,0.8)" text-anchor="end">'+s2p.toFixed(1)+'%</text>';
+  if(s3h>30){
+    s+='<text x="240" y="'+s3ty+'" font-family="JetBrains Mono,monospace" font-size="9" fill="#666666">SCOPE 3</text>';
+    s+='<text x="240" y="'+s3py+'" font-family="JetBrains Mono,monospace" font-size="20" font-weight="bold" fill="#111111">'+s3p.toFixed(1)+'%</text>';
+    if(s3h>50) s+='<text x="240" y="'+s3sy+'" font-family="JetBrains Mono,monospace" font-size="8" fill="#888888">of total footprint</text>';
+  }
+  // Cat labels (adaptive to height)
+  function catLabel(label,desc,pct,cy,ch){
+    if(ch<14) return;
+    var ly=(cy+11).toFixed(0),dy=(cy+21).toFixed(0),py=(cy+34).toFixed(0);
+    s+='<text x="450" y="'+ly+'" font-family="JetBrains Mono,monospace" font-size="8" fill="#666666" letter-spacing="0.05em">'+label+'</text>';
+    if(ch>24) s+='<text x="450" y="'+dy+'" font-family="JetBrains Mono,monospace" font-size="7" fill="#888888">'+desc+'</text>';
+    if(ch>16) s+='<text x="450" y="'+py+'" font-family="JetBrains Mono,monospace" font-size="11" font-weight="bold" fill="#111111">'+pct.toFixed(1)+'%</text>';
+  }
+  catLabel('CAT 1','Purchased goods &amp; services',cat1p,c1y,c1h);
+  catLabel('CAT 4','Transport &amp; distribution',cat4p,c4y,c4h);
+  catLabel('CAT 13','Downstream leased assets',cat13p,c13y,c13h);
+  s+='</svg>';
+  container.innerHTML=s;
+}
+
+/* ---- O. Textile scenario mode ---- */
+var _currentMode='industrial';
+var TEXTILE_PROFILE={
+  FY20:42000,FY25:35000,
+  SH:{s2:0.08,lv:0.18,hv:0.42,plant:0.32},
+  desc:'Boutique textile retail: air freight logistics and raw material sourcing (virgin polyester vs bio-synthetics) dominate the Scope 3 footprint. Renewable energy procurement addresses Scope 2.'
+};
+var LEVER_LABELS={
+  industrial:{
+    grid:{name:'Grid Decarbonisation (Scope 2)',src:'Source: DCCEEW 2025 Table 42 NEM trajectory'},
+    lv:{name:'LV Fleet Transition',src:'Source: NVES Act 2024 · 1-yr adoption lag (Base)'},
+    hv:{name:'HV Fleet Transition',src:'Source: CSIRO Net Zero Pathways 2023 · 1-yr lag'},
+    plant:{name:'Plant Electrification',src:'Source: Industry plant electrification analysis'},
+    cbar:{grid:'Grid (Scope 2)',lv:'LV Fleet',hv:'HV Fleet',plant:'Plant Electrification'},
+    sub:'Adjust the controls below to explore how different abatement strategies shift a Scope 1 and 2 emissions trajectory. Lever assumptions are drawn from DCCEEW 2025 grid emission factor tables, the NVES Act 2024 (LV fleet), CSIRO Net Zero Pathways (HV fleet), and published plant electrification analysis – the same sources used in production pathway models.'
+  },
+  textile:{
+    grid:{name:'Renewable Energy Procurement (Scope 2)',src:'Source: RE100 trajectory · market-based instrument adoption'},
+    lv:{name:'Enzyme Dyeing Process Adoption',src:'Source: Textile Exchange · low-impact wet processing pathway'},
+    hv:{name:'Air-to-Ocean Freight Modal Shift',src:'Source: Clean Cargo WG · container shipping decarbonisation'},
+    plant:{name:'Biosynthetics Material Substitution',src:'Source: Textile Exchange Preferred Fiber Report · closed-loop pathway'},
+    cbar:{grid:'Renewable Energy',lv:'Enzyme Dyeing',hv:'Freight Modal Shift',plant:'Biosynthetics'},
+    sub:'Explore how a boutique apparel brand can reduce Scope 3 emissions through freight mode shift (air → ocean), material substitution (virgin polyester → closed-loop bio-synthetics), low-impact dyeing processes, and renewable energy procurement. Multipliers scaled to illustrative boutique retail footprint.'
+  }
+};
+function setMode(mode){
+  _currentMode=mode;
+  document.getElementById('mode-btn-infra').classList.toggle('on',mode==='industrial');
+  document.getElementById('mode-btn-textile').classList.toggle('on',mode==='textile');
+  var ll=LEVER_LABELS[mode];
+  // Update lever names
+  document.getElementById('lev-grid-name').textContent=ll.grid.name;
+  document.getElementById('lev-grid-src').textContent=ll.grid.src;
+  document.getElementById('lev-lv-name').textContent=ll.lv.name;
+  document.getElementById('lev-lv-src').textContent=ll.lv.src;
+  document.getElementById('lev-hv-name').textContent=ll.hv.name;
+  document.getElementById('lev-hv-src').textContent=ll.hv.src;
+  document.getElementById('lev-plant-name').textContent=ll.plant.name;
+  document.getElementById('lev-plant-src').textContent=ll.plant.src;
+  // Update cbar names
+  document.getElementById('cbar-name-grid').textContent=ll.cbar.grid;
+  document.getElementById('cbar-name-lv').textContent=ll.cbar.lv;
+  document.getElementById('cbar-name-hv').textContent=ll.cbar.hv;
+  document.getElementById('cbar-name-plant').textContent=ll.cbar.plant;
+  // Update subtitle
+  var subEl=document.getElementById('tool-sub-text');
+  if(subEl) subEl.textContent=ll.sub;
+  // Show/hide sector row
+  var sectRow=document.getElementById('infra-sector-row');
+  if(sectRow) sectRow.style.display=mode==='textile'?'none':'';
+  // Update profiles
+  if(mode==='textile'){
+    FY20=TEXTILE_PROFILE.FY20; FY25=TEXTILE_PROFILE.FY25; SH=TEXTILE_PROFILE.SH;
+    HIST=HIST_BASE.map(function(h){return Math.round(h*(35000/277000));});
+    document.getElementById('kpi-base-v').textContent=Math.round(TEXTILE_PROFILE.FY20/1000)+'k t';
+    document.getElementById('kpi-fy25-v').textContent=Math.round(TEXTILE_PROFILE.FY25/1000)+'k t';
+    var d=document.getElementById('sector-desc');
+    if(d) d.textContent=TEXTILE_PROFILE.desc;
+  } else {
+    changeSector();
+  }
+  run();
+}
+
+/* ---- P. Ticker term tooltips ---- */
+document.addEventListener('DOMContentLoaded',function(){
+  var tip=document.getElementById('ticker-tip');
+  if(!tip) return;
+  document.querySelectorAll('.t-term').forEach(function(el){
+    el.addEventListener('mouseenter',function(e){
+      tip.textContent=el.getAttribute('data-tip');
+      tip.classList.add('vis');
+    });
+    el.addEventListener('mousemove',function(e){
+      var x=e.clientX+14,y=e.clientY-44;
+      if(x+280>window.innerWidth) x=e.clientX-294;
+      tip.style.left=x+'px';
+      tip.style.top=y+'px';
+    });
+    el.addEventListener('mouseleave',function(){
+      tip.classList.remove('vis');
+    });
+  });
+});
+
+/* ---- F. FY-aware NEM reading (runs on parse, before onload) ---- */
+(function(){
+  var now=new Date();
+  var month=now.getMonth()+1;
+  var calYear=now.getFullYear();
+  var fy=month>=7?calYear+1:calYear;
+  var idx=Math.min(Math.max(fy-2026,0),24);
+  var intensity=(0.81*F.grid.base[idx]).toFixed(3);
+  var nemEl=document.getElementById('nem-val');
+  var yearEl=document.getElementById('nem-year');
+  if(nemEl) nemEl.textContent=intensity;
+  if(yearEl) yearEl.textContent='FY'+fy;
+})();
+
+/* ---- G. Nav IntersectionObserver ---- */
+(function(){
+  var sections=document.querySelectorAll('section[id], #principles');
+  var links=document.querySelectorAll('.nav-links a');
+  var observer=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        var id=e.target.id;
+        links.forEach(function(a){
+          a.classList.toggle('active',a.getAttribute('href')==='#'+id);
+        });
+      }
+    });
+  },{rootMargin:'-40% 0px -55% 0px'});
+  sections.forEach(function(s){observer.observe(s);});
+})();
+
+/* ---- H. Chart + run() ---- */
+var ch;
+var chartLabels=[];
+for(var y=2020;y<=2050;y++) chartLabels.push('FY'+y);
+
+function initChart(){
+  if(typeof Chart==='undefined'){console.warn('Chart.js not loaded');return;}
+  try{
+    var ctx=document.getElementById('mainChart');
+    if(!ctx) return;
+    var linTgt=chartLabels.map(function(_,i){return Math.max(0,FY20*(1-i/30));});
+    ch=new Chart(ctx.getContext('2d'),{
+      type:'line',
+      data:{
+        labels:chartLabels,
+        datasets:[
+          {label:'FY20 Baseline',
+           data:(function(){var a=[];for(var i=0;i<31;i++)a.push(FY20);return a;})(),
+           borderColor:'rgba(255,255,255,0.12)',borderWidth:1,borderDash:[6,4],pointRadius:0,fill:false,tension:0},
+          {label:'Linear Target (\u22124.2%/yr)',
+           data:linTgt,
+           borderColor:'rgba(255,255,255,0.12)',borderWidth:1,borderDash:[2,4],pointRadius:0,fill:false,tension:0},
+          {label:'Gross Emissions',
+           data:[],borderColor:'rgba(245,240,232,0.35)',borderWidth:1.5,pointRadius:0,fill:false,tension:0},
+          {label:'Net \u2013 Grid only',
+           data:[],borderColor:'rgba(245,240,232,0.55)',borderWidth:1.5,borderDash:[4,3],pointRadius:0,fill:false,tension:0},
+          {label:'Net \u2013 All levers',
+           data:[],borderColor:'#64A358',borderWidth:2.5,pointRadius:0,fill:false,tension:0}
+        ]
+      },
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        interaction:{mode:'index',intersect:false},
+        plugins:{
+          legend:{
+            position:'bottom',
+            labels:{font:{family:"'JetBrains Mono',monospace",size:9},boxWidth:12,padding:12,color:'rgba(245,240,232,0.6)'}
+          },
+          tooltip:{
+            callbacks:{
+              label:function(c){return c.dataset.label+': '+Math.round(c.raw).toLocaleString()+' tCO\u2082-e';}
+            },
+            backgroundColor:'rgba(28,24,20,0.97)',
+            titleColor:'#F5F0E8',
+            bodyColor:'rgba(245,240,232,0.8)',
+            titleFont:{family:"'JetBrains Mono',monospace",size:10},
+            bodyFont:{family:"'JetBrains Mono',monospace",size:10},
+            borderColor:'rgba(62,110,52,0.4)',
+            borderWidth:1
+          }
+        },
+        scales:{
+          x:{
+            grid:{color:'rgba(255,255,255,0.05)'},
+            ticks:{
+              font:{family:"'JetBrains Mono',monospace",size:9},
+              color:'rgba(245,240,232,0.4)',
+              callback:function(v,i){return i%5===0?'FY'+(2020+i):'';}
+            }
+          },
+          y:{
+            grid:{color:'rgba(255,255,255,0.05)'},
+            title:{display:true,text:'tCO\u2082-e',font:{size:9},color:'rgba(245,240,232,0.4)'},
+            ticks:{
+              font:{family:"'JetBrains Mono',monospace",size:9},
+              color:'rgba(245,240,232,0.4)',
+              callback:function(v){return (v/1000).toFixed(0)+'k';}
+            }
+          }
+        }
+      }
+    });
+    run();
+  }catch(e){console.error('Chart init error',e);}
+}
+
+function run(){
+  if(!ch) return;
+  var gk=document.getElementById('sel-grid').value;
+  var lk=document.getElementById('sel-lv').value;
+  var hk=document.getElementById('sel-hv').value;
+  var pk=document.getElementById('sel-plant').value;
+  var rk=document.getElementById('sel-rev').value;
+  ['sel-grid','sel-lv','sel-hv','sel-plant'].forEach(function(id){
+    var el=document.getElementById(id);
+    el.classList.toggle('changed',el.value!=='base'&&el.value!=='off');
+  });
+  document.getElementById('sel-rev').classList.toggle('changed',rk!=='moderate');
+  /* Update baseline and linear target to react to sector changes */
+  ch.data.datasets[0].data=(function(){var a=[];for(var i=0;i<31;i++)a.push(FY20);return a;})();
+  ch.data.datasets[1].data=chartLabels.map(function(_,i){return Math.max(0,FY20*(1-i/30));});
+  var gross=[],netGrid=[],netAll=[],net32=0;
+  for(var y=2020;y<=2050;y++){
+    if(y<=2025){
+      var h=HIST[y-2020];gross.push(h);netGrid.push(h);netAll.push(h);
+    } else {
+      var n=y-2025,fi=y-2026;
+      var gf=Math.pow(REV[rk],n);
+      var g=FY25*gf; gross.push(g);
+      var gFac=fi<25?F.grid[gk][fi]:0.10;
+      var lvFac=fi<25?F.lv[lk][fi]:0.01;
+      var hvFac=fi<25?F.hv[hk][fi]:0.00;
+      var pFac=fi<25?F.plant[pk][fi]:0.00;
+      netGrid.push(Math.max(0,FY25*SH.s2*gf*gFac+FY25*SH.lv*gf+FY25*SH.hv*gf+FY25*SH.plant*gf));
+      var nAll=Math.max(0,FY25*SH.s2*gf*gFac+FY25*SH.lv*gf*lvFac+FY25*SH.hv*gf*hvFac+FY25*SH.plant*gf*pFac);
+      netAll.push(nAll);
+      if(y===2032) net32=nAll;
+    }
+  }
+  document.getElementById('kpi-net').textContent=Math.round(net32/1000)+'k t';
+  document.getElementById('kpi-pct').textContent=((FY20-net32)/FY20*100).toFixed(1)+'% \u2193';
+  ch.data.datasets[2].data=gross;
+  ch.data.datasets[3].data=netGrid;
+  ch.data.datasets[4].data=netAll;
+  ch.update('none');
+  /* Contribution bars */
+  var fi32=6,gf32=Math.pow(REV[rk],7);
+  var sv_g=FY25*SH.s2*gf32*(1-F.grid[gk][fi32]);
+  var sv_lv=FY25*SH.lv*gf32*(1-F.lv[lk][fi32]);
+  var sv_hv=FY25*SH.hv*gf32*(1-F.hv[hk][fi32]);
+  var sv_pl=FY25*SH.plant*gf32*(1-F.plant[pk][fi32]);
+  var maxSv=Math.max(sv_g,sv_lv,sv_hv,sv_pl,1);
+  function setBar(fb,fv,s){
+    var fb_el=document.getElementById(fb);
+    var fv_el=document.getElementById(fv);
+    if(!fb_el||!fv_el) return;
+    fb_el.style.width=Math.max(0,s/maxSv*100)+'%';
+    fv_el.textContent=s>0?Math.round(s/1000)+'k t':'0';
+  }
+  setBar('cb-grid','cv-grid',sv_g);
+  setBar('cb-lv','cv-lv',sv_lv);
+  setBar('cb-hv','cv-hv',sv_hv);
+  setBar('cb-plant','cv-plant',sv_pl);
+}
+
+/* ---- I. Scroll reveal ---- */
+(function(){
+  var rObs=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){e.target.classList.add('revealed');rObs.unobserve(e.target);}
+    });
+  },{rootMargin:'-30px 0px',threshold:0.07});
+  function stagger(sel,ms){
+    document.querySelectorAll(sel).forEach(function(el,i){
+      el.classList.add('reveal');
+      el.style.transitionDelay=(i*(ms||70))+'ms';
+      rObs.observe(el);
+    });
+  }
+  stagger('.exp-entry',90);stagger('.cap-entry',50);stagger('.scope-cell',55);
+  stagger('.impl',55);stagger('.mca',45);stagger('.stage',65);
+  stagger('.instr',60);stagger('.artefact-card',60);stagger('.princ',80);stagger('.fw-card',50);stagger('.built-item',55);
+})();
+
+/* ---- J. Cursor follower ---- */
+/* Deferred to DOMContentLoaded so cursor-dot/ring elements exist */
+document.addEventListener('DOMContentLoaded',function(){
+  if(!window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
+  var dot=document.getElementById('cursor-dot');
+  var ring=document.getElementById('cursor-ring');
+  if(!dot||!ring) return;
+  var mx=window.innerWidth/2,my=window.innerHeight/2,rx=mx,ry=my;
+  document.addEventListener('mousemove',function(e){
+    mx=e.clientX;my=e.clientY;
+    dot.style.left=mx+'px';dot.style.top=my+'px';
+    document.body.classList.add('cur-on');
+  });
+  (function frame(){
+    rx+=(mx-rx)*0.11;ry+=(my-ry)*0.11;
+    ring.style.left=rx.toFixed(1)+'px';ring.style.top=ry.toFixed(1)+'px';
+    requestAnimationFrame(frame);
+  })();
+  document.querySelectorAll('a,button,.exp-entry,.tab,.impl,.mca,.stage,.cap-entry,.fw-card,.built-item,.princ,.artefact-card').forEach(function(el){
+    el.addEventListener('mouseenter',function(){ring.classList.add('cx');});
+    el.addEventListener('mouseleave',function(){ring.classList.remove('cx');});
+  });
+});
+
+/* ---- K. Text scramble on section labels ---- */
+(function(){
+  var CH='ABCDEFGHIJKLMNOPQRSTUVWXYZ./0123456789';
+  function scramble(el){
+    var orig=el.textContent.trim();
+    if(!orig||orig.length<2) return;
+    var total=orig.length*3,count=0;
+    var t=setInterval(function(){
+      var prog=count/total;
+      el.textContent=orig.split('').map(function(c,i){
+        if(c===' ') return ' ';
+        if(i/orig.length<prog) return c;
+        return CH[Math.floor(Math.random()*CH.length)];
+      }).join('');
+      count++;
+      if(count>=total){el.textContent=orig;clearInterval(t);}
+    },34);
+  }
+  var sObs=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){if(e.isIntersecting){scramble(e.target);sObs.unobserve(e.target);}});
+  },{rootMargin:'-10px 0px',threshold:0.6});
+  document.querySelectorAll('.label,.built-num').forEach(function(el){if(el.textContent.trim()) sObs.observe(el);});
+})();
+
+/* ---- L. Cycling role text ---- */
+(function(){
+  var roles=['Sustainability Advisor','Emissions Modeller','ESG Reporting Lead','Decarbonisation Strategist'];
+  var idx=0;
+  var el=document.getElementById('role-cycle');
+  if(!el) return;
+  setInterval(function(){
+    idx=(idx+1)%roles.length;
+    el.style.opacity='0';el.style.transform='translateY(5px)';
+    setTimeout(function(){el.textContent=roles[idx];el.style.opacity='';el.style.transform='';},280);
+  },3200);
+})();
+
+/* ---- M. chart init + counter animation ---- */
+var _chartInited=false;
+function _tryInitChart(){
+  if(_chartInited) return; _chartInited=true;
+  initChart();
+}
+document.addEventListener('DOMContentLoaded',function(){
+  setTimeout(_tryInitChart,50);
+  // Initial Sankey draw with default sector (infrastructure)
+  var initSk=BASELINE_SECTORS.infrastructure.sk;
+  if(initSk) setTimeout(function(){drawSankey(initSk[0],initSk[1],initSk[2],initSk[3],initSk[4],initSk[5]);},20);
+});
+window.addEventListener('load',function(){
+  _tryInitChart();
+  /* Hero entrance animation */
+  var heroEls=['.hero-name','.hero-cycle','.hero-meta','.hero-prop','.instr-grid','.live-strip','.scroll-hint','.hero-offset-rule'];
+  heroEls.forEach(function(sel,i){
+    var el=document.querySelector(sel);
+    if(!el) return;
+    el.style.opacity='0';el.style.transform='translateY(22px)';
+    setTimeout(function(){
+      el.style.transition='opacity 0.7s cubic-bezier(0.25,1,0.5,1), transform 0.7s cubic-bezier(0.25,1,0.5,1)';
+      el.style.opacity='';el.style.transform='';
+    }, 120 + i*90);
+  });
+  setTimeout(function(){
+    document.querySelectorAll('.instr-val[data-target]').forEach(function(el,idx){
+      var target=parseInt(el.getAttribute('data-target'),10);
+      var suffix=el.getAttribute('data-suffix')||'';
+      setTimeout(function(){
+        var start=performance.now();
+        function step(now){
+          var p=Math.min((now-start)/1200,1);
+          var e=1-Math.pow(1-p,3);
+          el.textContent=Math.round(e*target)+suffix;
+          if(p<1) requestAnimationFrame(step);
+          else el.textContent=target+suffix;
+        }
+        requestAnimationFrame(step);
+      },idx*120);
+    });
+  },300);
+});
+
+/* ---- Magnetic button effect ---- */
+document.addEventListener('DOMContentLoaded',function(){
+  document.querySelectorAll('.btn-primary').forEach(function(btn){
+    btn.addEventListener('mousemove',function(e){
+      var r=btn.getBoundingClientRect();
+      var x=(e.clientX-r.left-r.width/2)*0.18;
+      var y=(e.clientY-r.top-r.height/2)*0.18;
+      btn.style.transform='translate('+x.toFixed(1)+'px,'+y.toFixed(1)+'px)';
+    });
+    btn.addEventListener('mouseleave',function(){
+      btn.style.transform='';
+    });
+  });
+  /* Add section ident numbers next to each section label */
+});
+</script>
+
+<div id="cursor-dot" aria-hidden="true"></div>
+<div id="cursor-ring" aria-hidden="true"></div>
+</body>
+</html>
