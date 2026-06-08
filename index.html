@@ -198,14 +198,14 @@ section:last-of-type{border-bottom:none}
 .mca-metric{font-family:var(--mono);font-size:0.62rem;color:var(--matcha);letter-spacing:0.02em;margin-bottom:0.4rem;font-weight:600;}
 .mca-body{font-size:0.78rem;font-weight:400;color:#475569;line-height:1.6}
 .lc-modules{display:flex;gap:1px;margin:1.5rem 0;background:var(--rule-dk);border:1px solid var(--rule-dk);overflow:hidden}
-.lcm{flex:1;padding:0.75rem 0.4rem;background:var(--bg);text-align:center;min-width:56px;transition:background 0.3s var(--ease)}
+.lcm{flex:1;min-width:0;padding:0.75rem 0.4rem;background:var(--bg);text-align:center;transition:background 0.3s var(--ease)}
 .lcm.active{background:var(--red-bg);border-bottom:2px solid var(--matcha)}
 .lcm.noted{background:#F1F5F9;border-bottom:2px solid rgba(181,196,43,0.3)}
 .lcm.out{opacity:0.4;background:#F1F5F9;}
 .lcm-ref{font-family:var(--mono);font-size:0.65rem;font-weight:700;color:var(--slate);display:block;margin-bottom:0.2rem}
 .lcm.active .lcm-ref{color:var(--matcha)}
 .lcm.noted .lcm-ref{color:rgba(181,196,43,0.85)}
-.lcm-label{font-family:var(--mono);font-size:0.5rem;letter-spacing:0.04em;text-transform:uppercase;color:var(--mid);line-height:1.3;font-weight:600;}
+.lcm-label{font-family:var(--mono);font-size:0.5rem;letter-spacing:0.04em;text-transform:uppercase;color:var(--mid);line-height:1.3;font-weight:600;overflow-wrap:break-word;word-break:break-word;hyphens:auto}
 .lcm-legend{display:flex;gap:1.25rem;margin-top:0.6rem;flex-wrap:wrap}
 .lcm-leg-item{display:flex;align-items:center;gap:0.4rem;font-family:var(--mono);font-size:0.58rem;color:var(--mid);font-weight:600;}
 .lcm-leg-dot{width:8px;height:8px;flex-shrink:0}
@@ -334,7 +334,7 @@ body.cur-on #cursor-ring.cx{width:44px;height:44px;opacity:0.4}
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:2px}
 ::-webkit-scrollbar-thumb:hover{background:var(--matcha)}
-@media(max-width:559px){.s3-row{grid-template-columns:1fr 44px 100px}.cbar{grid-template-columns:90px 1fr 44px}.kpi-strip{grid-template-columns:repeat(2,1fr)}.lc-modules{flex-wrap:wrap}.lcm{min-width:48px}}
+@media(max-width:559px){.s3-row{grid-template-columns:1fr 44px 100px}.cbar{grid-template-columns:90px 1fr 44px}.kpi-strip{grid-template-columns:repeat(2,1fr)}.lc-modules{display:grid;grid-template-columns:repeat(3,1fr)}.lcm{min-width:0}}
 @media(min-width:800px){section{padding:5rem 0}#about{padding:5.5rem 0 3.5rem}#scenario{padding:5.5rem 0}}
 
 /* ---- Film grain overlay ---- */
