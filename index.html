@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Christopher Wang — Sustainability Advisor. GHG inventory infrastructure, decarbonisation pathway modelling, and regulatory disclosure for infrastructure, built environment, and government. Based in Melbourne.">
-<title>Christopher Wang &#x2014; Sustainability Advisor</title>
+<title>Christopher Wang | Sustainability Advisor</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
@@ -43,9 +43,8 @@ html{scroll-behavior:smooth}
 }
 body{font-family:var(--sans);font-weight:300;font-size:0.9rem;color:var(--slate);background:var(--bg);line-height:1.75;-webkit-font-smoothing:antialiased}
 .nav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--rule-dk)}
-.nav-inner{max-width:var(--max);margin:0 auto;padding:0 var(--pad);display:flex;justify-content:space-between;align-items:center;height:48px}
-.nav-links{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-.nav-links::-webkit-scrollbar{display:none}
+.nav-inner{max-width:var(--max);margin:0 auto;padding:0.35rem var(--pad);display:flex;justify-content:space-between;align-items:flex-start;min-height:48px;gap:0.5rem}
+.nav-links{display:flex;flex-wrap:wrap;justify-content:flex-end;row-gap:0}
 .nav-links a{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--mid);text-decoration:none;height:48px;display:inline-flex;align-items:flex-start;border-bottom:none;margin-bottom:0;overflow:hidden;padding:0;transition:color 0.3s var(--ease)}
 .nav-links a:hover{color:var(--matcha);border-bottom-color:rgba(181,196,43,0.4)}
 .nav-links a.active .ntl>span{color:var(--matcha)}
@@ -60,7 +59,7 @@ section{border-bottom:1px solid var(--rule-lt)}
 section:last-of-type{border-bottom:none}
 .label{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--matcha);margin-bottom:2.5rem;display:flex;align-items:center;gap:0.75rem}
 .label::after{content:'';flex:1;height:1px;background:var(--rule-lt);min-width:20px}
-#about{background:#EEF2FF;border-bottom:1px solid var(--rule-dk);padding:clamp(3rem,7vw,5rem) 0 clamp(3rem,6vw,5rem);position:relative;overflow:hidden}
+#about{background:#EEF2FF;border-bottom:1px solid var(--rule-dk);padding:clamp(1.5rem,3vw,2.5rem) 0 clamp(2rem,4vw,3rem);position:relative;overflow:hidden}
 #about .label::after{background:var(--rule-dk)}
 .hero-name{font-family:var(--disp);font-size:clamp(2.8rem,9vw,5rem);font-weight:800;line-height:0.95;letter-spacing:-0.04em;color:var(--slate);margin-bottom:0.6rem}
 .hero-name em{color:var(--matcha);font-style:normal}
@@ -250,7 +249,7 @@ section:last-of-type{border-bottom:none}
 .edu-row{font-size:0.85rem}
 .edu-inst{font-weight:700;color:var(--slate)}
 .edu-deg{font-weight:400;color:#475569}
-.cred{font-family:var(--mono);font-size:0.68rem;color:var(--matcha);padding-top:0.5rem;border-top:1px solid var(--rule-dk);letter-spacing:0.04em;line-height:1.6;font-weight:600;}
+.cred{font-family:var(--mono);font-size:0.68rem;color:#527A1E;padding-top:0.5rem;border-top:1px solid var(--rule-dk);letter-spacing:0.03em;line-height:1.65;font-weight:400;}
 #scenario{background:var(--bg);border-bottom:1px solid var(--rule-dk);padding:clamp(5rem,11vw,8rem) 0}
 #scenario .label::after{background:var(--rule-dk)}
 .tool-decl{font-family:var(--sans);font-size:clamp(1.1rem,2.5vw,1.5rem);font-weight:400;color:var(--slate);max-width:640px;line-height:1.45;margin-bottom:0.75rem}
@@ -334,7 +333,7 @@ body.cur-on #cursor-ring.cx{width:44px;height:44px;opacity:0.4}
 ::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:2px}
 ::-webkit-scrollbar-thumb:hover{background:var(--matcha)}
 @media(max-width:559px){.s3-row{grid-template-columns:1fr 44px 100px}.cbar{grid-template-columns:90px 1fr 44px}.kpi-strip{grid-template-columns:repeat(2,1fr)}.lc-modules{display:grid;grid-template-columns:repeat(3,1fr)}.lcm{min-width:0}}
-@media(min-width:800px){section{padding:5rem 0}#about{padding:5.5rem 0 3.5rem}#scenario{padding:5.5rem 0}}
+@media(min-width:800px){section{padding:5rem 0}#about{padding:2rem 0 2.5rem}#scenario{padding:5.5rem 0}}
 
 /* ---- Film grain overlay ---- */
 .grain-overlay{position:fixed;inset:0;pointer-events:none;z-index:9990;mix-blend-mode:multiply;opacity:1;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)' opacity='0.042'/%3E%3C/svg%3E")}
@@ -379,7 +378,7 @@ body.mode-textile .lever-group-infra .lever{display:none}
 body.mode-textile .lever-group-textile .lever{display:block}
 
 /* ---- Responsive padding fixes ---- */
-@media(min-width:800px){section{padding:clamp(5rem,10vw,7rem) 0}#about{padding:clamp(5.5rem,12vw,9rem) 0 clamp(3.5rem,6vw,5rem)}#scenario{padding:clamp(5.5rem,12vw,9rem) 0}}
+@media(min-width:800px){section{padding:clamp(5rem,10vw,7rem) 0}#about{padding:clamp(1.75rem,4vw,2.5rem) 0 clamp(2rem,4vw,3rem)}#scenario{padding:clamp(5.5rem,12vw,9rem) 0}}
 
 /* ---- Pipeline step progression — matcha/mango/strawberry/blueberry ---- */
 :root{
@@ -616,9 +615,6 @@ body.mode-textile .lever-group-textile .lever{display:block}
 
 /* ---- Mobile: wrap nav links into rows and show work-sample tabs in full ---- */
 @media(max-width:640px){
-  /* Nav links wrap to multiple rows instead of horizontal scroll */
-  .nav-inner{height:auto;min-height:48px;padding-top:0.3rem;padding-bottom:0.3rem;align-items:center;gap:0.5rem}
-  .nav-links{flex-wrap:wrap;overflow:visible;justify-content:flex-end;row-gap:0.1rem}
   .nav-links a{height:auto}
   .nav-links a:hover .ntl{transform:none}
   .ntl>span{height:auto;padding:0.25rem 0.5rem;line-height:1.2}
@@ -632,6 +628,46 @@ body.mode-textile .lever-group-textile .lever{display:block}
   .tl>span[aria-hidden="true"]{display:none}
 }
 
+/* ---- Pipeline accordion ---- */
+.pipeline{margin-top:2.5rem;width:100%;border:1px solid var(--rule-dk)}
+.pipe-row{display:flex;flex-direction:column}
+.pipe-step{display:flex;align-items:center;gap:0.9rem;padding:0.75rem 0.9rem 0.75rem 1rem;border-left:3px solid var(--rule-dk);background:var(--white);transition:background 0.25s var(--ease);cursor:pointer;user-select:none;border-bottom:1px solid var(--rule-lt)}
+.pipe-row:last-child .pipe-step{border-bottom:none}
+.pipe-row:last-child .pipe-panel.open{border-bottom:none}
+.pipe-step:hover{background:var(--red-bg)}
+.pipe-step:focus-visible{outline:2px solid var(--matcha);outline-offset:-2px}
+.pipe-step-right{display:flex;align-items:center;gap:0.5rem;flex-shrink:0;margin-left:auto}
+.pipe-badge{font-family:var(--mono);font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--subtle);background:#F1F5F9;border:1px solid var(--rule-dk);padding:0.15rem 0.45rem;white-space:nowrap;transition:background 0.2s,color 0.2s,border-color 0.2s}
+.pipe-step:hover .pipe-badge,.pipe-step.open .pipe-badge{background:rgba(181,196,43,0.14);color:var(--matcha);border-color:rgba(181,196,43,0.35)}
+.pipe-chevron{font-size:0.7rem;color:var(--subtle);transition:transform 0.32s var(--ease),color 0.2s;line-height:1;display:flex;align-items:center}
+.pipe-step.open .pipe-chevron{transform:rotate(180deg);color:var(--matcha)}
+.pipe-step[data-step="raw"]{border-left-color:var(--step-raw)}
+.pipe-step[data-step="calc"]{border-left-color:var(--step-calc)}
+.pipe-step[data-step="report"]{border-left-color:var(--step-report)}
+.pipe-step[data-step="strategy"]{border-left-color:var(--step-strategy)}
+.pipe-step[data-step="comms"]{border-left-color:var(--step-comms)}
+.pipe-panel{max-height:0;overflow:hidden;transition:max-height 0.45s cubic-bezier(0.4,0,0.2,1)}
+.pipe-panel.open{max-height:1000px;border-bottom:1px solid var(--rule-dk)}
+.pipe-panel-inner{padding:1.25rem 1.5rem 1.5rem 3.4rem;background:#FAFBFC}
+.pipe-desc{font-size:0.82rem;color:var(--mid);line-height:1.7;margin-bottom:1.25rem}
+.pipe-examples{display:flex;flex-direction:column;gap:0.85rem}
+.pipe-example{padding:0.85rem 1rem;background:var(--white);border:1px solid var(--rule-lt);border-left:3px solid var(--rule-dk);transition:border-left-color 0.2s}
+.pipe-example:hover{border-left-color:var(--matcha)}
+.pipe-ex-title{font-weight:700;font-size:0.84rem;color:var(--slate);margin-bottom:0.3rem;line-height:1.3}
+.pipe-ex-body{font-size:0.78rem;color:#475569;line-height:1.65;margin-bottom:0.35rem}
+.pipe-ex-outcome{font-family:var(--mono);font-size:0.57rem;color:var(--matcha);letter-spacing:0.03em;line-height:1.5}
+.pipe-cta{display:inline-flex;align-items:center;gap:0.35rem;margin-top:1.25rem;font-family:var(--mono);font-size:0.58rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--matcha);text-decoration:none;font-weight:600;transition:opacity 0.2s}
+.pipe-cta:hover{opacity:0.7}
+
+/* ---- Improved lever/controls spacing ---- */
+.controls-card{background:var(--white);border:1px solid var(--rule-dk);overflow:hidden;margin-bottom:1.5rem}
+.lever{background:var(--bg);padding:1.5rem 1.75rem}
+.lever-name{font-size:0.84rem;font-weight:700;color:var(--slate);margin-bottom:0.4rem}
+.lever-src{font-family:var(--mono);font-size:0.58rem;color:var(--matcha);margin-bottom:0.9rem;letter-spacing:0.02em}
+.lever-select{width:100%;padding:0.55rem 2rem 0.55rem 0.75rem;border:1px solid var(--rule-dk);background:transparent;color:var(--slate);font-family:var(--sans);font-size:0.8rem;font-weight:400;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%231A1410'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0.65rem center;border-radius:0;transition:border-color 0.3s var(--ease),color 0.3s var(--ease)}
+.lever-grid{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule-dk);margin:1.25rem;border:1px solid var(--rule-dk)}
+@media(min-width:580px){.lever-grid{grid-template-columns:1fr 1fr}}
+
 </style>
 </head><body>
 <div class="grain-overlay" aria-hidden="true"></div>
@@ -640,10 +676,9 @@ body.mode-textile .lever-group-textile .lever{display:block}
     <a href="#about" class="nav-logo">./</a>
     <div class="nav-links" role="navigation">
       <a href="#about"><span class="ntl"><span>[ About ]</span><span aria-hidden="true">[ About ]</span></span></a>
-      <a href="#results"><span class="ntl"><span>[ Results ]</span><span aria-hidden="true">[ Results ]</span></span></a>
+      <a href="#bio"><span class="ntl"><span>[ Pipeline ]</span><span aria-hidden="true">[ Pipeline ]</span></span></a>
       <a href="#principles"><span class="ntl"><span>[ Approach ]</span><span aria-hidden="true">[ Approach ]</span></span></a>
       <a href="#scenario"><span class="ntl"><span>[ Model ]</span><span aria-hidden="true">[ Model ]</span></span></a>
-      <a href="#expertise"><span class="ntl"><span>[ Expertise ]</span><span aria-hidden="true">[ Expertise ]</span></span></a>
       <a href="work/"><span class="ntl"><span>[ Work ]</span><span aria-hidden="true">[ Work ]</span></span></a>
       <a href="#experience"><span class="ntl"><span>[ Experience ]</span><span aria-hidden="true">[ Experience ]</span></span></a>
       <a href="#contact"><span class="ntl"><span>[ Contact ]</span><span aria-hidden="true">[ Contact ]</span></span></a>
@@ -654,7 +689,6 @@ body.mode-textile .lever-group-textile .lever{display:block}
 <section id="about">
 <div class="bloom-wrap" aria-hidden="true"><div class="bloom bloom-a"></div><div class="bloom bloom-b"></div><div class="bloom bloom-c"></div></div>
 <div class="wrap">
-  <div class="label">Profile</div>
   <h1 class="hero-name">Christopher <em>Wang</em></h1>
   <div class="hero-cycle"><span id="role-cycle">Sustainability Advisor</span></div>
   <div class="hero-meta">
@@ -683,12 +717,135 @@ body.mode-textile .lever-group-textile .lever{display:block}
     <p class="bio-text" style="margin-top:1rem">Four years in sustainability advisory across WSP and Downer Group — GHG accounting, regulatory disclosure, decarbonisation modelling, supply chain emissions. Six years prior in built environment and infrastructure, including project delivery at the Department of Defence.</p>
     <p class="bio-text" style="margin-top:1rem">Looking for sustainability leadership in fashion, consumer goods, or technology — where supply chain transparency and decarbonisation are primary workstreams, not obligations.</p>
     <p class="bio-text" style="margin-top:1rem">Bachelor of Engineering (Civil Engineering with Architecture), First Class Honours, UNSW.</p>
+    <p style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--matcha);margin-top:2rem;margin-bottom:0.5rem;font-weight:600;">Capability pipeline — click any step to see examples</p>
     <div class="pipeline" aria-label="Capability pipeline">
-      <div class="pipe-step" data-step="raw"><span class="pipe-n">01</span><span class="pipe-label">Raw Data</span></div>
-      <div class="pipe-step" data-step="calc"><span class="pipe-n">02</span><span class="pipe-label">Calculation</span></div>
-      <div class="pipe-step" data-step="report"><span class="pipe-n">03</span><span class="pipe-label">Reporting</span></div>
-      <div class="pipe-step" data-step="strategy"><span class="pipe-n">04</span><span class="pipe-label">Strategy</span></div>
-      <div class="pipe-step" data-step="comms"><span class="pipe-n">05</span><span class="pipe-label">Communication</span></div>
+
+      <div class="pipe-row">
+        <div class="pipe-step" data-step="raw" onclick="togglePipe('raw')" role="button" tabindex="0" aria-expanded="false" aria-controls="pipe-panel-raw">
+          <span class="pipe-n">01</span><span class="pipe-label">Raw Data</span>
+          <span class="pipe-step-right"><span class="pipe-badge">2 examples</span><span class="pipe-chevron" aria-hidden="true">&#9660;</span></span>
+        </div>
+        <div class="pipe-panel" id="pipe-panel-raw" role="region">
+          <div class="pipe-panel-inner">
+            <p class="pipe-desc">Design pre-configured data collection systems, automated upload pipelines, and systematic review frameworks that eliminate manual effort and embed audit trails at the data layer.</p>
+            <div class="pipe-examples">
+              <div class="pipe-example">
+                <div class="pipe-ex-title">Subcontractor Diesel Reporting Templates</div>
+                <div class="pipe-ex-body">Pre-configured Excel templates with embedded calculation logic and automated Envizi upload generation. Eliminated manual data collection across three Downer business units, replacing a recurring per-quarter effort.</div>
+                <div class="pipe-ex-outcome">Outcome: manual collection eliminated across 3 BUs — Downer Group</div>
+              </div>
+              <div class="pipe-example">
+                <div class="pipe-ex-title">Scope 3 Data Collection Pipeline Rebuild</div>
+                <div class="pipe-ex-body">Rebuilt the full subcontractor survey pipeline incorporating proxy rate calculations, prior-period response pooling, and CPI inflation adjustment. Structured so business unit contacts can operate each cycle without re-briefing.</div>
+                <div class="pipe-ex-outcome">Applied across Downer Group supply chain emissions reporting</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pipe-row">
+        <div class="pipe-step" data-step="calc" onclick="togglePipe('calc')" role="button" tabindex="0" aria-expanded="false" aria-controls="pipe-panel-calc">
+          <span class="pipe-n">02</span><span class="pipe-label">Calculation</span>
+          <span class="pipe-step-right"><span class="pipe-badge">2 examples</span><span class="pipe-chevron" aria-hidden="true">&#9660;</span></span>
+        </div>
+        <div class="pipe-panel" id="pipe-panel-calc" role="region">
+          <div class="pipe-panel-inner">
+            <p class="pipe-desc">GHG inventory preparation and Scope 1–3 accounting aligned to GHG Protocol and NGER. Methodology documented for external assurance and reuse across reporting cycles.</p>
+            <div class="pipe-examples">
+              <div class="pipe-example">
+                <div class="pipe-ex-title">GHG Recalculation Module</div>
+                <div class="pipe-ex-body">Independent recalculation module with operational control boundary filtering, built to reconcile Group-level emissions calculations against Envizi outputs. Documented logic for ongoing internal verification without advisory dependency.</div>
+                <div class="pipe-ex-outcome">Outcome: delivered external assurance readiness for Group-level Scope 1 and 2 — Downer Group</div>
+              </div>
+              <div class="pipe-example">
+                <div class="pipe-ex-title">GHG Inventory Automation — ~40% Time Reduction</div>
+                <div class="pipe-ex-body">Automated Excel and Python tools at WSP that replaced recurring manual workflows across active client accounts. All tools documented with logic notes for internal operation.</div>
+                <div class="pipe-ex-outcome">Outcome: ~40% reduction in GHG inventory preparation time — WSP in Australia</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pipe-row">
+        <div class="pipe-step" data-step="report" onclick="togglePipe('report')" role="button" tabindex="0" aria-expanded="false" aria-controls="pipe-panel-report">
+          <span class="pipe-n">03</span><span class="pipe-label">Reporting</span>
+          <span class="pipe-step-right"><span class="pipe-badge">3 examples</span><span class="pipe-chevron" aria-hidden="true">&#9660;</span></span>
+        </div>
+        <div class="pipe-panel" id="pipe-panel-report" role="region">
+          <div class="pipe-panel-inner">
+            <p class="pipe-desc">Regulatory disclosure for NGER, AASB S2/ISSB, GRESB, and CDP. Full submission management, methodology documentation, and external assurance preparation structured for internal handover.</p>
+            <div class="pipe-examples">
+              <div class="pipe-example">
+                <div class="pipe-ex-title">GRESB Infrastructure Assessment: 35-Point Improvement</div>
+                <div class="pipe-ex-body">Led the full assessment cycle for a major Australian energy distributor: gap analysis, data collection reform, targeted disclosure uplift across management, performance, and stakeholder engagement components. Methodology documented for handover and independently operable from year two.</div>
+                <div class="pipe-ex-outcome">Outcome: 35-percentage-point improvement in year one — handed back as an internally operable process</div>
+              </div>
+              <div class="pipe-example">
+                <div class="pipe-ex-title">NSW Treasury Net Zero Government Operations Policy</div>
+                <div class="pipe-ex-body">Technical input on emissions boundary definition and agency-level reporting methodology: operational control vs. equity share treatment, data tier hierarchy for limited-data agencies, and NGER alignment.</div>
+                <div class="pipe-ex-outcome">Outcome: input incorporated into the whole-of-government policy framework across NSW agencies</div>
+              </div>
+              <div class="pipe-example">
+                <div class="pipe-ex-title">NGER Statutory Compliance — Section 13E Response</div>
+                <div class="pipe-ex-body">Drafted and lodged a Section 13E statutory compliance response to DCCEEW under POFRA 2017 within a 30-day deadline. Included reconciliation of historical data and full methodology documentation.</div>
+                <div class="pipe-ex-outcome">Outcome: submitted on deadline — Downer Group</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pipe-row">
+        <div class="pipe-step" data-step="strategy" onclick="togglePipe('strategy')" role="button" tabindex="0" aria-expanded="false" aria-controls="pipe-panel-strategy">
+          <span class="pipe-n">04</span><span class="pipe-label">Strategy</span>
+          <span class="pipe-step-right"><span class="pipe-badge">2 examples</span><span class="pipe-chevron" aria-hidden="true">&#9660;</span></span>
+        </div>
+        <div class="pipe-panel" id="pipe-panel-strategy" role="region">
+          <div class="pipe-panel-inner">
+            <p class="pipe-desc">Scenario-driven decarbonisation models with traceable lever assumptions drawn from published sources — structured for non-specialist interrogation and owned internally, not dependent on the analyst who built them.</p>
+            <div class="pipe-examples">
+              <div class="pipe-example">
+                <div class="pipe-ex-title">Net Zero Pathway Model — Board Presentation</div>
+                <div class="pipe-ex-body">Toggle-based net zero pathway model incorporating DCCEEW 2025 grid emission factor projections, NVES Act 2024 fleet trajectories, and BU-level pathway curves. Built for internal operation without ongoing advisory support. Presented to the board by senior leadership as part of the Group's climate strategy — became the internal reference tool for tracking BU abatement progress.</div>
+                <div class="pipe-ex-outcome">Outcome: board-level presentation; ongoing internal reference tool — Downer Group</div>
+              </div>
+              <div class="pipe-example">
+                <div class="pipe-ex-title">Scope 1–3 Baselines and Decarbonisation Roadmaps</div>
+                <div class="pipe-ex-body">Delivered across infrastructure and built environment portfolios for government and private sector clients. Each roadmap includes lever-level abatement pathways, revenue-indexed gross emissions forecasting, and documented methodology for independent operation.</div>
+                <div class="pipe-ex-outcome">Applied across infrastructure, government, and commercial property portfolios — WSP in Australia</div>
+              </div>
+            </div>
+            <a href="#scenario" class="pipe-cta">&#x2192; See the live scenario model below</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pipe-row">
+        <div class="pipe-step" data-step="comms" onclick="togglePipe('comms')" role="button" tabindex="0" aria-expanded="false" aria-controls="pipe-panel-comms">
+          <span class="pipe-n">05</span><span class="pipe-label">Communication</span>
+          <span class="pipe-step-right"><span class="pipe-badge">2 examples</span><span class="pipe-chevron" aria-hidden="true">&#9660;</span></span>
+        </div>
+        <div class="pipe-panel" id="pipe-panel-comms" role="region">
+          <div class="pipe-panel-inner">
+            <p class="pipe-desc">Technical analysis translated into stakeholder-ready outputs — from board presentations and all-employee training to public disclosure frameworks that teams can operate independently.</p>
+            <div class="pipe-examples">
+              <div class="pipe-example">
+                <div class="pipe-ex-title">Climate Change eLearning Module — Company-wide Deployment</div>
+                <div class="pipe-ex-body">Co-developed with an external learning design provider across three role clusters and two delivery formats. Content designed from scratch through to company-wide launch, covering GHG accounting fundamentals, decarbonisation levers, and role-specific action pathways.</div>
+                <div class="pipe-ex-outcome">Outcome: deployed across all-employee cohort company-wide — Downer Group</div>
+              </div>
+              <div class="pipe-example">
+                <div class="pipe-ex-title">ESG Impact Report Workshop</div>
+                <div class="pipe-ex-body">Facilitated a cross-BU ESG Impact Report content workshop with a General Manager, coordinating four business unit disclosure reviews through Workiva for the annual ESG Impact Report.</div>
+                <div class="pipe-ex-outcome">Applied to the annual ESG Impact Report — Downer Group</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -726,41 +883,6 @@ body.mode-textile .lever-group-textile .lever{display:block}
   </div>
 </div>
 
-<section id="results" style="background:var(--bg);padding:clamp(4rem,9vw,6.5rem) 0">
-<div class="wrap">
-  <div class="label">Results</div>
-  <dl class="cap-dl">
-
-    <div class="cap-entry reveal">
-      <dt class="cap-num">01</dt>
-      <dd>
-        <div class="cap-title">GRESB Infrastructure Assessment: 35-Point Improvement</div>
-        <div class="cap-body">A major Australian energy distributor was underperforming on GRESB relative to sector peers — not for lack of performance, but due to inconsistent data collection and methodology gaps. I led the full assessment cycle: gap analysis, data collection redesign, targeted disclosure uplift across management, performance, and stakeholder engagement components. Methodology documented for internal handover.</div>
-        <div class="built-outcome">Outcome: 35-percentage-point improvement in year one. Submission handed back as a repeatable, internally operable process.</div>
-      </dd>
-    </div>
-
-    <div class="cap-entry reveal">
-      <dt class="cap-num">02</dt>
-      <dd>
-        <div class="cap-title">Net Zero Pathway Model: Board-Level Presentation</div>
-        <div class="cap-body">An infrastructure services group needed a net zero pathway model for board-level scenario analysis — traceable to published Australian sources, navigable by non-specialists. The existing approach was static spreadsheets with no scenario toggle capability. I built a toggle-based model incorporating DCCEEW 2025 grid emission factor projections, NVES Act 2024 fleet trajectories, and BU-level pathway curves — structured for internal operation with no dependency on the analyst who built it.</div>
-        <div class="built-outcome">Outcome: Presented to the board by senior leadership as part of the Group's climate strategy. Became the internal reference tool for tracking business unit abatement progress against the net zero pathway.</div>
-      </dd>
-    </div>
-
-    <div class="cap-entry reveal">
-      <dt class="cap-num">03</dt>
-      <dd>
-        <div class="cap-title">NSW Treasury Net Zero Government Operations Policy</div>
-        <div class="cap-body">NSW Treasury required a methodology framework for agency-level emissions reporting — consistent with GHG Protocol, operable by agencies with varying data capability, and defensible under scrutiny. I contributed technical input on boundary definition and reporting methodology: operational control vs. equity share treatment for outsourced functions, data tier hierarchy for limited-data agencies, and NGER alignment.</div>
-        <div class="built-outcome">Outcome: Input incorporated into the policy framework applied across NSW Government agencies for agency-level net zero reporting.</div>
-      </dd>
-    </div>
-
-  </dl>
-</div>
-</section>
 
 <section id="scenario">
 <div class="scenario-bg-mesh" aria-hidden="true"></div>
@@ -770,9 +892,8 @@ body.mode-textile .lever-group-textile .lever{display:block}
     <button class="mode-btn on" id="mode-btn-infra" onclick="setMode('industrial')">Industrial Supply Chain</button>
     <button class="mode-btn" id="mode-btn-textile" onclick="setMode('textile')">Boutique Textile Retail</button>
   </div>
-  <p class="tool-sub" style="margin-bottom:1.5rem">Decarbonisation targets are easy to publish. The harder problem is building the model that sits behind them: lever assumptions drawn from credible published data, scenario logic structured for non-specialist interrogation, and outputs a decision-maker can act on rather than file away. The model below is a live version of that process. Select an organisation type and scenario to step through it.</p>
-  <p class="tool-decl" id="tool-decl-text">Every lever has a number. <strong>Here is what the model shows.</strong></p>
-  <p class="tool-sub" id="tool-sub-text">Adjust the controls below to explore how different abatement strategies shift a Scope&nbsp;1 and&nbsp;2 emissions trajectory. Lever assumptions are drawn from DCCEEW 2025 grid emission factor tables, the NVES Act 2024 (LV fleet), CSIRO Net Zero Pathways (HV fleet), and published plant electrification analysis &#x2013; the same sources used in production pathway models. Select a sector to see how lever weights shift by asset class.</p>
+  <p class="tool-decl" id="tool-decl-text">Every lever has a source. <strong>Adjust the controls to see what changes.</strong></p>
+  <p class="tool-sub" id="tool-sub-text">Select a sector and scenario to explore how abatement levers shift a Scope 1 &amp; 2 trajectory. Lever assumptions are drawn from DCCEEW 2025 grid emission factor tables, the NVES Act 2024 (LV fleet), and CSIRO Net Zero Pathways — the same sources used in production pathway models.</p>
   <span class="tool-disc">Illustrative model &middot; stylised numbers &middot; not client data</span>
   <div id="sector-desc" class="sector-desc">Infrastructure: heavy plant, diesel fleet, and mechanical processes drive the Scope&nbsp;1 footprint. Grid decarbonisation delivers Scope&nbsp;2 reduction.</div>
   <div class="kpi-strip">
@@ -853,147 +974,15 @@ body.mode-textile .lever-group-textile .lever{display:block}
     <div class="cbar"><div class="cbar-name" id="cbar-name-hv">HV Fleet</div><div class="cbar-track"><div class="cbar-fill" id="cb-hv" style="width:0%;background:var(--amber)"></div></div><div class="cbar-val" id="cv-hv">&#x2013;</div></div>
     <div class="cbar"><div class="cbar-name" id="cbar-name-plant">Plant Electrification</div><div class="cbar-track"><div class="cbar-fill" id="cb-plant" style="width:0%;background:var(--berry)"></div></div><div class="cbar-val" id="cv-plant">&#x2013;</div></div>
   </div>
-</div>
-</section>
-
-<div class="cta-strip" aria-hidden="true">
-  <div class="cta-strip-track">
-    <span class="csi">Open to new roles</span><span class="csd">&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
-    <span class="csi">Senior sustainability advisory</span><span class="csd">&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
-    <span class="csi">ESG reporting &amp; decarbonisation strategy</span><span class="csd">&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
-    <span class="csi">Actively exploring opportunities</span><span class="csd">&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
-    <span class="csi">Open to new roles</span><span class="csd">&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
-    <span class="csi">Senior sustainability advisory</span><span class="csd">&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
-    <span class="csi">ESG reporting &amp; decarbonisation strategy</span><span class="csd">&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
-    <span class="csi">Actively exploring opportunities</span><span class="csd">&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
-  </div>
-</div>
-
-<section id="expertise">
-<div class="wrap">
-  <div class="label">Expertise &amp; Craft</div>
-  <div class="exp-cols">
-    <div>
-      <div class="sec-sub" style="margin-top:0">Framework Fluency</div>
-      <div class="fw-card-grid">
-        <div class="fw-card reveal" style="--card-accent:var(--indigo)">
-          <div class="fw-cat">Data Accounting</div>
-          <div class="fw-acro">GHG Protocol</div>
-          <div class="fw-fullname">Corporate Value Chain Standard</div>
-          <div class="fw-applied">Scope 1&#x2013;3 boundary-setting and category accounting for infrastructure portfolios. Built subcontractor proxy methodology; reconciled Group calculations against Envizi for external assurance.</div>
-        </div>
-        <div class="fw-card reveal" style="--card-accent:var(--amber)">
-          <div class="fw-cat">Regulatory</div>
-          <div class="fw-acro">NGER</div>
-          <div class="fw-fullname">National Greenhouse &amp; Energy Reporting Act</div>
-          <div class="fw-applied">Scope 1 and 2 reporting under the Measurement Determination. Drafted and submitted a Section 13E statutory compliance response to DCCEEW under POFRA 2017 within a 30-day deadline.</div>
-        </div>
-        <div class="fw-card reveal" style="--card-accent:var(--amber)">
-          <div class="fw-cat">Mandatory Disclosure</div>
-          <div class="fw-acro">AASB S2</div>
-          <div class="fw-fullname">Australian Sustainability Reporting Standard / ISSB</div>
-          <div class="fw-applied">Climate disclosure drafting for mandatory Australian reporting. Developed transition and physical risk scenario framing; contributed GHG intensity metrics to Appendix A requirements.</div>
-        </div>
-        <div class="fw-card reveal" style="--card-accent:var(--matcha)">
-          <div class="fw-cat">Supply Chain</div>
-          <div class="fw-acro">CDP</div>
-          <div class="fw-fullname">CDP Supply Chain Programme</div>
-          <div class="fw-applied">Full annual cycle management: portal administration, questionnaire distribution, supplier coordination, and data quality review from setup through to aggregated disclosure.</div>
-        </div>
-        <div class="fw-card reveal" style="--card-accent:var(--matcha)">
-          <div class="fw-cat">Real Assets</div>
-          <div class="fw-acro">GRESB</div>
-          <div class="fw-fullname">GRESB Infrastructure Assessment</div>
-          <div class="fw-applied">Full submission management for a major Australian energy distributor. Led data collection reform and stakeholder uplift. Delivered a 35% performance improvement in year one.</div>
-        </div>
-        <div class="fw-card reveal" style="--card-accent:var(--berry)">
-          <div class="fw-cat">Strategy</div>
-          <div class="fw-acro">TCFD</div>
-          <div class="fw-fullname">Task Force on Climate-related Financial Disclosures</div>
-          <div class="fw-applied">Scenario analysis framing and transition risk narrative for infrastructure portfolios. Aligned physical and transition risk disclosures to AASB S2 requirements for ASRS Phase 1.</div>
-        </div>
-        <div class="fw-card reveal" style="--card-accent:var(--berry)">
-          <div class="fw-cat">Targets</div>
-          <div class="fw-acro">SBTi</div>
-          <div class="fw-fullname">Science Based Targets Initiative</div>
-          <div class="fw-applied">Near-term target pathway alignment including FLAG sector guidance. Translated target boundaries into lever-level abatement requirements across Scope 1, 2, and material Scope 3 categories.</div>
-        </div>
-      </div>
-    </div>
-    <div>
-      <div class="sec-sub" style="margin-top:0">Technical Capabilities</div>
-      <dl class="cap-dl">
-        <div class="cap-entry reveal">
-          <dt class="cap-num">01</dt>
-          <dd>
-            <div class="cap-title">Emissions Data Infrastructure</div>
-            <div class="cap-body">Design and build reusable GHG data pipelines, automated anomaly review frameworks, and platform-integrated reporting templates. Reduces per-quarter effort and embeds auditable methodology at the data layer, not the spreadsheet.</div>
-          </dd>
-        </div>
-        <div class="cap-entry reveal">
-          <dt class="cap-num">02</dt>
-          <dd>
-            <div class="cap-title">Decarbonisation Modelling</div>
-            <div class="cap-body">Scenario-driven pathway models with toggle-controlled levers sourced from DCCEEW, NVES, and CSIRO data. BU-level abatement tracking and revenue-indexed gross emissions forecasting to FY2050.</div>
-          </dd>
-        </div>
-        <div class="cap-entry reveal">
-          <dt class="cap-num">03</dt>
-          <dd>
-            <div class="cap-title">Regulatory Disclosure</div>
-            <div class="cap-body">End-to-end support for NGER and AASB S2 reporting including data chain of custody, methodology documentation, and external assurance readiness.</div>
-          </dd>
-        </div>
-        <div class="cap-entry reveal">
-          <dt class="cap-num">04</dt>
-          <dd>
-            <div class="cap-title">Supply Chain Emissions</div>
-            <div class="cap-body">Scope 3 Category 1 and 4 quantification using spend-based and activity-based methods. Subcontractor survey design, proxy methodology documentation, and pre-configured template systems with automated calculation logic.</div>
-          </dd>
-        </div>
-      </dl>
-    </div>
-    <div>
-      <div class="sec-sub" style="margin-top:0">What I&#x2019;ve Actually Built</div>
-      <div class="built-list">
-        <div class="built-item reveal">
-          <div class="built-num">01 &nbsp;&#x2014;&nbsp; Net Zero Model</div>
-          <div class="built-name">Net Zero Pathway Model (FY2050)</div>
-          <div class="built-outcome">Scenario analysis presented to the Downer board by senior leadership</div>
-        </div>
-        <div class="built-item reveal">
-          <div class="built-num">02 &nbsp;&#x2014;&nbsp; Templates</div>
-          <div class="built-name">Subcontractor Diesel Template Suite</div>
-          <div class="built-outcome">Eliminated manual reporting across three business units</div>
-        </div>
-        <div class="built-item reveal">
-          <div class="built-num">03 &nbsp;&#x2014;&nbsp; Assurance</div>
-          <div class="built-name">GHG Recalculation Module</div>
-          <div class="built-outcome">Delivered external assurance readiness for Group-level emissions</div>
-        </div>
-        <div class="built-item reveal">
-          <div class="built-num">04 &nbsp;&#x2014;&nbsp; Learning</div>
-          <div class="built-name">Climate Change eLearning Module</div>
-          <div class="built-outcome">Deployed company-wide across all-employee cohort</div>
-        </div>
-        <div class="built-item reveal">
-          <div class="built-num">05 &nbsp;&#x2014;&nbsp; GRESB</div>
-          <div class="built-name">GRESB Infrastructure Submission</div>
-          <div class="built-outcome">35% performance improvement in the first year of ownership</div>
-        </div>
-      </div>
-    </div>
+  <div style="margin-top:1.75rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+    <p style="font-size:0.82rem;color:rgba(248,250,252,0.55);max-width:520px;line-height:1.6;margin:0">More examples of this work — emissions baselines, decarbonisation roadmaps, MCA prioritisation, and lifecycle carbon assessment across infrastructure, built environment, and government.</p>
+    <a href="work/" class="btn btn-secondary" style="color:rgba(248,250,252,0.8);border-color:rgba(255,255,255,0.2)">View work samples &#x2192;</a>
   </div>
 </div>
 </section>
 
-<section id="work" style="background:var(--bg);padding:clamp(3rem,7vw,5rem) 0">
-<div class="wrap">
-  <div class="label">Work Samples</div>
-  <p style="font-size:0.9rem;font-weight:400;color:#475569;max-width:560px;line-height:1.8;margin-bottom:1.75rem">Four analytical frameworks — emissions baselines, decarbonisation roadmaps, MCA prioritisation, and lifecycle carbon assessment — applied across infrastructure, built environment, and government.</p>
-  <a href="work/" class="btn btn-secondary" style="display:inline-flex">View work samples &#x2192;</a>
-</div>
-</section>
+
+
 <section id="experience">
 <div class="wrap">
   <div class="label">Experience</div>
@@ -1075,14 +1064,14 @@ body.mode-textile .lever-group-textile .lever{display:block}
       </div>
     </div>
     <ul class="exp-bullets">
-      <li>Infrastructure upgrade project delivery across Defence sites.</li>
+      <li>Infrastructure upgrade project delivery across Defence sites as part of a $3.2 billion capital portfolio under the Capital Facilities &amp; Infrastructure Branch — coordinating design, procurement, and delivery across multiple concurrent projects.</li>
     </ul>
   </div>
 
   <div class="edu-block">
     <div class="edu-row">
       <div class="edu-inst">University of New South Wales</div>
-      <div class="edu-deg">Bachelor of Engineering (Civil Engineering with Architecture), Honours Class&nbsp;1 &nbsp;&middot;&nbsp; 2016&#x2013;2020</div>
+      <div class="edu-deg">Bachelor of Engineering (Civil Engineering with Architecture), Honours Class&nbsp;1</div>
     </div>
     <div class="cred">Dean's Honours List &nbsp;&middot;&nbsp; Thesis: Vertical Greenery Systems and the Indoor Setting (Grade: 92) &nbsp;&middot;&nbsp; President, CEVSOC 2021 (Arc Constituent Club of the Year; executive team of 56; 2,000-member student body) &nbsp;&middot;&nbsp; Capstone: sustainable infrastructure masterplanning, Green Star / NABERS / Envision frameworks</div>
   </div>
@@ -1092,12 +1081,7 @@ body.mode-textile .lever-group-textile .lever{display:block}
 
 <section id="contact">
 <div class="wrap">
-  <div class="contact-bgword" aria-hidden="true">AVAILABLE</div>
   <div class="label">Contact</div>
-  <div class="avail-badge">
-    <span class="avail-dot"></span>
-    Actively exploring new roles &nbsp;&middot;&nbsp; Open to conversations now
-  </div>
   <div class="contact-avail">Open to senior advisory and lead sustainability roles.</div>
   <div class="contact-loc">Melbourne, Victoria &nbsp;&middot;&nbsp; Flexible on arrangement</div>
   <div class="btns">
@@ -1110,13 +1094,35 @@ body.mode-textile .lever-group-textile .lever{display:block}
   <div class="footer-inner">
     <a href="#about" class="footer-home">./</a>
     <span class="footer-name">Christopher Wang &nbsp;&middot;&nbsp; 2026</span>
-    <div class="footer-links">
-      <a href="https://linkedin.com/in/chriswang0" target="_blank" rel="noopener">LinkedIn</a>
-    </div>
   </div>
 </footer>
 
 <script>
+/* ---- Pipeline accordion ---- */
+function togglePipe(step){
+  var panel=document.getElementById('pipe-panel-'+step);
+  var btn=document.querySelector('[data-step="'+step+'"]');
+  if(!panel||!btn) return;
+  var isOpen=panel.classList.contains('open');
+  document.querySelectorAll('.pipe-panel.open').forEach(function(p){p.classList.remove('open');});
+  document.querySelectorAll('.pipe-step.open').forEach(function(s){
+    s.classList.remove('open');
+    s.setAttribute('aria-expanded','false');
+  });
+  if(!isOpen){
+    panel.classList.add('open');
+    btn.classList.add('open');
+    btn.setAttribute('aria-expanded','true');
+  }
+}
+document.addEventListener('DOMContentLoaded',function(){
+  document.querySelectorAll('.pipe-step').forEach(function(btn){
+    btn.addEventListener('keydown',function(e){
+      if(e.key==='Enter'||e.key===' '){e.preventDefault();btn.click();}
+    });
+  });
+});
+
 /* ---- A. Tab switching ---- */
 function showTab(id){
   var ids=['baseline','roadmap','mca','lca'];
@@ -1803,21 +1809,6 @@ window.addEventListener('load',function(){
   }
 })();
 
-/* ---- Magnetic button effect ---- */
-document.addEventListener('DOMContentLoaded',function(){
-  document.querySelectorAll('.btn-primary').forEach(function(btn){
-    btn.addEventListener('mousemove',function(e){
-      var r=btn.getBoundingClientRect();
-      var x=(e.clientX-r.left-r.width/2)*0.18;
-      var y=(e.clientY-r.top-r.height/2)*0.18;
-      btn.style.transform='translate('+x.toFixed(1)+'px,'+y.toFixed(1)+'px)';
-    });
-    btn.addEventListener('mouseleave',function(){
-      btn.style.transform='';
-    });
-  });
-  /* Add section ident numbers next to each section label */
-});
 
 /* ---- 22A: Scroll progress bar ---- */
 (function(){
@@ -1838,28 +1829,6 @@ document.addEventListener('DOMContentLoaded',function(){
   });
 })();
 
-/* ---- 22B: Magnetic hover on CTA (avail-badge + btns) ---- */
-(function(){
-  if(!window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
-  if(window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
-  document.querySelectorAll('.btn,.avail-badge').forEach(function(btn){
-    btn.addEventListener('mousemove',function(e){
-      var r=btn.getBoundingClientRect();
-      var dx=e.clientX-r.left-r.width/2;
-      var dy=e.clientY-r.top-r.height/2;
-      var dist=Math.sqrt(dx*dx+dy*dy);
-      if(dist<80){
-        var x=(dx*0.28).toFixed(1),y=(dy*0.28).toFixed(1);
-        btn.style.transform='translate('+x+'px,'+y+'px)';
-      }
-    });
-    btn.addEventListener('mouseleave',function(){
-      btn.style.transition='transform 0.4s cubic-bezier(0.34,1.56,0.64,1)';
-      btn.style.transform='translate(0,0)';
-      setTimeout(function(){btn.style.transition='';},400);
-    });
-  });
-})();
 
 /* ---- 22D: Card tilt on hover (results section) ---- */
 (function(){
