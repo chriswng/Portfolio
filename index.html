@@ -662,7 +662,7 @@ body.mode-textile .lever-group-textile .lever{display:block}
 .pipe-cta:hover{opacity:0.7}
 
 /* ---- Improved lever/controls spacing ---- */
-.controls-card{background:var(--white);border:1px solid var(--rule-dk);overflow:hidden;margin:0 1.5rem 1.5rem}
+.controls-card{background:var(--white);border:1px solid var(--rule-dk);overflow:hidden;margin-bottom:1.5rem}
 .lever{background:var(--bg);padding:1.5rem 1.75rem}
 .lever-name{font-size:0.84rem;font-weight:700;color:var(--slate);margin-bottom:0.4rem}
 .lever-src{font-family:var(--mono);font-size:0.58rem;color:var(--matcha);margin-bottom:0.9rem;letter-spacing:0.02em}
@@ -958,15 +958,15 @@ body.mode-textile .lever-group-textile .lever{display:block}
           <option value="off">Off: no plant electrification</option>
         </select>
       </div>
-      <div class="lever lever-rev" style="grid-column:1/-1">
-        <div class="lever-name" id="lev-rev-name">Volume / Revenue Growth Assumption</div>
-        <div class="lever-src">Scales gross emissions pre-abatement</div>
-        <select id="sel-rev" class="lever-select" onchange="run()">
-          <option value="flat">Flat: no growth</option>
-          <option value="moderate" selected>Moderate: +1.5% per year</option>
-          <option value="high">High: +3.0% per year</option>
-        </select>
-      </div>
+    </div>
+    <div class="lever lever-rev">
+      <div class="lever-name" id="lev-rev-name">Volume / Revenue Growth Assumption</div>
+      <div class="lever-src">Scales gross emissions pre-abatement</div>
+      <select id="sel-rev" class="lever-select" onchange="run()">
+        <option value="flat">Flat: no growth</option>
+        <option value="moderate" selected>Moderate: +1.5% per year</option>
+        <option value="high">High: +3.0% per year</option>
+      </select>
     </div>
   </div>
   <div class="contrib-card">
