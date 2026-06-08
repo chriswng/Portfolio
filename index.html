@@ -650,7 +650,7 @@ body.mode-textile .lever-group-textile .lever{display:block}
 .pipe-step[data-step="comms"]{border-left-color:var(--step-comms)}
 .pipe-panel{max-height:0;overflow:hidden;transition:max-height 0.45s cubic-bezier(0.4,0,0.2,1)}
 .pipe-panel.open{max-height:1000px;border-bottom:1px solid var(--rule-dk)}
-.pipe-panel-inner{padding:1.25rem 1.5rem 1.5rem 3.4rem;background:#FAFBFC}
+.pipe-panel-inner{padding:1.25rem 1.5rem 1.5rem;background:#FAFBFC}
 .pipe-desc{font-size:0.82rem;color:var(--mid);line-height:1.7;margin-bottom:1.25rem}
 .pipe-examples{display:flex;flex-direction:column;gap:0.85rem}
 .pipe-example{padding:0.85rem 1rem;background:var(--white);border:1px solid var(--rule-lt);border-left:3px solid var(--rule-dk);transition:border-left-color 0.2s}
@@ -662,7 +662,7 @@ body.mode-textile .lever-group-textile .lever{display:block}
 .pipe-cta:hover{opacity:0.7}
 
 /* ---- Improved lever/controls spacing ---- */
-.controls-card{background:var(--white);border:1px solid var(--rule-dk);overflow:hidden;margin:0 1.5rem 1.5rem}
+.controls-card{background:var(--white);border:1px solid var(--rule-dk);overflow:hidden;margin-bottom:1.5rem}
 .lever{background:var(--bg);padding:1.5rem 1.75rem}
 .lever-name{font-size:0.84rem;font-weight:700;color:var(--slate);margin-bottom:0.4rem}
 .lever-src{font-family:var(--mono);font-size:0.58rem;color:var(--matcha);margin-bottom:0.9rem;letter-spacing:0.02em}
@@ -890,10 +890,6 @@ body.mode-textile .lever-group-textile .lever{display:block}
 <div class="scenario-bg-mesh" aria-hidden="true"></div>
 <div class="wrap">
   <div class="label">Decarbonisation Scenario Model</div>
-  <div class="mode-toggle">
-    <button class="mode-btn on" id="mode-btn-infra" onclick="setMode('industrial')">Industrial Supply Chain</button>
-    <button class="mode-btn" id="mode-btn-textile" onclick="setMode('textile')">Boutique Textile Retail</button>
-  </div>
   <p class="tool-decl" id="tool-decl-text">Every lever has a source. <strong>Adjust the controls to see what changes.</strong></p>
   <p class="tool-sub" id="tool-sub-text">Select a sector and scenario to explore how abatement levers shift a Scope 1 &amp; 2 trajectory. Lever assumptions are drawn from DCCEEW 2025 grid emission factor tables, the NVES Act 2024 (LV fleet), and CSIRO Net Zero Pathways — the same sources used in production pathway models.</p>
   <span class="tool-disc">Illustrative model &middot; stylised numbers &middot; not client data</span>
@@ -911,13 +907,14 @@ body.mode-textile .lever-group-textile .lever{display:block}
     <div class="controls-head">Scenario Controls: select a scenario for each lever</div>
     <div class="lever-grid">
       <!-- INDUSTRIAL: sector + 4 levers -->
-      <div class="lever lever-sector lever-group-infra" id="infra-sector-row" style="grid-column:1/-1">
-        <div class="lever-name">Sector / Organisation Type</div>
-        <div class="lever-src">Changes emission share weights by asset class</div>
+      <div class="lever lever-sector" id="infra-sector-row" style="grid-column:1/-1">
+        <div class="lever-name">Organisation Type</div>
+        <div class="lever-src">Selects sector profile and lever assumptions</div>
         <select id="sel-sector" class="lever-select" onchange="changeSector()">
           <option value="infrastructure">Infrastructure</option>
           <option value="property">Commercial Property</option>
           <option value="government">Government Operations</option>
+          <option value="textile">Boutique Textile Retail</option>
         </select>
       </div>
       <div class="lever lever-group-infra" id="lev-grid">
@@ -958,15 +955,15 @@ body.mode-textile .lever-group-textile .lever{display:block}
           <option value="off">Off: no plant electrification</option>
         </select>
       </div>
-      <div class="lever lever-rev" style="grid-column:1/-1">
-        <div class="lever-name" id="lev-rev-name">Volume / Revenue Growth Assumption</div>
-        <div class="lever-src">Scales gross emissions pre-abatement</div>
-        <select id="sel-rev" class="lever-select" onchange="run()">
-          <option value="flat">Flat: no growth</option>
-          <option value="moderate" selected>Moderate: +1.5% per year</option>
-          <option value="high">High: +3.0% per year</option>
-        </select>
-      </div>
+    </div>
+    <div class="lever lever-rev">
+      <div class="lever-name" id="lev-rev-name">Volume / Revenue Growth Assumption</div>
+      <div class="lever-src">Scales gross emissions pre-abatement</div>
+      <select id="sel-rev" class="lever-select" onchange="run()">
+        <option value="flat">Flat: no growth</option>
+        <option value="moderate" selected>Moderate: +1.5% per year</option>
+        <option value="high">High: +3.0% per year</option>
+      </select>
     </div>
   </div>
   <div class="contrib-card">
@@ -978,7 +975,7 @@ body.mode-textile .lever-group-textile .lever{display:block}
   </div>
   <div style="margin-top:1.75rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
     <p style="font-size:0.82rem;color:rgba(248,250,252,0.55);max-width:520px;line-height:1.6;margin:0">More examples of this work — emissions baselines, decarbonisation roadmaps, MCA prioritisation, and lifecycle carbon assessment across infrastructure, built environment, and government.</p>
-    <a href="work/" class="btn btn-secondary" style="color:rgba(248,250,252,0.8);border-color:rgba(255,255,255,0.2)">View work samples &#x2192;</a>
+    <a href="work/" class="btn btn-primary">View work samples &#x2192;</a>
   </div>
 </div>
 </section>
@@ -1209,16 +1206,43 @@ var F_TEXTILE=(function(){
 
 /* ---- D. changeSector() ---- */
 function changeSector(){
-  if(_currentMode==='textile') return;
   var sk=document.getElementById('sel-sector').value;
-  var prof=SECTOR_PROFILES[sk];
-  FY20=prof.FY20; FY25=prof.FY25; SH=prof.SH;
-  var scale=prof.FY25/277000;
-  HIST=HIST_BASE.map(function(h){return Math.round(h*scale);});
-  document.getElementById('kpi-base-v').textContent=Math.round(FY20/1000)+'k t';
-  document.getElementById('kpi-fy25-v').textContent=Math.round(FY25/1000)+'k t';
-  var descEl=document.getElementById('sector-desc');
-  if(descEl) descEl.textContent=prof.desc;
+  var ll;
+  if(sk==='textile'){
+    _currentMode='textile';
+    ll=LEVER_LABELS.textile;
+    FY20=TEXTILE_PROFILE.FY20; FY25=TEXTILE_PROFILE.FY25; SH=TEXTILE_PROFILE.SH;
+    HIST=HIST_BASE.map(function(h){return Math.round(h*(TEXTILE_PROFILE.FY25/277000));});
+    document.getElementById('kpi-base-v').textContent=Math.round(TEXTILE_PROFILE.FY20/1000)+'k t';
+    document.getElementById('kpi-fy25-v').textContent=Math.round(TEXTILE_PROFILE.FY25/1000)+'k t';
+    var d=document.getElementById('sector-desc');
+    if(d) d.textContent=TEXTILE_PROFILE.desc;
+  } else {
+    _currentMode='industrial';
+    ll=LEVER_LABELS.industrial;
+    var prof=SECTOR_PROFILES[sk];
+    FY20=prof.FY20; FY25=prof.FY25; SH=prof.SH;
+    var scale=prof.FY25/277000;
+    HIST=HIST_BASE.map(function(h){return Math.round(h*scale);});
+    document.getElementById('kpi-base-v').textContent=Math.round(FY20/1000)+'k t';
+    document.getElementById('kpi-fy25-v').textContent=Math.round(FY25/1000)+'k t';
+    var descEl=document.getElementById('sector-desc');
+    if(descEl) descEl.textContent=prof.desc;
+  }
+  document.getElementById('lev-grid-name').textContent=ll.grid.name;
+  document.getElementById('lev-grid-src').textContent=ll.grid.src;
+  document.getElementById('lev-lv-name').textContent=ll.lv.name;
+  document.getElementById('lev-lv-src').textContent=ll.lv.src;
+  document.getElementById('lev-hv-name').textContent=ll.hv.name;
+  document.getElementById('lev-hv-src').textContent=ll.hv.src;
+  document.getElementById('lev-plant-name').textContent=ll.plant.name;
+  document.getElementById('lev-plant-src').textContent=ll.plant.src;
+  document.getElementById('cbar-name-grid').textContent=ll.cbar.grid;
+  document.getElementById('cbar-name-lv').textContent=ll.cbar.lv;
+  document.getElementById('cbar-name-hv').textContent=ll.cbar.hv;
+  document.getElementById('cbar-name-plant').textContent=ll.cbar.plant;
+  var subEl=document.getElementById('tool-sub-text');
+  if(subEl) subEl.textContent=ll.sub;
   run();
 }
 
@@ -1372,44 +1396,6 @@ var LEVER_LABELS={
     sub:'Explore how a boutique apparel brand can reduce Scope 3 emissions through freight mode shift (air → ocean), material substitution (virgin polyester → closed-loop bio-synthetics), low-impact dyeing processes, and renewable energy procurement. Multipliers scaled to illustrative boutique retail footprint.'
   }
 };
-function setMode(mode){
-  _currentMode=mode;
-  document.getElementById('mode-btn-infra').classList.toggle('on',mode==='industrial');
-  document.getElementById('mode-btn-textile').classList.toggle('on',mode==='textile');
-  var ll=LEVER_LABELS[mode];
-  // Update lever names
-  document.getElementById('lev-grid-name').textContent=ll.grid.name;
-  document.getElementById('lev-grid-src').textContent=ll.grid.src;
-  document.getElementById('lev-lv-name').textContent=ll.lv.name;
-  document.getElementById('lev-lv-src').textContent=ll.lv.src;
-  document.getElementById('lev-hv-name').textContent=ll.hv.name;
-  document.getElementById('lev-hv-src').textContent=ll.hv.src;
-  document.getElementById('lev-plant-name').textContent=ll.plant.name;
-  document.getElementById('lev-plant-src').textContent=ll.plant.src;
-  // Update cbar names
-  document.getElementById('cbar-name-grid').textContent=ll.cbar.grid;
-  document.getElementById('cbar-name-lv').textContent=ll.cbar.lv;
-  document.getElementById('cbar-name-hv').textContent=ll.cbar.hv;
-  document.getElementById('cbar-name-plant').textContent=ll.cbar.plant;
-  // Update subtitle
-  var subEl=document.getElementById('tool-sub-text');
-  if(subEl) subEl.textContent=ll.sub;
-  // Show/hide sector row
-  var sectRow=document.getElementById('infra-sector-row');
-  if(sectRow) sectRow.style.display=mode==='textile'?'none':'';
-  // Update profiles
-  if(mode==='textile'){
-    FY20=TEXTILE_PROFILE.FY20; FY25=TEXTILE_PROFILE.FY25; SH=TEXTILE_PROFILE.SH;
-    HIST=HIST_BASE.map(function(h){return Math.round(h*(35000/277000));});
-    document.getElementById('kpi-base-v').textContent=Math.round(TEXTILE_PROFILE.FY20/1000)+'k t';
-    document.getElementById('kpi-fy25-v').textContent=Math.round(TEXTILE_PROFILE.FY25/1000)+'k t';
-    var d=document.getElementById('sector-desc');
-    if(d) d.textContent=TEXTILE_PROFILE.desc;
-  } else {
-    changeSector();
-  }
-  run();
-}
 
 /* ---- P. Ticker term tooltips (click to open, dismissible) ---- */
 document.addEventListener('DOMContentLoaded',function(){
