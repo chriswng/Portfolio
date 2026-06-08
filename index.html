@@ -623,6 +623,24 @@ body.mode-textile .lever-group-textile .lever{display:block}
 .label-wipe::after{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:var(--bg);transform-origin:left;transform:scaleX(1);transition:transform 0.4s cubic-bezier(0.77,0,0.18,1)}
 .label-wipe.wipe-done::after{transform:scaleX(0)}
 
+/* ---- Mobile: wrap nav links into rows and show work-sample tabs in full ---- */
+@media(max-width:640px){
+  /* Nav links wrap to multiple rows instead of horizontal scroll */
+  .nav-inner{height:auto;min-height:48px;padding-top:0.3rem;padding-bottom:0.3rem;align-items:center;gap:0.5rem}
+  .nav-links{flex-wrap:wrap;overflow:visible;justify-content:flex-end;row-gap:0.1rem}
+  .nav-links a{height:auto}
+  .nav-links a:hover .ntl{transform:none}
+  .ntl>span{height:auto;padding:0.25rem 0.5rem;line-height:1.2}
+  .ntl>span[aria-hidden="true"]{display:none}
+  /* Work-sample tabs wrap and show full labels (no hover-slide duplicate) */
+  .tabs{flex-wrap:wrap;overflow:visible;gap:0.15rem 0;border-bottom:none}
+  .tab{height:auto;border-bottom:1px solid var(--rule-dk);margin-bottom:0}
+  .tab.on{border-bottom:2px solid var(--matcha)}
+  .tab:hover:not(.on) .tl{transform:none}
+  .tl>span{height:auto;padding:0.6rem 0.9rem;line-height:1.2}
+  .tl>span[aria-hidden="true"]{display:none}
+}
+
 </style>
 </head><body>
 <div class="grain-overlay" aria-hidden="true"></div>
@@ -1397,6 +1415,31 @@ var F={
 };
 var REV={flat:1.000,moderate:1.015,high:1.030};
 
+/* ---- C2. Textile-specific lever curves (illustrative) ----
+   Distinct decay shapes so the boutique-textile scenario produces a
+   visibly different pathway than the industrial scenario.
+   Index 0 = FY26 ... index 24 = FY50. 1.0 = no abatement, ->0 = fully abated. */
+var F_TEXTILE=(function(){
+  function build(fn){var a=[];for(var i=0;i<25;i++){var v=fn(i);a.push(+Math.max(0,Math.min(1,v)).toFixed(3));}return a;}
+  function faster(a){var b=a.slice(1);b.push(a[a.length-1]);return b;}
+  function slower(a){var b=a.slice(0,-1);b.unshift(a[0]);return b;}
+  function off(){var a=[];for(var i=0;i<25;i++)a.push(1.0);return a;}
+  // Renewable energy procurement (Scope 2): aggressive early drop (RE100-style)
+  var renew=build(function(i){return Math.max(0.02,Math.exp(-i/2.5));});
+  // Enzyme dyeing process adoption: gentle, steady decline that plateaus
+  var dye=build(function(i){return Math.max(0.40,1-i*0.025);});
+  // Air-to-ocean freight modal shift: holds, then a steep mid-term step
+  var freight=build(function(i){return 1/(1+Math.exp((i-8)/2));});
+  // Biosynthetics material substitution: slow start, steep late as tech matures
+  var bio=build(function(i){return 1/(1+Math.exp((i-14)/2.5));});
+  return {
+    grid:{base:renew,faster:faster(renew),slower:slower(renew),off:off()},
+    lv:{base:dye,faster:faster(dye),slower:slower(dye)},
+    hv:{base:freight,faster:faster(freight),slower:slower(freight)},
+    plant:{base:bio,faster:faster(bio),slower:slower(bio),off:off()}
+  };
+})();
+
 /* ---- D. changeSector() ---- */
 function changeSector(){
   if(_currentMode==='textile') return;
@@ -1780,6 +1823,7 @@ function run(){
   });
   document.getElementById('sel-rev').classList.toggle('changed',rk!=='moderate');
   var currentYear=new Date().getFullYear();
+  var FT=_currentMode==='textile'?F_TEXTILE:F;
   var net=[],gridLayer=[],lvLayer=[],hvLayer=[],plantLayer=[],bau=[],actuals=[];
   var net32=0;
   for(var y=2020;y<=2050;y++){
@@ -1794,10 +1838,10 @@ function run(){
       var gf=Math.pow(REV[rk],n);
       var g=Math.round(FY25*gf);
       bau.push(g);
-      var gFac=fi<25?F.grid[gk][fi]:0.10;
-      var lvFac=fi<25?F.lv[lk][fi]:0.01;
-      var hvFac=fi<25?F.hv[hk][fi]:0.00;
-      var pFac=fi<25?F.plant[pk][fi]:0.00;
+      var gFac=fi<25?FT.grid[gk][fi]:0.10;
+      var lvFac=fi<25?FT.lv[lk][fi]:0.01;
+      var hvFac=fi<25?FT.hv[hk][fi]:0.00;
+      var pFac=fi<25?FT.plant[pk][fi]:0.00;
       var s2gross=FY25*SH.s2*gf;
       var lvGross=FY25*SH.lv*gf;
       var hvGross=FY25*SH.hv*gf;
@@ -1836,10 +1880,10 @@ function run(){
   ch.update('none');
   /* Contribution bars */
   var fi32=6,gf32=Math.pow(REV[rk],7);
-  var sv_g=FY25*SH.s2*gf32*(1-F.grid[gk][fi32]);
-  var sv_lv=FY25*SH.lv*gf32*(1-F.lv[lk][fi32]);
-  var sv_hv=FY25*SH.hv*gf32*(1-F.hv[hk][fi32]);
-  var sv_pl=FY25*SH.plant*gf32*(1-F.plant[pk][fi32]);
+  var sv_g=FY25*SH.s2*gf32*(1-FT.grid[gk][fi32]);
+  var sv_lv=FY25*SH.lv*gf32*(1-FT.lv[lk][fi32]);
+  var sv_hv=FY25*SH.hv*gf32*(1-FT.hv[hk][fi32]);
+  var sv_pl=FY25*SH.plant*gf32*(1-FT.plant[pk][fi32]);
   var maxSv=Math.max(sv_g,sv_lv,sv_hv,sv_pl,1);
   function setBar(fb,fv,s){
     var fb_el=document.getElementById(fb);
