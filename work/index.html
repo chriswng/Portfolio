@@ -42,9 +42,8 @@ html{scroll-behavior:smooth}
 }
 body{font-family:var(--sans);font-weight:300;font-size:0.9rem;color:var(--slate);background:var(--bg);line-height:1.75;-webkit-font-smoothing:antialiased}
 .nav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--rule-dk)}
-.nav-inner{max-width:var(--max);margin:0 auto;padding:0 var(--pad);display:flex;justify-content:space-between;align-items:center;height:48px}
-.nav-links{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-.nav-links::-webkit-scrollbar{display:none}
+.nav-inner{max-width:var(--max);margin:0 auto;padding:0.35rem var(--pad);display:flex;justify-content:space-between;align-items:flex-start;min-height:48px;gap:0.5rem}
+.nav-links{display:flex;flex-wrap:wrap;justify-content:flex-end;row-gap:0}
 .nav-links a{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--mid);text-decoration:none;height:48px;display:inline-flex;align-items:flex-start;border-bottom:none;margin-bottom:0;overflow:hidden;padding:0;transition:color 0.3s var(--ease)}
 .nav-links a:hover{color:var(--matcha);border-bottom-color:rgba(181,196,43,0.4)}
 .nav-links a.active .ntl>span{color:var(--matcha)}
@@ -249,7 +248,7 @@ section:last-of-type{border-bottom:none}
 .edu-row{font-size:0.85rem}
 .edu-inst{font-weight:700;color:var(--slate)}
 .edu-deg{font-weight:400;color:#475569}
-.cred{font-family:var(--mono);font-size:0.68rem;color:var(--matcha);padding-top:0.5rem;border-top:1px solid var(--rule-dk);letter-spacing:0.04em;line-height:1.6;font-weight:600;}
+.cred{font-family:var(--mono);font-size:0.68rem;color:#527A1E;padding-top:0.5rem;border-top:1px solid var(--rule-dk);letter-spacing:0.03em;line-height:1.65;font-weight:400;}
 #scenario{background:var(--bg);border-bottom:1px solid var(--rule-dk);padding:clamp(5rem,11vw,8rem) 0}
 #scenario .label::after{background:var(--rule-dk)}
 .tool-decl{font-family:var(--sans);font-size:clamp(1.1rem,2.5vw,1.5rem);font-weight:400;color:var(--slate);max-width:640px;line-height:1.45;margin-bottom:0.75rem}
@@ -615,9 +614,6 @@ body.mode-textile .lever-group-textile .lever{display:block}
 
 /* ---- Mobile: wrap nav links into rows and show work-sample tabs in full ---- */
 @media(max-width:640px){
-  /* Nav links wrap to multiple rows instead of horizontal scroll */
-  .nav-inner{height:auto;min-height:48px;padding-top:0.3rem;padding-bottom:0.3rem;align-items:center;gap:0.5rem}
-  .nav-links{flex-wrap:wrap;overflow:visible;justify-content:flex-end;row-gap:0.1rem}
   .nav-links a{height:auto}
   .nav-links a:hover .ntl{transform:none}
   .ntl>span{height:auto;padding:0.25rem 0.5rem;line-height:1.2}
@@ -639,10 +635,9 @@ body.mode-textile .lever-group-textile .lever{display:block}
     <a href="../" class="nav-logo">./</a>
     <div class="nav-links" role="navigation">
       <a href="../#about"><span class="ntl"><span>[ About ]</span><span aria-hidden="true">[ About ]</span></span></a>
-      <a href="../#results"><span class="ntl"><span>[ Results ]</span><span aria-hidden="true">[ Results ]</span></span></a>
+      <a href="../#bio"><span class="ntl"><span>[ Pipeline ]</span><span aria-hidden="true">[ Pipeline ]</span></span></a>
       <a href="../#principles"><span class="ntl"><span>[ Approach ]</span><span aria-hidden="true">[ Approach ]</span></span></a>
       <a href="../#scenario"><span class="ntl"><span>[ Model ]</span><span aria-hidden="true">[ Model ]</span></span></a>
-      <a href="../#expertise"><span class="ntl"><span>[ Expertise ]</span><span aria-hidden="true">[ Expertise ]</span></span></a>
       <a href="./" class="active"><span class="ntl"><span>[ Work ]</span><span aria-hidden="true">[ Work ]</span></span></a>
       <a href="../#experience"><span class="ntl"><span>[ Experience ]</span><span aria-hidden="true">[ Experience ]</span></span></a>
       <a href="../#contact"><span class="ntl"><span>[ Contact ]</span><span aria-hidden="true">[ Contact ]</span></span></a>
@@ -898,9 +893,6 @@ body.mode-textile .lever-group-textile .lever{display:block}
   <div class="footer-inner">
     <a href="../" class="footer-home">./</a>
     <span class="footer-name">Christopher Wang &nbsp;&middot;&nbsp; 2026</span>
-    <div class="footer-links">
-      <a href="https://linkedin.com/in/chriswang0" target="_blank" rel="noopener">LinkedIn</a>
-    </div>
   </div>
 </footer>
 
@@ -1110,28 +1102,6 @@ document.addEventListener('DOMContentLoaded',function(){
   document.querySelectorAll('.label').forEach(function(el){if(el.textContent.trim()) sObs.observe(el);});
 })();
 
-/* ---- G. Magnetic buttons ---- */
-(function(){
-  if(!window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
-  if(window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
-  document.querySelectorAll('.btn,.avail-badge').forEach(function(btn){
-    btn.addEventListener('mousemove',function(e){
-      var r=btn.getBoundingClientRect();
-      var dx=e.clientX-r.left-r.width/2;
-      var dy=e.clientY-r.top-r.height/2;
-      var dist=Math.sqrt(dx*dx+dy*dy);
-      if(dist<80){
-        var x=(dx*0.28).toFixed(1),y=(dy*0.28).toFixed(1);
-        btn.style.transform='translate('+x+'px,'+y+'px)';
-      }
-    });
-    btn.addEventListener('mouseleave',function(){
-      btn.style.transition='transform 0.4s cubic-bezier(0.34,1.56,0.64,1)';
-      btn.style.transform='translate(0,0)';
-      setTimeout(function(){btn.style.transition='';},400);
-    });
-  });
-})();
 
 /* ---- H. Scroll progress bar ---- */
 (function(){
