@@ -161,7 +161,8 @@ section:last-of-type{border-bottom:none}
 .s3-pct{font-family:var(--mono);font-size:0.78rem;font-weight:600;color:var(--matcha);text-align:right}
 .s3-bar-wrap{height:4px;background:#E2E8F0;overflow:hidden}
 .s3-bar-fill{height:100%;background:var(--matcha)}
-.sankey-wrap{margin:2rem 0 0;overflow-x:auto;min-height:420px}
+.sankey-wrap{margin:2rem 0 0;overflow-x:auto;width:100%;max-width:var(--max);min-height:420px}
+@media(min-width:900px){.sankey-wrap{min-height:500px}}
 .impl-grid{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule-dk);border:1px solid var(--rule-dk);overflow:hidden;margin-top:2rem}
 @media(min-width:560px){.impl-grid{grid-template-columns:repeat(3,1fr)}}
 .impl{background:var(--white);padding:1.25rem 1.5rem;border-left:3px solid var(--matcha);transition:background 0.3s var(--ease)}
@@ -231,10 +232,6 @@ section:last-of-type{border-bottom:none}
 #experience{background:var(--bg);padding:clamp(4.5rem,10vw,7rem) 0}
 .exp-entry{padding:2.5rem 0;border-top:1px solid var(--rule-dk);position:relative;overflow:hidden}
 .exp-entry:first-child{border-top:none;padding-top:0}
-.exp-entry::before{font-family:var(--disp);font-size:clamp(5.5rem,10vw,8.5rem);font-weight:800;color:rgba(0,0,0,0.03);position:absolute;right:0;top:1rem;line-height:1;pointer-events:none;letter-spacing:-0.04em;user-select:none;z-index:0}
-.exp-entry:nth-of-type(1)::before{content:'01'}
-.exp-entry:nth-of-type(2)::before{content:'02'}
-.exp-entry:nth-of-type(3)::before{content:'03'}
 .exp-hd{display:grid;gap:1rem;margin-bottom:1.25rem}
 @media(min-width:640px){.exp-hd{grid-template-columns:1fr auto;align-items:start}}
 .exp-org-name{font-family:var(--disp);font-size:1.25rem;font-weight:700;color:var(--slate);line-height:1.1;margin-bottom:0.1rem;display:inline-flex;align-items:baseline;gap:0.4rem}
@@ -361,14 +358,17 @@ body.cur-on #cursor-ring.cx{width:44px;height:44px;opacity:0.4}
 /* Artefact stagger removed for visual balance */
 
 /* ---- Ticker interactive terms ---- */
-.t-term{cursor:default;padding:0 0.12em;border-radius:1px;transition:background 0.18s ease,color 0.18s ease;letter-spacing:0.13em}
+.t-term{cursor:pointer;padding:0 0.12em;border-radius:1px;transition:background 0.18s ease,color 0.18s ease;letter-spacing:0.13em}
 .t-term:hover{background:var(--matcha);color:var(--bg)}
+.t-term.t-active{background:var(--matcha);color:var(--bg)}
 .t-sep{color:var(--mid);letter-spacing:0;flex-shrink:0}
-.ticker-tip{position:fixed;background:var(--slate);color:var(--bg);font-family:var(--mono);font-size:0.58rem;letter-spacing:0.03em;padding:0.5rem 0.8rem;z-index:10001;pointer-events:none;max-width:260px;line-height:1.6;border-left:2px solid var(--matcha);opacity:0;transition:opacity 0.15s;white-space:normal}
-.ticker-tip.vis{opacity:1}
+.ticker-tip{position:fixed;background:var(--slate);color:var(--bg);font-family:var(--mono);font-size:0.58rem;letter-spacing:0.03em;padding:0.65rem 1.9rem 0.65rem 0.8rem;z-index:10001;pointer-events:none;max-width:260px;line-height:1.6;border-left:2px solid var(--matcha);opacity:0;transition:opacity 0.15s;white-space:normal}
+.ticker-tip.vis{opacity:1;pointer-events:auto}
+.ticker-tip-close{position:absolute;top:0.25rem;right:0.4rem;font-family:var(--mono);font-size:0.85rem;line-height:1;color:rgba(248,250,252,0.55);background:none;border:none;cursor:pointer;padding:0.15rem 0.25rem;transition:color 0.2s}
+.ticker-tip-close:hover{color:var(--matcha)}
 
 /* ---- Scenario mode toggle ---- */
-.mode-toggle{display:flex;gap:1px;background:#D5D5D5;border:1px solid var(--rule-lt);margin-bottom:1.75rem;overflow:hidden;width:fit-content}
+.mode-toggle{display:flex;gap:1px;background:#D5D5D5;border:1px solid var(--rule-lt);margin-bottom:1.5rem;overflow:hidden;width:fit-content}
 .mode-btn{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;border:none;background:#E2E8F0;color:var(--mid);cursor:pointer;padding:0.55rem 1.1rem;font-weight:600;transition:background 0.25s,color 0.25s;white-space:nowrap}
 .mode-btn.on{background:var(--matcha);color:var(--bg)}
 .mode-badge{display:inline-block;font-family:var(--mono);font-size:0.52rem;letter-spacing:0.12em;text-transform:uppercase;background:var(--red-bg);color:var(--matcha);border:1px solid rgba(181,196,43,0.3);padding:0.2rem 0.55rem;margin-left:0.75rem;vertical-align:middle;font-weight:700}
@@ -661,15 +661,9 @@ body.mode-textile .lever-group-textile .lever{display:block}
       <div class="instr-val" id="years-advisory" data-suffix="+">4+</div>
     </div>
     <div class="instr">
-      <div class="instr-lbl">Reporting frameworks<br>applied</div>
-      <div class="instr-val" data-target="8" data-suffix="+">8+</div>
+      <div class="instr-lbl">Years built environment<br>&amp; infrastructure</div>
+      <div class="instr-val" id="years-built-env" data-suffix="+">6+</div>
     </div>
-  </div>
-  <div class="live-strip">
-    <span class="live-dot" aria-hidden="true"></span>
-    <span class="live-label">NEM grid intensity, est. <span id="nem-year">FY26</span></span>
-    <span class="live-val" id="nem-val">0.722</span>
-    <span class="live-unit">tCO&#x2082;-e/MWh</span>
   </div>
   <div class="scroll-hint" aria-hidden="true"><span class="scroll-hint-line"></span>Scroll to explore</div>
 </div>
@@ -683,11 +677,11 @@ body.mode-textile .lever-group-textile .lever{display:block}
     <p class="bio-text" style="margin-top:1rem">Career direction: sustainability leadership in a global or high-growth organisation, particularly in fashion, consumer goods, or technology, where supply chain transparency and decarbonisation strategy are primary workstreams rather than peripheral obligations.</p>
     <p class="bio-text" style="margin-top:1rem">I hold a Bachelor of Engineering (Civil Engineering with Architecture), First Class Honours, from UNSW.</p>
     <div class="pipeline" aria-label="Capability pipeline">
-      <div class="pipe-node hl" data-step="raw">Raw Data<small style="display:block;font-size:0.48rem;margin-top:0.3rem;opacity:0.7;text-transform:none;letter-spacing:0">Subcontractor diesel templates with automated upload</small></div><div class="pipe-arrow">&#x2192;</div>
-      <div class="pipe-node hl" data-step="calc">Calculation<small style="display:block;font-size:0.48rem;margin-top:0.3rem;opacity:0.7;text-transform:none;letter-spacing:0">Toggle-based net zero model with govt-sourced levers</small></div><div class="pipe-arrow">&#x2192;</div>
-      <div class="pipe-node hl" data-step="report">Reporting<small style="display:block;font-size:0.48rem;margin-top:0.3rem;opacity:0.7;text-transform:none;letter-spacing:0">GRI 305 across four BUs via Workiva</small></div><div class="pipe-arrow">&#x2192;</div>
-      <div class="pipe-node hl" data-step="strategy">Strategy<small style="display:block;font-size:0.48rem;margin-top:0.3rem;opacity:0.7;text-transform:none;letter-spacing:0">Independent GHG recalculation module for assurance</small></div><div class="pipe-arrow">&#x2192;</div>
-      <div class="pipe-node hl" data-step="comms">Communication<small style="display:block;font-size:0.48rem;margin-top:0.3rem;opacity:0.7;text-transform:none;letter-spacing:0">Section 13E NGER response lodged within 30 days</small></div>
+      <div class="pipe-node hl" data-step="raw">Raw Data</div><div class="pipe-arrow">&#x2192;</div>
+      <div class="pipe-node hl" data-step="calc">Calculation</div><div class="pipe-arrow">&#x2192;</div>
+      <div class="pipe-node hl" data-step="report">Reporting</div><div class="pipe-arrow">&#x2192;</div>
+      <div class="pipe-node hl" data-step="strategy">Strategy</div><div class="pipe-arrow">&#x2192;</div>
+      <div class="pipe-node hl" data-step="comms">Communication</div>
     </div>
   </div>
 </div>
@@ -700,17 +694,17 @@ body.mode-textile .lever-group-textile .lever{display:block}
     <div class="princ reveal">
       <div class="princ-num">01</div>
       <div class="princ-title">Data integrity precedes narrative.</div>
-      <div class="princ-body">Every published net zero commitment is a claim. The credibility of that claim depends on what is behind it: a defensible, independently verifiable emissions inventory scoped and documented before the narrative is drafted — so the audit trail exists whether or not external scrutiny follows.</div>
+      <div class="princ-body">Every published net zero commitment is a claim. The credibility of that claim depends on what is behind it: a defensible, independently verifiable emissions inventory scoped and documented before the narrative is drafted, so the audit trail exists whether or not external scrutiny follows.</div>
     </div>
     <div class="princ reveal">
       <div class="princ-num">02</div>
       <div class="princ-title">Reusable infrastructure compounds value.</div>
-      <div class="princ-body">Advisory that lives in a consultant's head has a short shelf life. I build models, templates, and processes designed for internal operation — so the organisation retains the methodology, can answer assurance questions, and can run the reporting cycle the following year without calling for external support.</div>
+      <div class="princ-body">Advisory that lives in a consultant's head has a short shelf life. I build models, templates, and processes designed for internal operation, so the organisation retains the methodology, can answer assurance questions, and can run the reporting cycle the following year without calling for external support.</div>
     </div>
     <div class="princ reveal">
       <div class="princ-num">03</div>
       <div class="princ-title">Ambition grounded in evidence, with gaps named.</div>
-      <div class="princ-body">The science sets the pace, not the strategy. Pathway models need lever assumptions grounded in published data, with estimation uncertainty disclosed alongside the figures. Where carbon credits are part of the plan, they address residual hard-to-abate emissions — not a substitute for near-term reduction commitments.</div>
+      <div class="princ-body">The science sets the pace, not the strategy. Pathway models need lever assumptions grounded in published data, with estimation uncertainty disclosed alongside the figures. Where carbon credits are part of the plan, they address residual hard-to-abate emissions and are not a substitute for near-term reduction commitments.</div>
     </div>
   </div>
   <div class="princ-bg-word" aria-hidden="true">DATA</div>
@@ -720,8 +714,8 @@ body.mode-textile .lever-group-textile .lever{display:block}
 <div class="ticker-band" aria-hidden="true">
   <div id="ticker-tip" class="ticker-tip" aria-hidden="true"></div>
   <div class="ticker-track">
-    <span class="ticker-run"><span class="t-term" data-tip="Corporate value chain accounting standard – defines Scope 1, 2, and 3 emission boundaries and reporting methodology.">GHG Protocol</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="National Greenhouse and Energy Reporting Act – mandatory Australian corporate emissions reporting to DCCEEW.">NGER Act</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Australian mandatory climate disclosure standard aligned to ISSB S2 – effective for large entities from FY2025.">AASB S2 / ISSB</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Annual supplier emissions disclosure programme managed on behalf of large buyer organisations via the CDP platform.">CDP Supply Chain</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Real assets ESG benchmark used by infrastructure fund managers and institutional investors for annual performance comparison.">GRESB Infrastructure</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Task Force on Climate-related Financial Disclosures – scenario analysis framework for transition and physical risk disclosure.">TCFD</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Science Based Targets initiative – validates near-term and long-term emission reduction targets against 1.5°C pathways.">SBTi</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="GRI Emissions standard – Scope 1, 2, and 3 disclosure requirements, methodology, and intensity metrics.">GRI 305</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="DCCEEW National Greenhouse Accounts emission factors – used for NGER fuel combustion and grid electricity calculations.">DCCEEW NGA Factors</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="PwC external limited assurance over Group-level Scope 1 and 2 emissions for statutory and market reporting.">PwC Assured</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="IBM Envizi ESG Suite – platform for emissions data ingestion, normalisation, audit trail, and regulatory output.">Envizi</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Cloud-based platform for connected ESG and financial reporting with linked data, narrative, and disclosure workflow.">Workiva</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Net-zero Scope 1 and 2 emissions target by FY2050, with interim milestones and lever-tracked abatement pathways.">Net Zero FY2050</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Gross emissions scaled proportionally to revenue growth – isolates abatement impact from business volume changes.">Revenue-Indexed Forecasting</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Scope 2 accounting using supplier-specific emission rates or energy attribute certificates rather than grid averages.">Market-Based Scope 2</span><span class="t-sep"> &nbsp;&nbsp; </span></span>
-    <span class="ticker-run"><span class="t-term" data-tip="Corporate value chain accounting standard – defines Scope 1, 2, and 3 emission boundaries and reporting methodology.">GHG Protocol</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="National Greenhouse and Energy Reporting Act – mandatory Australian corporate emissions reporting to DCCEEW.">NGER Act</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Australian mandatory climate disclosure standard aligned to ISSB S2 – effective for large entities from FY2025.">AASB S2 / ISSB</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Annual supplier emissions disclosure programme managed on behalf of large buyer organisations via the CDP platform.">CDP Supply Chain</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Real assets ESG benchmark used by infrastructure fund managers and institutional investors for annual performance comparison.">GRESB Infrastructure</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Task Force on Climate-related Financial Disclosures – scenario analysis framework for transition and physical risk disclosure.">TCFD</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Science Based Targets initiative – validates near-term and long-term emission reduction targets against 1.5°C pathways.">SBTi</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="GRI Emissions standard – Scope 1, 2, and 3 disclosure requirements, methodology, and intensity metrics.">GRI 305</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="DCCEEW National Greenhouse Accounts emission factors – used for NGER fuel combustion and grid electricity calculations.">DCCEEW NGA Factors</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="PwC external limited assurance over Group-level Scope 1 and 2 emissions for statutory and market reporting.">PwC Assured</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="IBM Envizi ESG Suite – platform for emissions data ingestion, normalisation, audit trail, and regulatory output.">Envizi</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Cloud-based platform for connected ESG and financial reporting with linked data, narrative, and disclosure workflow.">Workiva</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Net-zero Scope 1 and 2 emissions target by FY2050, with interim milestones and lever-tracked abatement pathways.">Net Zero FY2050</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Gross emissions scaled proportionally to revenue growth – isolates abatement impact from business volume changes.">Revenue-Indexed Forecasting</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Scope 2 accounting using supplier-specific emission rates or energy attribute certificates rather than grid averages.">Market-Based Scope 2</span><span class="t-sep"> &nbsp;&nbsp; </span></span>
+    <span class="ticker-run"><span class="t-term" data-tip="Corporate value chain accounting standard – defines Scope 1, 2, and 3 emission boundaries and reporting methodology.">GHG Protocol</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="National Greenhouse and Energy Reporting Act – mandatory Australian corporate emissions reporting to DCCEEW.">NGER Act</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Australian mandatory climate disclosure standard aligned to ISSB S2 – effective for large entities from FY2025.">AASB S2 / ISSB</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Annual supplier emissions disclosure programme managed on behalf of large buyer organisations via the CDP platform.">CDP Supply Chain</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Real assets ESG benchmark used by infrastructure fund managers and institutional investors for annual performance comparison.">GRESB Infrastructure</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Task Force on Climate-related Financial Disclosures – scenario analysis framework for transition and physical risk disclosure.">TCFD</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Science Based Targets initiative – validates near-term and long-term emission reduction targets against 1.5°C pathways.">SBTi</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="DCCEEW National Greenhouse Accounts emission factors – used for NGER fuel combustion and grid electricity calculations.">DCCEEW NGA Factors</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="PwC external limited assurance over Group-level Scope 1 and 2 emissions for statutory and market reporting.">PwC Assured</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="IBM Envizi ESG Suite – platform for emissions data ingestion, normalisation, audit trail, and regulatory output.">Envizi</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Cloud-based platform for connected ESG and financial reporting with linked data, narrative, and disclosure workflow.">Workiva</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Net-zero Scope 1 and 2 emissions target by FY2050, with interim milestones and lever-tracked abatement pathways.">Net Zero FY2050</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Gross emissions scaled proportionally to revenue growth – isolates abatement impact from business volume changes.">Revenue-Indexed Forecasting</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Scope 2 accounting using supplier-specific emission rates or energy attribute certificates rather than grid averages.">Market-Based Scope 2</span><span class="t-sep"> &nbsp;&nbsp; </span></span>
+    <span class="ticker-run"><span class="t-term" data-tip="Corporate value chain accounting standard – defines Scope 1, 2, and 3 emission boundaries and reporting methodology.">GHG Protocol</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="National Greenhouse and Energy Reporting Act – mandatory Australian corporate emissions reporting to DCCEEW.">NGER Act</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Australian mandatory climate disclosure standard aligned to ISSB S2 – effective for large entities from FY2025.">AASB S2 / ISSB</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Annual supplier emissions disclosure programme managed on behalf of large buyer organisations via the CDP platform.">CDP Supply Chain</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Real assets ESG benchmark used by infrastructure fund managers and institutional investors for annual performance comparison.">GRESB Infrastructure</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Task Force on Climate-related Financial Disclosures – scenario analysis framework for transition and physical risk disclosure.">TCFD</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Science Based Targets initiative – validates near-term and long-term emission reduction targets against 1.5°C pathways.">SBTi</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="DCCEEW National Greenhouse Accounts emission factors – used for NGER fuel combustion and grid electricity calculations.">DCCEEW NGA Factors</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="PwC external limited assurance over Group-level Scope 1 and 2 emissions for statutory and market reporting.">PwC Assured</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="IBM Envizi ESG Suite – platform for emissions data ingestion, normalisation, audit trail, and regulatory output.">Envizi</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Cloud-based platform for connected ESG and financial reporting with linked data, narrative, and disclosure workflow.">Workiva</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Net-zero Scope 1 and 2 emissions target by FY2050, with interim milestones and lever-tracked abatement pathways.">Net Zero FY2050</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Gross emissions scaled proportionally to revenue growth – isolates abatement impact from business volume changes.">Revenue-Indexed Forecasting</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Scope 2 accounting using supplier-specific emission rates or energy attribute certificates rather than grid averages.">Market-Based Scope 2</span><span class="t-sep"> &nbsp;&nbsp; </span></span>
   </div>
 </div>
 
@@ -894,12 +888,6 @@ body.mode-textile .lever-group-textile .lever{display:block}
           <div class="fw-applied">Climate disclosure drafting for mandatory Australian reporting. Developed transition and physical risk scenario framing; contributed GHG intensity metrics to Appendix A requirements.</div>
         </div>
         <div class="fw-card reveal" style="--card-accent:var(--matcha)">
-          <div class="fw-cat">Reporting</div>
-          <div class="fw-acro">GRI</div>
-          <div class="fw-fullname">GRI Standards — GRI 305 Emissions</div>
-          <div class="fw-applied">ESG Impact Report development including GRI 305 disclosures. Facilitated a 10-participant content workshop with a General Manager; coordinated four-BU disclosure review through Workiva.</div>
-        </div>
-        <div class="fw-card reveal" style="--card-accent:var(--matcha)">
           <div class="fw-cat">Supply Chain</div>
           <div class="fw-acro">CDP</div>
           <div class="fw-fullname">CDP Supply Chain Programme</div>
@@ -946,7 +934,7 @@ body.mode-textile .lever-group-textile .lever{display:block}
           <dt class="cap-num">03</dt>
           <dd>
             <div class="cap-title">Regulatory Disclosure</div>
-            <div class="cap-body">End-to-end support for NGER, AASB S2, and GRI reporting including data chain of custody, methodology documentation, and external assurance readiness.</div>
+            <div class="cap-body">End-to-end support for NGER and AASB S2 reporting including data chain of custody, methodology documentation, and external assurance readiness.</div>
           </dd>
         </div>
         <div class="cap-entry reveal">
@@ -974,7 +962,7 @@ body.mode-textile .lever-group-textile .lever{display:block}
         <div class="built-item reveal">
           <div class="built-num">03 &nbsp;&#x2014;&nbsp; Assurance</div>
           <div class="built-name">GHG Recalculation Module</div>
-          <div class="built-outcome">Delivered PwC external assurance readiness for Group-level emissions</div>
+          <div class="built-outcome">Delivered external assurance readiness for Group-level emissions</div>
         </div>
         <div class="built-item reveal">
           <div class="built-num">04 &nbsp;&#x2014;&nbsp; Learning</div>
@@ -1042,27 +1030,6 @@ body.mode-textile .lever-group-textile .lever{display:block}
     </div>
     <div class="sankey-wrap" id="sankey-container">
       <!-- Sankey drawn by JS -->
-    </div>
-    <div class="sec-sub mt2">Scope 3 category breakdown</div>
-    <div class="s3-row" style="border-bottom:1px solid var(--rule-lt);padding-bottom:0.35rem;margin-bottom:0.15rem">
-      <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--mid)">Category</div>
-      <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;color:#444;text-align:right">Share</div>
-      <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--mid)">Scale</div>
-    </div>
-    <div class="s3-row">
-      <div class="s3-name">Cat 1 &#x2013; Purchased goods &amp; services<span class="s3-sub">Construction materials dominant</span></div>
-      <div class="s3-pct" id="bl-cat1-pct">42.5%</div>
-      <div class="s3-bar-wrap"><div class="s3-bar-fill" id="bl-cat1-bar" style="width:100%"></div></div>
-    </div>
-    <div class="s3-row">
-      <div class="s3-name">Cat 4 &#x2013; Transport &amp; distribution<span class="s3-sub">Supplier logistics</span></div>
-      <div class="s3-pct" id="bl-cat4-pct">20.4%</div>
-      <div class="s3-bar-wrap"><div class="s3-bar-fill" id="bl-cat4-bar" style="width:48%"></div></div>
-    </div>
-    <div class="s3-row">
-      <div class="s3-name">Cat 13 &#x2013; Downstream leased assets<span class="s3-sub">Building operational emissions</span></div>
-      <div class="s3-pct" id="bl-cat13-pct">19.9%</div>
-      <div class="s3-bar-wrap"><div class="s3-bar-fill" id="bl-cat13-bar" style="width:47%"></div></div>
     </div>
     <div class="impl-grid mt2" id="baseline-tiles">
       <div class="impl" id="impl-tile-1">
@@ -1268,7 +1235,7 @@ body.mode-textile .lever-group-textile .lever{display:block}
     </div>
     <ul class="exp-bullets">
       <li class="exp-section-lbl-li"><span class="exp-section-lbl">Facilitation &amp; Stakeholder Influence</span></li>
-      <li>Facilitated a cross-BU ESG Impact Report content workshop with a General Manager, coordinating four business unit disclosure reviews through Workiva to GRI 305 requirements.</li>
+      <li>Facilitated a cross-BU ESG Impact Report content workshop with a General Manager, coordinating four business unit disclosure reviews through Workiva for the annual ESG Impact Report.</li>
       <li>Co-developed an all-employee climate eLearning module with an external learning design provider across three role clusters and two delivery formats, from content design through company-wide launch.</li>
       <li class="exp-section-lbl-li"><span class="exp-section-lbl">Data Tools &amp; Systems</span></li>
       <li>Built a toggle-based net zero pathway model using government and research-sourced lever assumptions, structured for internal operation without ongoing advisory support.</li>
@@ -1486,12 +1453,6 @@ function updateBaseline(sector){
   document.getElementById('bl-s1-body').textContent=d.s1b;
   document.getElementById('bl-s2-body').textContent=d.s2b;
   document.getElementById('bl-s3-body').textContent=d.s3b;
-  document.getElementById('bl-cat1-pct').textContent=d.cat1;
-  document.getElementById('bl-cat4-pct').textContent=d.cat4;
-  document.getElementById('bl-cat13-pct').textContent=d.cat13;
-  document.getElementById('bl-cat1-bar').style.width=d.cat1w+'%';
-  document.getElementById('bl-cat4-bar').style.width=d.cat4w+'%';
-  document.getElementById('bl-cat13-bar').style.width=d.cat13w+'%';
   if(d.sk) drawSankey(d.sk[0],d.sk[1],d.sk[2],d.sk[3],d.sk[4],d.sk[5]);
   var tiles={
     infrastructure:[
@@ -1534,7 +1495,7 @@ function drawSankey(s1p,s2p,s3p,cat1p,cat4p,cat13p){
   if(c13h<8){c13h=8;c1h=s3h-c4h-c13h;}
   var c1y=s3y,c4y=c1y+c1h,c13y=c4y+c4h;
   var acc='#B5C42B',accM='rgba(181,196,43,0.55)';
-  var s='<svg viewBox="0 0 720 220" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;min-height:420px;max-width:100%" role="img" aria-label="Emissions flow diagram">';
+  var s='<svg viewBox="0 0 720 220" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;min-height:420px;max-width:100%" role="img" aria-label="Emissions flow diagram">';
   // Flow paths
   s+='<path d="M36,'+s1y+' C130,'+s1y+' 130,'+s1y+' 220,'+s1y+' L220,'+(s1y+s1h)+' C130,'+(s1y+s1h)+' 130,'+(s1y+s1h)+' 36,'+(s1y+s1h)+' Z" fill="rgba(122,135,26,0.3)"/>';
   s+='<path d="M36,'+s2y+' C130,'+s2y+' 130,'+s3y+' 220,'+s2y+' L220,'+(s2y+s2h)+' C130,'+(s2y+s2h)+' 130,'+s3y+' 36,'+(s2y+s2h)+' Z" fill="rgba(122,135,26,0.15)"/>';
@@ -1640,40 +1601,54 @@ function setMode(mode){
   run();
 }
 
-/* ---- P. Ticker term tooltips ---- */
+/* ---- P. Ticker term tooltips (click to open, dismissible) ---- */
 document.addEventListener('DOMContentLoaded',function(){
   var tip=document.getElementById('ticker-tip');
   if(!tip) return;
+  var navH=48;
+  var activeTerm=null;
+  var tracks=document.querySelectorAll('.ticker-track');
+  function setTicker(state){
+    tracks.forEach(function(t){t.style.animationPlayState=state;});
+  }
+  // Build content holder + close button once
+  tip.innerHTML='<button type="button" class="ticker-tip-close" aria-label="Close">×</button><span class="ticker-tip-body"></span>';
+  var tipBody=tip.querySelector('.ticker-tip-body');
+  var tipClose=tip.querySelector('.ticker-tip-close');
+  function hideTip(){
+    tip.classList.remove('vis');
+    setTicker('running');
+    if(activeTerm){activeTerm.classList.remove('t-active');activeTerm=null;}
+  }
+  function showTip(el){
+    tipBody.textContent=el.getAttribute('data-tip');
+    tip.classList.add('vis');
+    setTicker('paused');
+    if(activeTerm) activeTerm.classList.remove('t-active');
+    activeTerm=el;el.classList.add('t-active');
+    // Position relative to the clicked term, then clamp to viewport
+    var r=el.getBoundingClientRect();
+    var tw=tip.offsetWidth,th=tip.offsetHeight;
+    var x=r.left,y=r.bottom+8;
+    if(y+th+8>window.innerHeight) y=r.top-th-8;
+    x=Math.max(8,Math.min(x,window.innerWidth-tw-8));
+    y=Math.max(navH+8,Math.min(y,window.innerHeight-th-8));
+    tip.style.left=x+'px';
+    tip.style.top=y+'px';
+  }
   document.querySelectorAll('.t-term').forEach(function(el){
-    el.addEventListener('mouseenter',function(e){
-      tip.textContent=el.getAttribute('data-tip');
-      tip.classList.add('vis');
-    });
-    el.addEventListener('mousemove',function(e){
-      var x=e.clientX+14,y=e.clientY-44;
-      if(x+280>window.innerWidth) x=e.clientX-294;
-      tip.style.left=x+'px';
-      tip.style.top=y+'px';
-    });
-    el.addEventListener('mouseleave',function(){
-      tip.classList.remove('vis');
+    el.addEventListener('click',function(e){
+      e.stopPropagation();
+      if(activeTerm===el){hideTip();return;}
+      showTip(el);
     });
   });
+  tipClose.addEventListener('click',function(e){e.stopPropagation();hideTip();});
+  tip.addEventListener('click',function(e){e.stopPropagation();});
+  document.addEventListener('click',function(){if(tip.classList.contains('vis')) hideTip();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&tip.classList.contains('vis')) hideTip();});
 });
 
-/* ---- F. FY-aware NEM reading (runs on parse, before onload) ---- */
-(function(){
-  var now=new Date();
-  var month=now.getMonth()+1;
-  var calYear=now.getFullYear();
-  var fy=month>=7?calYear+1:calYear;
-  var idx=Math.min(Math.max(fy-2026,0),24);
-  var intensity=(0.81*F.grid.base[idx]).toFixed(3);
-  var nemEl=document.getElementById('nem-val');
-  var yearEl=document.getElementById('nem-year');
-  if(nemEl) nemEl.textContent=intensity;
-  if(yearEl) yearEl.textContent='FY'+fy;
-})();
 
 /* ---- G. Nav IntersectionObserver ---- */
 (function(){
@@ -1974,7 +1949,7 @@ document.addEventListener('DOMContentLoaded',function(){
 window.addEventListener('load',function(){
   _tryInitChart();
   /* Hero entrance animation */
-  var heroEls=['.hero-name','.hero-cycle','.hero-meta','.hero-prop','.instr-grid','.live-strip','.scroll-hint','.hero-offset-rule'];
+  var heroEls=['.hero-name','.hero-cycle','.hero-meta','.hero-prop','.instr-grid','.scroll-hint','.hero-offset-rule'];
   heroEls.forEach(function(sel,i){
     var el=document.querySelector(sel);
     if(!el) return;
@@ -2008,6 +1983,17 @@ window.addEventListener('load',function(){
   var start = new Date('2022-02-01');
   var years = Math.floor((Date.now() - start) / (1000 * 60 * 60 * 24 * 365.25));
   var el = document.getElementById('years-advisory');
+  if (el) {
+    el.setAttribute('data-target', years);
+    el.textContent = years + '+';
+  }
+})();
+
+/* ---- Dynamic years calc: built environment & infrastructure ---- */
+(function () {
+  var start = new Date('2020-02-01');
+  var years = Math.floor((Date.now() - start) / (1000 * 60 * 60 * 24 * 365.25));
+  var el = document.getElementById('years-built-env');
   if (el) {
     el.setAttribute('data-target', years);
     el.textContent = years + '+';
