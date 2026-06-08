@@ -918,8 +918,8 @@ body.mode-textile .lever-group-textile .lever{display:block}
         </select>
       </div>
       <div class="lever lever-group-infra" id="lev-grid">
-        <div class="lever-name" id="lev-grid-name">Grid Decarbonisation (Scope 2)</div>
-        <div class="lever-src" id="lev-grid-src">Source: DCCEEW 2025 Table 42 NEM trajectory</div>
+        <div class="lever-name" id="lev-grid-name">Grid Decarbonisation</div>
+        <div class="lever-src" id="lev-grid-src">DCCEEW 2025 Table 42 NEM trajectory</div>
         <select id="sel-grid" class="lever-select" onchange="run()">
           <option value="base">Base: DCCEEW NEM trajectory</option>
           <option value="faster">Faster: REC-based, 90% renewable by FY32</option>
@@ -929,7 +929,7 @@ body.mode-textile .lever-group-textile .lever{display:block}
       </div>
       <div class="lever lever-group-infra" id="lev-lv">
         <div class="lever-name" id="lev-lv-name">LV Fleet Transition</div>
-        <div class="lever-src" id="lev-lv-src">Source: NVES Act 2024 &middot; 1-yr adoption lag (Base)</div>
+        <div class="lever-src" id="lev-lv-src">NVES Act 2024 &middot; 1-yr adoption lag</div>
         <select id="sel-lv" class="lever-select" onchange="run()">
           <option value="base">Base: NVES 1-yr lag</option>
           <option value="faster">Faster: NVES no lag</option>
@@ -938,7 +938,7 @@ body.mode-textile .lever-group-textile .lever{display:block}
       </div>
       <div class="lever lever-group-infra" id="lev-hv">
         <div class="lever-name" id="lev-hv-name">HV Fleet Transition</div>
-        <div class="lever-src" id="lev-hv-src">Source: CSIRO Net Zero Pathways 2023 &middot; 1-yr lag</div>
+        <div class="lever-src" id="lev-hv-src">CSIRO Net Zero Pathways 2023 &middot; 1-yr lag</div>
         <select id="sel-hv" class="lever-select" onchange="run()">
           <option value="base">Base: CSIRO 1-yr lag</option>
           <option value="faster">Faster: CSIRO no lag</option>
@@ -947,7 +947,7 @@ body.mode-textile .lever-group-textile .lever{display:block}
       </div>
       <div class="lever lever-group-infra" id="lev-plant">
         <div class="lever-name" id="lev-plant-name">Plant Electrification</div>
-        <div class="lever-src" id="lev-plant-src">Source: Industry plant electrification analysis</div>
+        <div class="lever-src" id="lev-plant-src">Industry plant electrification analysis</div>
         <select id="sel-plant" class="lever-select" onchange="run()">
           <option value="base">Base: industry pathway</option>
           <option value="faster">Faster: 25% more reduction</option>
@@ -1380,18 +1380,18 @@ var TEXTILE_PROFILE={
 };
 var LEVER_LABELS={
   industrial:{
-    grid:{name:'Grid Decarbonisation (Scope 2)',src:'Source: DCCEEW 2025 Table 42 NEM trajectory'},
-    lv:{name:'LV Fleet Transition',src:'Source: NVES Act 2024 · 1-yr adoption lag (Base)'},
-    hv:{name:'HV Fleet Transition',src:'Source: CSIRO Net Zero Pathways 2023 · 1-yr lag'},
-    plant:{name:'Plant Electrification',src:'Source: Industry plant electrification analysis'},
+    grid:{name:'Grid Decarbonisation',src:'DCCEEW 2025 Table 42 NEM trajectory'},
+    lv:{name:'LV Fleet Transition',src:'NVES Act 2024 · 1-yr adoption lag'},
+    hv:{name:'HV Fleet Transition',src:'CSIRO Net Zero Pathways 2023 · 1-yr lag'},
+    plant:{name:'Plant Electrification',src:'Industry plant electrification analysis'},
     cbar:{grid:'Grid (Scope 2)',lv:'LV Fleet',hv:'HV Fleet',plant:'Plant Electrification'},
     sub:'Adjust the controls below to explore how different abatement strategies shift a Scope 1 and 2 emissions trajectory. Lever assumptions are drawn from DCCEEW 2025 grid emission factor tables, the NVES Act 2024 (LV fleet), CSIRO Net Zero Pathways (HV fleet), and published plant electrification analysis – the same sources used in production pathway models.'
   },
   textile:{
-    grid:{name:'Renewable Energy Procurement (Scope 2)',src:'Source: RE100 trajectory · market-based instrument adoption'},
-    lv:{name:'Enzyme Dyeing Process Adoption',src:'Source: Textile Exchange · low-impact wet processing pathway'},
-    hv:{name:'Air-to-Ocean Freight Modal Shift',src:'Source: Clean Cargo WG · container shipping decarbonisation'},
-    plant:{name:'Biosynthetics Material Substitution',src:'Source: Textile Exchange Preferred Fiber Report · closed-loop pathway'},
+    grid:{name:'Renewable Energy Procurement',src:'RE100 trajectory · market-based instrument adoption'},
+    lv:{name:'Enzyme Dyeing Process Adoption',src:'Textile Exchange · low-impact wet processing pathway'},
+    hv:{name:'Air-to-Ocean Freight Modal Shift',src:'Clean Cargo WG · container shipping decarbonisation'},
+    plant:{name:'Biosynthetics Material Substitution',src:'Textile Exchange Preferred Fiber Report · closed-loop pathway'},
     cbar:{grid:'Renewable Energy',lv:'Enzyme Dyeing',hv:'Freight Modal Shift',plant:'Biosynthetics'},
     sub:'Explore how a boutique apparel brand can reduce Scope 3 emissions through freight mode shift (air → ocean), material substitution (virgin polyester → closed-loop bio-synthetics), low-impact dyeing processes, and renewable energy procurement. Multipliers scaled to illustrative boutique retail footprint.'
   }
