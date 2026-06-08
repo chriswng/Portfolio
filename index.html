@@ -891,6 +891,16 @@ body.mode-textile .lever-group-textile .lever{display:block}
   <p class="tool-decl" id="tool-decl-text">Every lever has a source. <strong>Adjust the controls to see what changes.</strong></p>
   <p class="tool-sub" id="tool-sub-text">Select a sector and scenario to explore how abatement levers shift a Scope 1 &amp; 2 trajectory. Lever assumptions are drawn from DCCEEW 2025 grid emission factor tables, the NVES Act 2024 (LV fleet), and CSIRO Net Zero Pathways — the same sources used in production pathway models.</p>
   <span class="tool-disc">Illustrative model &middot; stylised numbers &middot; not client data</span>
+  <div class="lever lever-sector" id="infra-sector-row">
+    <div class="lever-name">Organisation Type</div>
+    <div class="lever-src">Selects sector profile and lever assumptions</div>
+    <select id="sel-sector" class="lever-select" onchange="changeSector()">
+      <option value="infrastructure">Infrastructure</option>
+      <option value="property">Commercial Property</option>
+      <option value="government">Government Operations</option>
+      <option value="textile">Boutique Textile Retail</option>
+    </select>
+  </div>
   <div id="sector-desc" class="sector-desc">Infrastructure: heavy plant, diesel fleet, and mechanical processes drive the Scope&nbsp;1 footprint. Grid decarbonisation delivers Scope&nbsp;2 reduction.</div>
   <div class="kpi-strip">
     <div class="kpi"><div class="kpi-l">FY20 Baseline</div><div class="kpi-v" id="kpi-base-v">347k t</div></div>
@@ -905,16 +915,6 @@ body.mode-textile .lever-group-textile .lever{display:block}
     <div class="controls-head">Scenario Controls: select a scenario for each lever</div>
     <div class="lever-grid">
       <!-- INDUSTRIAL: sector + 4 levers -->
-      <div class="lever lever-sector" id="infra-sector-row" style="grid-column:1/-1">
-        <div class="lever-name">Organisation Type</div>
-        <div class="lever-src">Selects sector profile and lever assumptions</div>
-        <select id="sel-sector" class="lever-select" onchange="changeSector()">
-          <option value="infrastructure">Infrastructure</option>
-          <option value="property">Commercial Property</option>
-          <option value="government">Government Operations</option>
-          <option value="textile">Boutique Textile Retail</option>
-        </select>
-      </div>
       <div class="lever lever-group-infra" id="lev-grid">
         <div class="lever-name" id="lev-grid-name">Grid Decarbonisation</div>
         <div class="lever-src" id="lev-grid-src">DCCEEW 2025 Table 42 NEM trajectory</div>
