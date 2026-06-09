@@ -159,8 +159,6 @@ section:last-of-type{border-bottom:none}
 .s3-pct{font-family:var(--mono);font-size:0.78rem;font-weight:600;color:var(--matcha);text-align:right}
 .s3-bar-wrap{height:4px;background:#E2E8F0;overflow:hidden}
 .s3-bar-fill{height:100%;background:var(--matcha)}
-.sankey-wrap{margin:2rem 0 0;overflow-x:auto;width:100%;max-width:var(--max);min-height:420px}
-@media(min-width:900px){.sankey-wrap{min-height:500px}}
 .impl-grid{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule-dk);border:1px solid var(--rule-dk);overflow:hidden;margin-top:2rem}
 @media(min-width:560px){.impl-grid{grid-template-columns:repeat(3,1fr)}}
 .impl{background:var(--white);padding:1.25rem 1.5rem;border-left:3px solid var(--matcha);transition:background 0.3s var(--ease)}
@@ -1285,7 +1283,6 @@ function updateBaseline(sector){
   document.getElementById('bl-s1-body').textContent=d.s1b;
   document.getElementById('bl-s2-body').textContent=d.s2b;
   document.getElementById('bl-s3-body').textContent=d.s3b;
-  if(d.sk) drawSankey(d.sk[0],d.sk[1],d.sk[2],d.sk[3],d.sk[4],d.sk[5]);
   var tiles={
     infrastructure:[
       {h:'83% of emissions sit outside direct control',b:'Reduction requires design choices and supplier collaboration: not operations management alone. The playbook is different.'},
@@ -1311,65 +1308,6 @@ function updateBaseline(sector){
   });
 }
 
-/* ---- N. drawSankey() – regenerates SVG based on sector percentages ---- */
-function drawSankey(s1p,s2p,s3p,cat1p,cat4p,cat13p){
-  var container=document.getElementById('sankey-container');
-  if(!container) return;
-  var TH=140,yS=40,yE=180;
-  var s1h=Math.max(7,(s1p/100)*TH);
-  var s2h=Math.max(5,(s2p/100)*TH);
-  var s3h=TH-s1h-s2h;
-  var s1y=yS,s2y=s1y+s1h,s3y=s2y+s2h;
-  var totalCat=cat1p+cat4p+cat13p||1;
-  var c1h=Math.max(12,(cat1p/totalCat)*s3h);
-  var c4h=Math.max(10,(cat4p/totalCat)*s3h);
-  var c13h=s3h-c1h-c4h;
-  if(c13h<8){c13h=8;c1h=s3h-c4h-c13h;}
-  var c1y=s3y,c4y=c1y+c1h,c13y=c4y+c4h;
-  var acc='#B5C42B',accM='rgba(181,196,43,0.55)';
-  var s='<svg viewBox="0 0 960 220" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;min-height:420px;max-width:100%" role="img" aria-label="Emissions flow diagram">';
-  // Flow paths
-  s+='<path d="M36,'+s1y+' C130,'+s1y+' 130,'+s1y+' 220,'+s1y+' L220,'+(s1y+s1h)+' C130,'+(s1y+s1h)+' 130,'+(s1y+s1h)+' 36,'+(s1y+s1h)+' Z" fill="rgba(122,135,26,0.3)"/>';
-  s+='<path d="M36,'+s2y+' C130,'+s2y+' 130,'+s3y+' 220,'+s2y+' L220,'+(s2y+s2h)+' C130,'+(s2y+s2h)+' 130,'+s3y+' 36,'+(s2y+s2h)+' Z" fill="rgba(122,135,26,0.15)"/>';
-  s+='<path d="M36,'+s3y+' C130,'+s3y+' 130,'+s3y+' 220,'+s3y+' L220,'+yE+' C130,'+yE+' 130,'+yE+' 36,'+yE+' Z" fill="rgba(0,0,0,0.05)"/>';
-  s+='<path d="M236,'+s3y+' C408,'+s3y+' 408,'+s3y+' 580,'+s3y+' L580,'+(c1y+c1h)+' C408,'+(c1y+c1h)+' 408,'+(c1y+c1h)+' 236,'+(c1y+c1h)+' Z" fill="rgba(0,0,0,0.09)"/>';
-  s+='<path d="M236,'+(c1y+c1h)+' C408,'+(c1y+c1h)+' 408,'+(c1y+c1h)+' 580,'+(c1y+c1h)+' L580,'+(c4y+c4h)+' C408,'+(c4y+c4h)+' 408,'+(c4y+c4h)+' 236,'+(c4y+c4h)+' Z" fill="rgba(0,0,0,0.06)"/>';
-  s+='<path d="M236,'+(c4y+c4h)+' C408,'+(c4y+c4h)+' 408,'+(c4y+c4h)+' 580,'+(c4y+c4h)+' L580,'+yE+' C408,'+yE+' 408,'+yE+' 236,'+yE+' Z" fill="rgba(0,0,0,0.04)"/>';
-  // Bar nodes
-  s+='<rect x="20" y="'+yS+'" width="16" height="'+TH+'" fill="#D5D5D5"/>';
-  s+='<rect x="220" y="'+s1y+'" width="16" height="'+s1h+'" fill="'+acc+'"/>';
-  s+='<rect x="220" y="'+s2y+'" width="16" height="'+s2h+'" fill="'+accM+'"/>';
-  s+='<rect x="220" y="'+s3y+'" width="16" height="'+s3h+'" fill="#CCCCCC"/>';
-  s+='<rect x="580" y="'+c1y+'" width="16" height="'+c1h+'" fill="#BBBBBB"/>';
-  s+='<rect x="580" y="'+c4y+'" width="16" height="'+c4h+'" fill="#CCCCCC"/>';
-  s+='<rect x="580" y="'+c13y+'" width="16" height="'+c13h+'" fill="#D5D5D5"/>';
-  // Right-anchor bar (mirrors left bar for visual balance)
-  s+='<rect x="924" y="'+yS+'" width="16" height="'+TH+'" fill="#E5E5E5"/>';
-  // Scope labels
-  var s1cy=(s1y+s1h/2+3).toFixed(0),s2cy=(s2y+s2h/2+3).toFixed(0),s3ty=(s3y+13).toFixed(0),s3py=(s3y+33).toFixed(0),s3sy=(s3y+49).toFixed(0);
-  s+='<text x="240" y="'+s1cy+'" font-family="JetBrains Mono,monospace" font-size="9" fill="'+acc+'" letter-spacing="0.08em">SCOPE 1</text>';
-  s+='<text x="315" y="'+s1cy+'" font-family="JetBrains Mono,monospace" font-size="9" fill="'+acc+'" text-anchor="end">'+s1p.toFixed(1)+'%</text>';
-  s+='<text x="240" y="'+s2cy+'" font-family="JetBrains Mono,monospace" font-size="9" fill="rgba(122,135,26,0.8)">SCOPE 2</text>';
-  s+='<text x="315" y="'+s2cy+'" font-family="JetBrains Mono,monospace" font-size="9" fill="rgba(122,135,26,0.8)" text-anchor="end">'+s2p.toFixed(1)+'%</text>';
-  if(s3h>30){
-    s+='<text x="240" y="'+s3ty+'" font-family="JetBrains Mono,monospace" font-size="9" fill="#666666">SCOPE 3</text>';
-    s+='<text x="240" y="'+s3py+'" font-family="JetBrains Mono,monospace" font-size="20" font-weight="bold" fill="#111111">'+s3p.toFixed(1)+'%</text>';
-    if(s3h>50) s+='<text x="240" y="'+s3sy+'" font-family="JetBrains Mono,monospace" font-size="8" fill="#888888">of total footprint</text>';
-  }
-  // Cat labels (adaptive to height)
-  function catLabel(label,desc,pct,cy,ch){
-    if(ch<14) return;
-    var ly=(cy+11).toFixed(0),dy=(cy+21).toFixed(0),py=(cy+34).toFixed(0);
-    s+='<text x="600" y="'+ly+'" font-family="JetBrains Mono,monospace" font-size="8" fill="#666666" letter-spacing="0.05em">'+label+'</text>';
-    if(ch>24) s+='<text x="600" y="'+dy+'" font-family="JetBrains Mono,monospace" font-size="7" fill="#888888">'+desc+'</text>';
-    if(ch>16) s+='<text x="600" y="'+py+'" font-family="JetBrains Mono,monospace" font-size="11" font-weight="bold" fill="#111111">'+pct.toFixed(1)+'%</text>';
-  }
-  catLabel('CAT 1','Purchased goods &amp; services',cat1p,c1y,c1h);
-  catLabel('CAT 4','Transport &amp; distribution',cat4p,c4y,c4h);
-  catLabel('CAT 13','Downstream leased assets',cat13p,c13y,c13h);
-  s+='</svg>';
-  container.innerHTML=s;
-}
 
 /* ---- O. Textile scenario mode ---- */
 var _currentMode='industrial';
@@ -1739,9 +1677,6 @@ function _tryInitChart(){
 }
 document.addEventListener('DOMContentLoaded',function(){
   setTimeout(_tryInitChart,50);
-  // Initial Sankey draw with default sector (infrastructure)
-  var initSk=BASELINE_SECTORS.infrastructure.sk;
-  if(initSk) setTimeout(function(){drawSankey(initSk[0],initSk[1],initSk[2],initSk[3],initSk[4],initSk[5]);},20);
 });
 window.addEventListener('load',function(){
   _tryInitChart();
