@@ -267,7 +267,7 @@ section:last-of-type{border-bottom:none}
 .chart-card{background:var(--white);border:1px solid var(--rule-dk);padding:1.25rem;margin-bottom:1.5rem}
 .chart-wrap{position:relative;height:260px}
 @media(min-width:600px){.chart-wrap{height:320px}}
-.controls-card{background:var(--white);border:1px solid var(--rule-dk);overflow:hidden;margin-bottom:1.5rem}
+.controls-card{background:var(--white);overflow:hidden;margin-bottom:1.5rem}
 .controls-head{background:var(--matcha);color:var(--slate);padding:0.5rem 1.1rem;font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;}
 .lever-grid{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule-dk)}
 .lever{background:var(--bg);padding:1.25rem 1.5rem}
@@ -506,7 +506,7 @@ body.mode-textile .lever-group-textile .lever{display:block}
 .kpi-v{color:rgba(248,250,252,0.95) !important}
 .kpi.live .kpi-v{color:var(--matcha) !important}
 .chart-card{background:#1E293B !important;border-color:rgba(255,255,255,0.08) !important}
-.controls-card{background:#1E293B !important;border-color:rgba(255,255,255,0.08) !important}
+.controls-card{background:#1E293B !important;border:none !important}
 .lever{background:#0F172A !important}
 .lever-name{color:rgba(248,250,252,0.9) !important}
 .lever-grid{background:rgba(255,255,255,0.06) !important}
@@ -661,12 +661,12 @@ body.mode-textile .lever-group-textile .lever{display:block}
 .pipe-cta:hover{opacity:0.7}
 
 /* ---- Improved lever/controls spacing ---- */
-.controls-card{background:var(--white);border:1px solid var(--rule-dk);overflow:hidden;margin-bottom:1.5rem}
+.controls-card{background:var(--white);overflow:hidden;margin-bottom:1.5rem}
 .lever{background:var(--bg);padding:1.5rem 1.75rem}
 .lever-name{font-size:0.84rem;font-weight:700;color:var(--slate);margin-bottom:0.4rem}
 .lever-src{font-family:var(--mono);font-size:0.58rem;color:var(--matcha);margin-bottom:0.9rem;letter-spacing:0.02em}
 .lever-select{width:100%;padding:0.55rem 2rem 0.55rem 0.75rem;border:1px solid var(--rule-dk);background:transparent;color:var(--slate);font-family:var(--sans);font-size:0.8rem;font-weight:400;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%231A1410'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0.65rem center;border-radius:0;transition:border-color 0.3s var(--ease),color 0.3s var(--ease)}
-.lever-grid{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule-dk);margin:1.25rem;border:1px solid var(--rule-dk)}
+.lever-grid{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule-dk);margin:1.25rem}
 
 </style>
 </head><body>
@@ -1327,22 +1327,24 @@ function drawSankey(s1p,s2p,s3p,cat1p,cat4p,cat13p){
   if(c13h<8){c13h=8;c1h=s3h-c4h-c13h;}
   var c1y=s3y,c4y=c1y+c1h,c13y=c4y+c4h;
   var acc='#B5C42B',accM='rgba(181,196,43,0.55)';
-  var s='<svg viewBox="0 0 720 220" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;min-height:420px;max-width:100%" role="img" aria-label="Emissions flow diagram">';
+  var s='<svg viewBox="0 0 960 220" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;min-height:420px;max-width:100%" role="img" aria-label="Emissions flow diagram">';
   // Flow paths
   s+='<path d="M36,'+s1y+' C130,'+s1y+' 130,'+s1y+' 220,'+s1y+' L220,'+(s1y+s1h)+' C130,'+(s1y+s1h)+' 130,'+(s1y+s1h)+' 36,'+(s1y+s1h)+' Z" fill="rgba(122,135,26,0.3)"/>';
   s+='<path d="M36,'+s2y+' C130,'+s2y+' 130,'+s3y+' 220,'+s2y+' L220,'+(s2y+s2h)+' C130,'+(s2y+s2h)+' 130,'+s3y+' 36,'+(s2y+s2h)+' Z" fill="rgba(122,135,26,0.15)"/>';
   s+='<path d="M36,'+s3y+' C130,'+s3y+' 130,'+s3y+' 220,'+s3y+' L220,'+yE+' C130,'+yE+' 130,'+yE+' 36,'+yE+' Z" fill="rgba(0,0,0,0.05)"/>';
-  s+='<path d="M236,'+s3y+' C333,'+s3y+' 333,'+s3y+' 430,'+s3y+' L430,'+(c1y+c1h)+' C333,'+(c1y+c1h)+' 333,'+(c1y+c1h)+' 236,'+(c1y+c1h)+' Z" fill="rgba(0,0,0,0.09)"/>';
-  s+='<path d="M236,'+(c1y+c1h)+' C333,'+(c1y+c1h)+' 333,'+(c1y+c1h)+' 430,'+(c1y+c1h)+' L430,'+(c4y+c4h)+' C333,'+(c4y+c4h)+' 333,'+(c4y+c4h)+' 236,'+(c4y+c4h)+' Z" fill="rgba(0,0,0,0.06)"/>';
-  s+='<path d="M236,'+(c4y+c4h)+' C333,'+(c4y+c4h)+' 333,'+(c4y+c4h)+' 430,'+(c4y+c4h)+' L430,'+yE+' C333,'+yE+' 333,'+yE+' 236,'+yE+' Z" fill="rgba(0,0,0,0.04)"/>';
+  s+='<path d="M236,'+s3y+' C408,'+s3y+' 408,'+s3y+' 580,'+s3y+' L580,'+(c1y+c1h)+' C408,'+(c1y+c1h)+' 408,'+(c1y+c1h)+' 236,'+(c1y+c1h)+' Z" fill="rgba(0,0,0,0.09)"/>';
+  s+='<path d="M236,'+(c1y+c1h)+' C408,'+(c1y+c1h)+' 408,'+(c1y+c1h)+' 580,'+(c1y+c1h)+' L580,'+(c4y+c4h)+' C408,'+(c4y+c4h)+' 408,'+(c4y+c4h)+' 236,'+(c4y+c4h)+' Z" fill="rgba(0,0,0,0.06)"/>';
+  s+='<path d="M236,'+(c4y+c4h)+' C408,'+(c4y+c4h)+' 408,'+(c4y+c4h)+' 580,'+(c4y+c4h)+' L580,'+yE+' C408,'+yE+' 408,'+yE+' 236,'+yE+' Z" fill="rgba(0,0,0,0.04)"/>';
   // Bar nodes
   s+='<rect x="20" y="'+yS+'" width="16" height="'+TH+'" fill="#D5D5D5"/>';
   s+='<rect x="220" y="'+s1y+'" width="16" height="'+s1h+'" fill="'+acc+'"/>';
   s+='<rect x="220" y="'+s2y+'" width="16" height="'+s2h+'" fill="'+accM+'"/>';
   s+='<rect x="220" y="'+s3y+'" width="16" height="'+s3h+'" fill="#CCCCCC"/>';
-  s+='<rect x="430" y="'+c1y+'" width="16" height="'+c1h+'" fill="#BBBBBB"/>';
-  s+='<rect x="430" y="'+c4y+'" width="16" height="'+c4h+'" fill="#CCCCCC"/>';
-  s+='<rect x="430" y="'+c13y+'" width="16" height="'+c13h+'" fill="#D5D5D5"/>';
+  s+='<rect x="580" y="'+c1y+'" width="16" height="'+c1h+'" fill="#BBBBBB"/>';
+  s+='<rect x="580" y="'+c4y+'" width="16" height="'+c4h+'" fill="#CCCCCC"/>';
+  s+='<rect x="580" y="'+c13y+'" width="16" height="'+c13h+'" fill="#D5D5D5"/>';
+  // Right-anchor bar (mirrors left bar for visual balance)
+  s+='<rect x="924" y="'+yS+'" width="16" height="'+TH+'" fill="#E5E5E5"/>';
   // Scope labels
   var s1cy=(s1y+s1h/2+3).toFixed(0),s2cy=(s2y+s2h/2+3).toFixed(0),s3ty=(s3y+13).toFixed(0),s3py=(s3y+33).toFixed(0),s3sy=(s3y+49).toFixed(0);
   s+='<text x="240" y="'+s1cy+'" font-family="JetBrains Mono,monospace" font-size="9" fill="'+acc+'" letter-spacing="0.08em">SCOPE 1</text>';
@@ -1358,9 +1360,9 @@ function drawSankey(s1p,s2p,s3p,cat1p,cat4p,cat13p){
   function catLabel(label,desc,pct,cy,ch){
     if(ch<14) return;
     var ly=(cy+11).toFixed(0),dy=(cy+21).toFixed(0),py=(cy+34).toFixed(0);
-    s+='<text x="450" y="'+ly+'" font-family="JetBrains Mono,monospace" font-size="8" fill="#666666" letter-spacing="0.05em">'+label+'</text>';
-    if(ch>24) s+='<text x="450" y="'+dy+'" font-family="JetBrains Mono,monospace" font-size="7" fill="#888888">'+desc+'</text>';
-    if(ch>16) s+='<text x="450" y="'+py+'" font-family="JetBrains Mono,monospace" font-size="11" font-weight="bold" fill="#111111">'+pct.toFixed(1)+'%</text>';
+    s+='<text x="600" y="'+ly+'" font-family="JetBrains Mono,monospace" font-size="8" fill="#666666" letter-spacing="0.05em">'+label+'</text>';
+    if(ch>24) s+='<text x="600" y="'+dy+'" font-family="JetBrains Mono,monospace" font-size="7" fill="#888888">'+desc+'</text>';
+    if(ch>16) s+='<text x="600" y="'+py+'" font-family="JetBrains Mono,monospace" font-size="11" font-weight="bold" fill="#111111">'+pct.toFixed(1)+'%</text>';
   }
   catLabel('CAT 1','Purchased goods &amp; services',cat1p,c1y,c1h);
   catLabel('CAT 4','Transport &amp; distribution',cat4p,c4y,c4h);
