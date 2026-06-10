@@ -8,7 +8,7 @@
 <title>Christopher Wang | Sustainability Advisor</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -313,20 +313,11 @@ footer{padding:1.4rem 0;border-top:1px solid var(--rule-dk);background:var(--bg)
 .footer-links{display:flex;gap:1.4rem}
 .footer-links a{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);text-decoration:none;transition:color 0.25s;font-weight:600;}
 .footer-links a:hover{color:var(--matcha)}
-.cta-strip{overflow:hidden;background:var(--matcha)}
-.cta-strip-track{display:flex;white-space:nowrap;animation:tick 22s linear infinite;padding:10px 0}
-.cta-strip:hover .cta-strip-track{animation-play-state:paused}
-.csi{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.13em;text-transform:uppercase;color:var(--slate);font-weight:700;flex-shrink:0}
-.csd{font-family:var(--mono);font-size:0.62rem;color:rgba(15,23,42,0.4);flex-shrink:0}
 .scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .mt1{margin-top:1rem}.mt2{margin-top:2rem}.mt3{margin-top:2.5rem}
 .sec-sub{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);margin-bottom:0.75rem;margin-top:2.5rem;font-weight:600;}
 .reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease}
 .reveal.revealed{opacity:1;transform:none}
-#cursor-dot{position:fixed;width:5px;height:5px;border-radius:50%;background:var(--matcha);pointer-events:none;z-index:9999;left:0;top:0;transform:translate(-50%,-50%);opacity:0;transition:opacity 0.3s}
-#cursor-ring{position:fixed;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--matcha);pointer-events:none;z-index:9998;left:0;top:0;transform:translate(-50%,-50%);opacity:0;transition:width 0.35s var(--ease),height 0.35s var(--ease),opacity 0.3s}
-body.cur-on #cursor-dot,body.cur-on #cursor-ring{opacity:0.65}
-body.cur-on #cursor-ring.cx{width:44px;height:44px;opacity:0.4}
 ::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:2px}
@@ -337,14 +328,12 @@ body.cur-on #cursor-ring.cx{width:44px;height:44px;opacity:0.4}
 /* ---- Film grain overlay ---- */
 .grain-overlay{position:fixed;inset:0;pointer-events:none;z-index:9990;mix-blend-mode:multiply;opacity:1;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)' opacity='0.042'/%3E%3C/svg%3E")}
 
-/* ---- Watercolor bloom elements ---- */
-.bloom-wrap{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
-.bloom{position:absolute;border-radius:50%;filter:blur(80px);mix-blend-mode:multiply;pointer-events:none}
-.bloom-a{width:560px;height:380px;background:radial-gradient(ellipse,rgba(181,196,43,0.18) 0%,transparent 70%);top:-60px;left:-80px;opacity:0.9;animation:floatA 18s ease-in-out infinite}
-.bloom-b{width:440px;height:340px;background:radial-gradient(ellipse,rgba(255,149,0,0.22) 0%,transparent 70%);top:30px;right:-60px;opacity:0.75;animation:floatB 22s ease-in-out infinite}
-.bloom-c{width:320px;height:220px;background:radial-gradient(ellipse,rgba(99,91,255,0.2) 0%,transparent 70%);bottom:0;left:40%;opacity:0.6;animation:floatC 26s ease-in-out infinite}
+/* ---- Contour field — animated emissions topology, hero ---- */
+#contour-field{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.hero-fig{position:absolute;right:var(--pad);bottom:0.8rem;font-family:var(--mono);font-size:0.52rem;letter-spacing:0.14em;text-transform:uppercase;color:rgba(15,23,42,0.4);z-index:1;pointer-events:none;text-align:right;line-height:1.7}
+.hero-fig b{color:var(--matcha);font-weight:500}
 
-/* ---- Content sits above blooms ---- */
+/* ---- Content sits above contour field ---- */
 #about .wrap{position:relative;z-index:1}
 
 /* ---- Asymmetric hero layout ---- */
@@ -434,11 +423,6 @@ body.mode-textile .lever-group-textile .lever{display:block}
 #cbar-name-lv{color:var(--matcha)}
 #cbar-name-hv{color:var(--amber)}
 #cbar-name-plant{color:var(--berry)}
-
-/* ---- Float animations for hero blooms ---- */
-@keyframes floatA{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(22px,-16px) scale(1.04)}66%{transform:translate(-10px,12px) scale(0.97)}}
-@keyframes floatB{0%,100%{transform:translate(0,0) scale(1)}40%{transform:translate(-18px,20px) scale(1.03)}70%{transform:translate(14px,-8px) scale(0.98)}}
-@keyframes floatC{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(10px,14px) scale(1.04)}}
 
 /* ---- Entrance animation classes ---- */
 @keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
@@ -542,11 +526,6 @@ body.mode-textile .lever-group-textile .lever{display:block}
 /* ---- Hero rule ---- */
 .hero-offset-rule{width:1px;height:clamp(4rem,8vw,6rem);background:var(--matcha);opacity:0.35;margin-bottom:2rem;margin-left:2px;animation:fadeUp 0.8s 0.3s var(--ease) both}
 
-/* ---- CTA strip dark version in scenario section ---- */
-.cta-strip{background:var(--matcha)}
-
-
-
 /* ---- Additional motion polish ---- */
 
 /* Animated gradient border on hovered exp-entry */
@@ -574,9 +553,6 @@ body.mode-textile .lever-group-textile .lever{display:block}
 /* KPI strip values animate on scenario load */
 .kpi-v{transition:color 0.3s}
 
-
-/* Contact section bg word float */
-.contact-bgword{animation:floatA 20s ease-in-out infinite;display:block}
 
 /* Scroll-reveal base for instr */
 .instr{opacity:0;transform:translateY(16px);transition:opacity 0.6s var(--ease),transform 0.6s var(--ease),background 0.3s var(--ease)}
@@ -667,6 +643,39 @@ body.mode-textile .lever-group-textile .lever{display:block}
 .lever-select{width:100%;padding:0.55rem 2rem 0.55rem 0.75rem;border:1px solid var(--rule-dk);background:transparent;color:var(--slate);font-family:var(--sans);font-size:0.8rem;font-weight:400;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%231A1410'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0.65rem center;border-radius:0;transition:border-color 0.3s var(--ease),color 0.3s var(--ease)}
 .lever-grid{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule-dk);margin:1.25rem}
 
+/* ---- Kinetic variable-weight hero name ---- */
+.hero-name .hww{display:inline-block;white-space:nowrap}
+.hero-name .hw{display:inline-block;font-variation-settings:'wght' 800;will-change:font-variation-settings}
+
+/* ---- Ghost section numerals — editorial chapter marks ---- */
+.label::before{content:attr(data-num);position:absolute;right:0;top:50%;transform:translateY(-46%);font-family:var(--disp);font-weight:800;font-size:clamp(3.2rem,9vw,6rem);line-height:1;color:transparent;-webkit-text-stroke:1.2px rgba(15,23,42,0.10);letter-spacing:-0.04em;pointer-events:none;user-select:none}
+#principles .label::before,#scenario .label::before{-webkit-text-stroke-color:rgba(255,255,255,0.10)}
+
+/* ---- Pipeline schematic flow line ---- */
+.pipeline{position:relative}
+.pipeline::before{content:'';position:absolute;left:-16px;top:4px;bottom:4px;width:2px;background-image:linear-gradient(180deg,var(--matcha) 0 55%,transparent 55% 100%);background-size:2px 14px;background-repeat:repeat-y;opacity:0.5;animation:pipeflow 1.4s linear infinite}
+@keyframes pipeflow{to{background-position:0 14px}}
+@media(max-width:720px){.pipeline::before{display:none}}
+
+/* ---- Artefact filmstrip ---- */
+#artefacts{background:#F1F5F9;padding:clamp(4rem,9vw,6.5rem) 0;overflow:hidden;border-bottom:1px solid var(--rule-lt)}
+.strip-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:2rem}
+.strip-hint{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--subtle);white-space:nowrap}
+.film-strip{display:flex;gap:1px;background:var(--rule-dk);border:1px solid var(--rule-dk);overflow-x:auto;scroll-snap-type:x proximity;cursor:grab;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.film-strip::-webkit-scrollbar{display:none}
+.film-strip.dragging{cursor:grabbing;scroll-snap-type:none}
+.film-strip.dragging .film-card{pointer-events:none}
+.film-card{flex:0 0 clamp(250px,29vw,330px);scroll-snap-align:start;background:var(--white);padding:1.5rem 1.5rem 1.25rem;display:flex;flex-direction:column;min-height:300px;position:relative;transition:background 0.3s var(--ease)}
+.film-card:hover{background:rgba(181,196,43,0.07)}
+.film-num{font-family:var(--disp);font-weight:800;font-size:3.2rem;line-height:1;color:transparent;-webkit-text-stroke:1.1px rgba(15,23,42,0.18);margin-bottom:1.1rem;letter-spacing:-0.04em;transition:color 0.3s var(--ease),-webkit-text-stroke-color 0.3s var(--ease)}
+.film-card:hover .film-num{color:var(--matcha);-webkit-text-stroke-color:var(--matcha)}
+.film-tag{font-family:var(--mono);font-size:0.52rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--mid);margin-bottom:0.5rem;font-weight:600}
+.film-name{font-family:var(--disp);font-size:1rem;font-weight:700;color:var(--slate);line-height:1.25;margin-bottom:0.5rem}
+.film-what{font-size:0.78rem;font-weight:400;color:#475569;line-height:1.65;margin-bottom:1rem}
+.film-outcome{font-family:var(--mono);font-size:0.6rem;color:var(--matcha);letter-spacing:0.04em;line-height:1.55;font-weight:600;border-top:1px solid var(--rule-lt);padding-top:0.7rem;margin-top:auto}
+.strip-progress{height:2px;background:var(--rule-lt);margin-top:1.25rem;position:relative;overflow:hidden}
+.strip-progress-fill{position:absolute;left:0;top:0;bottom:0;width:18%;background:var(--matcha);transition:width 0.2s ease}
+
 </style>
 </head><body>
 <div class="grain-overlay" aria-hidden="true"></div>
@@ -686,7 +695,8 @@ body.mode-textile .lever-group-textile .lever{display:block}
 </nav>
 
 <section id="about">
-<div class="bloom-wrap" aria-hidden="true"><div class="bloom bloom-a"></div><div class="bloom bloom-b"></div><div class="bloom bloom-c"></div></div>
+<canvas id="contour-field" aria-hidden="true"></canvas>
+<div class="hero-fig" aria-hidden="true">Fig. 01 &mdash; emissions topology<br><b id="hero-fig-read">f(x,y,t)</b></div>
 <div class="wrap">
   <h1 class="hero-name">Christopher <em>Wang</em></h1>
   <div class="hero-cycle"><span id="role-cycle">Sustainability Advisor</span></div>
@@ -852,7 +862,7 @@ body.mode-textile .lever-group-textile .lever{display:block}
 
 <section id="principles">
 <div class="wrap" style="position:relative;z-index:1">
-  <div class="label" style="color:var(--matcha)">My Practice</div>
+  <div class="label" data-num="01" style="color:var(--matcha)">My Practice</div>
   <div class="princ-grid">
     <div class="princ reveal">
       <div class="princ-num">01</div>
@@ -882,11 +892,79 @@ body.mode-textile .lever-group-textile .lever{display:block}
   </div>
 </div>
 
+<section id="artefacts">
+<div class="wrap">
+  <div class="label" data-num="02">Selected Artefacts</div>
+  <div class="strip-head">
+    <p class="artefacts-intro" style="margin-bottom:0">Tools and deliverables that outlived the engagement &mdash; each one operated by the client team today, not by me.</p>
+    <span class="strip-hint">Drag &#x2192;</span>
+  </div>
+  <div class="film-strip" id="film-strip" aria-label="Selected artefacts, horizontally scrollable">
+    <div class="film-card">
+      <div class="film-num">01</div>
+      <div class="film-tag">Raw Data</div>
+      <div class="film-name">Subcontractor Diesel Reporting Templates</div>
+      <div class="film-what">Pre-configured templates with embedded calculation logic and automated Envizi upload generation.</div>
+      <div class="film-outcome">Manual collection eliminated across 3 BUs &mdash; Downer Group</div>
+    </div>
+    <div class="film-card">
+      <div class="film-num">02</div>
+      <div class="film-tag">Raw Data</div>
+      <div class="film-name">Scope 3 Collection Pipeline Rebuild</div>
+      <div class="film-what">Full subcontractor survey pipeline: proxy rate calculations, response pooling, CPI inflation adjustment.</div>
+      <div class="film-outcome">Operable each cycle without re-briefing &mdash; Downer Group</div>
+    </div>
+    <div class="film-card">
+      <div class="film-num">03</div>
+      <div class="film-tag">Calculation</div>
+      <div class="film-name">GHG Recalculation Module</div>
+      <div class="film-what">Independent recalculation with operational-control boundary filtering, reconciled against Envizi outputs.</div>
+      <div class="film-outcome">External assurance readiness, Scope 1 &amp; 2 &mdash; Downer Group</div>
+    </div>
+    <div class="film-card">
+      <div class="film-num">04</div>
+      <div class="film-tag">Calculation</div>
+      <div class="film-name">GHG Inventory Automation Suite</div>
+      <div class="film-what">Excel and Python tooling replacing recurring manual workflows across active client accounts.</div>
+      <div class="film-outcome">~40% reduction in preparation time &mdash; WSP in Australia</div>
+    </div>
+    <div class="film-card">
+      <div class="film-num">05</div>
+      <div class="film-tag">Reporting</div>
+      <div class="film-name">GRESB Infrastructure Assessment</div>
+      <div class="film-what">Full cycle for a major energy distributor: gap analysis, data collection reform, disclosure uplift.</div>
+      <div class="film-outcome">+35 percentage points in year one &mdash; handed over internally</div>
+    </div>
+    <div class="film-card">
+      <div class="film-num">06</div>
+      <div class="film-tag">Reporting</div>
+      <div class="film-name">NSW Net Zero Policy Input</div>
+      <div class="film-what">Emissions boundary definition and agency-level reporting methodology for whole-of-government policy.</div>
+      <div class="film-outcome">Incorporated across NSW agencies &mdash; NSW Treasury</div>
+    </div>
+    <div class="film-card">
+      <div class="film-num">07</div>
+      <div class="film-tag">Strategy</div>
+      <div class="film-name">Net Zero Pathway Model</div>
+      <div class="film-what">Toggle-based pathway model on DCCEEW, NVES, and CSIRO assumptions. Presented to the board by senior leadership.</div>
+      <div class="film-outcome">Ongoing internal reference tool &mdash; Downer Group</div>
+    </div>
+    <div class="film-card">
+      <div class="film-num">08</div>
+      <div class="film-tag">Communication</div>
+      <div class="film-name">Climate Change eLearning Module</div>
+      <div class="film-what">Three role clusters, two delivery formats, designed from scratch through to company-wide launch.</div>
+      <div class="film-outcome">Deployed to all-employee cohort &mdash; Downer Group</div>
+    </div>
+  </div>
+  <div class="strip-progress" aria-hidden="true"><div class="strip-progress-fill" id="strip-fill"></div></div>
+</div>
+</section>
 
 <section id="scenario">
 <div class="scenario-bg-mesh" aria-hidden="true"></div>
 <div class="wrap">
-  <div class="label">Decarbonisation Scenario Model</div>
+  <div class="label" data-num="03">Decarbonisation Scenario Model</div>
   <p class="tool-decl" id="tool-decl-text">Every lever has a source. <strong>Adjust the controls to see what changes.</strong></p>
   <p class="tool-sub" id="tool-sub-text">Select a sector and scenario to explore how abatement levers shift a Scope 1 &amp; 2 trajectory. Lever assumptions are drawn from DCCEEW 2025 grid emission factor tables, the NVES Act 2024 (LV fleet), and CSIRO Net Zero Pathways — the same sources used in production pathway models.</p>
   <span class="tool-disc">Illustrative model &middot; stylised numbers &middot; not client data</span>
@@ -981,7 +1059,7 @@ body.mode-textile .lever-group-textile .lever{display:block}
 
 <section id="experience">
 <div class="wrap">
-  <div class="label">Experience</div>
+  <div class="label" data-num="04">Experience</div>
 
   <div class="exp-entry">
     <div class="exp-hd">
@@ -1077,7 +1155,7 @@ body.mode-textile .lever-group-textile .lever{display:block}
 
 <section id="contact">
 <div class="wrap">
-  <div class="label">Contact</div>
+  <div class="label" data-num="05">Contact</div>
   <div class="contact-avail">Open to senior advisory and lead sustainability roles.</div>
   <div class="contact-loc">Melbourne, Victoria &nbsp;&middot;&nbsp; Flexible on arrangement</div>
   <div class="btns">
@@ -1606,32 +1684,169 @@ function run(){
   }
   stagger('.exp-entry',90);stagger('.cap-entry',50);stagger('.scope-cell',55);
   stagger('.impl',55);stagger('.mca',45);stagger('.stage',65);
-  stagger('.instr',60);stagger('.artefact-card',60);stagger('.princ',80);stagger('.fw-card',50);stagger('.built-item',55);
+  stagger('.instr',60);stagger('.film-card',45);stagger('.princ',80);stagger('.fw-card',50);stagger('.built-item',55);
 })();
 
-/* ---- J. Cursor follower ---- */
-/* Deferred to DOMContentLoaded so cursor-dot/ring elements exist */
-document.addEventListener('DOMContentLoaded',function(){
-  if(!window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
-  var dot=document.getElementById('cursor-dot');
-  var ring=document.getElementById('cursor-ring');
-  if(!dot||!ring) return;
-  var mx=window.innerWidth/2,my=window.innerHeight/2,rx=mx,ry=my;
-  document.addEventListener('mousemove',function(e){
-    mx=e.clientX;my=e.clientY;
-    dot.style.left=mx+'px';dot.style.top=my+'px';
-    document.body.classList.add('cur-on');
+/* ---- J. Contour field — animated emissions topology (marching squares) ---- */
+(function(){
+  var cv=document.getElementById('contour-field');
+  if(!cv||!cv.getContext) return;
+  var ctx=cv.getContext('2d');
+  var hero=document.getElementById('about');
+  var readout=document.getElementById('hero-fig-read');
+  var reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var W=0,H=0,t=0,raf=null,inView=true;
+  var CELL=24,LEVELS=[-1.8,-1.2,-0.6,0,0.6,1.2,1.8];
+  function field(x,y,tt){
+    return Math.sin(x*0.011+tt)
+      +Math.sin(y*0.013-tt*0.7)
+      +Math.sin((x*0.7+y)*0.0065+tt*0.45)
+      +1.4*Math.sin(Math.hypot(x-W*0.72,y-H*0.3)*0.006-tt*0.5);
+  }
+  function lerp(p,q){return p/(p-q);}
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    var cols=Math.ceil(W/CELL)+1,rows=Math.ceil(H/CELL)+1;
+    var grid=new Array(cols*rows);
+    for(var j=0;j<rows;j++)for(var i=0;i<cols;i++)grid[j*cols+i]=field(i*CELL,j*CELL,t);
+    for(var li=0;li<LEVELS.length;li++){
+      var lv=LEVELS[li],hi=(li===3);
+      ctx.beginPath();
+      for(var j=0;j<rows-1;j++){
+        for(var i=0;i<cols-1;i++){
+          var x=i*CELL,y=j*CELL;
+          var a=grid[j*cols+i]-lv,b=grid[j*cols+i+1]-lv,c=grid[(j+1)*cols+i+1]-lv,d=grid[(j+1)*cols+i]-lv;
+          var idx=(a>0?8:0)|(b>0?4:0)|(c>0?2:0)|(d>0?1:0);
+          if(idx===0||idx===15) continue;
+          var top=[x+CELL*lerp(a,b),y],right=[x+CELL,y+CELL*lerp(b,c)],bot=[x+CELL*lerp(d,c),y+CELL],left=[x,y+CELL*lerp(a,d)];
+          var segs;
+          switch(idx){
+            case 1:case 14:segs=[[left,bot]];break;
+            case 2:case 13:segs=[[bot,right]];break;
+            case 3:case 12:segs=[[left,right]];break;
+            case 4:case 11:segs=[[top,right]];break;
+            case 5:segs=[[top,left],[bot,right]];break;
+            case 6:case 9:segs=[[top,bot]];break;
+            case 7:case 8:segs=[[top,left]];break;
+            case 10:segs=[[top,right],[left,bot]];break;
+          }
+          for(var s=0;s<segs.length;s++){
+            ctx.moveTo(segs[s][0][0],segs[s][0][1]);
+            ctx.lineTo(segs[s][1][0],segs[s][1][1]);
+          }
+        }
+      }
+      ctx.strokeStyle=hi?'rgba(139,160,30,0.34)':'rgba(15,23,42,0.10)';
+      ctx.lineWidth=hi?1.1:1;
+      ctx.stroke();
+    }
+    if(readout) readout.textContent='f(x,y,t) · t='+t.toFixed(1);
+  }
+  function resize(){
+    var dpr=Math.min(window.devicePixelRatio||1,1.5);
+    W=hero.offsetWidth;H=hero.offsetHeight;
+    cv.width=W*dpr;cv.height=H*dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    draw();
+  }
+  function frame(){
+    t+=0.0045;
+    draw();
+    raf=inView?requestAnimationFrame(frame):null;
+  }
+  window.addEventListener('resize',resize);
+  resize();
+  if(!reduce){
+    new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        inView=e.isIntersecting;
+        if(inView&&!raf) raf=requestAnimationFrame(frame);
+      });
+    }).observe(hero);
+    raf=requestAnimationFrame(frame);
+  }
+})();
+
+/* ---- J2. Kinetic variable-weight hero name ---- */
+(function(){
+  var el=document.querySelector('.hero-name');
+  if(!el) return;
+  var reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var fine=window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+  // Wrap each letter in a span, grouped per word so words never break
+  // mid-letter, preserving the <em> colour split
+  (function wrapLetters(node){
+    Array.prototype.slice.call(node.childNodes).forEach(function(child){
+      if(child.nodeType===3){
+        var frag=document.createDocumentFragment();
+        child.textContent.split(/(\s+)/).forEach(function(part){
+          if(!part) return;
+          if(/^\s+$/.test(part)){frag.appendChild(document.createTextNode(' '));return;}
+          var word=document.createElement('span');
+          word.className='hww';
+          part.split('').forEach(function(ch){
+            var s=document.createElement('span');
+            s.className='hw';s.textContent=ch;
+            word.appendChild(s);
+          });
+          frag.appendChild(word);
+        });
+        node.replaceChild(frag,child);
+      } else if(child.nodeType===1){wrapLetters(child);}
+    });
+  })(el);
+  if(reduce) return;
+  var spans=el.querySelectorAll('.hw');
+  var mx=-9999,my=-9999;
+  if(fine){
+    document.getElementById('about').addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;});
+    document.getElementById('about').addEventListener('mouseleave',function(){mx=-9999;my=-9999;});
+  }
+  var start=performance.now();
+  (function tick(now){
+    var tt=(now-start)/1000;
+    for(var i=0;i<spans.length;i++){
+      var w=700+100*Math.sin(tt*1.3+i*0.45);
+      if(mx>-9000){
+        var r=spans[i].getBoundingClientRect();
+        var dist=Math.hypot(mx-(r.left+r.width/2),my-(r.top+r.height/2));
+        var pull=Math.max(0,1-dist/220);
+        w-=420*pull; // letters thin out under the cursor — pressure effect
+      }
+      spans[i].style.fontVariationSettings="'wght' "+Math.max(300,Math.min(800,w)).toFixed(0);
+    }
+    requestAnimationFrame(tick);
+  })(start);
+})();
+
+/* ---- J3. Artefact filmstrip — drag to scroll + progress ---- */
+(function(){
+  var strip=document.getElementById('film-strip');
+  if(!strip) return;
+  var fill=document.getElementById('strip-fill');
+  function prog(){
+    var max=strip.scrollWidth-strip.clientWidth;
+    var p=max>0?strip.scrollLeft/max:0;
+    if(fill) fill.style.width=(18+82*p).toFixed(1)+'%';
+  }
+  strip.addEventListener('scroll',prog,{passive:true});
+  window.addEventListener('resize',prog);
+  prog();
+  var down=false,sx=0,sl=0;
+  strip.addEventListener('pointerdown',function(e){
+    if(e.pointerType!=='mouse') return;
+    down=true;sx=e.clientX;sl=strip.scrollLeft;
   });
-  (function frame(){
-    rx+=(mx-rx)*0.11;ry+=(my-ry)*0.11;
-    ring.style.left=rx.toFixed(1)+'px';ring.style.top=ry.toFixed(1)+'px';
-    requestAnimationFrame(frame);
-  })();
-  document.querySelectorAll('a,button,.exp-entry,.tab,.impl,.mca,.stage,.cap-entry,.fw-card,.built-item,.princ,.artefact-card').forEach(function(el){
-    el.addEventListener('mouseenter',function(){ring.classList.add('cx');});
-    el.addEventListener('mouseleave',function(){ring.classList.remove('cx');});
+  window.addEventListener('pointermove',function(e){
+    if(!down) return;
+    if(Math.abs(e.clientX-sx)>4) strip.classList.add('dragging');
+    strip.scrollLeft=sl-(e.clientX-sx);
   });
-});
+  window.addEventListener('pointerup',function(){
+    down=false;
+    setTimeout(function(){strip.classList.remove('dragging');},0);
+  });
+})();
 
 /* ---- K. Text scramble on section labels ---- */
 (function(){
@@ -1810,8 +2025,5 @@ window.addEventListener('load',function(){
   });
 })();
 </script>
-
-<div id="cursor-dot" aria-hidden="true"></div>
-<div id="cursor-ring" aria-hidden="true"></div>
 </body>
 </html>
