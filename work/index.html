@@ -8,7 +8,7 @@
 <title>Work Samples &#x2014; Christopher Wang</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -159,8 +159,7 @@ section:last-of-type{border-bottom:none}
 .s3-pct{font-family:var(--mono);font-size:0.78rem;font-weight:600;color:var(--matcha);text-align:right}
 .s3-bar-wrap{height:4px;background:#E2E8F0;overflow:hidden}
 .s3-bar-fill{height:100%;background:var(--matcha)}
-.sankey-wrap{margin:2rem 0 0;overflow-x:auto;width:100%;max-width:var(--max);min-height:420px}
-@media(min-width:900px){.sankey-wrap{min-height:500px}}
+.sankey-wrap{margin:2rem 0 0;overflow-x:auto;width:100%;max-width:var(--max)}
 .impl-grid{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule-dk);border:1px solid var(--rule-dk);overflow:hidden;margin-top:2rem}
 @media(min-width:560px){.impl-grid{grid-template-columns:repeat(3,1fr)}}
 .impl{background:var(--white);padding:1.25rem 1.5rem;border-left:3px solid var(--matcha);transition:background 0.3s var(--ease)}
@@ -315,20 +314,11 @@ footer{padding:1.4rem 0;border-top:1px solid var(--rule-dk);background:var(--bg)
 .footer-links{display:flex;gap:1.4rem}
 .footer-links a{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);text-decoration:none;transition:color 0.25s;font-weight:600;}
 .footer-links a:hover{color:var(--matcha)}
-.cta-strip{overflow:hidden;background:var(--matcha)}
-.cta-strip-track{display:flex;white-space:nowrap;animation:tick 22s linear infinite;padding:10px 0}
-.cta-strip:hover .cta-strip-track{animation-play-state:paused}
-.csi{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.13em;text-transform:uppercase;color:var(--slate);font-weight:700;flex-shrink:0}
-.csd{font-family:var(--mono);font-size:0.62rem;color:rgba(15,23,42,0.4);flex-shrink:0}
 .scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .mt1{margin-top:1rem}.mt2{margin-top:2rem}.mt3{margin-top:2.5rem}
 .sec-sub{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);margin-bottom:0.75rem;margin-top:2.5rem;font-weight:600;}
 .reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease}
 .reveal.revealed{opacity:1;transform:none}
-#cursor-dot{position:fixed;width:5px;height:5px;border-radius:50%;background:var(--matcha);pointer-events:none;z-index:9999;left:0;top:0;transform:translate(-50%,-50%);opacity:0;transition:opacity 0.3s}
-#cursor-ring{position:fixed;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--matcha);pointer-events:none;z-index:9998;left:0;top:0;transform:translate(-50%,-50%);opacity:0;transition:width 0.35s var(--ease),height 0.35s var(--ease),opacity 0.3s}
-body.cur-on #cursor-dot,body.cur-on #cursor-ring{opacity:0.65}
-body.cur-on #cursor-ring.cx{width:44px;height:44px;opacity:0.4}
 ::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:2px}
@@ -339,14 +329,7 @@ body.cur-on #cursor-ring.cx{width:44px;height:44px;opacity:0.4}
 /* ---- Film grain overlay ---- */
 .grain-overlay{position:fixed;inset:0;pointer-events:none;z-index:9990;mix-blend-mode:multiply;opacity:1;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)' opacity='0.042'/%3E%3C/svg%3E")}
 
-/* ---- Watercolor bloom elements ---- */
-.bloom-wrap{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
-.bloom{position:absolute;border-radius:50%;filter:blur(80px);mix-blend-mode:multiply;pointer-events:none}
-.bloom-a{width:560px;height:380px;background:radial-gradient(ellipse,rgba(181,196,43,0.18) 0%,transparent 70%);top:-60px;left:-80px;opacity:0.9;animation:floatA 18s ease-in-out infinite}
-.bloom-b{width:440px;height:340px;background:radial-gradient(ellipse,rgba(255,149,0,0.22) 0%,transparent 70%);top:30px;right:-60px;opacity:0.75;animation:floatB 22s ease-in-out infinite}
-.bloom-c{width:320px;height:220px;background:radial-gradient(ellipse,rgba(99,91,255,0.2) 0%,transparent 70%);bottom:0;left:40%;opacity:0.6;animation:floatC 26s ease-in-out infinite}
-
-/* ---- Content sits above blooms ---- */
+/* ---- Content layering ---- */
 #about .wrap{position:relative;z-index:1}
 
 /* ---- Asymmetric hero layout ---- */
@@ -436,11 +419,6 @@ body.mode-textile .lever-group-textile .lever{display:block}
 #cbar-name-lv{color:var(--matcha)}
 #cbar-name-hv{color:var(--amber)}
 #cbar-name-plant{color:var(--berry)}
-
-/* ---- Float animations for hero blooms ---- */
-@keyframes floatA{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(22px,-16px) scale(1.04)}66%{transform:translate(-10px,12px) scale(0.97)}}
-@keyframes floatB{0%,100%{transform:translate(0,0) scale(1)}40%{transform:translate(-18px,20px) scale(1.03)}70%{transform:translate(14px,-8px) scale(0.98)}}
-@keyframes floatC{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(10px,14px) scale(1.04)}}
 
 /* ---- Entrance animation classes ---- */
 @keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
@@ -544,11 +522,6 @@ body.mode-textile .lever-group-textile .lever{display:block}
 /* ---- Hero rule ---- */
 .hero-offset-rule{width:1px;height:clamp(4rem,8vw,6rem);background:var(--matcha);opacity:0.35;margin-bottom:2rem;margin-left:2px;animation:fadeUp 0.8s 0.3s var(--ease) both}
 
-/* ---- CTA strip dark version in scenario section ---- */
-.cta-strip{background:var(--matcha)}
-
-
-
 /* ---- Additional motion polish ---- */
 
 /* Animated gradient border on hovered exp-entry */
@@ -576,9 +549,6 @@ body.mode-textile .lever-group-textile .lever{display:block}
 /* KPI strip values animate on scenario load */
 .kpi-v{transition:color 0.3s}
 
-
-/* Contact section bg word float */
-.contact-bgword{animation:floatA 20s ease-in-out infinite;display:block}
 
 /* Scroll-reveal base for instr */
 .instr{opacity:0;transform:translateY(16px);transition:opacity 0.6s var(--ease),transform 0.6s var(--ease),background 0.3s var(--ease)}
@@ -633,6 +603,62 @@ body.mode-textile .lever-group-textile .lever{display:block}
   .tl>span[aria-hidden="true"]{display:none}
 }
 
+/* ---- Full-bleed layout support (clip keeps position:sticky working) ---- */
+html,body{overflow-x:clip}
+
+/* ---- Ghost section numerals — editorial chapter marks ---- */
+.label::before{content:attr(data-num);position:absolute;right:0;top:50%;transform:translateY(-46%);font-family:var(--disp);font-weight:800;font-size:clamp(3.2rem,9vw,6rem);line-height:1;color:transparent;-webkit-text-stroke:1.2px rgba(15,23,42,0.10);letter-spacing:-0.04em;pointer-events:none;user-select:none}
+
+/* ---- Promoted Sankey — full-bleed dark band ---- */
+.sankey-band{margin:2.5rem calc(50% - 50vw) 0;background:var(--slate);padding:clamp(2.5rem,6vw,4.5rem) var(--pad);position:relative;overflow:hidden}
+.sankey-band::before{content:'';position:absolute;inset:0;opacity:0.05;background-image:repeating-linear-gradient(0deg,transparent,transparent 40px,#fff 40px,#fff 41px),repeating-linear-gradient(90deg,transparent,transparent 40px,#fff 40px,#fff 41px);pointer-events:none}
+.sankey-band-inner{max-width:var(--max);margin:0 auto;position:relative}
+.sk-kicker{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.16em;text-transform:uppercase;color:rgba(181,196,43,0.85);margin-bottom:1rem;font-weight:600}
+.sk-head{font-family:var(--disp);font-size:clamp(1.8rem,5vw,3.2rem);font-weight:800;letter-spacing:-0.03em;line-height:1;color:var(--bg);margin-bottom:0.9rem}
+.sk-head em{font-style:normal;color:var(--matcha)}
+.sk-sub{font-size:0.85rem;font-weight:400;color:rgba(248,250,252,0.6);line-height:1.7;max-width:560px;margin-bottom:1.5rem}
+.sankey-wrap svg{clip-path:inset(0 100% 0 0)}
+.sankey-wrap.sk-on svg{clip-path:inset(0 0 0 0);transition:clip-path 1.2s var(--ease)}
+
+/* ---- Scrollytelling case study ---- */
+#casestudy{background:var(--bg);padding:clamp(4.5rem,10vw,7rem) 0;border-top:1px solid var(--rule-lt)}
+.scrolly{display:grid;grid-template-columns:1fr;gap:0 3rem;margin-top:2.5rem}
+@media(min-width:880px){.scrolly{grid-template-columns:1fr 1fr}}
+.scrolly-fig{position:sticky;top:80px;align-self:start;background:var(--white);border:1px solid var(--rule-dk);min-height:400px;padding:2rem;overflow:hidden;z-index:2}
+@media(max-width:879px){.scrolly-fig{top:52px;min-height:300px;margin-bottom:1rem}}
+.sfig{position:absolute;inset:2rem;opacity:0;transform:translateY(14px);transition:opacity 0.45s var(--ease),transform 0.45s var(--ease);pointer-events:none;display:flex;flex-direction:column;justify-content:center}
+.sfig.on{opacity:1;transform:none}
+.sfig-kick{font-family:var(--mono);font-size:0.55rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--mid);margin-bottom:0.9rem;font-weight:600}
+.sfig-big{font-family:var(--disp);font-weight:800;font-size:clamp(3.4rem,7vw,5.2rem);line-height:0.9;letter-spacing:-0.04em;color:var(--matcha);margin-bottom:0.5rem}
+.sfig-cap{font-family:var(--mono);font-size:0.62rem;color:var(--mid);letter-spacing:0.04em;line-height:1.6;margin-bottom:1.4rem;max-width:340px}
+.sfig-bars{display:flex;flex-direction:column;gap:0.55rem}
+.sfig-bar-row{display:grid;grid-template-columns:64px 1fr 48px;gap:0.6rem;align-items:center}
+.sfig-bar-lbl{font-family:var(--mono);font-size:0.56rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--mid)}
+.sfig-bar{height:6px;background:var(--rule-lt);overflow:hidden}
+.sfig-bar i{display:block;height:100%;background:var(--matcha);width:0;transition:width 0.9s var(--ease) 0.2s}
+.sfig.on .sfig-bar i{width:var(--w)}
+.sfig-bar-val{font-family:var(--mono);font-size:0.6rem;color:var(--slate);text-align:right}
+.sfig-chart{width:100%;max-width:380px}
+.sfig-path{fill:none;stroke:var(--matcha);stroke-width:2;stroke-dasharray:420;stroke-dashoffset:420;transition:stroke-dashoffset 1.4s var(--ease) 0.25s}
+.sfig.on .sfig-path{stroke-dashoffset:0}
+.sfig-bau{fill:none;stroke:#94A3B8;stroke-width:1;stroke-dasharray:4 4}
+.sfig-checks{list-style:none;padding:0;display:flex;flex-direction:column;gap:0.5rem}
+.sfig-checks li{font-family:var(--mono);font-size:0.65rem;color:#475569;letter-spacing:0.03em;padding-left:1.3rem;position:relative;opacity:0;transform:translateX(-8px);transition:opacity 0.4s var(--ease),transform 0.4s var(--ease)}
+.sfig-checks li::before{content:'\2713';position:absolute;left:0;color:var(--matcha);font-weight:700}
+.sfig.on .sfig-checks li{opacity:1;transform:none}
+.sfig.on .sfig-checks li:nth-child(1){transition-delay:0.25s}
+.sfig.on .sfig-checks li:nth-child(2){transition-delay:0.4s}
+.sfig.on .sfig-checks li:nth-child(3){transition-delay:0.55s}
+.sfig-dots{position:absolute;right:1.1rem;top:1.1rem;display:flex;gap:0.4rem;z-index:3}
+.sfig-dot{width:6px;height:6px;border-radius:50%;background:var(--rule-dk);transition:background 0.3s}
+.sfig-dot.on{background:var(--matcha)}
+.sstep{min-height:72vh;display:flex;flex-direction:column;justify-content:center;padding:3rem 0}
+@media(max-width:879px){.sstep{min-height:60vh}}
+.sstep-num{font-family:var(--disp);font-weight:800;font-size:2rem;line-height:1;color:transparent;-webkit-text-stroke:1px rgba(15,23,42,0.25);margin-bottom:0.8rem;letter-spacing:-0.03em}
+.sstep-title{font-family:var(--disp);font-size:clamp(1.15rem,2.5vw,1.5rem);font-weight:700;color:var(--slate);margin-bottom:0.75rem;line-height:1.2}
+.sstep-body{font-size:0.88rem;font-weight:400;color:#475569;line-height:1.8;max-width:480px}
+.sstep-src{font-family:var(--mono);font-size:0.58rem;color:var(--matcha);letter-spacing:0.05em;margin-top:0.9rem;font-weight:600}
+
 </style>
 </head><body>
 <div class="grain-overlay" aria-hidden="true"></div>
@@ -654,7 +680,7 @@ body.mode-textile .lever-group-textile .lever{display:block}
 
 <section id="work-intro" style="background:#EEF2FF;border-bottom:1px solid var(--rule-dk);padding:clamp(3.5rem,8vw,5.5rem) 0">
 <div class="wrap">
-  <div class="label">Work Samples</div>
+  <div class="label" data-num="01">Work Samples</div>
   <h1 style="font-family:var(--disp);font-size:clamp(2rem,5vw,3.2rem);font-weight:800;line-height:0.95;letter-spacing:-0.03em;color:var(--slate);margin-bottom:1rem">Frameworks <em style="color:var(--matcha);font-style:normal">in&nbsp;practice.</em></h1>
   <p style="font-size:0.9rem;font-weight:400;color:#475569;max-width:560px;line-height:1.8;margin-bottom:1.75rem">Four analytical frameworks applied in production across infrastructure, built environment, and government. Each tab shows a live version of a methodology I have delivered for clients.</p>
   <a href="../" style="font-family:var(--mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);text-decoration:none;display:inline-flex;align-items:center;gap:0.5rem;transition:color 0.3s var(--ease)"><span style="color:var(--matcha)">&#x2190;</span>&nbsp;Back to profile</a>
@@ -708,8 +734,15 @@ body.mode-textile .lever-group-textile .lever{display:block}
         <div class="scope-body" id="bl-s3-body">Embodied carbon (Cat 1), transport and distribution (Cat 4), and downstream leased assets (Cat 13). Reduction requires design choices and supplier collaboration.</div>
       </div>
     </div>
-    <div class="sankey-wrap" id="sankey-container">
-      <!-- Sankey drawn by JS -->
+    <div class="sankey-band">
+      <div class="sankey-band-inner">
+        <div class="sk-kicker">Fig. A &middot; Emissions flow &middot; FY25 baseline</div>
+        <h2 class="sk-head">Where the footprint <em>flows</em>.</h2>
+        <p class="sk-sub">Scope 1&#x2013;3 distribution and the Scope 3 category breakdown for the selected organisation type. The value chain dominates &#x2014; which is why the reduction playbook starts with suppliers and design choices, not the boiler room.</p>
+        <div class="sankey-wrap" id="sankey-container">
+          <!-- Sankey drawn by JS -->
+        </div>
+      </div>
     </div>
     <div class="impl-grid mt2" id="baseline-tiles">
       <div class="impl" id="impl-tile-1">
@@ -896,6 +929,90 @@ body.mode-textile .lever-group-textile .lever{display:block}
 </div>
 </section>
 
+<section id="casestudy">
+<div class="wrap">
+  <div class="label" data-num="02">Case Study &middot; Baseline to Boardroom</div>
+  <p class="panel-intro" style="margin-bottom:0">How one engagement moves from raw fuel invoices to a board-presented pathway. Scroll through the four phases &#x2014; the figure tracks where the work happens.</p>
+  <div class="scrolly">
+    <div class="scrolly-fig" aria-hidden="true">
+      <div class="sfig-dots">
+        <span class="sfig-dot on"></span><span class="sfig-dot"></span><span class="sfig-dot"></span><span class="sfig-dot"></span>
+      </div>
+      <div class="sfig on" id="sfig-1">
+        <div class="sfig-kick">Phase 01 &middot; Establish the baseline</div>
+        <div class="sfig-big">82.7%</div>
+        <div class="sfig-cap">of the footprint sits in the value chain (Scope 3) &mdash; representative infrastructure portfolio</div>
+        <div class="sfig-bars">
+          <div class="sfig-bar-row"><span class="sfig-bar-lbl">Scope 1</span><div class="sfig-bar"><i style="--w:14%"></i></div><span class="sfig-bar-val">11.5%</span></div>
+          <div class="sfig-bar-row"><span class="sfig-bar-lbl">Scope 2</span><div class="sfig-bar"><i style="--w:7%"></i></div><span class="sfig-bar-val">5.8%</span></div>
+          <div class="sfig-bar-row"><span class="sfig-bar-lbl">Scope 3</span><div class="sfig-bar"><i style="--w:100%"></i></div><span class="sfig-bar-val">82.7%</span></div>
+        </div>
+      </div>
+      <div class="sfig" id="sfig-2">
+        <div class="sfig-kick">Phase 02 &middot; Model the pathway</div>
+        <svg class="sfig-chart" viewBox="0 0 340 150" xmlns="http://www.w3.org/2000/svg">
+          <line x1="10" y1="130" x2="330" y2="130" stroke="#E2E8F0" stroke-width="1"/>
+          <line x1="10" y1="90" x2="330" y2="90" stroke="#E2E8F0" stroke-width="1"/>
+          <line x1="10" y1="50" x2="330" y2="50" stroke="#E2E8F0" stroke-width="1"/>
+          <polyline class="sfig-bau" points="10,28 330,42"/>
+          <path class="sfig-path" d="M10,28 C90,32 150,52 210,84 C260,110 300,122 330,127"/>
+          <text x="10" y="16" font-family="JetBrains Mono,monospace" font-size="8" fill="#94A3B8" letter-spacing="0.08em">FY25</text>
+          <text x="304" y="16" font-family="JetBrains Mono,monospace" font-size="8" fill="#94A3B8" letter-spacing="0.08em">FY50</text>
+          <text x="240" y="38" font-family="JetBrains Mono,monospace" font-size="8" fill="#94A3B8">BAU</text>
+          <text x="240" y="95" font-family="JetBrains Mono,monospace" font-size="8" fill="#8BAD1F">NET PATHWAY</text>
+        </svg>
+        <div class="sfig-cap" style="margin-top:1rem;margin-bottom:0">Toggle-based levers &mdash; every assumption traceable to a published source</div>
+      </div>
+      <div class="sfig" id="sfig-3">
+        <div class="sfig-kick">Phase 03 &middot; Prove it externally</div>
+        <div class="sfig-big">+35</div>
+        <div class="sfig-cap">GRESB Infrastructure points in year one &mdash; major Australian energy distributor</div>
+        <div class="sfig-bars">
+          <div class="sfig-bar-row"><span class="sfig-bar-lbl">Year 0</span><div class="sfig-bar"><i style="--w:38%;background:var(--rule-dk)"></i></div><span class="sfig-bar-val">baseline</span></div>
+          <div class="sfig-bar-row"><span class="sfig-bar-lbl">Year 1</span><div class="sfig-bar"><i style="--w:88%"></i></div><span class="sfig-bar-val">+35 pts</span></div>
+        </div>
+      </div>
+      <div class="sfig" id="sfig-4">
+        <div class="sfig-kick">Phase 04 &middot; Hand it over</div>
+        <div class="sfig-big">&minus;40%</div>
+        <div class="sfig-cap">inventory preparation time after automation &mdash; and the team runs it without me</div>
+        <ul class="sfig-checks">
+          <li>Methodology documented for assurance</li>
+          <li>Templates and tooling pre-configured</li>
+          <li>Internal team operates the next cycle</li>
+        </ul>
+      </div>
+    </div>
+    <div class="scrolly-steps">
+      <div class="sstep" data-fig="1">
+        <div class="sstep-num">01</div>
+        <div class="sstep-title">Establish the baseline.</div>
+        <p class="sstep-body">Scope 1&#x2013;3 boundaries confirmed, data confidence graded, gaps named rather than hidden. The first finding is usually the same: the overwhelming majority of emissions sit in the value chain, outside direct operational control. That single number decides the whole playbook.</p>
+        <div class="sstep-src">GHG Protocol &middot; NGER &middot; documented for external assurance</div>
+      </div>
+      <div class="sstep" data-fig="2">
+        <div class="sstep-num">02</div>
+        <div class="sstep-title">Model the pathway.</div>
+        <p class="sstep-body">A toggle-based scenario model where every lever assumption traces to a published source &mdash; grid trajectory, fleet transition, plant electrification. Built so a non-specialist can interrogate it, and presented to the board by senior leadership as the Group's climate reference tool.</p>
+        <div class="sstep-src">DCCEEW 2025 &middot; NVES Act 2024 &middot; CSIRO Net Zero Pathways</div>
+      </div>
+      <div class="sstep" data-fig="3">
+        <div class="sstep-num">03</div>
+        <div class="sstep-title">Prove it externally.</div>
+        <p class="sstep-body">Credibility is tested from outside: benchmark submissions and assurance. A full GRESB Infrastructure cycle &mdash; gap analysis, data collection reform, disclosure uplift &mdash; delivered a 35-percentage-point improvement in year one, alongside assurance-ready Scope 1 and 2 reporting.</p>
+        <div class="sstep-src">GRESB Infrastructure &middot; external limited assurance</div>
+      </div>
+      <div class="sstep" data-fig="4">
+        <div class="sstep-num">04</div>
+        <div class="sstep-title">Hand it over.</div>
+        <p class="sstep-body">The engagement ends; the infrastructure stays. Automated tooling cut inventory preparation time by roughly 40%, and every model ships with documented logic so the internal team runs the next reporting cycle without calling the consultant back in.</p>
+        <div class="sstep-src">Excel &middot; Python &middot; Envizi &middot; operable without advisory dependency</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
 <footer>
   <div class="footer-inner">
     <a href="../" class="footer-home">./</a>
@@ -1003,36 +1120,42 @@ function drawSankey(s1p,s2p,s3p,cat1p,cat4p,cat13p){
   if(c13h<8){c13h=8;c1h=s3h-c4h-c13h;}
   var c1y=s3y,c4y=c1y+c1h,c13y=c4y+c4h;
   var acc='#B5C42B',accM='rgba(181,196,43,0.55)';
-  var s='<svg viewBox="0 0 720 220" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;min-height:420px;max-width:100%" role="img" aria-label="Emissions flow diagram">';
-  s+='<path d="M36,'+s1y+' C130,'+s1y+' 130,'+s1y+' 220,'+s1y+' L220,'+(s1y+s1h)+' C130,'+(s1y+s1h)+' 130,'+(s1y+s1h)+' 36,'+(s1y+s1h)+' Z" fill="rgba(122,135,26,0.3)"/>';
-  s+='<path d="M36,'+s2y+' C130,'+s2y+' 130,'+s3y+' 220,'+s2y+' L220,'+(s2y+s2h)+' C130,'+(s2y+s2h)+' 130,'+s3y+' 36,'+(s2y+s2h)+' Z" fill="rgba(122,135,26,0.15)"/>';
-  s+='<path d="M36,'+s3y+' C130,'+s3y+' 130,'+s3y+' 220,'+s3y+' L220,'+yE+' C130,'+yE+' 130,'+yE+' 36,'+yE+' Z" fill="rgba(0,0,0,0.05)"/>';
-  s+='<path d="M236,'+s3y+' C358,'+s3y+' 358,'+s3y+' 480,'+s3y+' L480,'+(c1y+c1h)+' C358,'+(c1y+c1h)+' 358,'+(c1y+c1h)+' 236,'+(c1y+c1h)+' Z" fill="rgba(0,0,0,0.09)"/>';
-  s+='<path d="M236,'+(c1y+c1h)+' C358,'+(c1y+c1h)+' 358,'+(c1y+c1h)+' 480,'+(c1y+c1h)+' L480,'+(c4y+c4h)+' C358,'+(c4y+c4h)+' 358,'+(c4y+c4h)+' 236,'+(c4y+c4h)+' Z" fill="rgba(0,0,0,0.06)"/>';
-  s+='<path d="M236,'+(c4y+c4h)+' C358,'+(c4y+c4h)+' 358,'+(c4y+c4h)+' 480,'+(c4y+c4h)+' L480,'+yE+' C358,'+yE+' 358,'+yE+' 236,'+yE+' Z" fill="rgba(0,0,0,0.04)"/>';
-  s+='<rect x="20" y="'+yS+'" width="16" height="'+TH+'" fill="#D5D5D5"/>';
+  var s='<svg viewBox="0 0 720 220" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;min-height:280px;max-width:100%" role="img" aria-label="Emissions flow diagram">';
+  s+='<path d="M36,'+s1y+' C130,'+s1y+' 130,'+s1y+' 220,'+s1y+' L220,'+(s1y+s1h)+' C130,'+(s1y+s1h)+' 130,'+(s1y+s1h)+' 36,'+(s1y+s1h)+' Z" fill="rgba(181,196,43,0.40)"/>';
+  s+='<path d="M36,'+s2y+' C130,'+s2y+' 130,'+s3y+' 220,'+s2y+' L220,'+(s2y+s2h)+' C130,'+(s2y+s2h)+' 130,'+s3y+' 36,'+(s2y+s2h)+' Z" fill="rgba(181,196,43,0.20)"/>';
+  s+='<path d="M36,'+s3y+' C130,'+s3y+' 130,'+s3y+' 220,'+s3y+' L220,'+yE+' C130,'+yE+' 130,'+yE+' 36,'+yE+' Z" fill="rgba(255,255,255,0.07)"/>';
+  s+='<path d="M236,'+s3y+' C358,'+s3y+' 358,'+s3y+' 480,'+s3y+' L480,'+(c1y+c1h)+' C358,'+(c1y+c1h)+' 358,'+(c1y+c1h)+' 236,'+(c1y+c1h)+' Z" fill="rgba(255,255,255,0.11)"/>';
+  s+='<path d="M236,'+(c1y+c1h)+' C358,'+(c1y+c1h)+' 358,'+(c1y+c1h)+' 480,'+(c1y+c1h)+' L480,'+(c4y+c4h)+' C358,'+(c4y+c4h)+' 358,'+(c4y+c4h)+' 236,'+(c4y+c4h)+' Z" fill="rgba(255,255,255,0.07)"/>';
+  s+='<path d="M236,'+(c4y+c4h)+' C358,'+(c4y+c4h)+' 358,'+(c4y+c4h)+' 480,'+(c4y+c4h)+' L480,'+yE+' C358,'+yE+' 358,'+yE+' 236,'+yE+' Z" fill="rgba(255,255,255,0.05)"/>';
+  s+='<rect x="20" y="'+yS+'" width="16" height="'+TH+'" fill="rgba(255,255,255,0.28)"/>';
   s+='<rect x="220" y="'+s1y+'" width="16" height="'+s1h+'" fill="'+acc+'"/>';
   s+='<rect x="220" y="'+s2y+'" width="16" height="'+s2h+'" fill="'+accM+'"/>';
-  s+='<rect x="220" y="'+s3y+'" width="16" height="'+s3h+'" fill="#CCCCCC"/>';
-  s+='<rect x="480" y="'+c1y+'" width="16" height="'+c1h+'" fill="#BBBBBB"/>';
-  s+='<rect x="480" y="'+c4y+'" width="16" height="'+c4h+'" fill="#CCCCCC"/>';
-  s+='<rect x="480" y="'+c13y+'" width="16" height="'+c13h+'" fill="#D5D5D5"/>';
+  s+='<rect x="220" y="'+s3y+'" width="16" height="'+s3h+'" fill="rgba(255,255,255,0.38)"/>';
+  s+='<rect x="480" y="'+c1y+'" width="16" height="'+c1h+'" fill="rgba(255,255,255,0.34)"/>';
+  s+='<rect x="480" y="'+c4y+'" width="16" height="'+c4h+'" fill="rgba(255,255,255,0.26)"/>';
+  s+='<rect x="480" y="'+c13y+'" width="16" height="'+c13h+'" fill="rgba(255,255,255,0.18)"/>';
   var s1cy=(s1y+s1h/2+3).toFixed(0),s2cy=(s2y+s2h/2+3).toFixed(0),s3ty=(s3y+13).toFixed(0),s3py=(s3y+33).toFixed(0),s3sy=(s3y+49).toFixed(0);
   s+='<text x="240" y="'+s1cy+'" font-family="JetBrains Mono,monospace" font-size="9" fill="'+acc+'" letter-spacing="0.08em">SCOPE 1</text>';
   s+='<text x="315" y="'+s1cy+'" font-family="JetBrains Mono,monospace" font-size="9" fill="'+acc+'" text-anchor="end">'+s1p.toFixed(1)+'%</text>';
-  s+='<text x="240" y="'+s2cy+'" font-family="JetBrains Mono,monospace" font-size="9" fill="rgba(122,135,26,0.8)">SCOPE 2</text>';
-  s+='<text x="315" y="'+s2cy+'" font-family="JetBrains Mono,monospace" font-size="9" fill="rgba(122,135,26,0.8)" text-anchor="end">'+s2p.toFixed(1)+'%</text>';
+  s+='<text x="240" y="'+s2cy+'" font-family="JetBrains Mono,monospace" font-size="9" fill="rgba(181,196,43,0.8)">SCOPE 2</text>';
+  s+='<text x="315" y="'+s2cy+'" font-family="JetBrains Mono,monospace" font-size="9" fill="rgba(181,196,43,0.8)" text-anchor="end">'+s2p.toFixed(1)+'%</text>';
   if(s3h>30){
-    s+='<text x="240" y="'+s3ty+'" font-family="JetBrains Mono,monospace" font-size="9" fill="#666666">SCOPE 3</text>';
-    s+='<text x="240" y="'+s3py+'" font-family="JetBrains Mono,monospace" font-size="20" font-weight="bold" fill="#111111">'+s3p.toFixed(1)+'%</text>';
-    if(s3h>50) s+='<text x="240" y="'+s3sy+'" font-family="JetBrains Mono,monospace" font-size="8" fill="#888888">of total footprint</text>';
+    s+='<text x="240" y="'+s3ty+'" font-family="JetBrains Mono,monospace" font-size="9" fill="#94A3B8">SCOPE 3</text>';
+    s+='<text x="240" y="'+s3py+'" font-family="JetBrains Mono,monospace" font-size="20" font-weight="bold" fill="#F8FAFC">'+s3p.toFixed(1)+'%</text>';
+    if(s3h>50) s+='<text x="240" y="'+s3sy+'" font-family="JetBrains Mono,monospace" font-size="8" fill="#7C8AA0">of total footprint</text>';
   }
   function catLabel(label,desc,pct,cy,ch){
     if(ch<14) return;
     var ly=(cy+11).toFixed(0),dy=(cy+21).toFixed(0),py=(cy+34).toFixed(0);
-    s+='<text x="500" y="'+ly+'" font-family="JetBrains Mono,monospace" font-size="8" fill="#666666" letter-spacing="0.05em">'+label+'</text>';
-    if(ch>24) s+='<text x="500" y="'+dy+'" font-family="JetBrains Mono,monospace" font-size="7" fill="#888888">'+desc+'</text>';
-    if(ch>16) s+='<text x="500" y="'+py+'" font-family="JetBrains Mono,monospace" font-size="11" font-weight="bold" fill="#111111">'+pct.toFixed(1)+'%</text>';
+    s+='<text x="500" y="'+ly+'" font-family="JetBrains Mono,monospace" font-size="8" fill="#94A3B8" letter-spacing="0.05em">'+label+'</text>';
+    if(ch>44){
+      s+='<text x="500" y="'+dy+'" font-family="JetBrains Mono,monospace" font-size="7" fill="#7C8AA0">'+desc+'</text>';
+      s+='<text x="500" y="'+py+'" font-family="JetBrains Mono,monospace" font-size="11" font-weight="bold" fill="#F8FAFC">'+pct.toFixed(1)+'%</text>';
+    } else {
+      // short band: pct inline with the label so it never collides with the next category
+      s+='<text x="700" y="'+ly+'" font-family="JetBrains Mono,monospace" font-size="10" font-weight="bold" fill="#F8FAFC" text-anchor="end">'+pct.toFixed(1)+'%</text>';
+      if(ch>26) s+='<text x="500" y="'+dy+'" font-family="JetBrains Mono,monospace" font-size="7" fill="#7C8AA0">'+desc+'</text>';
+    }
   }
   catLabel('CAT 1','Purchased goods &amp; services',cat1p,c1y,c1h);
   catLabel('CAT 4','Transport &amp; distribution',cat4p,c4y,c4h);
@@ -1041,12 +1164,37 @@ function drawSankey(s1p,s2p,s3p,cat1p,cat4p,cat13p){
   container.innerHTML=s;
 }
 
-/* ---- C. Ticker term tooltips ---- */
+/* ---- C. Initial Sankey draw + wipe reveal ---- */
 document.addEventListener('DOMContentLoaded',function(){
-  // Initial Sankey draw
   var initSk=BASELINE_SECTORS.infrastructure.sk;
   if(initSk) setTimeout(function(){drawSankey(initSk[0],initSk[1],initSk[2],initSk[3],initSk[4],initSk[5]);},20);
+  var container=document.getElementById('sankey-container');
+  if(!container) return;
+  var skObs=new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(e.isIntersecting){e.target.classList.add('sk-on');skObs.unobserve(e.target);}
+    });
+  },{threshold:0.25});
+  skObs.observe(container);
 });
+
+/* ---- C2. Scrollytelling case study ---- */
+(function(){
+  var steps=document.querySelectorAll('.sstep');
+  if(!steps.length) return;
+  var figs=document.querySelectorAll('.sfig');
+  var dots=document.querySelectorAll('.sfig-dot');
+  function activate(n){
+    figs.forEach(function(f,i){f.classList.toggle('on',i===n);});
+    dots.forEach(function(d,i){d.classList.toggle('on',i===n);});
+  }
+  var obs=new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(e.isIntersecting) activate(parseInt(e.target.getAttribute('data-fig'),10)-1);
+    });
+  },{rootMargin:'-45% 0px -45% 0px'});
+  steps.forEach(function(st){obs.observe(st);});
+})();
 
 /* ---- D. Scroll reveal ---- */
 (function(){
@@ -1064,29 +1212,6 @@ document.addEventListener('DOMContentLoaded',function(){
   }
   stagger('.scope-cell',55);stagger('.impl',55);stagger('.mca',45);stagger('.stage',65);
 })();
-
-/* ---- E. Cursor follower ---- */
-document.addEventListener('DOMContentLoaded',function(){
-  if(!window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
-  var dot=document.getElementById('cursor-dot');
-  var ring=document.getElementById('cursor-ring');
-  if(!dot||!ring) return;
-  var mx=window.innerWidth/2,my=window.innerHeight/2,rx=mx,ry=my;
-  document.addEventListener('mousemove',function(e){
-    mx=e.clientX;my=e.clientY;
-    dot.style.left=mx+'px';dot.style.top=my+'px';
-    document.body.classList.add('cur-on');
-  });
-  (function frame(){
-    rx+=(mx-rx)*0.11;ry+=(my-ry)*0.11;
-    ring.style.left=rx.toFixed(1)+'px';ring.style.top=ry.toFixed(1)+'px';
-    requestAnimationFrame(frame);
-  })();
-  document.querySelectorAll('a,button,.impl,.mca,.stage,.scope-cell').forEach(function(el){
-    el.addEventListener('mouseenter',function(){ring.classList.add('cx');});
-    el.addEventListener('mouseleave',function(){ring.classList.remove('cx');});
-  });
-});
 
 /* ---- F. Label scramble ---- */
 (function(){
@@ -1161,8 +1286,5 @@ document.addEventListener('DOMContentLoaded',function(){
   });
 })();
 </script>
-
-<div id="cursor-dot" aria-hidden="true"></div>
-<div id="cursor-ring" aria-hidden="true"></div>
 </body>
 </html>
