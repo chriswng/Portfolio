@@ -4,7 +4,7 @@
    <link rel="shortcut icon" type="image/x-icon" href="favicon.svg">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Christopher Wang — Sustainability Advisor. GHG inventory infrastructure, decarbonisation pathway modelling, and regulatory disclosure for infrastructure, built environment, and government. Based in Melbourne.">
+<meta name="description" content="Christopher Wang: Sustainability Advisor. GHG inventory infrastructure, decarbonisation pathway modelling, and regulatory disclosure for infrastructure, built environment, and government. Based in Melbourne.">
 <title>Christopher Wang | Sustainability Advisor</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -114,17 +114,6 @@ section:last-of-type{border-bottom:none}
 .cap-num{font-family:var(--mono);font-size:0.62rem;color:var(--subtle);padding-top:0.15rem;transition:color 0.3s var(--ease)}
 .cap-title{font-weight:600;font-size:0.88rem;color:var(--slate);margin-bottom:0.35rem}
 .cap-body{font-size:0.82rem;font-weight:400;color:#475569;line-height:1.65}
-#artefacts{background:var(--bg);padding:4rem 0}
-.artefacts-intro{font-size:0.88rem;font-weight:400;color:var(--mid);max-width:560px;line-height:1.8;margin-bottom:2rem}
-.artefact-grid{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule-dk);border:1px solid var(--rule-dk);overflow:hidden}
-@media(min-width:640px){.artefact-grid{grid-template-columns:1fr 1fr}}
-.artefact-card{background:var(--white);padding:1.5rem;position:relative;transition:background 0.3s var(--ease)}
-.artefact-card:hover{background:rgba(181,196,43,0.08)}
-.artefact-full{grid-column:1 / -1}
-.artefact-num{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--subtle);margin-bottom:0.75rem}
-.artefact-name{font-family:var(--disp);font-size:0.95rem;font-weight:700;color:var(--slate);margin-bottom:0.3rem;line-height:1.25}
-.artefact-what{font-size:0.78rem;font-weight:400;color:#475569;margin-bottom:0.75rem;line-height:1.65}
-.artefact-outcome{font-family:var(--mono);font-size:0.62rem;color:var(--matcha);letter-spacing:0.04em;padding-top:0.65rem;border-top:1px solid var(--rule-lt);line-height:1.5;font-weight:600;}
 #work{background:#F1F5F9;padding:clamp(4.5rem,10vw,7rem) 0}
 .tabs{display:flex;border-bottom:1px solid var(--rule-dk);margin-bottom:2.5rem;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
@@ -255,7 +244,7 @@ section:last-of-type{border-bottom:none}
 .tool-decl strong{font-weight:700;color:var(--matcha)}
 .tool-sub{font-size:0.82rem;font-weight:400;color:var(--mid);max-width:600px;line-height:1.65;margin-bottom:0.75rem}
 .tool-disc{display:inline-block;font-family:var(--mono);font-size:0.6rem;color:var(--mid);border:1px solid var(--rule-dk);padding:0.25rem 0.7rem;margin-bottom:1.5rem}
-.sector-desc{font-family:var(--mono);font-size:0.62rem;color:var(--matcha);margin-bottom:2rem;line-height:1.5;max-width:580px;font-weight:600;}
+.sector-desc{font-family:var(--mono);font-size:0.62rem;color:var(--matcha);margin-top:1.5rem;margin-bottom:2rem;line-height:1.5;max-width:580px;font-weight:600;}
 .kpi-strip{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--rule-dk);border:1px solid var(--rule-dk);margin-bottom:1.5rem;overflow:hidden}
 @media(min-width:580px){.kpi-strip{grid-template-columns:repeat(4,1fr)}}
 .kpi{background:var(--white);padding:1.1rem 1.25rem}
@@ -328,10 +317,19 @@ footer{padding:1.4rem 0;border-top:1px solid var(--rule-dk);background:var(--bg)
 /* ---- Film grain overlay ---- */
 .grain-overlay{position:fixed;inset:0;pointer-events:none;z-index:9990;mix-blend-mode:multiply;opacity:1;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)' opacity='0.042'/%3E%3C/svg%3E")}
 
-/* ---- Contour field — animated emissions topology, hero ---- */
-#contour-field{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
-.hero-fig{position:absolute;right:var(--pad);bottom:0.8rem;font-family:var(--mono);font-size:0.52rem;letter-spacing:0.14em;text-transform:uppercase;color:rgba(15,23,42,0.4);z-index:1;pointer-events:none;text-align:right;line-height:1.7}
-.hero-fig b{color:var(--matcha);font-weight:500}
+/* ---- Contour field: softened animated topology, reads as background texture.
+   Reusable: drop <canvas class="contour-field"> into any position:relative section. ---- */
+#contour-field{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.55}
+
+/* ---- Watercolour bloom textures: restrained, atmospheric ---- */
+.bloom-wrap{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.bloom{position:absolute;border-radius:50%;filter:blur(90px);mix-blend-mode:multiply;pointer-events:none}
+.bloom-a{width:560px;height:380px;background:radial-gradient(ellipse,rgba(181,196,43,0.10) 0%,transparent 70%);top:-60px;left:-80px;animation:bloomA 26s ease-in-out infinite}
+.bloom-b{width:440px;height:340px;background:radial-gradient(ellipse,rgba(255,149,0,0.08) 0%,transparent 70%);top:30px;right:-60px;animation:bloomB 32s ease-in-out infinite}
+.bloom-c{width:340px;height:240px;background:radial-gradient(ellipse,rgba(99,91,255,0.08) 0%,transparent 70%);bottom:0;left:40%;animation:bloomC 38s ease-in-out infinite}
+@keyframes bloomA{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,18px)}}
+@keyframes bloomB{0%,100%{transform:translate(0,0)}50%{transform:translate(-24px,14px)}}
+@keyframes bloomC{0%,100%{transform:translate(0,0)}50%{transform:translate(18px,-16px)}}
 
 /* ---- Content sits above contour field ---- */
 #about .wrap{position:relative;z-index:1}
@@ -437,13 +435,11 @@ body.mode-textile .lever-group-textile .lever{display:block}
 #principles{background:var(--slate);padding:clamp(4rem,9vw,6.5rem) 0;overflow:hidden;position:relative}
 #principles .label{color:var(--matcha)}
 #principles .label::after{background:rgba(181,196,43,0.3)}
-.princ-bg-word{font-family:var(--disp);font-weight:800;font-size:clamp(7rem,18vw,13rem);color:rgba(255,255,255,0.025);position:absolute;right:-1rem;bottom:-1rem;line-height:0.85;letter-spacing:-0.06em;pointer-events:none;user-select:none}
 .princ-grid{display:grid;grid-template-columns:1fr;gap:0;border-top:1px solid rgba(255,255,255,0.08);margin-top:1.5rem}
 @media(min-width:640px){.princ-grid{grid-template-columns:repeat(3,1fr)}}
 .princ{padding:2rem 0 2rem;border-bottom:1px solid rgba(255,255,255,0.08);transition:border-color 0.3s}
-@media(min-width:640px){.princ{padding:2rem 2rem 2rem 0;border-bottom:none;border-right:1px solid rgba(255,255,255,0.08)}}
-@media(min-width:640px){.princ:last-child{border-right:none;padding-right:0}}
-.princ:hover{border-color:rgba(181,196,43,0.4)}
+@media(min-width:640px){.princ{padding:2rem 2.5rem 2rem 0;border-bottom:none}}
+@media(min-width:640px){.princ:last-child{padding-right:0}}
 .princ-num{font-family:var(--mono);font-size:0.55rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(181,196,43,0.7);margin-bottom:1.1rem}
 .princ-title{font-family:var(--disp);font-size:clamp(0.95rem,2vw,1.15rem);font-weight:700;color:var(--bg);line-height:1.25;margin-bottom:0.75rem;letter-spacing:-0.01em}
 .princ-body{font-size:0.82rem;font-weight:400;color:rgba(248,250,252,0.6);line-height:1.75}
@@ -484,7 +480,7 @@ body.mode-textile .lever-group-textile .lever{display:block}
 .tool-disc{color:rgba(248,250,252,0.45) !important;border-color:rgba(255,255,255,0.12) !important}
 .sector-desc{color:rgba(181,196,43,0.85) !important}
 .kpi{background:#1E293B !important}
-.kpi.live{background:#0F2D1A !important}
+.kpi.live{background:#1D2B45 !important}
 .kpi-l{color:rgba(248,250,252,0.5) !important}
 .kpi-v{color:rgba(248,250,252,0.95) !important}
 .kpi.live .kpi-v{color:var(--matcha) !important}
@@ -496,7 +492,7 @@ body.mode-textile .lever-group-textile .lever{display:block}
 .lever-select{color:rgba(248,250,252,0.9) !important;border-color:rgba(255,255,255,0.3) !important;background:rgba(255,255,255,0.08) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23F8FAFC'/%3E%3C/svg%3E") no-repeat right 0.65rem center !important}
 .lever-select:hover{border-color:rgba(255,255,255,0.55) !important}
 .lever-select option{background:#1E293B !important;color:rgba(248,250,252,0.9) !important}
-.lever-rev{background:#0F172A !important;border-color:rgba(255,255,255,0.06) !important}
+.lever-rev{background:rgba(122,90,138,0.12) !important;border-top:none !important}
 .lever-sector{background:#0F172A !important;border-color:rgba(255,255,255,0.06) !important}
 .contrib-card{background:#1E293B !important;border-color:rgba(255,255,255,0.08) !important}
 .contrib-head{color:rgba(248,250,252,0.5) !important;border-color:rgba(255,255,255,0.08) !important}
@@ -635,11 +631,11 @@ body.mode-textile .lever-group-textile .lever{display:block}
 .pipe-cta{display:inline-flex;align-items:center;gap:0.35rem;margin-top:1.25rem;font-family:var(--mono);font-size:0.58rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--matcha);text-decoration:none;font-weight:600;transition:opacity 0.2s}
 .pipe-cta:hover{opacity:0.7}
 
-/* ---- Improved lever/controls spacing ---- */
+/* ---- Improved lever/controls spacing: title, subtitle, and selector read as one group ---- */
 .controls-card{background:var(--white);overflow:hidden;margin-bottom:1.5rem}
-.lever{background:var(--bg);padding:1.5rem 1.75rem}
-.lever-name{font-size:0.84rem;font-weight:700;color:var(--slate);margin-bottom:0.4rem}
-.lever-src{font-family:var(--mono);font-size:0.58rem;color:var(--matcha);margin-bottom:0.9rem;letter-spacing:0.02em}
+.lever{background:var(--bg);padding:1.1rem 1.25rem}
+.lever-name{font-size:0.84rem;font-weight:700;color:var(--slate);margin-bottom:0.2rem;line-height:1.35}
+.lever-src{font-family:var(--mono);font-size:0.58rem;color:var(--matcha);margin-bottom:0.55rem;letter-spacing:0.02em;line-height:1.45}
 .lever-select{width:100%;padding:0.55rem 2rem 0.55rem 0.75rem;border:1px solid var(--rule-dk);background:transparent;color:var(--slate);font-family:var(--sans);font-size:0.8rem;font-weight:400;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%231A1410'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0.65rem center;border-radius:0;transition:border-color 0.3s var(--ease),color 0.3s var(--ease)}
 .lever-grid{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule-dk);margin:1.25rem}
 
@@ -656,25 +652,6 @@ body.mode-textile .lever-group-textile .lever{display:block}
 .pipeline::before{content:'';position:absolute;left:-16px;top:4px;bottom:4px;width:2px;background-image:linear-gradient(180deg,var(--matcha) 0 55%,transparent 55% 100%);background-size:2px 14px;background-repeat:repeat-y;opacity:0.5;animation:pipeflow 1.4s linear infinite}
 @keyframes pipeflow{to{background-position:0 14px}}
 @media(max-width:720px){.pipeline::before{display:none}}
-
-/* ---- Artefact filmstrip ---- */
-#artefacts{background:#F1F5F9;padding:clamp(4rem,9vw,6.5rem) 0;overflow:hidden;border-bottom:1px solid var(--rule-lt)}
-.strip-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:2rem}
-.strip-hint{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--subtle);white-space:nowrap}
-.film-strip{display:flex;gap:1px;background:var(--rule-dk);border:1px solid var(--rule-dk);overflow-x:auto;scroll-snap-type:x proximity;cursor:grab;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-.film-strip::-webkit-scrollbar{display:none}
-.film-strip.dragging{cursor:grabbing;scroll-snap-type:none}
-.film-strip.dragging .film-card{pointer-events:none}
-.film-card{flex:0 0 clamp(250px,29vw,330px);scroll-snap-align:start;background:var(--white);padding:1.5rem 1.5rem 1.25rem;display:flex;flex-direction:column;min-height:300px;position:relative;transition:background 0.3s var(--ease)}
-.film-card:hover{background:rgba(181,196,43,0.07)}
-.film-num{font-family:var(--disp);font-weight:800;font-size:3.2rem;line-height:1;color:transparent;-webkit-text-stroke:1.1px rgba(15,23,42,0.18);margin-bottom:1.1rem;letter-spacing:-0.04em;transition:color 0.3s var(--ease),-webkit-text-stroke-color 0.3s var(--ease)}
-.film-card:hover .film-num{color:var(--matcha);-webkit-text-stroke-color:var(--matcha)}
-.film-tag{font-family:var(--mono);font-size:0.52rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--mid);margin-bottom:0.5rem;font-weight:600}
-.film-name{font-family:var(--disp);font-size:1rem;font-weight:700;color:var(--slate);line-height:1.25;margin-bottom:0.5rem}
-.film-what{font-size:0.78rem;font-weight:400;color:#475569;line-height:1.65;margin-bottom:1rem}
-.film-outcome{font-family:var(--mono);font-size:0.6rem;color:var(--matcha);letter-spacing:0.04em;line-height:1.55;font-weight:600;border-top:1px solid var(--rule-lt);padding-top:0.7rem;margin-top:auto}
-.strip-progress{height:2px;background:var(--rule-lt);margin-top:1.25rem;position:relative;overflow:hidden}
-.strip-progress-fill{position:absolute;left:0;top:0;bottom:0;width:18%;background:var(--matcha);transition:width 0.2s ease}
 
 </style>
 </head><body>
@@ -695,8 +672,8 @@ body.mode-textile .lever-group-textile .lever{display:block}
 </nav>
 
 <section id="about">
+<div class="bloom-wrap" aria-hidden="true"><div class="bloom bloom-a"></div><div class="bloom bloom-b"></div><div class="bloom bloom-c"></div></div>
 <canvas id="contour-field" aria-hidden="true"></canvas>
-<div class="hero-fig" aria-hidden="true">Fig. 01 &mdash; emissions topology<br><b id="hero-fig-read">f(x,y,t)</b></div>
 <div class="wrap">
   <h1 class="hero-name">Christopher <em>Wang</em></h1>
   <div class="hero-cycle"><span id="role-cycle">Sustainability Advisor</span></div>
@@ -722,11 +699,11 @@ body.mode-textile .lever-group-textile .lever{display:block}
 <section id="bio">
 <div class="wrap">
   <div class="bio-inner">
-    <p class="bio-text">I build the data infrastructure that makes sustainability commitments defensible — GHG inventories with documented methodology, Scope 1–3 baselines that survive external assurance, decarbonisation models with traceable lever assumptions, and reporting systems that internal teams can operate after I leave the engagement.</p>
-    <p class="bio-text" style="margin-top:1rem">Four years in sustainability advisory across WSP and Downer Group — GHG accounting, regulatory disclosure, decarbonisation modelling, supply chain emissions. Six years prior in built environment and infrastructure, including project delivery at the Department of Defence.</p>
-    <p class="bio-text" style="margin-top:1rem">Looking for sustainability leadership in fashion, consumer goods, or technology — where supply chain transparency and decarbonisation are primary workstreams, not obligations.</p>
+    <p class="bio-text">I build the data infrastructure that makes sustainability commitments defensible: GHG inventories with documented methodology, Scope 1-3 baselines that survive external assurance, decarbonisation models with traceable lever assumptions, and reporting systems that internal teams can operate after I leave the engagement.</p>
+    <p class="bio-text" style="margin-top:1rem">Four years in sustainability advisory across WSP and Downer Group: GHG accounting, regulatory disclosure, decarbonisation modelling, supply chain emissions. Six years prior in built environment and infrastructure, including project delivery at the Department of Defence.</p>
+    <p class="bio-text" style="margin-top:1rem">Looking for sustainability leadership in fashion, consumer goods, or technology, where supply chain transparency and decarbonisation are primary workstreams, not obligations.</p>
     <p class="bio-text" style="margin-top:1rem">Bachelor of Engineering (Civil Engineering with Architecture), First Class Honours, UNSW.</p>
-    <p style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--matcha);margin-top:2rem;margin-bottom:0.5rem;font-weight:600;">Capability pipeline — click any step to see examples</p>
+    <p style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--matcha);margin-top:2rem;margin-bottom:0.5rem;font-weight:600;">Capability pipeline: click any step to see examples</p>
     <div class="pipeline" aria-label="Capability pipeline">
 
       <div class="pipe-row">
@@ -741,7 +718,7 @@ body.mode-textile .lever-group-textile .lever{display:block}
               <div class="pipe-example">
                 <div class="pipe-ex-title">Subcontractor Diesel Reporting Templates</div>
                 <div class="pipe-ex-body">Pre-configured Excel templates with embedded calculation logic and automated Envizi upload generation. Eliminated manual data collection across three Downer business units, replacing a recurring per-quarter effort.</div>
-                <div class="pipe-ex-outcome">Outcome: manual collection eliminated across 3 BUs — Downer Group</div>
+                <div class="pipe-ex-outcome">Outcome: manual collection eliminated across 3 BUs, Downer Group</div>
               </div>
               <div class="pipe-example">
                 <div class="pipe-ex-title">Scope 3 Data Collection Pipeline Rebuild</div>
@@ -760,17 +737,17 @@ body.mode-textile .lever-group-textile .lever{display:block}
         </div>
         <div class="pipe-panel" id="pipe-panel-calc" role="region">
           <div class="pipe-panel-inner">
-            <p class="pipe-desc">GHG inventory preparation and Scope 1–3 accounting aligned to GHG Protocol and NGER. Methodology documented for external assurance and reuse across reporting cycles.</p>
+            <p class="pipe-desc">GHG inventory preparation and Scope 1-3 accounting aligned to GHG Protocol and NGER. Methodology documented for external assurance and reuse across reporting cycles.</p>
             <div class="pipe-examples">
               <div class="pipe-example">
                 <div class="pipe-ex-title">GHG Recalculation Module</div>
                 <div class="pipe-ex-body">Independent recalculation module with operational control boundary filtering, built to reconcile Group-level emissions calculations against Envizi outputs. Documented logic for ongoing internal verification without advisory dependency.</div>
-                <div class="pipe-ex-outcome">Outcome: delivered external assurance readiness for Group-level Scope 1 and 2 — Downer Group</div>
+                <div class="pipe-ex-outcome">Outcome: delivered external assurance readiness for Group-level Scope 1 and 2, Downer Group</div>
               </div>
               <div class="pipe-example">
-                <div class="pipe-ex-title">GHG Inventory Automation — ~40% Time Reduction</div>
+                <div class="pipe-ex-title">GHG Inventory Automation: ~40% Time Reduction</div>
                 <div class="pipe-ex-body">Automated Excel and Python tools at WSP that replaced recurring manual workflows across active client accounts. All tools documented with logic notes for internal operation.</div>
-                <div class="pipe-ex-outcome">Outcome: ~40% reduction in GHG inventory preparation time — WSP in Australia</div>
+                <div class="pipe-ex-outcome">Outcome: ~40% reduction in GHG inventory preparation time, WSP in Australia</div>
               </div>
             </div>
           </div>
@@ -789,7 +766,7 @@ body.mode-textile .lever-group-textile .lever{display:block}
               <div class="pipe-example">
                 <div class="pipe-ex-title">GRESB Infrastructure Assessment: 35-Point Improvement</div>
                 <div class="pipe-ex-body">Led the full assessment cycle for a major Australian energy distributor: gap analysis, data collection reform, targeted disclosure uplift across management, performance, and stakeholder engagement components. Methodology documented for handover and independently operable from year two.</div>
-                <div class="pipe-ex-outcome">Outcome: 35-percentage-point improvement in year one — handed back as an internally operable process</div>
+                <div class="pipe-ex-outcome">Outcome: 35-percentage-point improvement in year one, handed back as an internally operable process</div>
               </div>
               <div class="pipe-example">
                 <div class="pipe-ex-title">NSW Treasury Net Zero Government Operations Policy</div>
@@ -797,9 +774,9 @@ body.mode-textile .lever-group-textile .lever{display:block}
                 <div class="pipe-ex-outcome">Outcome: input incorporated into the whole-of-government policy framework across NSW agencies</div>
               </div>
               <div class="pipe-example">
-                <div class="pipe-ex-title">NGER Statutory Compliance — Section 13E Response</div>
+                <div class="pipe-ex-title">NGER Statutory Compliance: Section 13E Response</div>
                 <div class="pipe-ex-body">Drafted and lodged a Section 13E statutory compliance response to DCCEEW under POFRA 2017 within a 30-day deadline. Included reconciliation of historical data and full methodology documentation.</div>
-                <div class="pipe-ex-outcome">Outcome: submitted on deadline — Downer Group</div>
+                <div class="pipe-ex-outcome">Outcome: submitted on deadline, Downer Group</div>
               </div>
             </div>
           </div>
@@ -813,17 +790,17 @@ body.mode-textile .lever-group-textile .lever{display:block}
         </div>
         <div class="pipe-panel" id="pipe-panel-strategy" role="region">
           <div class="pipe-panel-inner">
-            <p class="pipe-desc">Scenario-driven decarbonisation models with traceable lever assumptions drawn from published sources — structured for non-specialist interrogation and owned internally, not dependent on the analyst who built them.</p>
+            <p class="pipe-desc">Scenario-driven decarbonisation models with traceable lever assumptions drawn from published sources, structured for non-specialist interrogation and owned internally, not dependent on the analyst who built them.</p>
             <div class="pipe-examples">
               <div class="pipe-example">
-                <div class="pipe-ex-title">Net Zero Pathway Model — Board Presentation</div>
-                <div class="pipe-ex-body">Toggle-based net zero pathway model incorporating DCCEEW 2025 grid emission factor projections, NVES Act 2024 fleet trajectories, and BU-level pathway curves. Built for internal operation without ongoing advisory support. Presented to the board by senior leadership as part of the Group's climate strategy — became the internal reference tool for tracking BU abatement progress.</div>
-                <div class="pipe-ex-outcome">Outcome: board-level presentation; ongoing internal reference tool — Downer Group</div>
+                <div class="pipe-ex-title">Net Zero Pathway Model: Board Presentation</div>
+                <div class="pipe-ex-body">Toggle-based net zero pathway model incorporating DCCEEW 2025 grid emission factor projections, NVES Act 2024 fleet trajectories, and BU-level pathway curves. Built for internal operation without ongoing advisory support. Presented to the board by senior leadership as part of the Group's climate strategy, and became the internal reference tool for tracking BU abatement progress.</div>
+                <div class="pipe-ex-outcome">Outcome: board-level presentation; ongoing internal reference tool, Downer Group</div>
               </div>
               <div class="pipe-example">
-                <div class="pipe-ex-title">Scope 1–3 Baselines and Decarbonisation Roadmaps</div>
+                <div class="pipe-ex-title">Scope 1-3 Baselines and Decarbonisation Roadmaps</div>
                 <div class="pipe-ex-body">Delivered across infrastructure and built environment portfolios for government and private sector clients. Each roadmap includes lever-level abatement pathways, revenue-indexed gross emissions forecasting, and documented methodology for independent operation.</div>
-                <div class="pipe-ex-outcome">Applied across infrastructure, government, and commercial property portfolios — WSP in Australia</div>
+                <div class="pipe-ex-outcome">Applied across infrastructure, government, and commercial property portfolios, WSP in Australia</div>
               </div>
             </div>
             <a href="#scenario" class="pipe-cta">&#x2192; See the live scenario model below</a>
@@ -838,17 +815,17 @@ body.mode-textile .lever-group-textile .lever{display:block}
         </div>
         <div class="pipe-panel" id="pipe-panel-comms" role="region">
           <div class="pipe-panel-inner">
-            <p class="pipe-desc">Technical analysis translated into stakeholder-ready outputs — from board presentations and all-employee training to public disclosure frameworks that teams can operate independently.</p>
+            <p class="pipe-desc">Technical analysis translated into stakeholder-ready outputs: from board presentations and all-employee training to public disclosure frameworks that teams can operate independently.</p>
             <div class="pipe-examples">
               <div class="pipe-example">
-                <div class="pipe-ex-title">Climate Change eLearning Module — Company-wide Deployment</div>
+                <div class="pipe-ex-title">Climate Change eLearning Module: Company-wide Deployment</div>
                 <div class="pipe-ex-body">Co-developed with an external learning design provider across three role clusters and two delivery formats. Content designed from scratch through to company-wide launch, covering GHG accounting fundamentals, decarbonisation levers, and role-specific action pathways.</div>
-                <div class="pipe-ex-outcome">Outcome: deployed across all-employee cohort company-wide — Downer Group</div>
+                <div class="pipe-ex-outcome">Outcome: deployed across all-employee cohort company-wide, Downer Group</div>
               </div>
               <div class="pipe-example">
                 <div class="pipe-ex-title">ESG Impact Report Workshop</div>
                 <div class="pipe-ex-body">Facilitated a cross-BU ESG Impact Report content workshop with a General Manager, coordinating four business unit disclosure reviews through Workiva for the annual ESG Impact Report.</div>
-                <div class="pipe-ex-outcome">Applied to the annual ESG Impact Report — Downer Group</div>
+                <div class="pipe-ex-outcome">Applied to the annual ESG Impact Report, Downer Group</div>
               </div>
             </div>
           </div>
@@ -867,107 +844,37 @@ body.mode-textile .lever-group-textile .lever{display:block}
     <div class="princ reveal">
       <div class="princ-num">01</div>
       <div class="princ-title">Data integrity precedes narrative.</div>
-      <div class="princ-body">Every net zero commitment is a claim. Its credibility depends on what sits behind it — a defensible, independently verifiable inventory documented before the narrative, not after.</div>
+      <div class="princ-body">Every net zero commitment is a claim. Its credibility depends on what sits behind it: a defensible, independently verifiable inventory documented before the narrative, not after.</div>
     </div>
     <div class="princ reveal">
       <div class="princ-num">02</div>
       <div class="princ-title">Reusable infrastructure compounds value.</div>
-      <div class="princ-body">Advisory that lives in a consultant's head has a short shelf life. I build models and processes designed to be owned internally — so the team can run the next reporting cycle without calling back in.</div>
+      <div class="princ-body">Advisory that lives in a consultant's head has a short shelf life. I build models and processes designed to be owned internally, so the team can run the next reporting cycle without calling back in.</div>
     </div>
     <div class="princ reveal">
       <div class="princ-num">03</div>
       <div class="princ-title">Ambition grounded in evidence, with gaps named.</div>
-      <div class="princ-body">The science sets the pace. Pathway models need lever assumptions grounded in published data, with uncertainty disclosed alongside figures. Carbon credits belong on residual hard-to-abate emissions — not as a substitute for near-term reduction.</div>
+      <div class="princ-body">The science sets the pace. Pathway models need lever assumptions grounded in published data, with uncertainty disclosed alongside figures. Carbon credits belong on residual hard-to-abate emissions, not as a substitute for near-term reduction.</div>
     </div>
   </div>
-  <div class="princ-bg-word" aria-hidden="true">DATA</div>
 </div>
 </section>
 
 <div class="ticker-band" aria-hidden="true">
   <div id="ticker-tip" class="ticker-tip" aria-hidden="true"></div>
   <div class="ticker-track">
-    <span class="ticker-run"><span class="t-term" data-tip="Corporate value chain accounting standard – defines Scope 1, 2, and 3 emission boundaries and reporting methodology.">GHG Protocol</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="National Greenhouse and Energy Reporting Act – mandatory Australian corporate emissions reporting to DCCEEW.">NGER Act</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Australian mandatory climate disclosure standard aligned to ISSB S2 – effective for large entities from FY2025.">AASB S2 / ISSB</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Annual supplier emissions disclosure programme managed on behalf of large buyer organisations via the CDP platform.">CDP Supply Chain</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Real assets ESG benchmark used by infrastructure fund managers and institutional investors for annual performance comparison.">GRESB Infrastructure</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Task Force on Climate-related Financial Disclosures – scenario analysis framework for transition and physical risk disclosure.">TCFD</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Science Based Targets initiative – validates near-term and long-term emission reduction targets against 1.5°C pathways.">SBTi</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="DCCEEW National Greenhouse Accounts emission factors – used for NGER fuel combustion and grid electricity calculations.">DCCEEW NGA Factors</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="External limited assurance over Group-level Scope 1 and 2 emissions for statutory and market reporting.">Externally Assured</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="IBM Envizi ESG Suite – platform for emissions data ingestion, normalisation, audit trail, and regulatory output.">Envizi</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Cloud-based platform for connected ESG and financial reporting with linked data, narrative, and disclosure workflow.">Workiva</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Net-zero Scope 1 and 2 emissions target by FY2050, with interim milestones and lever-tracked abatement pathways.">Net Zero FY2050</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Gross emissions scaled proportionally to revenue growth – isolates abatement impact from business volume changes.">Revenue-Indexed Forecasting</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Scope 2 accounting using supplier-specific emission rates or energy attribute certificates rather than grid averages.">Market-Based Scope 2</span><span class="t-sep"> &nbsp;&nbsp; </span></span>
-    <span class="ticker-run"><span class="t-term" data-tip="Corporate value chain accounting standard – defines Scope 1, 2, and 3 emission boundaries and reporting methodology.">GHG Protocol</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="National Greenhouse and Energy Reporting Act – mandatory Australian corporate emissions reporting to DCCEEW.">NGER Act</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Australian mandatory climate disclosure standard aligned to ISSB S2 – effective for large entities from FY2025.">AASB S2 / ISSB</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Annual supplier emissions disclosure programme managed on behalf of large buyer organisations via the CDP platform.">CDP Supply Chain</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Real assets ESG benchmark used by infrastructure fund managers and institutional investors for annual performance comparison.">GRESB Infrastructure</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Task Force on Climate-related Financial Disclosures – scenario analysis framework for transition and physical risk disclosure.">TCFD</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Science Based Targets initiative – validates near-term and long-term emission reduction targets against 1.5°C pathways.">SBTi</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="DCCEEW National Greenhouse Accounts emission factors – used for NGER fuel combustion and grid electricity calculations.">DCCEEW NGA Factors</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="External limited assurance over Group-level Scope 1 and 2 emissions for statutory and market reporting.">Externally Assured</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="IBM Envizi ESG Suite – platform for emissions data ingestion, normalisation, audit trail, and regulatory output.">Envizi</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Cloud-based platform for connected ESG and financial reporting with linked data, narrative, and disclosure workflow.">Workiva</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Net-zero Scope 1 and 2 emissions target by FY2050, with interim milestones and lever-tracked abatement pathways.">Net Zero FY2050</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Gross emissions scaled proportionally to revenue growth – isolates abatement impact from business volume changes.">Revenue-Indexed Forecasting</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Scope 2 accounting using supplier-specific emission rates or energy attribute certificates rather than grid averages.">Market-Based Scope 2</span><span class="t-sep"> &nbsp;&nbsp; </span></span>
+    <span class="ticker-run"><span class="t-term" data-tip="Corporate value chain accounting standard: defines Scope 1, 2, and 3 emission boundaries and reporting methodology.">GHG Protocol</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="National Greenhouse and Energy Reporting Act: mandatory Australian corporate emissions reporting to DCCEEW.">NGER Act</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Australian mandatory climate disclosure standard aligned to ISSB S2, effective for large entities from FY2025.">AASB S2 / ISSB</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Annual supplier emissions disclosure programme managed on behalf of large buyer organisations via the CDP platform.">CDP Supply Chain</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Real assets ESG benchmark used by infrastructure fund managers and institutional investors for annual performance comparison.">GRESB Infrastructure</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Task Force on Climate-related Financial Disclosures: scenario analysis framework for transition and physical risk disclosure.">TCFD</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Science Based Targets initiative: validates near-term and long-term emission reduction targets against 1.5°C pathways.">SBTi</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="DCCEEW National Greenhouse Accounts emission factors, used for NGER fuel combustion and grid electricity calculations.">DCCEEW NGA Factors</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="External limited assurance over Group-level Scope 1 and 2 emissions for statutory and market reporting.">Externally Assured</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="IBM Envizi ESG Suite: platform for emissions data ingestion, normalisation, audit trail, and regulatory output.">Envizi</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Cloud-based platform for connected ESG and financial reporting with linked data, narrative, and disclosure workflow.">Workiva</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Net-zero Scope 1 and 2 emissions target by FY2050, with interim milestones and lever-tracked abatement pathways.">Net Zero FY2050</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Gross emissions scaled proportionally to revenue growth, isolates abatement impact from business volume changes.">Revenue-Indexed Forecasting</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Scope 2 accounting using supplier-specific emission rates or energy attribute certificates rather than grid averages.">Market-Based Scope 2</span><span class="t-sep"> &nbsp;&nbsp; </span></span>
+    <span class="ticker-run"><span class="t-term" data-tip="Corporate value chain accounting standard: defines Scope 1, 2, and 3 emission boundaries and reporting methodology.">GHG Protocol</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="National Greenhouse and Energy Reporting Act: mandatory Australian corporate emissions reporting to DCCEEW.">NGER Act</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Australian mandatory climate disclosure standard aligned to ISSB S2, effective for large entities from FY2025.">AASB S2 / ISSB</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Annual supplier emissions disclosure programme managed on behalf of large buyer organisations via the CDP platform.">CDP Supply Chain</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Real assets ESG benchmark used by infrastructure fund managers and institutional investors for annual performance comparison.">GRESB Infrastructure</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Task Force on Climate-related Financial Disclosures: scenario analysis framework for transition and physical risk disclosure.">TCFD</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Science Based Targets initiative: validates near-term and long-term emission reduction targets against 1.5°C pathways.">SBTi</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="DCCEEW National Greenhouse Accounts emission factors, used for NGER fuel combustion and grid electricity calculations.">DCCEEW NGA Factors</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="External limited assurance over Group-level Scope 1 and 2 emissions for statutory and market reporting.">Externally Assured</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="IBM Envizi ESG Suite: platform for emissions data ingestion, normalisation, audit trail, and regulatory output.">Envizi</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Cloud-based platform for connected ESG and financial reporting with linked data, narrative, and disclosure workflow.">Workiva</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Net-zero Scope 1 and 2 emissions target by FY2050, with interim milestones and lever-tracked abatement pathways.">Net Zero FY2050</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Gross emissions scaled proportionally to revenue growth, isolates abatement impact from business volume changes.">Revenue-Indexed Forecasting</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Scope 2 accounting using supplier-specific emission rates or energy attribute certificates rather than grid averages.">Market-Based Scope 2</span><span class="t-sep"> &nbsp;&nbsp; </span></span>
   </div>
 </div>
-
-<section id="artefacts">
-<div class="wrap">
-  <div class="label" data-num="02">Selected Artefacts</div>
-  <div class="strip-head">
-    <p class="artefacts-intro" style="margin-bottom:0">Tools and deliverables that outlived the engagement &mdash; each one operated by the client team today, not by me.</p>
-    <span class="strip-hint">Drag &#x2192;</span>
-  </div>
-  <div class="film-strip" id="film-strip" aria-label="Selected artefacts, horizontally scrollable">
-    <div class="film-card">
-      <div class="film-num">01</div>
-      <div class="film-tag">Raw Data</div>
-      <div class="film-name">Subcontractor Diesel Reporting Templates</div>
-      <div class="film-what">Pre-configured templates with embedded calculation logic and automated Envizi upload generation.</div>
-      <div class="film-outcome">Manual collection eliminated across 3 BUs &mdash; Downer Group</div>
-    </div>
-    <div class="film-card">
-      <div class="film-num">02</div>
-      <div class="film-tag">Raw Data</div>
-      <div class="film-name">Scope 3 Collection Pipeline Rebuild</div>
-      <div class="film-what">Full subcontractor survey pipeline: proxy rate calculations, response pooling, CPI inflation adjustment.</div>
-      <div class="film-outcome">Operable each cycle without re-briefing &mdash; Downer Group</div>
-    </div>
-    <div class="film-card">
-      <div class="film-num">03</div>
-      <div class="film-tag">Calculation</div>
-      <div class="film-name">GHG Recalculation Module</div>
-      <div class="film-what">Independent recalculation with operational-control boundary filtering, reconciled against Envizi outputs.</div>
-      <div class="film-outcome">External assurance readiness, Scope 1 &amp; 2 &mdash; Downer Group</div>
-    </div>
-    <div class="film-card">
-      <div class="film-num">04</div>
-      <div class="film-tag">Calculation</div>
-      <div class="film-name">GHG Inventory Automation Suite</div>
-      <div class="film-what">Excel and Python tooling replacing recurring manual workflows across active client accounts.</div>
-      <div class="film-outcome">~40% reduction in preparation time &mdash; WSP in Australia</div>
-    </div>
-    <div class="film-card">
-      <div class="film-num">05</div>
-      <div class="film-tag">Reporting</div>
-      <div class="film-name">GRESB Infrastructure Assessment</div>
-      <div class="film-what">Full cycle for a major energy distributor: gap analysis, data collection reform, disclosure uplift.</div>
-      <div class="film-outcome">+35 percentage points in year one &mdash; handed over internally</div>
-    </div>
-    <div class="film-card">
-      <div class="film-num">06</div>
-      <div class="film-tag">Reporting</div>
-      <div class="film-name">NSW Net Zero Policy Input</div>
-      <div class="film-what">Emissions boundary definition and agency-level reporting methodology for whole-of-government policy.</div>
-      <div class="film-outcome">Incorporated across NSW agencies &mdash; NSW Treasury</div>
-    </div>
-    <div class="film-card">
-      <div class="film-num">07</div>
-      <div class="film-tag">Strategy</div>
-      <div class="film-name">Net Zero Pathway Model</div>
-      <div class="film-what">Toggle-based pathway model on DCCEEW, NVES, and CSIRO assumptions. Presented to the board by senior leadership.</div>
-      <div class="film-outcome">Ongoing internal reference tool &mdash; Downer Group</div>
-    </div>
-    <div class="film-card">
-      <div class="film-num">08</div>
-      <div class="film-tag">Communication</div>
-      <div class="film-name">Climate Change eLearning Module</div>
-      <div class="film-what">Three role clusters, two delivery formats, designed from scratch through to company-wide launch.</div>
-      <div class="film-outcome">Deployed to all-employee cohort &mdash; Downer Group</div>
-    </div>
-  </div>
-  <div class="strip-progress" aria-hidden="true"><div class="strip-progress-fill" id="strip-fill"></div></div>
-</div>
-</section>
 
 <section id="scenario">
 <div class="scenario-bg-mesh" aria-hidden="true"></div>
 <div class="wrap">
-  <div class="label" data-num="03">Decarbonisation Scenario Model</div>
+  <div class="label" data-num="02">Decarbonisation Scenario Model</div>
   <p class="tool-decl" id="tool-decl-text">Every lever has a source. <strong>Adjust the controls to see what changes.</strong></p>
-  <p class="tool-sub" id="tool-sub-text">Select a sector and scenario to explore how abatement levers shift a Scope 1 &amp; 2 trajectory. Lever assumptions are drawn from DCCEEW 2025 grid emission factor tables, the NVES Act 2024 (LV fleet), and CSIRO Net Zero Pathways — the same sources used in production pathway models.</p>
-  <span class="tool-disc">Illustrative model &middot; stylised numbers &middot; not client data</span>
+  <p class="tool-sub" id="tool-sub-text">Select a sector and scenario to explore how abatement levers shift a Scope 1 &amp; 2 trajectory. Lever assumptions are drawn from DCCEEW 2025 grid emission factor tables, the NVES Act 2024 (LV fleet), and CSIRO Net Zero Pathways, the same sources used in production pathway models.</p>
+  <span class="tool-disc">Illustrative model &middot; stylised numbers &middot; not client data &middot; FY30 used as the interim target year</span>
   <div class="lever lever-sector" id="infra-sector-row">
     <div class="lever-name">Organisation Type</div>
     <div class="lever-src">Selects sector profile and lever assumptions</div>
@@ -981,9 +888,9 @@ body.mode-textile .lever-group-textile .lever{display:block}
   <div id="sector-desc" class="sector-desc">Infrastructure: heavy plant, diesel fleet, and mechanical processes drive the Scope&nbsp;1 footprint. Grid decarbonisation delivers Scope&nbsp;2 reduction.</div>
   <div class="kpi-strip">
     <div class="kpi"><div class="kpi-l">FY20 Baseline</div><div class="kpi-v" id="kpi-base-v">347k t</div></div>
-    <div class="kpi"><div class="kpi-l">FY25 Actuals</div><div class="kpi-v" id="kpi-fy25-v">277k t</div></div>
-    <div class="kpi live"><div class="kpi-l">FY32 Net</div><div class="kpi-v" id="kpi-net">&#x2013;</div></div>
-    <div class="kpi live"><div class="kpi-l">FY32 vs FY20</div><div class="kpi-v" id="kpi-pct">&#x2013;</div></div>
+    <div class="kpi"><div class="kpi-l">FY26 Actuals</div><div class="kpi-v" id="kpi-fy26-v">271k t</div></div>
+    <div class="kpi live"><div class="kpi-l">FY30 Net</div><div class="kpi-v" id="kpi-net">&middot;</div></div>
+    <div class="kpi live"><div class="kpi-l">FY30 vs FY20</div><div class="kpi-v" id="kpi-pct">&middot;</div></div>
   </div>
   <div class="chart-card">
     <div class="chart-wrap"><canvas id="mainChart"></canvas></div>
@@ -997,7 +904,7 @@ body.mode-textile .lever-group-textile .lever{display:block}
         <div class="lever-src" id="lev-grid-src">DCCEEW 2025 Table 42 NEM trajectory</div>
         <select id="sel-grid" class="lever-select" onchange="run()">
           <option value="base">Base: DCCEEW NEM trajectory</option>
-          <option value="faster">Faster: REC-based, 90% renewable by FY32</option>
+          <option value="faster">Faster: REC-based, 90% renewable by FY30</option>
           <option value="slower">Slower: 10% higher residual intensity</option>
           <option value="off">Off: no grid decarbonisation</option>
         </select>
@@ -1042,14 +949,14 @@ body.mode-textile .lever-group-textile .lever{display:block}
     </div>
   </div>
   <div class="contrib-card">
-    <div class="contrib-head" id="contrib-head-text">Abatement contribution by lever at FY32: tCO&#x2082;-e avoided vs. gross pathway</div>
-    <div class="cbar"><div class="cbar-name" id="cbar-name-grid">Grid (Scope 2)</div><div class="cbar-track"><div class="cbar-fill" id="cb-grid" style="width:0%;background:var(--indigo)"></div></div><div class="cbar-val" id="cv-grid">&#x2013;</div></div>
-    <div class="cbar"><div class="cbar-name" id="cbar-name-lv">LV Fleet</div><div class="cbar-track"><div class="cbar-fill" id="cb-lv" style="width:0%;background:var(--matcha)"></div></div><div class="cbar-val" id="cv-lv">&#x2013;</div></div>
-    <div class="cbar"><div class="cbar-name" id="cbar-name-hv">HV Fleet</div><div class="cbar-track"><div class="cbar-fill" id="cb-hv" style="width:0%;background:var(--amber)"></div></div><div class="cbar-val" id="cv-hv">&#x2013;</div></div>
-    <div class="cbar"><div class="cbar-name" id="cbar-name-plant">Plant Electrification</div><div class="cbar-track"><div class="cbar-fill" id="cb-plant" style="width:0%;background:var(--berry)"></div></div><div class="cbar-val" id="cv-plant">&#x2013;</div></div>
+    <div class="contrib-head" id="contrib-head-text">Abatement contribution by lever at FY30 (interim target year): tCO&#x2082;-e avoided vs. gross pathway</div>
+    <div class="cbar"><div class="cbar-name" id="cbar-name-grid">Grid (Scope 2)</div><div class="cbar-track"><div class="cbar-fill" id="cb-grid" style="width:0%;background:var(--indigo)"></div></div><div class="cbar-val" id="cv-grid">&middot;</div></div>
+    <div class="cbar"><div class="cbar-name" id="cbar-name-lv">LV Fleet</div><div class="cbar-track"><div class="cbar-fill" id="cb-lv" style="width:0%;background:var(--matcha)"></div></div><div class="cbar-val" id="cv-lv">&middot;</div></div>
+    <div class="cbar"><div class="cbar-name" id="cbar-name-hv">HV Fleet</div><div class="cbar-track"><div class="cbar-fill" id="cb-hv" style="width:0%;background:var(--amber)"></div></div><div class="cbar-val" id="cv-hv">&middot;</div></div>
+    <div class="cbar"><div class="cbar-name" id="cbar-name-plant">Plant Electrification</div><div class="cbar-track"><div class="cbar-fill" id="cb-plant" style="width:0%;background:var(--berry)"></div></div><div class="cbar-val" id="cv-plant">&middot;</div></div>
   </div>
   <div style="margin-top:1.75rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
-    <p style="font-size:0.82rem;color:rgba(248,250,252,0.55);max-width:520px;line-height:1.6;margin:0">More examples of this work — emissions baselines, decarbonisation roadmaps, MCA prioritisation, and lifecycle carbon assessment across infrastructure, built environment, and government.</p>
+    <p style="font-size:0.82rem;color:rgba(248,250,252,0.55);max-width:520px;line-height:1.6;margin:0">More examples of this work: emissions baselines, decarbonisation roadmaps, MCA prioritisation, and lifecycle carbon assessment across infrastructure, built environment, and government.</p>
     <a href="work/" class="btn btn-primary">View work samples &#x2192;</a>
   </div>
 </div>
@@ -1059,7 +966,7 @@ body.mode-textile .lever-group-textile .lever{display:block}
 
 <section id="experience">
 <div class="wrap">
-  <div class="label" data-num="04">Experience</div>
+  <div class="label" data-num="03">Experience</div>
 
   <div class="exp-entry">
     <div class="exp-hd">
@@ -1071,7 +978,7 @@ body.mode-textile .lever-group-textile .lever{display:block}
       <div class="exp-meta">
         <div class="exp-meta-row">
           <span class="exp-role-title">Senior Sustainability Advisor</span>
-          <span class="exp-date">Mar 2026 &#x2013; Mar 2027</span>
+          <span class="exp-date">Mar 2026 - Mar 2027</span>
         </div>
       </div>
     </div>
@@ -1102,15 +1009,15 @@ body.mode-textile .lever-group-textile .lever{display:block}
       <div class="exp-meta">
         <div class="exp-meta-row">
           <span class="exp-role-title">Project Consultant</span>
-          <span class="exp-date">Oct 2025 &#x2013; Feb 2026</span>
+          <span class="exp-date">Oct 2025 - Feb 2026</span>
         </div>
         <div class="exp-meta-row">
           <span class="exp-role-title">Design Consultant</span>
-          <span class="exp-date">Oct 2023 &#x2013; Oct 2025</span>
+          <span class="exp-date">Oct 2023 - Oct 2025</span>
         </div>
         <div class="exp-meta-row">
           <span class="exp-role-title">Sustainability Consultant</span>
-          <span class="exp-date">Feb 2022 &#x2013; Oct 2023</span>
+          <span class="exp-date">Feb 2022 - Oct 2023</span>
         </div>
       </div>
     </div>
@@ -1133,12 +1040,12 @@ body.mode-textile .lever-group-textile .lever{display:block}
       <div class="exp-meta">
         <div class="exp-meta-row">
           <span class="exp-role-title">Assistant Project Officer</span>
-          <span class="exp-date">Feb 2020 &#x2013; Jan 2022</span>
+          <span class="exp-date">Feb 2020 - Jan 2022</span>
         </div>
       </div>
     </div>
     <ul class="exp-bullets">
-      <li>Infrastructure upgrade project delivery across Defence sites as part of a $3.2 billion capital portfolio under the Capital Facilities &amp; Infrastructure Branch — coordinating design, procurement, and delivery across multiple concurrent projects.</li>
+      <li>Infrastructure upgrade project delivery across Defence sites as part of a $3.2 billion capital portfolio under the Capital Facilities &amp; Infrastructure Branch, coordinating design, procurement, and delivery across multiple concurrent projects.</li>
     </ul>
   </div>
 
@@ -1155,7 +1062,7 @@ body.mode-textile .lever-group-textile .lever{display:block}
 
 <section id="contact">
 <div class="wrap">
-  <div class="label" data-num="05">Contact</div>
+  <div class="label" data-num="04">Contact</div>
   <div class="contact-avail">Open to senior advisory and lead sustainability roles.</div>
   <div class="contact-loc">Melbourne, Victoria &nbsp;&middot;&nbsp; Flexible on arrangement</div>
   <div class="btns">
@@ -1212,13 +1119,13 @@ function showTab(id){
 
 /* ---- B. Sector profiles + mutable state ---- */
 var SECTOR_PROFILES={
-  infrastructure:{label:'Infrastructure',FY20:347000,FY25:277000,
+  infrastructure:{label:'Infrastructure',FY20:347000,FY25:277000,FY26:271000,
     SH:{s2:0.112,lv:0.224,hv:0.273,plant:0.391},
     desc:'Infrastructure: heavy plant, diesel fleet, and mechanical processes drive the Scope 1 footprint. Grid decarbonisation delivers Scope 2 reduction.'},
-  property:{label:'Commercial Property',FY20:210000,FY25:168000,
+  property:{label:'Commercial Property',FY20:210000,FY25:168000,FY26:157000,
     SH:{s2:0.580,lv:0.150,hv:0.010,plant:0.260},
     desc:'Commercial property: grid electricity dominates Scope 2. Building systems and plant electrification are the primary reduction levers.'},
-  government:{label:'Government Operations',FY20:185000,FY25:148000,
+  government:{label:'Government Operations',FY20:185000,FY25:148000,FY26:142000,
     SH:{s2:0.420,lv:0.340,hv:0.080,plant:0.160},
     desc:'Government: office electricity (Scope 2) and light vehicle fleet (Scope 1) are primary sources. Procurement emissions drive Scope 3.'}
 };
@@ -1289,7 +1196,7 @@ function changeSector(){
     FY20=TEXTILE_PROFILE.FY20; FY25=TEXTILE_PROFILE.FY25; SH=TEXTILE_PROFILE.SH;
     HIST=HIST_BASE.map(function(h){return Math.round(h*(TEXTILE_PROFILE.FY25/277000));});
     document.getElementById('kpi-base-v').textContent=Math.round(TEXTILE_PROFILE.FY20/1000)+'k t';
-    document.getElementById('kpi-fy25-v').textContent=Math.round(TEXTILE_PROFILE.FY25/1000)+'k t';
+    document.getElementById('kpi-fy26-v').textContent=Math.round(TEXTILE_PROFILE.FY26/1000)+'k t';
     var d=document.getElementById('sector-desc');
     if(d) d.textContent=TEXTILE_PROFILE.desc;
   } else {
@@ -1300,7 +1207,7 @@ function changeSector(){
     var scale=prof.FY25/277000;
     HIST=HIST_BASE.map(function(h){return Math.round(h*scale);});
     document.getElementById('kpi-base-v').textContent=Math.round(FY20/1000)+'k t';
-    document.getElementById('kpi-fy25-v').textContent=Math.round(FY25/1000)+'k t';
+    document.getElementById('kpi-fy26-v').textContent=Math.round(prof.FY26/1000)+'k t';
     var descEl=document.getElementById('sector-desc');
     if(descEl) descEl.textContent=prof.desc;
   }
@@ -1325,7 +1232,7 @@ function changeSector(){
 var BASELINE_SECTORS={
   infrastructure:{
     claim:'Value chain emissions dominate the footprint, shaping where Net Zero action must focus.',
-    meta:'FY25 Baseline \u00b7 Scope 1\u20133 \u00b7 Illustrative \u2013 representative infrastructure portfolio. Not client data.',
+    meta:'FY25 Baseline \u00b7 Scope 1-3 \u00b7 Illustrative: representative infrastructure portfolio. Not client data.',
     s1:'11.5%',s2:'5.8%',s3:'82.7%',
     s1b:'Stationary combustion, fleet, and process emissions. Highest direct control. Largest lever is fleet electrification.',
     s2b:'Driven by grid emission factor trajectory and on-site renewable procurement (PPA / GreenPower).',
@@ -1334,16 +1241,16 @@ var BASELINE_SECTORS={
   },
   property:{
     claim:'Grid electricity and leased building operations drive the footprint. All-electric design and energy procurement are the primary reduction levers.',
-    meta:'FY25 Baseline \u00b7 Scope 1\u20133 \u00b7 Illustrative \u2013 representative commercial office portfolio. Not client data.',
+    meta:'FY25 Baseline \u00b7 Scope 1-3 \u00b7 Illustrative: representative commercial office portfolio. Not client data.',
     s1:'8.2%',s2:'22.4%',s3:'69.4%',
     s1b:'On-site plant and minor combustion sources. Lower direct emissions than infrastructure-heavy portfolios.',
     s2b:'Dominant category. Building electricity drives most Scope 2 exposure. Grid decarbonisation and renewable procurement (PPA) are the primary levers.',
-    s3b:'Purchased goods and services (Cat 1), supplier transport (Cat 4), and downstream leased assets (Cat 13 \u2013 tenant electricity) dominate.',
+    s3b:'Purchased goods and services (Cat 1), supplier transport (Cat 4), and downstream leased assets (Cat 13: tenant electricity) dominate.',
     cat1:'22.0%',cat4:'12.6%',cat13:'34.8%',cat1w:63,cat4w:36,cat13w:100,sk:[8.2,22.4,69.4,22.0,12.6,34.8]
   },
   government:{
     claim:'Scope 2 and light vehicle fleet are the primary decarbonisation targets; supply chain engagement is needed for material Scope 3 reduction.',
-    meta:'FY25 Baseline \u00b7 Scope 1\u20133 \u00b7 Illustrative \u2013 representative government operations portfolio. Not client data.',
+    meta:'FY25 Baseline \u00b7 Scope 1-3 \u00b7 Illustrative: representative government operations portfolio. Not client data.',
     s1:'12.1%',s2:'31.8%',s3:'56.1%',
     s1b:'Primarily light vehicle fleet. Fleet electrification aligned to NVES trajectory is the primary Scope 1 lever.',
     s2b:'Office buildings and facilities. Grid decarbonisation and GreenPower procurement provide the most immediate pathway to net-zero Scope 2.',
@@ -1391,7 +1298,7 @@ function updateBaseline(sector){
 /* ---- O. Textile scenario mode ---- */
 var _currentMode='industrial';
 var TEXTILE_PROFILE={
-  FY20:42000,FY25:35000,
+  FY20:42000,FY25:35000,FY26:35000,
   SH:{s2:0.08,lv:0.18,hv:0.42,plant:0.32},
   desc:'Boutique textile retail: air freight logistics and raw material sourcing (virgin polyester vs bio-synthetics) dominate the Scope 3 footprint. Renewable energy procurement addresses Scope 2.'
 };
@@ -1402,7 +1309,7 @@ var LEVER_LABELS={
     hv:{name:'HV Fleet Transition',src:'CSIRO Net Zero Pathways 2023 · 1-yr lag'},
     plant:{name:'Plant Electrification',src:'Industry plant electrification analysis'},
     cbar:{grid:'Grid (Scope 2)',lv:'LV Fleet',hv:'HV Fleet',plant:'Plant Electrification'},
-    sub:'Adjust the controls below to explore how different abatement strategies shift a Scope 1 and 2 emissions trajectory. Lever assumptions are drawn from DCCEEW 2025 grid emission factor tables, the NVES Act 2024 (LV fleet), CSIRO Net Zero Pathways (HV fleet), and published plant electrification analysis – the same sources used in production pathway models.'
+    sub:'Adjust the controls below to explore how different abatement strategies shift a Scope 1 and 2 emissions trajectory. Lever assumptions are drawn from DCCEEW 2025 grid emission factor tables, the NVES Act 2024 (LV fleet), CSIRO Net Zero Pathways (HV fleet), and published plant electrification analysis, the same sources used in production pathway models.'
   },
   textile:{
     grid:{name:'Renewable Energy Procurement',src:'RE100 trajectory · market-based instrument adoption'},
@@ -1449,12 +1356,17 @@ document.addEventListener('DOMContentLoaded',function(){
     tip.style.left=x+'px';
     tip.style.top=y+'px';
   }
+  var hoverable=window.matchMedia('(hover:hover) and (pointer:fine)').matches;
   document.querySelectorAll('.t-term').forEach(function(el){
     el.addEventListener('click',function(e){
       e.stopPropagation();
       if(activeTerm===el){hideTip();return;}
       showTip(el);
     });
+    if(hoverable){
+      el.addEventListener('mouseenter',function(){showTip(el);});
+      el.addEventListener('mouseleave',function(){hideTip();});
+    }
   });
   tipClose.addEventListener('click',function(e){e.stopPropagation();hideTip();});
   tip.addEventListener('click',function(e){e.stopPropagation();});
@@ -1595,7 +1507,7 @@ function run(){
   var currentYear=new Date().getFullYear();
   var FT=_currentMode==='textile'?F_TEXTILE:F;
   var net=[],gridLayer=[],lvLayer=[],hvLayer=[],plantLayer=[],bau=[],actuals=[];
-  var net32=0;
+  var net30=0;
   for(var y=2020;y<=2050;y++){
     if(y<=2025){
       var h=HIST[y-2020];
@@ -1635,11 +1547,11 @@ function run(){
       } else {
         actuals.push(null);
       }
-      if(y===2032) net32=netVal;
+      if(y===2030) net30=netVal;
     }
   }
-  document.getElementById('kpi-net').textContent=Math.round(net32/1000)+'k t';
-  document.getElementById('kpi-pct').textContent=((FY20-net32)/FY20*100).toFixed(1)+'% \u2193';
+  document.getElementById('kpi-net').textContent=Math.round(net30/1000)+'k t';
+  document.getElementById('kpi-pct').textContent=((FY20-net30)/FY20*100).toFixed(1)+'% \u2193';
   ch.data.datasets[0].data=net;
   ch.data.datasets[1].data=gridLayer;
   ch.data.datasets[2].data=lvLayer;
@@ -1648,12 +1560,12 @@ function run(){
   ch.data.datasets[5].data=bau;
   ch.data.datasets[6].data=actuals;
   ch.update('none');
-  /* Contribution bars */
-  var fi32=6,gf32=Math.pow(REV[rk],7);
-  var sv_g=FY25*SH.s2*gf32*(1-FT.grid[gk][fi32]);
-  var sv_lv=FY25*SH.lv*gf32*(1-FT.lv[lk][fi32]);
-  var sv_hv=FY25*SH.hv*gf32*(1-FT.hv[hk][fi32]);
-  var sv_pl=FY25*SH.plant*gf32*(1-FT.plant[pk][fi32]);
+  /* Contribution bars at FY30, the interim target year */
+  var fi30=4,gf30=Math.pow(REV[rk],5);
+  var sv_g=FY25*SH.s2*gf30*(1-FT.grid[gk][fi30]);
+  var sv_lv=FY25*SH.lv*gf30*(1-FT.lv[lk][fi30]);
+  var sv_hv=FY25*SH.hv*gf30*(1-FT.hv[hk][fi30]);
+  var sv_pl=FY25*SH.plant*gf30*(1-FT.plant[pk][fi30]);
   var maxSv=Math.max(sv_g,sv_lv,sv_hv,sv_pl,1);
   function setBar(fb,fv,s){
     var fb_el=document.getElementById(fb);
@@ -1684,7 +1596,7 @@ function run(){
   }
   stagger('.exp-entry',90);stagger('.cap-entry',50);stagger('.scope-cell',55);
   stagger('.impl',55);stagger('.mca',45);stagger('.stage',65);
-  stagger('.instr',60);stagger('.film-card',45);stagger('.princ',80);stagger('.fw-card',50);stagger('.built-item',55);
+  stagger('.instr',60);stagger('.princ',80);stagger('.fw-card',50);stagger('.built-item',55);
 })();
 
 /* ---- J. Contour field — animated emissions topology (marching squares) ---- */
@@ -1693,10 +1605,9 @@ function run(){
   if(!cv||!cv.getContext) return;
   var ctx=cv.getContext('2d');
   var hero=document.getElementById('about');
-  var readout=document.getElementById('hero-fig-read');
   var reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
   var W=0,H=0,t=0,raf=null,inView=true;
-  var CELL=24,LEVELS=[-1.8,-1.2,-0.6,0,0.6,1.2,1.8];
+  var CELL=20,LEVELS=[-1.6,-0.8,0,0.8,1.6];
   function field(x,y,tt){
     return Math.sin(x*0.011+tt)
       +Math.sin(y*0.013-tt*0.7)
@@ -1710,7 +1621,7 @@ function run(){
     var grid=new Array(cols*rows);
     for(var j=0;j<rows;j++)for(var i=0;i<cols;i++)grid[j*cols+i]=field(i*CELL,j*CELL,t);
     for(var li=0;li<LEVELS.length;li++){
-      var lv=LEVELS[li],hi=(li===3);
+      var lv=LEVELS[li],hi=(li===2);
       ctx.beginPath();
       for(var j=0;j<rows-1;j++){
         for(var i=0;i<cols-1;i++){
@@ -1736,11 +1647,10 @@ function run(){
           }
         }
       }
-      ctx.strokeStyle=hi?'rgba(139,160,30,0.34)':'rgba(15,23,42,0.10)';
-      ctx.lineWidth=hi?1.1:1;
+      ctx.strokeStyle=hi?'rgba(139,160,30,0.18)':'rgba(15,23,42,0.05)';
+      ctx.lineWidth=1;
       ctx.stroke();
     }
-    if(readout) readout.textContent='f(x,y,t) · t='+t.toFixed(1);
   }
   function resize(){
     var dpr=Math.min(window.devicePixelRatio||1,1.5);
@@ -1750,7 +1660,7 @@ function run(){
     draw();
   }
   function frame(){
-    t+=0.0045;
+    t+=0.0028;
     draw();
     raf=inView?requestAnimationFrame(frame):null;
   }
@@ -1817,35 +1727,6 @@ function run(){
     }
     requestAnimationFrame(tick);
   })(start);
-})();
-
-/* ---- J3. Artefact filmstrip — drag to scroll + progress ---- */
-(function(){
-  var strip=document.getElementById('film-strip');
-  if(!strip) return;
-  var fill=document.getElementById('strip-fill');
-  function prog(){
-    var max=strip.scrollWidth-strip.clientWidth;
-    var p=max>0?strip.scrollLeft/max:0;
-    if(fill) fill.style.width=(18+82*p).toFixed(1)+'%';
-  }
-  strip.addEventListener('scroll',prog,{passive:true});
-  window.addEventListener('resize',prog);
-  prog();
-  var down=false,sx=0,sl=0;
-  strip.addEventListener('pointerdown',function(e){
-    if(e.pointerType!=='mouse') return;
-    down=true;sx=e.clientX;sl=strip.scrollLeft;
-  });
-  window.addEventListener('pointermove',function(e){
-    if(!down) return;
-    if(Math.abs(e.clientX-sx)>4) strip.classList.add('dragging');
-    strip.scrollLeft=sl-(e.clientX-sx);
-  });
-  window.addEventListener('pointerup',function(){
-    down=false;
-    setTimeout(function(){strip.classList.remove('dragging');},0);
-  });
 })();
 
 /* ---- K. Text scramble on section labels ---- */
