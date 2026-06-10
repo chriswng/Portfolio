@@ -4,8 +4,8 @@
   <link rel="shortcut icon" type="image/x-icon" href="favicon.svg">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Work Samples — Christopher Wang, Sustainability Advisor. Emissions baselines, decarbonisation roadmaps, MCA frameworks, and lifecycle carbon assessment.">
-<title>Work Samples &#x2014; Christopher Wang</title>
+<meta name="description" content="Work Samples: Christopher Wang, Sustainability Advisor. Emissions baselines, decarbonisation roadmaps, MCA frameworks, and lifecycle carbon assessment.">
+<title>Work Samples | Christopher Wang</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
@@ -169,11 +169,10 @@ section:last-of-type{border-bottom:none}
 .panel-intro{font-size:0.88rem;font-weight:400;color:#475569;max-width:640px;line-height:1.8;margin-bottom:2rem}
 .stage-grid{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule-dk);border:1px solid var(--rule-dk);overflow:hidden;margin-bottom:2rem;align-items:stretch}
 @media(min-width:600px){.stage-grid{grid-template-columns:repeat(3,1fr)}}
-.stage{background:var(--white);padding:1.5rem;transition:background 0.3s var(--ease);display:flex;flex-direction:column;height:100%}
-.stage:hover{background:rgba(181,196,43,0.08)}
+.stage{background:var(--white);padding:1.5rem;display:flex;flex-direction:column;height:100%}
 .stage-n{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);margin-bottom:0.4rem;font-weight:600;}
 .stage-title{font-size:0.9rem;font-weight:700;color:var(--slate);padding-bottom:0.6rem;border-bottom:2px solid var(--matcha);margin-bottom:0.75rem}
-.stage-obj{font-family:var(--mono);font-size:0.62rem;color:var(--matcha);opacity:0.9;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:0.6rem;font-weight:600;}
+.stage-obj{font-family:var(--mono);font-size:0.66rem;color:#66711A;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:0.6rem;font-weight:700;}
 .stage-pts{list-style:none;padding:0;margin-bottom:0.75rem}
 .stage-pts li{font-size:0.78rem;font-weight:400;color:#475569;line-height:1.6;padding-left:0.9rem;position:relative;margin-bottom:0.25rem}
 .stage-pts li::before{content:'›';position:absolute;left:0;color:var(--matcha);font-size:1rem;line-height:1.5}
@@ -332,6 +331,16 @@ footer{padding:1.4rem 0;border-top:1px solid var(--rule-dk);background:var(--bg)
 /* ---- Content layering ---- */
 #about .wrap{position:relative;z-index:1}
 
+/* ---- Watercolour bloom textures: restrained, atmospheric ---- */
+.bloom-wrap{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.bloom{position:absolute;border-radius:50%;filter:blur(90px);mix-blend-mode:multiply;pointer-events:none}
+.bloom-a{width:560px;height:380px;background:radial-gradient(ellipse,rgba(181,196,43,0.10) 0%,transparent 70%);top:-60px;left:-80px;animation:bloomA 26s ease-in-out infinite}
+.bloom-b{width:440px;height:340px;background:radial-gradient(ellipse,rgba(255,149,0,0.08) 0%,transparent 70%);top:30px;right:-60px;animation:bloomB 32s ease-in-out infinite}
+.bloom-c{width:340px;height:240px;background:radial-gradient(ellipse,rgba(99,91,255,0.08) 0%,transparent 70%);bottom:0;left:40%;animation:bloomC 38s ease-in-out infinite}
+@keyframes bloomA{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,18px)}}
+@keyframes bloomB{0%,100%{transform:translate(0,0)}50%{transform:translate(-24px,14px)}}
+@keyframes bloomC{0%,100%{transform:translate(0,0)}50%{transform:translate(18px,-16px)}}
+
 /* ---- Asymmetric hero layout ---- */
 .hero-offset-rule{width:1px;height:clamp(4rem,8vw,6rem);background:var(--matcha);opacity:0.4;margin-bottom:2rem;margin-left:2px}
 .section-ident{font-family:var(--mono);font-size:0.55rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(15,23,42,0.22);margin-bottom:clamp(1.5rem,4vw,3rem);display:block}
@@ -433,7 +442,6 @@ body.mode-textile .lever-group-textile .lever{display:block}
 #principles{background:var(--slate);padding:clamp(4rem,9vw,6.5rem) 0;overflow:hidden;position:relative}
 #principles .label{color:var(--matcha)}
 #principles .label::after{background:rgba(181,196,43,0.3)}
-.princ-bg-word{font-family:var(--disp);font-weight:800;font-size:clamp(7rem,18vw,13rem);color:rgba(255,255,255,0.025);position:absolute;right:-1rem;bottom:-1rem;line-height:0.85;letter-spacing:-0.06em;pointer-events:none;user-select:none}
 .princ-grid{display:grid;grid-template-columns:1fr;gap:0;border-top:1px solid rgba(255,255,255,0.08);margin-top:1.5rem}
 @media(min-width:640px){.princ-grid{grid-template-columns:repeat(3,1fr)}}
 .princ{padding:2rem 0 2rem;border-bottom:1px solid rgba(255,255,255,0.08);transition:border-color 0.3s}
@@ -667,10 +675,9 @@ html,body{overflow-x:clip}
     <a href="../" class="nav-logo">./</a>
     <div class="nav-links" role="navigation">
       <a href="../#about"><span class="ntl"><span>[ About ]</span><span aria-hidden="true">[ About ]</span></span></a>
-      <a href="../#results"><span class="ntl"><span>[ Results ]</span><span aria-hidden="true">[ Results ]</span></span></a>
+      <a href="../#bio"><span class="ntl"><span>[ Pipeline ]</span><span aria-hidden="true">[ Pipeline ]</span></span></a>
       <a href="../#principles"><span class="ntl"><span>[ Approach ]</span><span aria-hidden="true">[ Approach ]</span></span></a>
       <a href="../#scenario"><span class="ntl"><span>[ Model ]</span><span aria-hidden="true">[ Model ]</span></span></a>
-      <a href="../#expertise"><span class="ntl"><span>[ Expertise ]</span><span aria-hidden="true">[ Expertise ]</span></span></a>
       <a href="./" class="active"><span class="ntl"><span>[ Work ]</span><span aria-hidden="true">[ Work ]</span></span></a>
       <a href="../#experience"><span class="ntl"><span>[ Experience ]</span><span aria-hidden="true">[ Experience ]</span></span></a>
       <a href="../#contact"><span class="ntl"><span>[ Contact ]</span><span aria-hidden="true">[ Contact ]</span></span></a>
@@ -678,10 +685,11 @@ html,body{overflow-x:clip}
   </div>
 </nav>
 
-<section id="work-intro" style="background:#EEF2FF;border-bottom:1px solid var(--rule-dk);padding:clamp(3.5rem,8vw,5.5rem) 0">
-<div class="wrap">
+<section id="work-intro" style="background:#EEF2FF;border-bottom:1px solid var(--rule-dk);padding:clamp(3.5rem,8vw,5.5rem) 0;position:relative;overflow:hidden">
+<div class="bloom-wrap" aria-hidden="true"><div class="bloom bloom-a"></div><div class="bloom bloom-b"></div><div class="bloom bloom-c"></div></div>
+<div class="wrap" style="position:relative;z-index:1">
   <div class="label" data-num="01">Work Samples</div>
-  <h1 style="font-family:var(--disp);font-size:clamp(2rem,5vw,3.2rem);font-weight:800;line-height:0.95;letter-spacing:-0.03em;color:var(--slate);margin-bottom:1rem">Frameworks <em style="color:var(--matcha);font-style:normal">in&nbsp;practice.</em></h1>
+  <h1 style="font-family:var(--disp);font-size:clamp(2rem,5vw,3.2rem);font-weight:800;line-height:0.95;letter-spacing:-0.04em;color:var(--slate);margin-bottom:1rem">Frameworks <em style="color:var(--matcha);font-style:normal">in&nbsp;practice.</em></h1>
   <p style="font-size:0.9rem;font-weight:400;color:#475569;max-width:560px;line-height:1.8;margin-bottom:1.75rem">Four analytical frameworks applied in production across infrastructure, built environment, and government. Each tab shows a live version of a methodology I have delivered for clients.</p>
   <a href="../" style="font-family:var(--mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);text-decoration:none;display:inline-flex;align-items:center;gap:0.5rem;transition:color 0.3s var(--ease)"><span style="color:var(--matcha)">&#x2190;</span>&nbsp;Back to profile</a>
 </div>
@@ -707,7 +715,7 @@ html,body{overflow-x:clip}
   <div id="p-baseline" class="panel on">
     <div class="bl-banner">
       <div class="bl-claim" id="bl-claim-text">Value chain emissions dominate the footprint, shaping where Net Zero action must focus.</div>
-      <div class="bl-meta" id="bl-meta-text">FY25 Baseline &nbsp;&middot;&nbsp; Scope 1&#x2013;3 &nbsp;&middot;&nbsp; Illustrative &#x2013; representative infrastructure portfolio. Not client data.</div>
+      <div class="bl-meta" id="bl-meta-text">FY25 Baseline &nbsp;&middot;&nbsp; Scope 1-3 &nbsp;&middot;&nbsp; Illustrative: representative infrastructure portfolio. Not client data.</div>
     </div>
     <div class="baseline-ctrl">
       <span class="baseline-ctrl-lbl">Organisation type</span>
@@ -719,17 +727,17 @@ html,body{overflow-x:clip}
     </div>
     <div class="scope-grid">
       <div class="scope-cell">
-        <div class="scope-tag">Scope 1 &#x2013; Direct</div>
+        <div class="scope-tag">Scope 1: Direct</div>
         <div class="scope-pct" id="bl-s1">11.5%</div>
         <div class="scope-body" id="bl-s1-body">Stationary combustion, fleet, and process emissions. Highest direct control. Largest lever is fleet electrification.</div>
       </div>
       <div class="scope-cell">
-        <div class="scope-tag">Scope 2 &#x2013; Electricity</div>
+        <div class="scope-tag">Scope 2: Electricity</div>
         <div class="scope-pct" id="bl-s2">5.8%</div>
         <div class="scope-body" id="bl-s2-body">Driven by grid emission factor trajectory and on-site renewable procurement (PPA / GreenPower).</div>
       </div>
       <div class="scope-cell">
-        <div class="scope-tag">Scope 3 &#x2013; Value chain</div>
+        <div class="scope-tag">Scope 3: Value chain</div>
         <div class="scope-pct" id="bl-s3">82.7%</div>
         <div class="scope-body" id="bl-s3-body">Embodied carbon (Cat 1), transport and distribution (Cat 4), and downstream leased assets (Cat 13). Reduction requires design choices and supplier collaboration.</div>
       </div>
@@ -738,7 +746,7 @@ html,body{overflow-x:clip}
       <div class="sankey-band-inner">
         <div class="sk-kicker">Fig. A &middot; Emissions flow &middot; FY25 baseline</div>
         <h2 class="sk-head">Where the footprint <em>flows</em>.</h2>
-        <p class="sk-sub">Scope 1&#x2013;3 distribution and the Scope 3 category breakdown for the selected organisation type. The value chain dominates &#x2014; which is why the reduction playbook starts with suppliers and design choices, not the boiler room.</p>
+        <p class="sk-sub">Scope 1-3 distribution and the Scope 3 category breakdown for the selected organisation type. The value chain dominates, which is why the reduction playbook starts with suppliers and design choices, not the boiler room.</p>
         <div class="sankey-wrap" id="sankey-container">
           <!-- Sankey drawn by JS -->
         </div>
@@ -768,19 +776,19 @@ html,body{overflow-x:clip}
         <div class="stage-title">Establish Baseline &amp; Constraints</div>
         <div class="stage-obj">Objective: Understand starting point and limits</div>
         <ul class="stage-pts">
-          <li>Confirm Scope 1&#x2013;3 boundaries, data confidence, and material gaps</li>
+          <li>Confirm Scope 1-3 boundaries, data confidence, and material gaps</li>
           <li>Identify constraints: regulatory, commercial, operational</li>
           <li>Map key stakeholders: portfolio managers, facility managers, procurement</li>
           <li>Understand existing decarbonisation efforts and commitments</li>
         </ul>
-        <div class="stage-note">Potential data gaps at this stage: capital goods, business travel, waste in operations &#x2013; flagged for proxy methodology or exclusion with rationale.</div>
+        <div class="stage-note">Potential data gaps at this stage: capital goods, business travel, waste in operations: flagged for proxy methodology or exclusion with rationale.</div>
       </div>
       <div class="stage">
         <div class="stage-n">Stage 02</div>
         <div class="stage-title">Identify &amp; Quantify Mitigation Options</div>
         <div class="stage-obj">Objective: Generate and evaluate options</div>
         <ul class="stage-pts">
-          <li>Develop long-list of initiatives across Scope 1&#x2013;3</li>
+          <li>Develop long-list of initiatives across Scope 1-3</li>
           <li>Quantify abatement, cost, and timing for each option</li>
           <li>Identify initiatives to avoid, reduce, and replace emissions</li>
           <li>Cover operations, design, supply chain, and asset use-phase</li>
@@ -797,7 +805,7 @@ html,body{overflow-x:clip}
           <li>Set interim targets aligned to SBTi or AASB S2 scenarios</li>
           <li>Define governance, ownership, and monitoring cadence</li>
         </ul>
-        <div class="stage-note">Output: a pathway model where scenario toggles show how lever choices affect the trajectory &#x2013; gross vs. net, by scope and business unit.</div>
+        <div class="stage-note">Output: a pathway model where scenario toggles show how lever choices affect the trajectory: gross vs. net, by scope and business unit.</div>
       </div>
     </div>
     <div class="sec-sub">Example mitigation levers by scope</div>
@@ -807,7 +815,7 @@ html,body{overflow-x:clip}
       <tbody>
         <tr><td>Renewable electricity (PPA / GreenPower)</td><td>Scope 2</td><td>Near-term</td><td>Highest leverage early. Addresses purchased electricity entirely with credible instruments.</td></tr>
         <tr><td>LV fleet transition (EV)</td><td>Scope 1</td><td>Near-to-mid</td><td>NVES trajectory sets baseline expectation. Faster procurement cycles accelerate.</td></tr>
-        <tr><td>HV fleet transition</td><td>Scope 1</td><td>Mid-term</td><td>CSIRO pathway. Technology readiness constrains pace &#x2013; most impact post-FY2029.</td></tr>
+        <tr><td>HV fleet transition</td><td>Scope 1</td><td>Mid-term</td><td>CSIRO pathway. Technology readiness constrains pace: most impact post-FY2029.</td></tr>
         <tr><td>Low-carbon materials procurement</td><td>Scope 3 Cat 1</td><td>Mid-term</td><td>Specification and supplier engagement. Locks in embodied carbon reductions at design stage.</td></tr>
         <tr><td>Supplier engagement programme</td><td>Scope 3 Cat 1/4</td><td>Ongoing</td><td>CDP supply chain, contractual requirements, capacity building for key suppliers.</td></tr>
         <tr><td>Asset performance upgrades</td><td>Scope 3 Cat 13</td><td>Long-term</td><td>NABERS ratings, all-electric design, green lease provisions. Aligned to capital planning cycles.</td></tr>
@@ -818,7 +826,7 @@ html,body{overflow-x:clip}
   </div>
 
   <div id="p-mca" class="panel">
-    <p class="panel-intro">A multi-criteria analysis framework for prioritising decarbonisation initiatives. Applied to move from a long-list of options to a sequenced roadmap with CAPEX implications. Weighting factors are agreed with stakeholders following engagement &#x2013; the framework structures the decision, it does not make it.</p>
+    <p class="panel-intro">A multi-criteria analysis framework for prioritising decarbonisation initiatives. Applied to move from a long-list of options to a sequenced roadmap with CAPEX implications. Weighting factors are agreed with stakeholders following engagement: the framework structures the decision, it does not make it.</p>
     <div class="mca-grid">
       <div class="mca"><div class="mca-crit">Impact (Carbon)</div><div class="mca-metric">Metric: total tCO&#x2082;-e reduction to 2050</div><div class="mca-body">Will the option deliver significant carbon reductions toward net zero targets? Primary quantitative screen.</div></div>
       <div class="mca"><div class="mca-crit">Cost Effectiveness</div><div class="mca-metric">Metric: Net Present Cost / tCO&#x2082;-e avoided</div><div class="mca-body">Is the initiative cost-effective in achieving carbon reductions? Levelised cost of abatement used to identify the efficiency frontier before CAPEX commitments.</div></div>
@@ -847,18 +855,18 @@ html,body{overflow-x:clip}
       <div class="bl-meta">Illustrative &nbsp;&middot;&nbsp; representative commercial office typology &nbsp;&middot;&nbsp; not client data</div>
     </div>
     <div style="background:#FFFFFF;padding:1.25rem 1.5rem;margin-bottom:1px;border-bottom:1px solid var(--rule-lt);">
-      <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);margin-bottom:0.75rem;font-weight:600;">System boundary &#x2013; lifecycle modules in scope</div>
+      <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);margin-bottom:0.75rem;font-weight:600;">System boundary: lifecycle modules in scope</div>
       <div class="lc-modules">
-        <div class="lcm active"><span class="lcm-ref">A1&#x2013;A3</span><span class="lcm-label">Product stage</span></div>
+        <div class="lcm active"><span class="lcm-ref">A1-A3</span><span class="lcm-label">Product stage</span></div>
         <div class="lcm active"><span class="lcm-ref">A4</span><span class="lcm-label">Transport to site</span></div>
         <div class="lcm active"><span class="lcm-ref">A5</span><span class="lcm-label">Construction</span></div>
-        <div class="lcm out"><span class="lcm-ref">B1&#x2013;B7</span><span class="lcm-label">Use stage</span></div>
-        <div class="lcm out"><span class="lcm-ref">C1&#x2013;C4</span><span class="lcm-label">End of life</span></div>
+        <div class="lcm out"><span class="lcm-ref">B1-B7</span><span class="lcm-label">Use stage</span></div>
+        <div class="lcm out"><span class="lcm-ref">C1-C4</span><span class="lcm-label">End of life</span></div>
         <div class="lcm noted"><span class="lcm-ref">D</span><span class="lcm-label">Beyond boundary</span></div>
       </div>
       <div class="lcm-legend">
-        <div class="lcm-leg-item"><div class="lcm-leg-dot act"></div>In scope (A1&#x2013;A5)</div>
-        <div class="lcm-leg-item"><div class="lcm-leg-dot not"></div>Module D &#x2013; noted, not included in total</div>
+        <div class="lcm-leg-item"><div class="lcm-leg-dot act"></div>In scope (A1-A5)</div>
+        <div class="lcm-leg-item"><div class="lcm-leg-dot not"></div>Module D: noted, not included in total</div>
         <div class="lcm-leg-item"><div class="lcm-leg-dot oot"></div>Out of scope for this assessment</div>
       </div>
     </div>
@@ -879,7 +887,7 @@ html,body{overflow-x:clip}
         <div class="scope-body">Partitions, finishes, and fitments. Smallest upfront contribution. Circular economy and demountable design reduce end-of-life impact.</div>
       </div>
     </div>
-    <div class="sec-sub mt2">Material hotspot breakdown &#x2013; upfront embodied carbon (A1&#x2013;A5)</div>
+    <div class="sec-sub mt2">Material hotspot breakdown: upfront embodied carbon (A1-A5)</div>
     <div class="s3-row" style="border-bottom:1px solid var(--rule-lt);padding-bottom:0.35rem;margin-bottom:0.15rem">
       <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--mid);font-weight:600;">Material / system</div>
       <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--mid);text-align:right;font-weight:600;">Share</div>
@@ -891,37 +899,37 @@ html,body{overflow-x:clip}
     <div class="s3-row"><div class="s3-name">MEP systems<span class="s3-sub">Mechanical, electrical, hydraulic</span></div><div class="s3-pct">11%</div><div class="s3-bar-wrap"><div class="s3-bar-fill" style="width:26%;background:rgba(62,110,52,0.4)"></div></div></div>
     <div class="s3-row"><div class="s3-name">Internal fit-out &amp; other<span class="s3-sub">Partitions, finishes, landscaping</span></div><div class="s3-pct">8%</div><div class="s3-bar-wrap"><div class="s3-bar-fill" style="width:19%;background:rgba(62,110,52,0.25)"></div></div></div>
     <div class="bench-wrap mt2">
-      <div class="bench-head">Benchmark comparison &#x2013; upfront embodied carbon intensity (kgCO&#x2082;-e/m&#xB2; GFA)</div>
+      <div class="bench-head">Benchmark comparison: upfront embodied carbon intensity (kgCO&#x2082;-e/m&#xB2; GFA)</div>
       <div class="bench-scale">
         <div class="bench-bar-bg"></div>
         <div class="bench-range"></div>
-        <div class="bench-mark this-b"><div class="bench-mark-label">520 &#x2013; this building</div></div>
+        <div class="bench-mark this-b"><div class="bench-mark-label">520: this building</div></div>
         <div class="bench-mark target-b"><div class="bench-mark-label">&lt;400 target</div></div>
       </div>
       <div class="bench-ticks"><span class="bench-tick">0</span><span class="bench-tick">200</span><span class="bench-tick">400</span><span class="bench-tick">600</span><span class="bench-tick">800</span></div>
       <div class="bench-legend">
-        <div class="bench-leg-item"><div class="bench-leg-line" style="background:#CBBFB4"></div>GBCA / IStructE reference range (400&#x2013;700 kgCO&#x2082;-e/m&#xB2;)</div>
+        <div class="bench-leg-item"><div class="bench-leg-line" style="background:#CBBFB4"></div>GBCA / IStructE reference range (400-700 kgCO&#x2082;-e/m&#xB2;)</div>
         <div class="bench-leg-item"><div class="bench-leg-line" style="background:var(--matcha)"></div>Illustrative building (520 kgCO&#x2082;-e/m&#xB2;)</div>
         <div class="bench-leg-item"><div class="bench-leg-line" style="background:rgba(62,110,52,0.45)"></div>Best practice target (&lt;400 kgCO&#x2082;-e/m&#xB2;)</div>
       </div>
-      <div class="bench-note">Reference ranges sourced from GBCA Carbon Positive Roadmap and IStructE How to Calculate Embodied Carbon (2nd ed.). Commercial office, GFA basis, A1&#x2013;A5 boundary.</div>
+      <div class="bench-note">Reference ranges sourced from GBCA Carbon Positive Roadmap and IStructE How to Calculate Embodied Carbon (2nd ed.). Commercial office, GFA basis, A1-A5 boundary.</div>
     </div>
     <div class="sec-sub">Reduction levers</div>
     <div class="scroll-x">
     <table class="c-table">
       <thead><tr><th>Lever</th><th>Module</th><th>Reduction potential</th><th>Notes</th></tr></thead>
       <tbody>
-        <tr><td>Structural efficiency (design-led)</td><td>A1&#x2013;A3</td><td>10&#x2013;15%</td><td>Optimised structural form, reduced over-design, post-tensioning to reduce concrete volume. Requires early engagement with structural engineer.</td></tr>
-        <tr><td>Low-carbon concrete specification</td><td>A1&#x2013;A3</td><td>15&#x2013;30%</td><td>Supplementary cementitious materials (fly ash, GGBFS) to reduce clinker ratio. EPD-backed specification. Feasible now on most projects.</td></tr>
-        <tr><td>EPD-informed procurement</td><td>A1&#x2013;A3</td><td>5&#x2013;20%</td><td>Require supplier Environmental Product Declarations. Compare across steel grades, concrete mixes, and envelope systems. Drives market signal.</td></tr>
-        <tr><td>Whole-life carbon assessment</td><td>A1&#x2013;C4</td><td>Varies</td><td>Extends boundary to include operational and end-of-life emissions. Informs all-electric design decisions and material durability trade-offs.</td></tr>
+        <tr><td>Structural efficiency (design-led)</td><td>A1-A3</td><td>10-15%</td><td>Optimised structural form, reduced over-design, post-tensioning to reduce concrete volume. Requires early engagement with structural engineer.</td></tr>
+        <tr><td>Low-carbon concrete specification</td><td>A1-A3</td><td>15-30%</td><td>Supplementary cementitious materials (fly ash, GGBFS) to reduce clinker ratio. EPD-backed specification. Feasible now on most projects.</td></tr>
+        <tr><td>EPD-informed procurement</td><td>A1-A3</td><td>5-20%</td><td>Require supplier Environmental Product Declarations. Compare across steel grades, concrete mixes, and envelope systems. Drives market signal.</td></tr>
+        <tr><td>Whole-life carbon assessment</td><td>A1-C4</td><td>Varies</td><td>Extends boundary to include operational and end-of-life emissions. Informs all-electric design decisions and material durability trade-offs.</td></tr>
       </tbody>
     </table>
     </div>
     <div class="impl-grid mt2">
-      <div class="impl"><div class="impl-head">Embodied carbon is front-loaded</div><div class="impl-body">65% of the lifecycle carbon footprint is locked in before practical completion. Procurement and specification decisions &#x2013; not operational management &#x2013; determine the outcome.</div></div>
+      <div class="impl"><div class="impl-head">Embodied carbon is front-loaded</div><div class="impl-body">65% of the lifecycle carbon footprint is locked in before practical completion. Procurement and specification decisions, not operational management, determine the outcome.</div></div>
       <div class="impl"><div class="impl-head">Operational carbon is addressable</div><div class="impl-body">All-electric design paired with a grid decarbonisation trajectory can drive use-phase Scope 2 emissions to near-zero by the mid-2030s. This is the primary lever for buildings with long asset lives.</div></div>
-      <div class="impl"><div class="impl-head">Module D credits are real, but not a substitute</div><div class="impl-body">Beyond-boundary credits from reuse, recycling, and energy recovery (Module D) are valid in whole-life assessments. They should not be used to offset A1&#x2013;A5 hotspots.</div></div>
+      <div class="impl"><div class="impl-head">Module D credits are real, but not a substitute</div><div class="impl-body">Beyond-boundary credits from reuse, recycling, and energy recovery (Module D) are valid in whole-life assessments. They should not be used to offset A1-A5 hotspots.</div></div>
     </div>
   </div>
 </div>
@@ -932,7 +940,7 @@ html,body{overflow-x:clip}
 <section id="casestudy">
 <div class="wrap">
   <div class="label" data-num="02">Case Study &middot; Baseline to Boardroom</div>
-  <p class="panel-intro" style="margin-bottom:0">How one engagement moves from raw fuel invoices to a board-presented pathway. Scroll through the four phases &#x2014; the figure tracks where the work happens.</p>
+  <p class="panel-intro" style="margin-bottom:0">How one engagement moves from raw fuel invoices to a board-presented pathway. Scroll through the four phases: the figure tracks where the work happens.</p>
   <div class="scrolly">
     <div class="scrolly-fig" aria-hidden="true">
       <div class="sfig-dots">
@@ -941,7 +949,7 @@ html,body{overflow-x:clip}
       <div class="sfig on" id="sfig-1">
         <div class="sfig-kick">Phase 01 &middot; Establish the baseline</div>
         <div class="sfig-big">82.7%</div>
-        <div class="sfig-cap">of the footprint sits in the value chain (Scope 3) &mdash; representative infrastructure portfolio</div>
+        <div class="sfig-cap">of the footprint sits in the value chain (Scope 3), representative infrastructure portfolio</div>
         <div class="sfig-bars">
           <div class="sfig-bar-row"><span class="sfig-bar-lbl">Scope 1</span><div class="sfig-bar"><i style="--w:14%"></i></div><span class="sfig-bar-val">11.5%</span></div>
           <div class="sfig-bar-row"><span class="sfig-bar-lbl">Scope 2</span><div class="sfig-bar"><i style="--w:7%"></i></div><span class="sfig-bar-val">5.8%</span></div>
@@ -949,7 +957,17 @@ html,body{overflow-x:clip}
         </div>
       </div>
       <div class="sfig" id="sfig-2">
-        <div class="sfig-kick">Phase 02 &middot; Model the pathway</div>
+        <div class="sfig-kick">Phase 02 &middot; Build the roadmap</div>
+        <div class="sfig-big">27&rarr;9</div>
+        <div class="sfig-cap">initiatives long-listed, quantified, then screened with stakeholders into a sequenced roadmap</div>
+        <div class="sfig-bars">
+          <div class="sfig-bar-row"><span class="sfig-bar-lbl">Long-list</span><div class="sfig-bar"><i style="--w:100%;background:var(--rule-dk)"></i></div><span class="sfig-bar-val">27</span></div>
+          <div class="sfig-bar-row"><span class="sfig-bar-lbl">MCA screen</span><div class="sfig-bar"><i style="--w:55%"></i></div><span class="sfig-bar-val">15</span></div>
+          <div class="sfig-bar-row"><span class="sfig-bar-lbl">Roadmap</span><div class="sfig-bar"><i style="--w:33%"></i></div><span class="sfig-bar-val">9</span></div>
+        </div>
+      </div>
+      <div class="sfig" id="sfig-3">
+        <div class="sfig-kick">Phase 03 &middot; Model the pathway</div>
         <svg class="sfig-chart" viewBox="0 0 340 150" xmlns="http://www.w3.org/2000/svg">
           <line x1="10" y1="130" x2="330" y2="130" stroke="#E2E8F0" stroke-width="1"/>
           <line x1="10" y1="90" x2="330" y2="90" stroke="#E2E8F0" stroke-width="1"/>
@@ -961,21 +979,12 @@ html,body{overflow-x:clip}
           <text x="240" y="38" font-family="JetBrains Mono,monospace" font-size="8" fill="#94A3B8">BAU</text>
           <text x="240" y="95" font-family="JetBrains Mono,monospace" font-size="8" fill="#8BAD1F">NET PATHWAY</text>
         </svg>
-        <div class="sfig-cap" style="margin-top:1rem;margin-bottom:0">Toggle-based levers &mdash; every assumption traceable to a published source</div>
-      </div>
-      <div class="sfig" id="sfig-3">
-        <div class="sfig-kick">Phase 03 &middot; Prove it externally</div>
-        <div class="sfig-big">+35</div>
-        <div class="sfig-cap">GRESB Infrastructure points in year one &mdash; major Australian energy distributor</div>
-        <div class="sfig-bars">
-          <div class="sfig-bar-row"><span class="sfig-bar-lbl">Year 0</span><div class="sfig-bar"><i style="--w:38%;background:var(--rule-dk)"></i></div><span class="sfig-bar-val">baseline</span></div>
-          <div class="sfig-bar-row"><span class="sfig-bar-lbl">Year 1</span><div class="sfig-bar"><i style="--w:88%"></i></div><span class="sfig-bar-val">+35 pts</span></div>
-        </div>
+        <div class="sfig-cap" style="margin-top:1rem;margin-bottom:0">Toggle-based levers: every assumption traceable to a published source</div>
       </div>
       <div class="sfig" id="sfig-4">
         <div class="sfig-kick">Phase 04 &middot; Hand it over</div>
         <div class="sfig-big">&minus;40%</div>
-        <div class="sfig-cap">inventory preparation time after automation &mdash; and the team runs it without me</div>
+        <div class="sfig-cap">inventory preparation time after automation, and the team runs it without me</div>
         <ul class="sfig-checks">
           <li>Methodology documented for assurance</li>
           <li>Templates and tooling pre-configured</li>
@@ -987,20 +996,20 @@ html,body{overflow-x:clip}
       <div class="sstep" data-fig="1">
         <div class="sstep-num">01</div>
         <div class="sstep-title">Establish the baseline.</div>
-        <p class="sstep-body">Scope 1&#x2013;3 boundaries confirmed, data confidence graded, gaps named rather than hidden. The first finding is usually the same: the overwhelming majority of emissions sit in the value chain, outside direct operational control. That single number decides the whole playbook.</p>
+        <p class="sstep-body">Scope 1-3 boundaries confirmed, data confidence graded, gaps named rather than hidden. The first finding is usually the same: the overwhelming majority of emissions sit in the value chain, outside direct operational control. That single number decides the whole playbook.</p>
         <div class="sstep-src">GHG Protocol &middot; NGER &middot; documented for external assurance</div>
       </div>
       <div class="sstep" data-fig="2">
         <div class="sstep-num">02</div>
-        <div class="sstep-title">Model the pathway.</div>
-        <p class="sstep-body">A toggle-based scenario model where every lever assumption traces to a published source &mdash; grid trajectory, fleet transition, plant electrification. Built so a non-specialist can interrogate it, and presented to the board by senior leadership as the Group's climate reference tool.</p>
-        <div class="sstep-src">DCCEEW 2025 &middot; NVES Act 2024 &middot; CSIRO Net Zero Pathways</div>
+        <div class="sstep-title">Build the roadmap.</div>
+        <p class="sstep-body">Before any pathway can be modelled, the options have to exist. A long-list of initiatives is developed across Scope 1-3, each quantified for abatement, cost, and timing, then screened with stakeholders through multi-criteria analysis and sequenced into a roadmap with CAPEX implications by year.</p>
+        <div class="sstep-src">MCA framework &middot; marginal abatement cost &middot; capital planning alignment</div>
       </div>
       <div class="sstep" data-fig="3">
         <div class="sstep-num">03</div>
-        <div class="sstep-title">Prove it externally.</div>
-        <p class="sstep-body">Credibility is tested from outside: benchmark submissions and assurance. A full GRESB Infrastructure cycle &mdash; gap analysis, data collection reform, disclosure uplift &mdash; delivered a 35-percentage-point improvement in year one, alongside assurance-ready Scope 1 and 2 reporting.</p>
-        <div class="sstep-src">GRESB Infrastructure &middot; external limited assurance</div>
+        <div class="sstep-title">Model the pathway.</div>
+        <p class="sstep-body">A toggle-based scenario model where every lever assumption traces to a published source: grid trajectory, fleet transition, plant electrification. Built so a non-specialist can interrogate it, and presented to the board by senior leadership as the Group's climate reference tool.</p>
+        <div class="sstep-src">DCCEEW 2025 &middot; NVES Act 2024 &middot; CSIRO Net Zero Pathways</div>
       </div>
       <div class="sstep" data-fig="4">
         <div class="sstep-num">04</div>
@@ -1041,7 +1050,7 @@ function showTab(id){
 var BASELINE_SECTORS={
   infrastructure:{
     claim:'Value chain emissions dominate the footprint, shaping where Net Zero action must focus.',
-    meta:'FY25 Baseline · Scope 1–3 · Illustrative – representative infrastructure portfolio. Not client data.',
+    meta:'FY25 Baseline · Scope 1-3 · Illustrative: representative infrastructure portfolio. Not client data.',
     s1:'11.5%',s2:'5.8%',s3:'82.7%',
     s1b:'Stationary combustion, fleet, and process emissions. Highest direct control. Largest lever is fleet electrification.',
     s2b:'Driven by grid emission factor trajectory and on-site renewable procurement (PPA / GreenPower).',
@@ -1050,16 +1059,16 @@ var BASELINE_SECTORS={
   },
   property:{
     claim:'Grid electricity and leased building operations drive the footprint. All-electric design and energy procurement are the primary reduction levers.',
-    meta:'FY25 Baseline · Scope 1–3 · Illustrative – representative commercial office portfolio. Not client data.',
+    meta:'FY25 Baseline · Scope 1-3 · Illustrative: representative commercial office portfolio. Not client data.',
     s1:'8.2%',s2:'22.4%',s3:'69.4%',
     s1b:'On-site plant and minor combustion sources. Lower direct emissions than infrastructure-heavy portfolios.',
     s2b:'Dominant category. Building electricity drives most Scope 2 exposure. Grid decarbonisation and renewable procurement (PPA) are the primary levers.',
-    s3b:'Purchased goods and services (Cat 1), supplier transport (Cat 4), and downstream leased assets (Cat 13 – tenant electricity) dominate.',
+    s3b:'Purchased goods and services (Cat 1), supplier transport (Cat 4), and downstream leased assets (Cat 13: tenant electricity) dominate.',
     cat1:'22.0%',cat4:'12.6%',cat13:'34.8%',cat1w:63,cat4w:36,cat13w:100,sk:[8.2,22.4,69.4,22.0,12.6,34.8]
   },
   government:{
     claim:'Scope 2 and light vehicle fleet are the primary decarbonisation targets; supply chain engagement is needed for material Scope 3 reduction.',
-    meta:'FY25 Baseline · Scope 1–3 · Illustrative – representative government operations portfolio. Not client data.',
+    meta:'FY25 Baseline · Scope 1-3 · Illustrative: representative government operations portfolio. Not client data.',
     s1:'12.1%',s2:'31.8%',s3:'56.1%',
     s1b:'Primarily light vehicle fleet. Fleet electrification aligned to NVES trajectory is the primary Scope 1 lever.',
     s2b:'Office buildings and facilities. Grid decarbonisation and GreenPower procurement provide the most immediate pathway to net-zero Scope 2.',
