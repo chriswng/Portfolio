@@ -52,7 +52,7 @@ body{font-family:var(--sans);font-weight:300;font-size:0.9rem;color:var(--slate)
 .nav-links a:hover .ntl{transform:translateY(-50%)}
 .ntl{display:flex;flex-direction:column;transition:transform 0.35s var(--ease)}
 .ntl>span{height:48px;display:flex;align-items:center;padding:0 0.9rem;flex-shrink:0;line-height:1;white-space:nowrap}
-.nav-logo{font-family:var(--mono);font-size:0.95rem;font-weight:500;color:var(--matcha);text-decoration:none;letter-spacing:-0.02em;transition:opacity 0.25s;flex-shrink:0}
+.nav-logo{font-family:var(--mono);font-size:0.95rem;font-weight:500;color:var(--matcha);text-decoration:none;letter-spacing:-0.02em;transition:opacity 0.25s;flex-shrink:0;height:48px;display:inline-flex;align-items:center}
 .nav-logo:hover{opacity:0.55}
 .wrap{max-width:var(--max);margin:0 auto;padding:0 var(--pad)}
 section{border-bottom:1px solid var(--rule-lt)}
@@ -618,13 +618,13 @@ html,body{overflow-x:clip}
 .label::before{content:attr(data-num);position:absolute;right:0;top:50%;transform:translateY(-46%);font-family:var(--disp);font-weight:800;font-size:clamp(3.2rem,9vw,6rem);line-height:1;color:transparent;-webkit-text-stroke:1.2px rgba(15,23,42,0.10);letter-spacing:-0.04em;pointer-events:none;user-select:none}
 
 /* ---- Promoted Sankey — full-bleed dark band ---- */
-.sankey-band{margin:2.5rem calc(50% - 50vw) 0;background:var(--slate);padding:clamp(2.5rem,6vw,4.5rem) var(--pad);position:relative;overflow:hidden}
-.sankey-band::before{content:'';position:absolute;inset:0;opacity:0.05;background-image:repeating-linear-gradient(0deg,transparent,transparent 40px,#fff 40px,#fff 41px),repeating-linear-gradient(90deg,transparent,transparent 40px,#fff 40px,#fff 41px);pointer-events:none}
+.sankey-band{margin:2.5rem calc(50% - 50vw) 0;background:#EEF2FF;border-top:1px solid var(--rule-dk);border-bottom:1px solid var(--rule-dk);padding:clamp(2.5rem,6vw,4.5rem) var(--pad);position:relative;overflow:hidden}
+.sankey-band::before{content:'';position:absolute;inset:0;opacity:0.05;background-image:repeating-linear-gradient(0deg,transparent,transparent 40px,#0F172A 40px,#0F172A 41px),repeating-linear-gradient(90deg,transparent,transparent 40px,#0F172A 40px,#0F172A 41px);pointer-events:none}
 .sankey-band-inner{max-width:var(--max);margin:0 auto;position:relative}
-.sk-kicker{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.16em;text-transform:uppercase;color:rgba(181,196,43,0.85);margin-bottom:1rem;font-weight:600}
-.sk-head{font-family:var(--disp);font-size:clamp(1.8rem,5vw,3.2rem);font-weight:800;letter-spacing:-0.03em;line-height:1;color:var(--bg);margin-bottom:0.9rem}
-.sk-head em{font-style:normal;color:var(--matcha)}
-.sk-sub{font-size:0.85rem;font-weight:400;color:rgba(248,250,252,0.6);line-height:1.7;max-width:560px;margin-bottom:1.5rem}
+.sk-kicker{font-family:var(--mono);font-size:0.66rem;letter-spacing:0.16em;text-transform:uppercase;color:#75821D;margin-bottom:1rem;font-weight:600}
+.sk-head{font-family:var(--disp);font-size:clamp(1.8rem,5vw,3.2rem);font-weight:800;letter-spacing:-0.03em;line-height:1;color:var(--slate);margin-bottom:0.9rem}
+.sk-head em{font-style:normal;color:#75821D}
+.sk-sub{font-size:0.85rem;font-weight:400;color:#475569;line-height:1.7;max-width:560px;margin-bottom:1.5rem}
 .sankey-wrap svg{clip-path:inset(0 100% 0 0)}
 .sankey-wrap.sk-on svg{clip-path:inset(0 0 0 0);transition:clip-path 1.2s var(--ease)}
 
@@ -933,8 +933,6 @@ html,body{overflow-x:clip}
     </div>
   </div>
 </div>
-
-</div>
 </section>
 
 <section id="casestudy">
@@ -974,9 +972,9 @@ html,body{overflow-x:clip}
           <line x1="10" y1="50" x2="330" y2="50" stroke="#E2E8F0" stroke-width="1"/>
           <polyline class="sfig-bau" points="10,28 330,42"/>
           <path class="sfig-path" d="M10,28 C90,32 150,52 210,84 C260,110 300,122 330,127"/>
-          <text x="10" y="16" font-family="JetBrains Mono,monospace" font-size="8" fill="#94A3B8" letter-spacing="0.08em">FY25</text>
-          <text x="304" y="16" font-family="JetBrains Mono,monospace" font-size="8" fill="#94A3B8" letter-spacing="0.08em">FY50</text>
-          <text x="240" y="38" font-family="JetBrains Mono,monospace" font-size="8" fill="#94A3B8">BAU</text>
+          <text x="10" y="16" font-family="JetBrains Mono,monospace" font-size="8" fill="#64748B" letter-spacing="0.08em">FY25</text>
+          <text x="304" y="16" font-family="JetBrains Mono,monospace" font-size="8" fill="#64748B" letter-spacing="0.08em">FY50</text>
+          <text x="240" y="38" font-family="JetBrains Mono,monospace" font-size="8" fill="#64748B">BAU</text>
           <text x="240" y="95" font-family="JetBrains Mono,monospace" font-size="8" fill="#8BAD1F">NET PATHWAY</text>
         </svg>
         <div class="sfig-cap" style="margin-top:1rem;margin-bottom:0">Toggle-based levers: every assumption traceable to a published source</div>
@@ -1128,42 +1126,42 @@ function drawSankey(s1p,s2p,s3p,cat1p,cat4p,cat13p){
   var c13h=s3h-c1h-c4h;
   if(c13h<8){c13h=8;c1h=s3h-c4h-c13h;}
   var c1y=s3y,c4y=c1y+c1h,c13y=c4y+c4h;
-  var acc='#B5C42B',accM='rgba(181,196,43,0.55)';
+  var acc='#75821D',accM='rgba(117,130,29,0.55)';
   var s='<svg viewBox="0 0 720 220" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;min-height:280px;max-width:100%" role="img" aria-label="Emissions flow diagram">';
-  s+='<path d="M36,'+s1y+' C130,'+s1y+' 130,'+s1y+' 220,'+s1y+' L220,'+(s1y+s1h)+' C130,'+(s1y+s1h)+' 130,'+(s1y+s1h)+' 36,'+(s1y+s1h)+' Z" fill="rgba(181,196,43,0.40)"/>';
-  s+='<path d="M36,'+s2y+' C130,'+s2y+' 130,'+s3y+' 220,'+s2y+' L220,'+(s2y+s2h)+' C130,'+(s2y+s2h)+' 130,'+s3y+' 36,'+(s2y+s2h)+' Z" fill="rgba(181,196,43,0.20)"/>';
-  s+='<path d="M36,'+s3y+' C130,'+s3y+' 130,'+s3y+' 220,'+s3y+' L220,'+yE+' C130,'+yE+' 130,'+yE+' 36,'+yE+' Z" fill="rgba(255,255,255,0.07)"/>';
-  s+='<path d="M236,'+s3y+' C358,'+s3y+' 358,'+s3y+' 480,'+s3y+' L480,'+(c1y+c1h)+' C358,'+(c1y+c1h)+' 358,'+(c1y+c1h)+' 236,'+(c1y+c1h)+' Z" fill="rgba(255,255,255,0.11)"/>';
-  s+='<path d="M236,'+(c1y+c1h)+' C358,'+(c1y+c1h)+' 358,'+(c1y+c1h)+' 480,'+(c1y+c1h)+' L480,'+(c4y+c4h)+' C358,'+(c4y+c4h)+' 358,'+(c4y+c4h)+' 236,'+(c4y+c4h)+' Z" fill="rgba(255,255,255,0.07)"/>';
-  s+='<path d="M236,'+(c4y+c4h)+' C358,'+(c4y+c4h)+' 358,'+(c4y+c4h)+' 480,'+(c4y+c4h)+' L480,'+yE+' C358,'+yE+' 358,'+yE+' 236,'+yE+' Z" fill="rgba(255,255,255,0.05)"/>';
-  s+='<rect x="20" y="'+yS+'" width="16" height="'+TH+'" fill="rgba(255,255,255,0.28)"/>';
+  s+='<path d="M36,'+s1y+' C130,'+s1y+' 130,'+s1y+' 220,'+s1y+' L220,'+(s1y+s1h)+' C130,'+(s1y+s1h)+' 130,'+(s1y+s1h)+' 36,'+(s1y+s1h)+' Z" fill="rgba(117,130,29,0.35)"/>';
+  s+='<path d="M36,'+s2y+' C130,'+s2y+' 130,'+s3y+' 220,'+s2y+' L220,'+(s2y+s2h)+' C130,'+(s2y+s2h)+' 130,'+s3y+' 36,'+(s2y+s2h)+' Z" fill="rgba(117,130,29,0.18)"/>';
+  s+='<path d="M36,'+s3y+' C130,'+s3y+' 130,'+s3y+' 220,'+s3y+' L220,'+yE+' C130,'+yE+' 130,'+yE+' 36,'+yE+' Z" fill="rgba(15,23,42,0.07)"/>';
+  s+='<path d="M236,'+s3y+' C358,'+s3y+' 358,'+s3y+' 480,'+s3y+' L480,'+(c1y+c1h)+' C358,'+(c1y+c1h)+' 358,'+(c1y+c1h)+' 236,'+(c1y+c1h)+' Z" fill="rgba(15,23,42,0.11)"/>';
+  s+='<path d="M236,'+(c1y+c1h)+' C358,'+(c1y+c1h)+' 358,'+(c1y+c1h)+' 480,'+(c1y+c1h)+' L480,'+(c4y+c4h)+' C358,'+(c4y+c4h)+' 358,'+(c4y+c4h)+' 236,'+(c4y+c4h)+' Z" fill="rgba(15,23,42,0.07)"/>';
+  s+='<path d="M236,'+(c4y+c4h)+' C358,'+(c4y+c4h)+' 358,'+(c4y+c4h)+' 480,'+(c4y+c4h)+' L480,'+yE+' C358,'+yE+' 358,'+yE+' 236,'+yE+' Z" fill="rgba(15,23,42,0.05)"/>';
+  s+='<rect x="20" y="'+yS+'" width="16" height="'+TH+'" fill="rgba(15,23,42,0.28)"/>';
   s+='<rect x="220" y="'+s1y+'" width="16" height="'+s1h+'" fill="'+acc+'"/>';
   s+='<rect x="220" y="'+s2y+'" width="16" height="'+s2h+'" fill="'+accM+'"/>';
-  s+='<rect x="220" y="'+s3y+'" width="16" height="'+s3h+'" fill="rgba(255,255,255,0.38)"/>';
-  s+='<rect x="480" y="'+c1y+'" width="16" height="'+c1h+'" fill="rgba(255,255,255,0.34)"/>';
-  s+='<rect x="480" y="'+c4y+'" width="16" height="'+c4h+'" fill="rgba(255,255,255,0.26)"/>';
-  s+='<rect x="480" y="'+c13y+'" width="16" height="'+c13h+'" fill="rgba(255,255,255,0.18)"/>';
+  s+='<rect x="220" y="'+s3y+'" width="16" height="'+s3h+'" fill="rgba(15,23,42,0.38)"/>';
+  s+='<rect x="480" y="'+c1y+'" width="16" height="'+c1h+'" fill="rgba(15,23,42,0.34)"/>';
+  s+='<rect x="480" y="'+c4y+'" width="16" height="'+c4h+'" fill="rgba(15,23,42,0.26)"/>';
+  s+='<rect x="480" y="'+c13y+'" width="16" height="'+c13h+'" fill="rgba(15,23,42,0.18)"/>';
   var s1cy=(s1y+s1h/2+3).toFixed(0),s2cy=(s2y+s2h/2+3).toFixed(0),s3ty=(s3y+13).toFixed(0),s3py=(s3y+33).toFixed(0),s3sy=(s3y+49).toFixed(0);
   s+='<text x="240" y="'+s1cy+'" font-family="JetBrains Mono,monospace" font-size="9" fill="'+acc+'" letter-spacing="0.08em">SCOPE 1</text>';
   s+='<text x="315" y="'+s1cy+'" font-family="JetBrains Mono,monospace" font-size="9" fill="'+acc+'" text-anchor="end">'+s1p.toFixed(1)+'%</text>';
-  s+='<text x="240" y="'+s2cy+'" font-family="JetBrains Mono,monospace" font-size="9" fill="rgba(181,196,43,0.8)">SCOPE 2</text>';
-  s+='<text x="315" y="'+s2cy+'" font-family="JetBrains Mono,monospace" font-size="9" fill="rgba(181,196,43,0.8)" text-anchor="end">'+s2p.toFixed(1)+'%</text>';
+  s+='<text x="240" y="'+s2cy+'" font-family="JetBrains Mono,monospace" font-size="9" fill="#75821D">SCOPE 2</text>';
+  s+='<text x="315" y="'+s2cy+'" font-family="JetBrains Mono,monospace" font-size="9" fill="#75821D" text-anchor="end">'+s2p.toFixed(1)+'%</text>';
   if(s3h>30){
-    s+='<text x="240" y="'+s3ty+'" font-family="JetBrains Mono,monospace" font-size="9" fill="#94A3B8">SCOPE 3</text>';
-    s+='<text x="240" y="'+s3py+'" font-family="JetBrains Mono,monospace" font-size="20" font-weight="bold" fill="#F8FAFC">'+s3p.toFixed(1)+'%</text>';
-    if(s3h>50) s+='<text x="240" y="'+s3sy+'" font-family="JetBrains Mono,monospace" font-size="8" fill="#7C8AA0">of total footprint</text>';
+    s+='<text x="240" y="'+s3ty+'" font-family="JetBrains Mono,monospace" font-size="9" fill="#64748B">SCOPE 3</text>';
+    s+='<text x="240" y="'+s3py+'" font-family="JetBrains Mono,monospace" font-size="20" font-weight="bold" fill="#0F172A">'+s3p.toFixed(1)+'%</text>';
+    if(s3h>50) s+='<text x="240" y="'+s3sy+'" font-family="JetBrains Mono,monospace" font-size="8" fill="#64748B">of total footprint</text>';
   }
   function catLabel(label,desc,pct,cy,ch){
     if(ch<14) return;
     var ly=(cy+11).toFixed(0),dy=(cy+21).toFixed(0),py=(cy+34).toFixed(0);
-    s+='<text x="500" y="'+ly+'" font-family="JetBrains Mono,monospace" font-size="8" fill="#94A3B8" letter-spacing="0.05em">'+label+'</text>';
+    s+='<text x="500" y="'+ly+'" font-family="JetBrains Mono,monospace" font-size="8" fill="#64748B" letter-spacing="0.05em">'+label+'</text>';
     if(ch>44){
-      s+='<text x="500" y="'+dy+'" font-family="JetBrains Mono,monospace" font-size="7" fill="#7C8AA0">'+desc+'</text>';
-      s+='<text x="500" y="'+py+'" font-family="JetBrains Mono,monospace" font-size="11" font-weight="bold" fill="#F8FAFC">'+pct.toFixed(1)+'%</text>';
+      s+='<text x="500" y="'+dy+'" font-family="JetBrains Mono,monospace" font-size="7" fill="#64748B">'+desc+'</text>';
+      s+='<text x="500" y="'+py+'" font-family="JetBrains Mono,monospace" font-size="11" font-weight="bold" fill="#0F172A">'+pct.toFixed(1)+'%</text>';
     } else {
       // short band: pct inline with the label so it never collides with the next category
-      s+='<text x="700" y="'+ly+'" font-family="JetBrains Mono,monospace" font-size="10" font-weight="bold" fill="#F8FAFC" text-anchor="end">'+pct.toFixed(1)+'%</text>';
-      if(ch>26) s+='<text x="500" y="'+dy+'" font-family="JetBrains Mono,monospace" font-size="7" fill="#7C8AA0">'+desc+'</text>';
+      s+='<text x="700" y="'+ly+'" font-family="JetBrains Mono,monospace" font-size="10" font-weight="bold" fill="#0F172A" text-anchor="end">'+pct.toFixed(1)+'%</text>';
+      if(ch>26) s+='<text x="500" y="'+dy+'" font-family="JetBrains Mono,monospace" font-size="7" fill="#64748B">'+desc+'</text>';
     }
   }
   catLabel('CAT 1','Purchased goods &amp; services',cat1p,c1y,c1h);
