@@ -294,11 +294,20 @@ section:last-of-type{border-bottom:none}
 .btn-primary:hover{background:#8BAD1F;border-color:#8BAD1F;color:var(--slate)}
 .btn-secondary{background:transparent;color:var(--slate);border:1px solid #CBD5E1}
 .btn-secondary:hover{border-color:var(--matcha);color:var(--matcha)}
-footer{padding:1.4rem 0;border-top:1px solid var(--rule-dk);background:var(--bg);}
-.footer-inner{max-width:var(--max);margin:0 auto;padding:0 var(--pad);display:flex;align-items:center;justify-content:space-between;gap:1rem}
-.footer-home{font-family:var(--mono);font-size:0.88rem;color:var(--matcha);text-decoration:none;opacity:0.7;transition:opacity 0.2s}
+footer{border-top:1px solid var(--rule-dk);background:var(--slate);position:relative;overflow:hidden}
+#stripes-canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.stripes-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,23,42,0) 0%,rgba(15,23,42,0.12) 50%,rgba(15,23,42,0.58) 100%);pointer-events:none}
+.stripes-hair{position:absolute;top:0;bottom:0;width:1px;background:rgba(248,250,252,0.95);opacity:0;pointer-events:none;transition:opacity 0.2s}
+.stripes-content{position:relative;z-index:2;display:flex;flex-direction:column;justify-content:space-between;min-height:clamp(120px,16vw,176px);padding:0.9rem 0 1rem;pointer-events:none}
+.stripes-meta{max-width:var(--max);margin:0 auto;width:100%;padding:0 var(--pad);display:flex;align-items:baseline;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.stripes-cap{font-family:var(--mono);font-size:0.55rem;letter-spacing:0.14em;text-transform:uppercase;color:rgba(248,250,252,0.78);font-weight:600;text-shadow:0 1px 2px rgba(15,23,42,0.55)}
+.stripes-readout{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.06em;color:#fff;font-weight:700;text-shadow:0 1px 2px rgba(15,23,42,0.65);font-variant-numeric:tabular-nums;white-space:nowrap}
+.stripes-credit{font-family:var(--mono);font-size:0.52rem;letter-spacing:0.04em;color:rgba(248,250,252,0.5);text-shadow:0 1px 2px rgba(15,23,42,0.55)}
+@media(max-width:560px){.stripes-credit{display:none}}
+.footer-inner{max-width:var(--max);margin:0 auto;width:100%;padding:0 var(--pad);display:flex;align-items:center;justify-content:space-between;gap:1rem;pointer-events:auto}
+.footer-home{font-family:var(--mono);font-size:0.88rem;color:var(--matcha);text-decoration:none;opacity:0.85;transition:opacity 0.2s;text-shadow:0 1px 2px rgba(15,23,42,0.65)}
 .footer-home:hover{opacity:1}
-.footer-name{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.06em;color:var(--mid);white-space:nowrap}
+.footer-name{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.06em;color:rgba(248,250,252,0.85);white-space:nowrap;text-shadow:0 1px 2px rgba(15,23,42,0.65)}
 .footer-links{display:flex;gap:1.4rem}
 .footer-links a{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);text-decoration:none;transition:color 0.25s;font-weight:600;}
 .footer-links a:hover{color:var(--matcha)}
@@ -1071,10 +1080,20 @@ body.mode-textile .lever-group-textile .lever{display:block}
 </div>
 </section>
 
-<footer>
-  <div class="footer-inner">
-    <a href="#about" class="footer-home">./</a>
-    <span class="footer-name">Christopher Wang &nbsp;&middot;&nbsp; 2026</span>
+<footer id="stripes-footer">
+  <canvas id="stripes-canvas" role="img" aria-label="Warming stripes: global mean temperature anomaly for each year from 1850 to 2025, shading from blue (cooler than the 1850 to 1900 average) to deep red (warmer)"></canvas>
+  <div class="stripes-scrim" aria-hidden="true"></div>
+  <div class="stripes-hair" id="stripes-hair" aria-hidden="true"></div>
+  <div class="stripes-content">
+    <div class="stripes-meta">
+      <span class="stripes-cap">Global mean temperature anomaly &middot; 1850&ndash;2025</span>
+      <span class="stripes-readout" id="stripes-readout">2025 &middot; +1.46&deg;C vs 1850&ndash;1900</span>
+    </div>
+    <div class="footer-inner">
+      <a href="#about" class="footer-home">./</a>
+      <span class="stripes-credit">Data: HadCRUT5, Met Office &middot; after Ed Hawkins / #ShowYourStripes</span>
+      <span class="footer-name">Christopher Wang &nbsp;&middot;&nbsp; 2026</span>
+    </div>
   </div>
 </footer>
 
@@ -1888,6 +1907,108 @@ window.addEventListener('load',function(){
       });
       ticking=true;
     }
+  });
+})();
+
+/* ---- 23: Warming stripes footer — HadCRUT5 global mean anomaly vs 1850-1900,
+   after Ed Hawkins / #ShowYourStripes. Values embedded; 2025 provisional. ---- */
+(function(){
+  var START=1850;
+  var T=[
+    -0.06,0.13,0.13,0.09,0.07,0.06,0.04,-0.11,-0.03,0.08,
+    -0.03,-0.07,-0.18,0.02,-0.11,0.03,0.02,0.00,0.01,0.04,
+    0.03,0.00,0.03,0.01,-0.03,-0.04,-0.06,0.18,0.26,0.06,
+    0.01,0.05,0.04,-0.01,-0.09,-0.08,-0.06,-0.11,-0.07,0.03,
+    -0.11,-0.06,-0.14,-0.15,-0.13,-0.09,0.02,0.02,-0.09,0.01,
+    0.06,0.01,-0.09,-0.16,-0.19,-0.09,0.01,-0.15,-0.19,-0.20,
+    -0.19,-0.21,-0.10,-0.09,0.06,0.15,-0.04,-0.13,-0.03,0.04,
+    0.05,0.10,0.00,0.04,0.02,0.09,0.20,0.11,0.12,-0.02,
+    0.18,0.24,0.18,0.04,0.19,0.15,0.19,0.32,0.32,0.34,
+    0.43,0.46,0.40,0.42,0.49,0.41,0.27,0.26,0.23,0.21,
+    0.14,0.29,0.37,0.42,0.20,0.16,0.09,0.32,0.36,0.34,
+    0.29,0.37,0.36,0.37,0.12,0.20,0.27,0.29,0.26,0.38,
+    0.32,0.23,0.33,0.47,0.21,0.30,0.20,0.46,0.37,0.49,
+    0.56,0.60,0.46,0.63,0.43,0.41,0.48,0.62,0.66,0.57,
+    0.72,0.69,0.49,0.54,0.61,0.74,0.63,0.78,0.94,0.68,
+    0.69,0.85,0.90,0.91,0.83,0.97,0.93,0.95,0.83,0.96,
+    1.04,0.90,0.94,0.98,1.03,1.19,1.29,1.21,1.12,1.25,
+    1.28,1.12,1.16,1.46,1.53,1.46
+  ];
+  var canvas=document.getElementById('stripes-canvas');
+  var footer=document.getElementById('stripes-footer');
+  var readout=document.getElementById('stripes-readout');
+  var hair=document.getElementById('stripes-hair');
+  if(!canvas||!footer||!canvas.getContext) return;
+  var ctx=canvas.getContext('2d');
+  var reduced=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var N=T.length;
+  /* ColorBrewer RdBu anchors; colour keyed to the series midpoint baseline
+     so the pre-industrial half reads blue and the modern half red */
+  var BASE=0.36, LIM=0.75;
+  var NEG=[[209,229,240],[146,197,222],[67,147,195],[33,102,172],[8,48,107]];
+  var POS=[[253,219,199],[244,165,130],[214,96,77],[178,24,43],[103,0,31]];
+  function ramp(stops,t){
+    t=Math.max(0,Math.min(1,t))*(stops.length-1);
+    var i=Math.min(Math.floor(t),stops.length-2),f=t-i;
+    var a=stops[i],b=stops[i+1];
+    return 'rgb('+Math.round(a[0]+(b[0]-a[0])*f)+','+Math.round(a[1]+(b[1]-a[1])*f)+','+Math.round(a[2]+(b[2]-a[2])*f)+')';
+  }
+  var cols=T.map(function(a){
+    var c=a-BASE;
+    return c<0?ramp(NEG,-c/LIM):ramp(POS,c/LIM);
+  });
+  var prog=reduced?1:0, drawn=false;
+  function size(){
+    var dpr=window.devicePixelRatio||1;
+    canvas.width=footer.clientWidth*dpr;
+    canvas.height=footer.clientHeight*dpr;
+  }
+  function draw(){
+    var w=canvas.width,h=canvas.height,sw=w/N;
+    ctx.clearRect(0,0,w,h);
+    var count=Math.ceil(N*prog);
+    for(var i=0;i<count;i++){
+      ctx.fillStyle=cols[i];
+      ctx.fillRect(Math.floor(i*sw),0,Math.ceil(sw)+1,h);
+    }
+  }
+  function fmt(a){return (a>=0?'+':'−')+Math.abs(a).toFixed(2)+'°C';}
+  function setReadout(i){
+    readout.textContent=(START+i)+' · '+fmt(T[i])+' vs 1850–1900';
+  }
+  function reveal(){
+    if(drawn) return; drawn=true;
+    if(reduced){prog=1;draw();return;}
+    var t0=performance.now(),DUR=1600;
+    (function tick(now){
+      var p=Math.min((now-t0)/DUR,1);
+      prog=1-Math.pow(1-p,3);
+      draw();
+      if(p<1) requestAnimationFrame(tick);
+    })(t0);
+  }
+  size();draw();
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(function(es,o){
+      es.forEach(function(e){if(e.isIntersecting){reveal();o.disconnect();}});
+    },{threshold:0.15}).observe(footer);
+  } else reveal();
+  footer.addEventListener('pointermove',function(e){
+    var r=footer.getBoundingClientRect();
+    var x=Math.max(0,Math.min(r.width-1,e.clientX-r.left));
+    var i=Math.max(0,Math.min(N-1,Math.floor(x/r.width*N)));
+    setReadout(i);
+    hair.style.left=x+'px';
+    hair.style.opacity='1';
+  });
+  footer.addEventListener('pointerleave',function(){
+    hair.style.opacity='0';
+    setReadout(N-1);
+  });
+  var rT;
+  window.addEventListener('resize',function(){
+    clearTimeout(rT);
+    rT=setTimeout(function(){size();draw();},150);
   });
 })();
 
