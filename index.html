@@ -41,6 +41,11 @@ html{scroll-behavior:smooth}
   --pad:clamp(1rem,4vw,1.5rem);
   --ease:cubic-bezier(0.25,1,0.5,1);
   --tab-h:2.5rem;
+  /* Employer brand colours — timeline rail + nodes match each logo */
+  --downer:#8DC63F;
+  --wsp:#F9423A;
+  --defence:#1B1B1B;
+  --unsw:#E5B80B;
 }
 body{font-family:var(--sans);font-weight:300;font-size:0.9rem;color:var(--slate);background:var(--bg);line-height:1.75;-webkit-font-smoothing:antialiased}
 .nav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--rule-dk)}
@@ -53,7 +58,7 @@ body{font-family:var(--sans);font-weight:300;font-size:0.9rem;color:var(--slate)
 .nav-links a:hover .ntl{transform:translateY(-50%)}
 .ntl{display:flex;flex-direction:column;transition:transform 0.35s var(--ease)}
 .ntl>span{height:48px;display:flex;align-items:center;padding:0 0.9rem;flex-shrink:0;line-height:1;white-space:nowrap}
-.nav-logo{font-family:var(--mono);font-size:0.95rem;font-weight:500;color:var(--matcha);text-decoration:none;letter-spacing:-0.02em;transition:opacity 0.25s;flex-shrink:0}
+.nav-logo{font-family:var(--mono);font-size:0.95rem;font-weight:500;color:var(--matcha);text-decoration:none;letter-spacing:-0.02em;transition:opacity 0.25s;flex-shrink:0;height:48px;display:inline-flex;align-items:center}
 .nav-logo:hover{opacity:0.55}
 .wrap{max-width:var(--max);margin:0 auto;padding:0 var(--pad)}
 section{border-bottom:1px solid var(--rule-lt)}
@@ -62,7 +67,7 @@ section:last-of-type{border-bottom:none}
 .label::after{content:'';flex:1;height:1px;background:var(--rule-lt);min-width:20px}
 #about{background:#EEF2FF;border-bottom:1px solid var(--rule-dk);padding:clamp(1.5rem,3vw,2.5rem) 0 clamp(2rem,4vw,3rem);position:relative;overflow:hidden}
 #about .label::after{background:var(--rule-dk)}
-.hero-name{font-family:var(--disp);font-size:clamp(2.8rem,9vw,5rem);font-weight:800;line-height:0.95;letter-spacing:-0.04em;color:var(--slate);margin-bottom:0.6rem}
+.hero-name{font-family:var(--disp);font-size:clamp(2.8rem,9vw,5rem);font-weight:700;line-height:0.95;letter-spacing:-0.04em;color:var(--slate);margin-bottom:0.6rem}
 .hero-name em{color:var(--matcha);font-style:normal}
 .hero-meta{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.08em;color:rgba(51,65,85,0.9);text-transform:uppercase;margin-bottom:2.5rem;display:flex;flex-wrap:wrap;gap:0.3rem 1.2rem}
 .hero-meta a{color:var(--mid);text-decoration:none;transition:color 0.3s var(--ease)}
@@ -86,8 +91,8 @@ section:last-of-type{border-bottom:none}
 .pipeline{display:flex;flex-direction:column;gap:2px;margin-top:2rem;width:100%}
 .pipe-step{display:flex;align-items:center;gap:0.9rem;padding:0.65rem 1rem;border-left:3px solid var(--rule-dk);background:var(--white);transition:background 0.3s var(--ease)}
 .pipe-step:hover{background:var(--red-bg)}
-.pipe-n{font-family:var(--mono);font-size:0.55rem;letter-spacing:0.1em;color:var(--subtle);width:1.5rem;flex-shrink:0}
-.pipe-label{font-family:var(--mono);font-size:0.68rem;letter-spacing:0.09em;text-transform:uppercase;font-weight:600;color:var(--slate);transition:color 0.3s}
+.pipe-n{font-family:var(--mono);font-size:0.66rem;letter-spacing:0.1em;color:var(--subtle);width:1.7rem;flex-shrink:0}
+.pipe-label{font-family:var(--mono);font-size:0.8rem;letter-spacing:0.09em;text-transform:uppercase;font-weight:600;color:var(--slate);transition:color 0.3s}
 .ticker-band{overflow:hidden;border-top:1px solid var(--rule-dk);border-bottom:1px solid var(--rule-dk);padding:0.75rem 0;background:#F1F5F9;cursor:default;position:relative}
 .ticker-track{display:flex;white-space:nowrap;animation:tick 40s linear infinite;will-change:transform}
 .ticker-band:hover .ticker-track{animation-play-state:paused}
@@ -233,54 +238,47 @@ section:last-of-type{border-bottom:none}
 .exp-bullets li::before{content:'›';position:absolute;left:0;color:var(--matcha);font-size:1rem;line-height:1.5}
 .exp-bullets li strong{font-weight:600;color:var(--slate)}
 .exp-section-lbl-li{list-style:none;margin-top:1.1rem;padding-left:0 !important}.exp-section-lbl-li::before{content:"" !important}.exp-section-lbl{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--matcha);margin-bottom:0.5rem;font-weight:600;display:block}
-.edu-block{margin-top:3rem;background:#F1F5F9;border:1px solid var(--rule-dk);padding:1.5rem;display:flex;flex-direction:column;gap:0.65rem}
-.edu-row{font-size:0.85rem}
-.edu-inst{font-weight:700;color:var(--slate)}
-.edu-deg{font-weight:400;color:#475569}
-.cred{font-family:var(--mono);font-size:0.68rem;color:#527A1E;padding-top:0.5rem;border-top:1px solid var(--rule-dk);letter-spacing:0.03em;line-height:1.65;font-weight:400;}
+/* ---- Employer logos in the timeline ---- */
+.exp-logo{display:block;width:auto;object-fit:contain;object-position:left center;margin-bottom:0.75rem;height:26px}
+.exp-logo.logo-downer{height:30px}
+.exp-logo.logo-wsp{height:20px}
+.exp-logo.logo-defence{height:56px;margin-left:-6px}
+
+/* ---- Education: structured credential grid ---- */
+.edu-block{margin-top:3rem;background:#F1F5F9;border:1px solid var(--rule-dk);padding:1.5rem}
+.edu-inst{font-family:var(--disp);font-size:1.25rem;font-weight:700;color:var(--slate);line-height:1.15;margin-bottom:0.15rem}
+.edu-deg{font-size:0.85rem;font-weight:400;color:#475569;margin-bottom:1.25rem}
+.edu-grid{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule-dk);border:1px solid var(--rule-dk)}
+@media(min-width:640px){.edu-grid{grid-template-columns:1fr 1fr}}
+.edu-cell{background:var(--white);padding:1rem 1.1rem;border-left:3px solid var(--unsw)}
+.edu-cell-l{font-family:var(--mono);font-size:0.64rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);font-weight:600;margin-bottom:0.3rem}
+.edu-cell-b{font-size:0.82rem;font-weight:400;color:#334155;line-height:1.6}
+.edu-cell-b strong{font-weight:600;color:var(--slate)}
 #scenario{background:var(--bg);border-bottom:1px solid var(--rule-dk);padding:clamp(5rem,11vw,8rem) 0}
 #scenario .label::after{background:var(--rule-dk)}
 .tool-decl{font-family:var(--sans);font-size:clamp(1.1rem,2.5vw,1.5rem);font-weight:400;color:var(--slate);max-width:640px;line-height:1.45;margin-bottom:0.75rem}
 .tool-decl strong{font-weight:700;color:var(--matcha)}
 .tool-sub{font-size:0.82rem;font-weight:400;color:var(--mid);max-width:600px;line-height:1.65;margin-bottom:0.75rem}
-.tool-disc{display:inline-block;font-family:var(--mono);font-size:0.6rem;color:var(--mid);border:1px solid var(--rule-dk);padding:0.25rem 0.7rem;margin-bottom:1.5rem}
-.sector-desc{font-family:var(--mono);font-size:0.62rem;color:var(--matcha);margin-top:1.5rem;margin-bottom:2rem;line-height:1.5;max-width:580px;font-weight:600;}
+.tool-disc{display:inline-block;font-family:var(--mono);font-size:0.66rem;color:var(--mid);border:1px solid var(--rule-dk);padding:0.3rem 0.75rem;margin-bottom:0.5rem}
+.sector-desc{font-size:0.84rem;color:#475569;margin-top:1.1rem;line-height:1.65;max-width:62ch}
 .kpi-strip{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--rule-dk);border:1px solid var(--rule-dk);margin-bottom:1.5rem;overflow:hidden}
 @media(min-width:580px){.kpi-strip{grid-template-columns:repeat(4,1fr)}}
 .kpi{background:var(--white);padding:1.1rem 1.25rem}
 .kpi.live{background:var(--red-bg)}
-.kpi-l{font-family:var(--mono);font-size:0.56rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);margin-bottom:0.35rem;font-weight:600;}
+.kpi-l{font-family:var(--mono);font-size:0.64rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--mid);margin-bottom:0.35rem;font-weight:600;}
 .kpi-v{font-family:var(--disp);font-size:1.5rem;font-weight:700;color:var(--slate);line-height:1}
 .kpi.live .kpi-v{color:var(--matcha)}
 .chart-card{background:var(--white);border:1px solid var(--rule-dk);padding:1.25rem;margin-bottom:1.5rem}
 .chart-wrap{position:relative;height:260px}
 @media(min-width:600px){.chart-wrap{height:320px}}
-.controls-card{background:var(--white);overflow:hidden;margin-bottom:1.5rem}
-.controls-head{background:var(--matcha);color:var(--slate);padding:0.5rem 1.1rem;font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;}
-.lever-grid{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule-dk)}
-.lever{background:var(--bg);padding:1.25rem 1.5rem}
-.lever-name{font-size:0.82rem;font-weight:700;color:var(--slate);margin-bottom:0.25rem}
-.lever-src{font-family:var(--mono);font-size:0.58rem;color:var(--matcha);margin-bottom:0.75rem;letter-spacing:0.02em}
-.lever-rev{grid-column:1 / -1;background:#F1F5F9;border-top:1px solid var(--rule-dk)}
-.lever-sector{grid-column:1 / -1;background:#F1F5F9;border-bottom:1px solid var(--rule-dk)}
-/* Scenario control row alignment */
-.lever-grid{align-items:stretch}
-.lever-name,.lever-src{display:block}
-.sector-toggle-row,.mode-toggle-row{display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem}
-@media(max-width:600px){.sector-toggle-row,.mode-toggle-row{flex-direction:column;align-items:flex-start}}
-.lever-select{width:100%;padding:0.5rem 2.2rem 0.5rem 0.75rem;border:1px solid var(--rule-dk);background:#fff;color:var(--slate);font-family:var(--sans);font-size:0.78rem;font-weight:400;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%231A1410'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0.65rem center;border-radius:2px;transition:border-color 0.3s var(--ease),color 0.3s var(--ease),box-shadow 0.2s}
-.lever-select:hover{border-color:var(--slate)}
-.lever-select:focus{border-color:var(--matcha);box-shadow:0 0 0 2px rgba(181,196,43,0.2)}
-.lever-select.changed{border-color:var(--matcha);color:var(--matcha)}
-.lever-select option{background:var(--bg);color:var(--slate)}
 .contrib-card{background:var(--white);border:1px solid var(--rule-dk);padding:1.25rem 1.5rem}
-.contrib-head{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--mid);margin-bottom:1.1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--rule-dk);font-weight:600;}
-.cbar{display:grid;grid-template-columns:110px 1fr 56px;gap:0.75rem;align-items:center;margin-bottom:0.65rem}
+.contrib-head{font-family:var(--mono);font-size:0.66rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--mid);margin-bottom:1.1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--rule-dk);font-weight:600;}
+.cbar{display:grid;grid-template-columns:140px 1fr 64px;gap:0.75rem;align-items:center;margin-bottom:0.7rem}
 .cbar:last-child{margin-bottom:0}
-.cbar-name{font-size:0.75rem;color:#475569;font-weight:600}
-.cbar-track{height:4px;background:#E2E8F0;overflow:hidden}
+.cbar-name{font-size:0.78rem;color:#475569;font-weight:600}
+.cbar-track{height:6px;background:#E2E8F0;overflow:hidden}
 .cbar-fill{height:100%;background:var(--matcha);transition:width 0.35s var(--ease)}
-.cbar-val{font-family:var(--mono);font-size:0.65rem;color:#475569;text-align:right}
+.cbar-val{font-family:var(--mono);font-size:0.7rem;color:#475569;text-align:right}
 #contact{background:#F1F5F9;padding:clamp(4.5rem,10vw,7rem) 0;overflow:hidden}
 .contact-bgword{font-family:var(--disp);font-weight:700;font-size:clamp(5rem,18vw,13rem);color:rgba(0,0,0,0.03);line-height:0.85;letter-spacing:-0.05em;pointer-events:none;user-select:none;margin-bottom:-1rem;overflow:hidden;white-space:nowrap}
 .contact-avail{font-family:var(--disp);font-size:clamp(1.2rem,3vw,1.75rem);font-weight:700;color:var(--slate);margin-bottom:0.5rem;line-height:1.2}
@@ -298,7 +296,15 @@ footer{border-top:1px solid var(--rule-dk);background:var(--slate);position:rela
 #stripes-canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 .stripes-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,23,42,0) 0%,rgba(15,23,42,0.12) 50%,rgba(15,23,42,0.58) 100%);pointer-events:none}
 .stripes-hair{position:absolute;top:0;bottom:0;width:1px;background:rgba(248,250,252,0.95);opacity:0;pointer-events:none;transition:opacity 0.2s}
-.stripes-content{position:relative;z-index:2;display:flex;flex-direction:column;justify-content:space-between;min-height:clamp(120px,16vw,176px);padding:0.9rem 0 1rem;pointer-events:none}
+.stripes-content{position:relative;z-index:2;display:flex;flex-direction:column;justify-content:space-between;min-height:clamp(160px,20vw,220px);padding:0.9rem 0 1rem;pointer-events:none}
+/* Milestones plotted on the climate record: policy history + my own timeline */
+.stripes-marks{position:absolute;inset:0;pointer-events:none;z-index:1}
+.stripe-mark{position:absolute;top:0;bottom:0;border-left:1px dashed rgba(248,250,252,0.55)}
+.stripe-mark span{position:absolute;font-family:var(--mono);font-size:0.6rem;letter-spacing:0.06em;color:rgba(248,250,252,0.92);text-shadow:0 1px 3px rgba(15,23,42,0.85);white-space:nowrap;left:0.45rem}
+.stripe-mark.flip span{left:auto;right:0.45rem}
+.stripe-mark.mine{border-left-color:rgba(181,196,43,0.9)}
+.stripe-mark.mine span{color:var(--matcha);font-weight:700}
+@media(max-width:640px){.stripe-mark span{display:none}}
 .stripes-meta{max-width:var(--max);margin:0 auto;width:100%;padding:0 var(--pad);display:flex;align-items:baseline;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 .stripes-cap{font-family:var(--mono);font-size:0.55rem;letter-spacing:0.14em;text-transform:uppercase;color:rgba(248,250,252,0.78);font-weight:600;text-shadow:0 1px 2px rgba(15,23,42,0.55)}
 .stripes-readout{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.06em;color:#fff;font-weight:700;text-shadow:0 1px 2px rgba(15,23,42,0.65);font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -360,18 +366,6 @@ footer{border-top:1px solid var(--rule-dk);background:var(--slate);position:rela
 .ticker-tip-close{position:absolute;top:0.25rem;right:0.4rem;font-family:var(--mono);font-size:0.85rem;line-height:1;color:rgba(248,250,252,0.55);background:none;border:none;cursor:pointer;padding:0.15rem 0.25rem;transition:color 0.2s}
 .ticker-tip-close:hover{color:var(--matcha)}
 
-/* ---- Scenario mode toggle ---- */
-.mode-toggle{display:flex;gap:1px;background:#D5D5D5;border:1px solid var(--rule-lt);margin-bottom:1.5rem;overflow:hidden;width:fit-content}
-.mode-btn{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;border:none;background:#E2E8F0;color:var(--mid);cursor:pointer;padding:0.55rem 1.1rem;font-weight:600;transition:background 0.25s,color 0.25s;white-space:nowrap}
-.mode-btn.on{background:var(--matcha);color:var(--bg)}
-.mode-badge{display:inline-block;font-family:var(--mono);font-size:0.52rem;letter-spacing:0.12em;text-transform:uppercase;background:var(--red-bg);color:var(--matcha);border:1px solid rgba(181,196,43,0.3);padding:0.2rem 0.55rem;margin-left:0.75rem;vertical-align:middle;font-weight:700}
-
-/* ---- Lever visibility toggle ---- */
-.lever-group-infra,.lever-group-textile{display:contents}
-.lever-group-textile .lever{display:none}
-body.mode-textile .lever-group-infra .lever{display:none}
-body.mode-textile .lever-group-textile .lever{display:block}
-
 /* ---- Responsive padding fixes ---- */
 @media(min-width:800px){section{padding:clamp(5rem,10vw,7rem) 0}#about{padding:clamp(1.75rem,4vw,2.5rem) 0 clamp(2rem,4vw,3rem)}#scenario{padding:clamp(5.5rem,12vw,9rem) 0}}
 
@@ -394,41 +388,10 @@ body.mode-textile .lever-group-textile .lever{display:block}
 .pipe-step[data-step="comms"]{border-left-color:var(--step-comms)}
 .pipe-step[data-step="comms"] .pipe-label{color:var(--step-comms)}
 
-/* ---- Lever accent colours ---- */
-/* Grid / Renewable Energy (Scope 2) — blueberry */
-#lev-grid{border-left:3px solid var(--indigo);background:rgba(99,91,255,0.04)}
-#lev-grid .lever-src{color:var(--indigo)}
-#lev-grid .lever-select:focus{border-color:var(--indigo)}
-#lev-grid .lever-select.changed{border-color:var(--indigo);color:var(--indigo)}
-
-/* LV Fleet / Enzyme Dyeing — matcha */
-#lev-lv{border-left:3px solid var(--matcha);background:rgba(181,196,43,0.04)}
-#lev-lv .lever-src{color:var(--matcha)}
-#lev-lv .lever-select:focus{border-color:var(--matcha)}
-#lev-lv .lever-select.changed{border-color:var(--matcha);color:var(--matcha)}
-
-/* HV Fleet / Freight Modal Shift — mango */
-#lev-hv{border-left:3px solid var(--amber);background:rgba(255,149,0,0.04)}
-#lev-hv .lever-src{color:var(--amber)}
-#lev-hv .lever-select:focus{border-color:var(--amber)}
-#lev-hv .lever-select.changed{border-color:var(--amber);color:var(--amber)}
-
-/* Plant Electrification / Biosynthetics — strawberry */
-#lev-plant{border-left:3px solid var(--berry);background:rgba(255,59,96,0.04)}
-#lev-plant .lever-src{color:var(--berry)}
-
-/* Sector selector row — lighter matcha */
-#infra-sector-row{border-left:3px solid var(--matcha);background:rgba(181,196,43,0.06)}
-#infra-sector-row .lever-src{color:var(--matcha)}
-
-/* Revenue / Volume row — plum */
-.lever-rev{border-left:3px solid var(--step-comms)}
-.lever-rev .lever-src{color:var(--step-comms)}
-
 /* ---- Contrib bar names match lever colours ---- */
 #cbar-name-grid{color:var(--indigo)}
-#cbar-name-lv{color:var(--matcha)}
-#cbar-name-hv{color:var(--amber)}
+#cbar-name-lv{color:#75821D}
+#cbar-name-hv{color:#B56A00}
 #cbar-name-plant{color:var(--berry)}
 
 /* ---- Entrance animation classes ---- */
@@ -441,17 +404,16 @@ body.mode-textile .lever-group-textile .lever{display:block}
 .anim-scalein{animation:scaleIn 0.5s var(--ease) both}
 
 /* ---- Philosophy / Principles section ---- */
-#principles{background:var(--slate);padding:clamp(4rem,9vw,6.5rem) 0;overflow:hidden;position:relative}
+#principles{background:var(--white);border-top:1px solid var(--rule-lt);padding:clamp(4rem,9vw,6.5rem) 0;overflow:hidden;position:relative}
 #principles .label{color:var(--matcha)}
-#principles .label::after{background:rgba(181,196,43,0.3)}
-.princ-grid{display:grid;grid-template-columns:1fr;gap:0;border-top:1px solid rgba(255,255,255,0.08);margin-top:1.5rem}
+.princ-grid{display:grid;grid-template-columns:1fr;gap:0;border-top:1px solid var(--rule-lt);margin-top:1.5rem}
 @media(min-width:640px){.princ-grid{grid-template-columns:repeat(3,1fr)}}
-.princ{padding:2rem 0 2rem;border-bottom:1px solid rgba(255,255,255,0.08);transition:border-color 0.3s}
+.princ{padding:2rem 0 2rem;border-bottom:1px solid var(--rule-lt);transition:border-color 0.3s}
 @media(min-width:640px){.princ{padding:2rem 2.5rem 2rem 0;border-bottom:none}}
 @media(min-width:640px){.princ:last-child{padding-right:0}}
-.princ-num{font-family:var(--mono);font-size:0.55rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(181,196,43,0.7);margin-bottom:1.1rem}
-.princ-title{font-family:var(--disp);font-size:clamp(0.95rem,2vw,1.15rem);font-weight:700;color:var(--bg);line-height:1.25;margin-bottom:0.75rem;letter-spacing:-0.01em}
-.princ-body{font-size:0.82rem;font-weight:400;color:rgba(248,250,252,0.6);line-height:1.75}
+.princ-num{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:#75821D;margin-bottom:1.1rem}
+.princ-title{font-family:var(--disp);font-size:clamp(0.95rem,2vw,1.15rem);font-weight:700;color:var(--slate);line-height:1.25;margin-bottom:0.75rem;letter-spacing:-0.01em}
+.princ-body{font-size:0.82rem;font-weight:400;color:#475569;line-height:1.75}
 
 /* ---- Framework card grid ---- */
 .fw-card-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--rule-dk);border:1px solid var(--rule-dk);margin-bottom:2.5rem;overflow:hidden}
@@ -477,49 +439,55 @@ body.mode-textile .lever-group-textile .lever{display:block}
 .built-name{font-family:var(--disp);font-size:0.88rem;font-weight:700;color:var(--slate);margin-bottom:0.2rem;line-height:1.2}
 .built-outcome{font-family:var(--mono);font-size:0.6rem;color:var(--matcha);letter-spacing:0.03em;line-height:1.5}
 
-/* ---- Enhanced scenario section ---- */
-#scenario{background:#0F172A;border-bottom:none;padding:clamp(5rem,11vw,8rem) 0;position:relative;overflow:clip}
-#scenario .label{color:var(--matcha)}
-#scenario .label::after{background:rgba(181,196,43,0.3)}
+/* ---- Scenario section: light theme, numbered report layout ---- */
+#scenario{background:#F1F5F9;border-bottom:1px solid var(--rule-dk);padding:clamp(5rem,11vw,8rem) 0;position:relative;overflow:clip}
 #scenario .wrap{position:relative;z-index:1}
-.scenario-bg-mesh{position:absolute;inset:0;opacity:0.04;background-image:repeating-linear-gradient(0deg,transparent,transparent 40px,rgba(255,255,255,1) 40px,rgba(255,255,255,1) 41px),repeating-linear-gradient(90deg,transparent,transparent 40px,rgba(255,255,255,1) 40px,rgba(255,255,255,1) 41px);pointer-events:none}
-.tool-decl{color:rgba(248,250,252,0.95) !important}
-.tool-decl strong{color:var(--matcha) !important}
-.tool-sub{color:rgba(248,250,252,0.65) !important}
-.tool-disc{color:rgba(248,250,252,0.45) !important;border-color:rgba(255,255,255,0.12) !important}
-.sector-desc{color:rgba(181,196,43,0.85) !important}
-.kpi{background:#1E293B !important}
-.kpi.live{background:#1D2B45 !important}
-.kpi-l{color:rgba(248,250,252,0.5) !important}
-.kpi-v{color:rgba(248,250,252,0.95) !important}
-.kpi.live .kpi-v{color:var(--matcha) !important}
-.chart-card{background:#1E293B !important;border-color:rgba(255,255,255,0.08) !important}
-.controls-card{background:#1E293B !important;border:none !important}
-.lever{background:#0F172A !important}
-.lever-name{color:rgba(248,250,252,0.9) !important}
-.lever-grid{background:rgba(255,255,255,0.06) !important}
-.lever-select{color:rgba(248,250,252,0.9) !important;border-color:rgba(255,255,255,0.3) !important;background:rgba(255,255,255,0.08) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23F8FAFC'/%3E%3C/svg%3E") no-repeat right 0.65rem center !important}
-.lever-select:hover{border-color:rgba(255,255,255,0.55) !important}
-.lever-select option{background:#1E293B !important;color:rgba(248,250,252,0.9) !important}
-.lever-rev{background:rgba(122,90,138,0.12) !important;border-top:none !important}
-.lever-sector{background:#0F172A !important;border-color:rgba(255,255,255,0.06) !important}
-.contrib-card{background:#1E293B !important;border-color:rgba(255,255,255,0.08) !important}
-.contrib-head{color:rgba(248,250,252,0.5) !important;border-color:rgba(255,255,255,0.08) !important}
-.cbar-name{color:rgba(248,250,252,0.75) !important}
-.cbar-track{background:rgba(255,255,255,0.1) !important}
-.cbar-val{color:rgba(248,250,252,0.7) !important}
-.mode-toggle{background:rgba(255,255,255,0.08) !important;border-color:rgba(255,255,255,0.12) !important}
-.mode-btn{background:rgba(255,255,255,0.05) !important;color:rgba(248,250,252,0.5) !important}
-.mode-btn.on{background:var(--matcha) !important;color:var(--slate) !important}
-.kpi-strip{background:rgba(255,255,255,0.08) !important;border-color:rgba(255,255,255,0.08) !important}
-#infra-sector-row{background:rgba(181,196,43,0.08) !important}
-#lev-grid{background:rgba(99,91,255,0.1) !important}
-#lev-lv{background:rgba(181,196,43,0.1) !important}
-#lev-hv{background:rgba(255,149,0,0.1) !important}
-#lev-plant{background:rgba(255,59,96,0.1) !important}
 
-/* hover override on scenario levers */
-.lever select:focus{border-color:var(--matcha) !important}
+/* Numbered steps give the section a reading order */
+.scn-step{margin-top:3rem;padding-top:2rem;border-top:1px solid var(--rule-dk)}
+.scn-step-head{margin-bottom:1.25rem}
+.scn-step-num{font-family:var(--mono);font-size:0.66rem;letter-spacing:0.16em;text-transform:uppercase;color:#75821D;font-weight:700;display:block;margin-bottom:0.35rem}
+.scn-step-title{font-family:var(--disp);font-size:clamp(1.15rem,2.6vw,1.45rem);font-weight:700;letter-spacing:-0.02em;color:var(--slate);line-height:1.2;margin-bottom:0.35rem}
+.scn-step-sub{font-size:0.84rem;font-weight:400;color:var(--mid);line-height:1.65;max-width:60ch}
+
+/* Segmented option buttons */
+.seg-row{display:flex;flex-wrap:wrap;gap:1px;background:var(--rule-dk);border:1px solid var(--rule-dk);width:fit-content;max-width:100%}
+.seg-btn{font-family:var(--sans);font-size:0.8rem;font-weight:500;border:none;background:var(--white);color:#475569;cursor:pointer;padding:0.55rem 1.1rem;transition:background 0.2s,color 0.2s;white-space:nowrap}
+.seg-btn:hover:not(.on){background:#F8FAFC;color:var(--slate)}
+.seg-btn:focus-visible{outline:2px solid var(--matcha);outline-offset:-2px}
+.seg-btn.on{background:var(--slate);color:#fff;font-weight:600}
+.seg-sm .seg-btn{font-size:0.74rem;padding:0.4rem 0.85rem}
+.seg-sm .seg-btn.on{background:var(--sc,var(--slate))}
+
+/* Lever cards */
+.lever-deck{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule-dk);border:1px solid var(--rule-dk)}
+@media(min-width:720px){.lever-deck{grid-template-columns:1fr 1fr}}
+.lever-card{background:var(--white);padding:1.25rem 1.4rem;border-top:3px solid var(--lc,var(--rule-dk))}
+.lever-card-rev{grid-column:1/-1}
+.lever-top{display:flex;align-items:center;gap:0.55rem;margin-bottom:0.25rem}
+.lever-dot{width:9px;height:9px;border-radius:50%;background:var(--lc,var(--matcha));flex-shrink:0}
+.lever-name{font-size:0.88rem;font-weight:700;color:var(--slate);line-height:1.35}
+.lever-src{font-family:var(--mono);font-size:0.64rem;color:var(--mid);margin-bottom:0.8rem;letter-spacing:0.02em;line-height:1.5}
+.lever-card .seg-row{border-color:var(--rule-lt);background:var(--rule-lt)}
+
+/* Chart header + readable legend */
+.chart-card{padding:1.4rem 1.4rem 1.1rem}
+.chart-head{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:0.4rem}
+.chart-title{font-family:var(--disp);font-size:1.05rem;font-weight:700;color:var(--slate);letter-spacing:-0.01em}
+.chart-sub{font-size:0.76rem;color:var(--mid);line-height:1.55;margin-bottom:1rem}
+.chart-legend{display:flex;flex-wrap:wrap;gap:0.4rem 1.4rem;margin-top:1rem;padding-top:0.85rem;border-top:1px solid var(--rule-lt)}
+.cl-item{display:flex;align-items:center;gap:0.5rem;font-size:0.76rem;font-weight:500;color:#475569}
+.cl-swatch{width:14px;height:10px;flex-shrink:0;border-radius:1px}
+.cl-swatch.line{height:0;border-top:2px solid currentColor;width:16px}
+.cl-swatch.dash{height:0;border-top:2px dashed currentColor;width:16px}
+
+/* Dynamic takeaway headline: the chart title a report would carry */
+.takeaway{background:var(--white);border-left:4px solid var(--matcha);padding:1.1rem 1.4rem;margin-bottom:1.5rem;font-family:var(--disp);font-size:clamp(1rem,2.4vw,1.3rem);font-weight:600;line-height:1.45;color:var(--slate);letter-spacing:-0.01em;box-shadow:0 1px 2px rgba(15,23,42,0.05)}
+.takeaway em{font-style:normal;color:#75821D}
+.takeaway .tk-note{display:block;font-family:var(--sans);font-size:0.74rem;font-weight:400;color:var(--mid);margin-top:0.35rem;letter-spacing:0}
+
+.scn-foot{margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--rule-dk);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.scn-foot p{font-size:0.82rem;color:var(--mid);max-width:520px;line-height:1.6;margin:0}
 
 /* ---- Scroll indicator — hero ---- */
 .scroll-hint{display:flex;align-items:center;gap:0.6rem;font-family:var(--mono);font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--subtle);margin-top:2.5rem;animation:fadeUp 1s 1.2s var(--ease) both}
@@ -609,8 +577,14 @@ body.mode-textile .lever-group-textile .lever{display:block}
   .tl>span[aria-hidden="true"]{display:none}
 }
 
+/* ---- Pipeline heading ---- */
+.pipe-head{margin-top:3rem;margin-bottom:1.25rem}
+.pipe-title{font-family:var(--disp);font-size:clamp(1.3rem,3vw,1.7rem);font-weight:700;letter-spacing:-0.02em;color:var(--slate);line-height:1.2;margin-bottom:0.4rem}
+.pipe-sub{font-size:0.88rem;font-weight:400;color:#475569;line-height:1.7;max-width:56ch}
+.pipe-sub strong{font-weight:600;color:var(--slate)}
+
 /* ---- Pipeline accordion ---- */
-.pipeline{margin-top:2.5rem;width:100%;border:1px solid var(--rule-dk)}
+.pipeline{margin-top:1.25rem;width:100%;border:1px solid var(--rule-dk)}
 .pipe-row{display:flex;flex-direction:column}
 .pipe-step{display:flex;align-items:center;gap:0.9rem;padding:0.75rem 0.9rem 0.75rem 1rem;border-left:3px solid var(--rule-dk);background:var(--white);transition:background 0.25s var(--ease);cursor:pointer;user-select:none;border-bottom:1px solid var(--rule-lt)}
 .pipe-row:last-child .pipe-step{border-bottom:none}
@@ -618,7 +592,7 @@ body.mode-textile .lever-group-textile .lever{display:block}
 .pipe-step:hover{background:var(--red-bg)}
 .pipe-step:focus-visible{outline:2px solid var(--matcha);outline-offset:-2px}
 .pipe-step-right{display:flex;align-items:center;gap:0.5rem;flex-shrink:0;margin-left:auto}
-.pipe-badge{font-family:var(--mono);font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--subtle);background:#F1F5F9;border:1px solid var(--rule-dk);padding:0.15rem 0.45rem;white-space:nowrap;transition:background 0.2s,color 0.2s,border-color 0.2s}
+.pipe-badge{font-family:var(--mono);font-size:0.64rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--mid);background:#F1F5F9;border:1px solid var(--rule-dk);padding:0.2rem 0.55rem;white-space:nowrap;transition:background 0.2s,color 0.2s,border-color 0.2s}
 .pipe-step:hover .pipe-badge,.pipe-step.open .pipe-badge{background:rgba(181,196,43,0.14);color:var(--matcha);border-color:rgba(181,196,43,0.35)}
 .pipe-chevron{font-size:0.7rem;color:var(--subtle);transition:transform 0.32s var(--ease),color 0.2s;line-height:1;display:flex;align-items:center}
 .pipe-step.open .pipe-chevron{transform:rotate(180deg);color:var(--matcha)}
@@ -636,34 +610,12 @@ body.mode-textile .lever-group-textile .lever{display:block}
 .pipe-example:hover{border-left-color:var(--matcha)}
 .pipe-ex-title{font-weight:700;font-size:0.84rem;color:var(--slate);margin-bottom:0.3rem;line-height:1.3}
 .pipe-ex-body{font-size:0.78rem;color:#475569;line-height:1.65;margin-bottom:0.35rem}
-.pipe-ex-outcome{font-family:var(--mono);font-size:0.57rem;color:var(--matcha);letter-spacing:0.03em;line-height:1.5}
-.pipe-cta{display:inline-flex;align-items:center;gap:0.35rem;margin-top:1.25rem;font-family:var(--mono);font-size:0.58rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--matcha);text-decoration:none;font-weight:600;transition:opacity 0.2s}
+.pipe-ex-outcome{font-family:var(--mono);font-size:0.66rem;color:#75821D;letter-spacing:0.03em;line-height:1.5}
+.pipe-cta{display:inline-flex;align-items:center;gap:0.35rem;margin-top:1.25rem;font-family:var(--mono);font-size:0.68rem;letter-spacing:0.06em;text-transform:uppercase;color:#75821D;text-decoration:none;font-weight:600;transition:opacity 0.2s}
 .pipe-cta:hover{opacity:0.7}
-
-/* ---- Improved lever/controls spacing: title, subtitle, and selector read as one group ---- */
-.controls-card{background:var(--white);overflow:hidden;margin-bottom:1.5rem}
-.lever{background:var(--bg);padding:1.1rem 1.25rem}
-.lever-name{font-size:0.84rem;font-weight:700;color:var(--slate);margin-bottom:0.2rem;line-height:1.35}
-.lever-src{font-family:var(--mono);font-size:0.58rem;color:var(--matcha);margin-bottom:0.55rem;letter-spacing:0.02em;line-height:1.45}
-.lever-select{width:100%;padding:0.55rem 2rem 0.55rem 0.75rem;border:1px solid var(--rule-dk);background:transparent;color:var(--slate);font-family:var(--sans);font-size:0.8rem;font-weight:400;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%231A1410'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0.65rem center;border-radius:0;transition:border-color 0.3s var(--ease),color 0.3s var(--ease)}
-.lever-grid{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule-dk);margin:1.25rem}
-
-/* ---- Kinetic variable-weight hero name ---- */
-.hero-name .hww{display:inline-block;white-space:nowrap}
-.hero-name .hw{display:inline-block;font-variation-settings:'wght' 800;will-change:font-variation-settings}
 
 /* ---- Ghost section numerals — editorial chapter marks ---- */
 .label::before{content:attr(data-num);position:absolute;right:0;top:50%;transform:translateY(-46%);font-family:var(--disp);font-weight:800;font-size:clamp(3.2rem,9vw,6rem);line-height:1;color:transparent;-webkit-text-stroke:1.2px rgba(15,23,42,0.10);letter-spacing:-0.04em;pointer-events:none;user-select:none}
-#principles .label::before,#scenario .label::before{-webkit-text-stroke-color:rgba(255,255,255,0.10)}
-
-/* ---- Control-room scenario: sticky chart, scrolling controls ---- */
-.scn-grid{display:grid;grid-template-columns:1fr}
-@media(min-width:980px){
-  .scn-grid{grid-template-columns:minmax(0,1fr) 380px;column-gap:1.75rem;align-items:start}
-  .scn-left{position:sticky;top:66px}
-  .scn-left .chart-card{margin-bottom:0}
-  .scn-left .chart-wrap{height:380px}
-}
 
 /* ---- Terminal contact line ---- */
 .term-line{font-family:var(--mono);font-size:clamp(0.95rem,2.4vw,1.35rem);font-weight:600;letter-spacing:0.01em}
@@ -671,26 +623,26 @@ body.mode-textile .lever-group-textile .lever{display:block}
 .term-caret{display:inline-block;width:0.55em;height:1.05em;background:var(--matcha);margin-left:0.18em;vertical-align:-0.12em;animation:caret-blink 1.1s steps(1) infinite}
 @keyframes caret-blink{50%{opacity:0}}
 
-/* ---- Editorial bio: pull-stat + margin notes ---- */
-.bio-grid{display:grid;grid-template-columns:1fr;gap:2rem}
+/* ---- Editorial bio ---- */
 .bio-text{max-width:62ch}
-.pull-stat{margin:2.2rem 0;padding-left:1.1rem;border-left:3px solid var(--matcha)}
-.pull-num{font-family:var(--disp);font-size:clamp(3.2rem,7vw,4.6rem);font-weight:800;line-height:0.9;color:var(--matcha);letter-spacing:-0.03em;display:block}
-.pull-unit{font-size:0.38em;font-weight:700;color:var(--slate);margin-left:0.12em;letter-spacing:0}
-.pull-cap{display:block;margin-top:0.5rem;font-size:0.76rem;color:var(--mid);max-width:36ch;line-height:1.6}
-.bio-notes{display:flex;flex-direction:row;flex-wrap:wrap;gap:1rem 2rem}
-.bio-note{font-family:var(--mono);font-size:0.6rem;color:var(--subtle);line-height:1.7;letter-spacing:0.03em;border-top:1px solid var(--rule-lt);padding-top:0.7rem;max-width:200px}
-@media(min-width:980px){
-  .bio-inner{max-width:860px}
-  .bio-grid{grid-template-columns:minmax(0,1fr) 170px;gap:0 2.5rem}
-  .bio-notes{flex-direction:column;flex-wrap:nowrap;gap:1.6rem;padding-top:0.3rem}
-  .bio-inner .pipeline{max-width:660px}
-}
+@media(min-width:980px){.bio-inner{max-width:860px}}
+
+/* ---- Selected outcomes strip: the evidence, presented as a set ---- */
+.outcomes{margin:2.5rem 0 2.75rem}
+.outcomes-head{font-family:var(--mono);font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--slate);font-weight:600;margin-bottom:1rem;display:flex;align-items:center;gap:0.75rem}
+.outcomes-head::after{content:'';flex:1;height:1px;background:var(--rule-lt)}
+.outcomes-grid{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule-dk);border:1px solid var(--rule-dk)}
+@media(min-width:640px){.outcomes-grid{grid-template-columns:repeat(3,1fr)}}
+.outcome{background:var(--white);padding:1.4rem 1.5rem;border-top:3px solid var(--oc,var(--matcha))}
+.outcome-num{font-family:var(--disp);font-size:clamp(2.2rem,5vw,3rem);font-weight:700;line-height:1;color:var(--oc,var(--matcha));letter-spacing:-0.03em;margin-bottom:0.5rem}
+.outcome-num small{font-size:0.45em;font-weight:600;letter-spacing:0}
+.outcome-what{font-weight:600;font-size:0.85rem;color:var(--slate);margin-bottom:0.3rem;line-height:1.4}
+.outcome-where{font-family:var(--mono);font-size:0.64rem;color:var(--mid);letter-spacing:0.03em;line-height:1.5}
 
 /* ---- Experience timeline rail: self-drawing, scroll-linked ---- */
 .exp-timeline{position:relative;padding-left:3.4rem}
 .exp-timeline::before{content:'';position:absolute;left:17px;top:4px;bottom:4px;width:2px;background:var(--rule-lt)}
-.exp-rail-fill{position:absolute;left:17px;top:4px;bottom:4px;width:2px;background:linear-gradient(180deg,var(--matcha) 0%,var(--indigo) 38%,var(--amber) 72%,var(--berry) 100%);clip-path:inset(0 0 100% 0)}
+.exp-rail-fill{position:absolute;left:17px;top:4px;bottom:4px;width:2px;background:linear-gradient(180deg,var(--downer) 0%,var(--downer) 26%,var(--wsp) 42%,var(--wsp) 60%,var(--defence) 74%,var(--defence) 86%,var(--unsw) 100%);clip-path:inset(0 0 100% 0)}
 .exp-node{position:absolute;left:18px;transform:translateX(-50%);width:38px;height:38px;border-radius:50%;background:var(--bg);border:2px solid var(--rule-dk);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:0.48rem;font-weight:700;letter-spacing:0.05em;color:var(--subtle);transition:border-color 0.45s var(--ease),color 0.45s var(--ease),transform 0.45s var(--ease);z-index:1}
 .exp-node.lit{border-color:var(--nclr);color:var(--nclr);transform:translateX(-50%) scale(1.08)}
 @media(max-width:699px){
@@ -753,24 +705,35 @@ body.mode-textile .lever-group-textile .lever{display:block}
 <section id="bio">
 <div class="wrap">
   <div class="bio-inner">
-    <div class="bio-grid">
-      <div class="bio-col">
-        <p class="bio-text">I build the data infrastructure that makes sustainability commitments defensible: GHG inventories with documented methodology, Scope 1-3 baselines that survive external assurance, decarbonisation models with traceable lever assumptions, and reporting systems that internal teams can operate after I leave the engagement.</p>
-        <div class="pull-stat">
-          <span class="pull-num">35<span class="pull-unit">pp</span></span>
-          <span class="pull-cap">GRESB Infrastructure score uplift delivered in year one for a major Australian energy distributor</span>
+    <p class="bio-text">I build the data infrastructure that makes sustainability commitments defensible: GHG inventories with documented methodology, Scope 1-3 baselines that survive external assurance, decarbonisation models with traceable lever assumptions, and reporting systems that internal teams can operate after I leave the engagement.</p>
+    <p class="bio-text" style="margin-top:1rem">Four years in sustainability advisory across WSP and Downer Group: GHG accounting, regulatory disclosure, decarbonisation modelling, supply chain emissions. Six years prior in built environment and infrastructure, including project delivery at the Department of Defence.</p>
+    <p class="bio-text" style="margin-top:1rem">Looking for sustainability leadership in fashion, consumer goods, or technology, where supply chain transparency and decarbonisation are primary workstreams, not obligations.</p>
+
+    <div class="outcomes" aria-label="Selected outcomes">
+      <div class="outcomes-head">Selected outcomes</div>
+      <div class="outcomes-grid">
+        <div class="outcome" style="--oc:var(--matcha)">
+          <div class="outcome-num">+35<small>%</small></div>
+          <div class="outcome-what">GRESB Infrastructure score uplift in year one</div>
+          <div class="outcome-where">Major Australian energy distributor &middot; full assessment cycle, then handed over &middot; WSP</div>
         </div>
-        <p class="bio-text">Four years in sustainability advisory across WSP and Downer Group: GHG accounting, regulatory disclosure, decarbonisation modelling, supply chain emissions. Six years prior in built environment and infrastructure, including project delivery at the Department of Defence.</p>
-        <p class="bio-text" style="margin-top:1rem">Looking for sustainability leadership in fashion, consumer goods, or technology, where supply chain transparency and decarbonisation are primary workstreams, not obligations.</p>
-        <p class="bio-text" style="margin-top:1rem">Bachelor of Engineering (Civil Engineering with Architecture), First Class Honours, UNSW.</p>
+        <div class="outcome" style="--oc:var(--indigo)">
+          <div class="outcome-num">&minus;40<small>%</small></div>
+          <div class="outcome-what">GHG inventory preparation time, through automation</div>
+          <div class="outcome-where">Excel + Python tooling, documented for internal operation &middot; WSP</div>
+        </div>
+        <div class="outcome" style="--oc:var(--amber)">
+          <div class="outcome-num">3<small>&nbsp;BUs</small></div>
+          <div class="outcome-what">Manual emissions data collection eliminated</div>
+          <div class="outcome-where">Pre-configured templates with automated Envizi upload &middot; Downer Group</div>
+        </div>
       </div>
-      <aside class="bio-notes" aria-label="Working principles">
-        <div class="bio-note">// every number traceable to a documented method</div>
-        <div class="bio-note">// systems operated by the client after handover</div>
-        <div class="bio-note">// infrastructure &middot; property &middot; government &middot; retail</div>
-      </aside>
     </div>
-    <p style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--matcha);margin-top:2rem;margin-bottom:0.5rem;font-weight:600;">Capability pipeline: click any step to see examples</p>
+
+    <div class="pipe-head">
+      <h2 class="pipe-title">How the work fits together</h2>
+      <p class="pipe-sub">Five stages, run end-to-end: from raw invoices to the board narrative. <strong>Click any step for delivered examples.</strong></p>
+    </div>
     <div class="pipeline" aria-label="Capability pipeline">
 
       <div class="pipe-row">
@@ -831,9 +794,9 @@ body.mode-textile .lever-group-textile .lever{display:block}
             <p class="pipe-desc">Regulatory disclosure for NGER, AASB S2/ISSB, GRESB, and CDP. Full submission management, methodology documentation, and external assurance preparation structured for internal handover.</p>
             <div class="pipe-examples">
               <div class="pipe-example">
-                <div class="pipe-ex-title">GRESB Infrastructure Assessment: 35-Point Improvement</div>
+                <div class="pipe-ex-title">GRESB Infrastructure Assessment: 35% Improvement</div>
                 <div class="pipe-ex-body">Led the full assessment cycle for a major Australian energy distributor: gap analysis, data collection reform, targeted disclosure uplift across management, performance, and stakeholder engagement components. Methodology documented for handover and independently operable from year two.</div>
-                <div class="pipe-ex-outcome">Outcome: 35-percentage-point improvement in year one, handed back as an internally operable process</div>
+                <div class="pipe-ex-outcome">Outcome: 35% score improvement in year one, handed back as an internally operable process</div>
               </div>
               <div class="pipe-example">
                 <div class="pipe-ex-title">NSW Treasury Net Zero Government Operations Policy</div>
@@ -936,100 +899,114 @@ body.mode-textile .lever-group-textile .lever{display:block}
 </div>
 
 <section id="scenario">
-<div class="scenario-bg-mesh" aria-hidden="true"></div>
 <div class="wrap">
   <div class="label" data-num="02">Decarbonisation Scenario Model</div>
-  <p class="tool-decl" id="tool-decl-text">Every lever has a source. <strong>Adjust the controls to see what changes.</strong></p>
-  <p class="tool-sub" id="tool-sub-text">Select a sector and scenario to explore how abatement levers shift a Scope 1 &amp; 2 trajectory. Lever assumptions are drawn from DCCEEW 2025 grid emission factor tables, the NVES Act 2024 (LV fleet), and CSIRO Net Zero Pathways, the same sources used in production pathway models.</p>
+  <p class="tool-decl" id="tool-decl-text">Every lever has a source. <strong>Set the levers, then read the story.</strong></p>
+  <p class="tool-sub" id="tool-sub-text">A working version of the pathway models I build for clients. Lever assumptions are drawn from DCCEEW 2025 grid emission factor tables, the NVES Act 2024 (LV fleet), and CSIRO Net Zero Pathways, the same sources used in production models.</p>
   <span class="tool-disc">Illustrative model &middot; stylised numbers &middot; not client data &middot; FY30 used as the interim target year</span>
-  <div class="lever lever-sector" id="infra-sector-row">
-    <div class="lever-name">Organisation Type</div>
-    <div class="lever-src">Selects sector profile and lever assumptions</div>
-    <select id="sel-sector" class="lever-select" onchange="changeSector()">
-      <option value="infrastructure">Infrastructure</option>
-      <option value="property">Commercial Property</option>
-      <option value="government">Government Operations</option>
-      <option value="textile">Boutique Textile Retail</option>
-    </select>
+
+  <div class="scn-step">
+    <div class="scn-step-head">
+      <span class="scn-step-num">Step 01</span>
+      <h3 class="scn-step-title">Choose an operating profile</h3>
+      <p class="scn-step-sub">Each profile loads a different emissions mix and its own set of abatement levers.</p>
+    </div>
+    <div class="seg-row" id="seg-sector" role="group" aria-label="Organisation type">
+      <button type="button" class="seg-btn on" data-value="infrastructure">Infrastructure</button>
+      <button type="button" class="seg-btn" data-value="property">Commercial Property</button>
+      <button type="button" class="seg-btn" data-value="government">Government</button>
+      <button type="button" class="seg-btn" data-value="textile">Textile Retail</button>
+    </div>
+    <p id="sector-desc" class="sector-desc">Infrastructure: heavy plant, diesel fleet, and mechanical processes drive the Scope&nbsp;1 footprint. Grid decarbonisation delivers Scope&nbsp;2 reduction.</p>
   </div>
-  <div id="sector-desc" class="sector-desc">Infrastructure: heavy plant, diesel fleet, and mechanical processes drive the Scope&nbsp;1 footprint. Grid decarbonisation delivers Scope&nbsp;2 reduction.</div>
-  <div class="scn-grid">
-  <div class="scn-left">
-  <div class="kpi-strip">
-    <div class="kpi"><div class="kpi-l">FY20 Baseline</div><div class="kpi-v" id="kpi-base-v">347k t</div></div>
-    <div class="kpi"><div class="kpi-l">FY26 Actuals</div><div class="kpi-v" id="kpi-fy26-v">271k t</div></div>
-    <div class="kpi live"><div class="kpi-l">FY30 Net</div><div class="kpi-v" id="kpi-net">&middot;</div></div>
-    <div class="kpi live"><div class="kpi-l">FY30 vs FY20</div><div class="kpi-v" id="kpi-pct">&middot;</div></div>
-  </div>
-  <div class="chart-card">
-    <div class="chart-wrap"><canvas id="mainChart"></canvas></div>
-  </div>
-  </div>
-  <div class="scn-right">
-  <div class="controls-card">
-    <div class="controls-head">Scenario Controls: select a scenario for each lever</div>
-    <div class="lever-grid">
-      <!-- INDUSTRIAL: sector + 4 levers -->
-      <div class="lever lever-group-infra" id="lev-grid">
-        <div class="lever-name" id="lev-grid-name">Grid Decarbonisation</div>
+
+  <div class="scn-step">
+    <div class="scn-step-head">
+      <span class="scn-step-num">Step 02</span>
+      <h3 class="scn-step-title">Set the abatement levers</h3>
+      <p class="scn-step-sub">Every lever traces to a published source. Card colours match the wedges in the chart below.</p>
+    </div>
+    <div class="lever-deck">
+      <div class="lever-card" style="--lc:var(--indigo)">
+        <div class="lever-top"><span class="lever-dot" aria-hidden="true"></span><span class="lever-name" id="lev-grid-name">Grid Decarbonisation</span></div>
         <div class="lever-src" id="lev-grid-src">DCCEEW 2025 Table 42 NEM trajectory</div>
-        <select id="sel-grid" class="lever-select" onchange="run()">
-          <option value="base">Base: DCCEEW NEM trajectory</option>
-          <option value="faster">Faster: REC-based, 90% renewable by FY30</option>
-          <option value="slower">Slower: 10% higher residual intensity</option>
-          <option value="off">Off: no grid decarbonisation</option>
-        </select>
+        <div class="seg-row seg-sm" data-key="grid" role="group" aria-label="Grid decarbonisation scenario" style="--sc:var(--indigo)">
+          <button type="button" class="seg-btn on" data-value="base">Base</button>
+          <button type="button" class="seg-btn" data-value="faster">Faster</button>
+          <button type="button" class="seg-btn" data-value="slower">Slower</button>
+          <button type="button" class="seg-btn" data-value="off">Off</button>
+        </div>
       </div>
-      <div class="lever lever-group-infra" id="lev-lv">
-        <div class="lever-name" id="lev-lv-name">LV Fleet Transition</div>
+      <div class="lever-card" style="--lc:var(--matcha)">
+        <div class="lever-top"><span class="lever-dot" aria-hidden="true"></span><span class="lever-name" id="lev-lv-name">LV Fleet Transition</span></div>
         <div class="lever-src" id="lev-lv-src">NVES Act 2024 &middot; 1-yr adoption lag</div>
-        <select id="sel-lv" class="lever-select" onchange="run()">
-          <option value="base">Base: NVES 1-yr lag</option>
-          <option value="faster">Faster: NVES no lag</option>
-          <option value="slower">Slower: NVES 2-yr lag</option>
-        </select>
+        <div class="seg-row seg-sm" data-key="lv" role="group" aria-label="LV fleet scenario" style="--sc:#75821D">
+          <button type="button" class="seg-btn on" data-value="base">Base</button>
+          <button type="button" class="seg-btn" data-value="faster">Faster</button>
+          <button type="button" class="seg-btn" data-value="slower">Slower</button>
+        </div>
       </div>
-      <div class="lever lever-group-infra" id="lev-hv">
-        <div class="lever-name" id="lev-hv-name">HV Fleet Transition</div>
+      <div class="lever-card" style="--lc:var(--amber)">
+        <div class="lever-top"><span class="lever-dot" aria-hidden="true"></span><span class="lever-name" id="lev-hv-name">HV Fleet Transition</span></div>
         <div class="lever-src" id="lev-hv-src">CSIRO Net Zero Pathways 2023 &middot; 1-yr lag</div>
-        <select id="sel-hv" class="lever-select" onchange="run()">
-          <option value="base">Base: CSIRO 1-yr lag</option>
-          <option value="faster">Faster: CSIRO no lag</option>
-          <option value="slower">Slower: CSIRO 3-yr lag</option>
-        </select>
+        <div class="seg-row seg-sm" data-key="hv" role="group" aria-label="HV fleet scenario" style="--sc:#B56A00">
+          <button type="button" class="seg-btn on" data-value="base">Base</button>
+          <button type="button" class="seg-btn" data-value="faster">Faster</button>
+          <button type="button" class="seg-btn" data-value="slower">Slower</button>
+        </div>
       </div>
-      <div class="lever lever-group-infra" id="lev-plant">
-        <div class="lever-name" id="lev-plant-name">Plant Electrification</div>
+      <div class="lever-card" style="--lc:var(--berry)">
+        <div class="lever-top"><span class="lever-dot" aria-hidden="true"></span><span class="lever-name" id="lev-plant-name">Plant Electrification</span></div>
         <div class="lever-src" id="lev-plant-src">Industry plant electrification analysis</div>
-        <select id="sel-plant" class="lever-select" onchange="run()">
-          <option value="base">Base: industry pathway</option>
-          <option value="faster">Faster: 25% more reduction</option>
-          <option value="slower">Slower: 10% less reduction</option>
-          <option value="off">Off: no plant electrification</option>
-        </select>
+        <div class="seg-row seg-sm" data-key="plant" role="group" aria-label="Plant electrification scenario" style="--sc:var(--berry)">
+          <button type="button" class="seg-btn on" data-value="base">Base</button>
+          <button type="button" class="seg-btn" data-value="faster">Faster</button>
+          <button type="button" class="seg-btn" data-value="slower">Slower</button>
+          <button type="button" class="seg-btn" data-value="off">Off</button>
+        </div>
       </div>
-      <div class="lever lever-rev" style="grid-column:1/-1">
-        <div class="lever-name" id="lev-rev-name">Volume / Revenue Growth Assumption</div>
-        <div class="lever-src">Scales gross emissions pre-abatement</div>
-        <select id="sel-rev" class="lever-select" onchange="run()">
-          <option value="flat">Flat: no growth</option>
-          <option value="moderate" selected>Moderate: +1.5% per year</option>
-          <option value="high">High: +3.0% per year</option>
-        </select>
+      <div class="lever-card lever-card-rev" style="--lc:var(--step-comms)">
+        <div class="lever-top"><span class="lever-dot" aria-hidden="true"></span><span class="lever-name" id="lev-rev-name">Volume / Revenue Growth Assumption</span></div>
+        <div class="lever-src">Scales gross emissions before abatement is applied</div>
+        <div class="seg-row seg-sm" data-key="rev" role="group" aria-label="Growth assumption" style="--sc:var(--step-comms)">
+          <button type="button" class="seg-btn" data-value="flat">Flat</button>
+          <button type="button" class="seg-btn on" data-value="moderate">+1.5% / yr</button>
+          <button type="button" class="seg-btn" data-value="high">+3.0% / yr</button>
+        </div>
       </div>
     </div>
   </div>
-  <div class="contrib-card">
-    <div class="contrib-head" id="contrib-head-text">Abatement contribution by lever at FY30 (interim target year): tCO&#x2082;-e avoided vs. gross pathway</div>
-    <div class="cbar"><div class="cbar-name" id="cbar-name-grid">Grid (Scope 2)</div><div class="cbar-track"><div class="cbar-fill" id="cb-grid" style="width:0%;background:var(--indigo)"></div></div><div class="cbar-val" id="cv-grid">&middot;</div></div>
-    <div class="cbar"><div class="cbar-name" id="cbar-name-lv">LV Fleet</div><div class="cbar-track"><div class="cbar-fill" id="cb-lv" style="width:0%;background:var(--matcha)"></div></div><div class="cbar-val" id="cv-lv">&middot;</div></div>
-    <div class="cbar"><div class="cbar-name" id="cbar-name-hv">HV Fleet</div><div class="cbar-track"><div class="cbar-fill" id="cb-hv" style="width:0%;background:var(--amber)"></div></div><div class="cbar-val" id="cv-hv">&middot;</div></div>
-    <div class="cbar"><div class="cbar-name" id="cbar-name-plant">Plant Electrification</div><div class="cbar-track"><div class="cbar-fill" id="cb-plant" style="width:0%;background:var(--berry)"></div></div><div class="cbar-val" id="cv-plant">&middot;</div></div>
+
+  <div class="scn-step">
+    <div class="scn-step-head">
+      <span class="scn-step-num">Step 03</span>
+      <h3 class="scn-step-title">Read the result</h3>
+      <p class="scn-step-sub">The headline rewrites itself as you move the levers, the way a board slide should.</p>
+    </div>
+    <p class="takeaway" id="takeaway" aria-live="polite">&middot;</p>
+    <div class="kpi-strip">
+      <div class="kpi"><div class="kpi-l">FY20 Baseline</div><div class="kpi-v" id="kpi-base-v">347k t</div></div>
+      <div class="kpi"><div class="kpi-l">FY26 Actuals</div><div class="kpi-v" id="kpi-fy26-v">271k t</div></div>
+      <div class="kpi live"><div class="kpi-l">FY30 Net</div><div class="kpi-v" id="kpi-net">&middot;</div></div>
+      <div class="kpi live"><div class="kpi-l">FY30 vs FY20</div><div class="kpi-v" id="kpi-pct">&middot;</div></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-head"><div class="chart-title" id="chart-title">Scope 1 &amp; 2 emissions pathway to FY50</div></div>
+      <div class="chart-sub">tCO&#x2082;-e per year &middot; coloured wedges show the abatement each lever contributes against business&#8209;as&#8209;usual</div>
+      <div class="chart-wrap"><canvas id="mainChart"></canvas></div>
+      <div class="chart-legend" id="chart-legend" aria-hidden="true"></div>
+    </div>
+    <div class="contrib-card" style="margin-top:1.5rem">
+      <div class="contrib-head" id="contrib-head-text">Abatement contribution by lever at FY30 (interim target year): tCO&#x2082;-e avoided vs. gross pathway</div>
+      <div class="cbar"><div class="cbar-name" id="cbar-name-grid">Grid (Scope 2)</div><div class="cbar-track"><div class="cbar-fill" id="cb-grid" style="width:0%;background:var(--indigo)"></div></div><div class="cbar-val" id="cv-grid">&middot;</div></div>
+      <div class="cbar"><div class="cbar-name" id="cbar-name-lv">LV Fleet</div><div class="cbar-track"><div class="cbar-fill" id="cb-lv" style="width:0%;background:var(--matcha)"></div></div><div class="cbar-val" id="cv-lv">&middot;</div></div>
+      <div class="cbar"><div class="cbar-name" id="cbar-name-hv">HV Fleet</div><div class="cbar-track"><div class="cbar-fill" id="cb-hv" style="width:0%;background:var(--amber)"></div></div><div class="cbar-val" id="cv-hv">&middot;</div></div>
+      <div class="cbar"><div class="cbar-name" id="cbar-name-plant">Plant Electrification</div><div class="cbar-track"><div class="cbar-fill" id="cb-plant" style="width:0%;background:var(--berry)"></div></div><div class="cbar-val" id="cv-plant">&middot;</div></div>
+    </div>
   </div>
-  </div>
-  </div>
-  <div style="margin-top:1.75rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
-    <p style="font-size:0.82rem;color:rgba(248,250,252,0.55);max-width:520px;line-height:1.6;margin:0">More examples of this work: emissions baselines, decarbonisation roadmaps, MCA prioritisation, and lifecycle carbon assessment across infrastructure, built environment, and government.</p>
+
+  <div class="scn-foot">
+    <p>More examples of this work: emissions baselines, decarbonisation roadmaps, MCA prioritisation, and lifecycle carbon assessment across infrastructure, built environment, and government.</p>
     <a href="work/" class="btn btn-primary">View work samples &#x2192;</a>
   </div>
 </div>
@@ -1043,9 +1020,10 @@ body.mode-textile .lever-group-textile .lever{display:block}
 
   <div class="exp-timeline" id="exp-timeline">
 
-  <div class="exp-entry" data-mark="DG" data-clr="matcha">
+  <div class="exp-entry" data-mark="DG" data-clr="downer">
     <div class="exp-hd">
       <div>
+        <img class="exp-logo logo-downer" src="Downer_Group_logo.svg.png" alt="Downer Group logo" loading="lazy">
         <div class="exp-org-name">Downer Group</div>
         <span class="exp-arrow">&#x2192;</span>
         <div class="exp-dept">Group Environment, Sustainability &amp; Reporting</div>
@@ -1074,9 +1052,10 @@ body.mode-textile .lever-group-textile .lever{display:block}
     </ul>
   </div>
 
-  <div class="exp-entry" data-mark="WSP" data-clr="indigo">
+  <div class="exp-entry" data-mark="WSP" data-clr="wsp">
     <div class="exp-hd">
       <div>
+        <img class="exp-logo logo-wsp" src="img-png-wsp-red.png" alt="WSP logo" loading="lazy">
         <div class="exp-org-name">WSP in Australia</div>
         <span class="exp-arrow">&#x2192;</span>
         <div class="exp-dept">Sustainability &amp; Climate Change Advisory</div>
@@ -1097,7 +1076,7 @@ body.mode-textile .lever-group-textile .lever{display:block}
       </div>
     </div>
     <ul class="exp-bullets">
-      <li>35-percentage-point GRESB score improvement in year one: led the full Infrastructure Assessment cycle for a major Australian energy distributor, from gap analysis and data collection reform through to final submission and internal handover.</li>
+      <li>35% GRESB score improvement in year one: led the full Infrastructure Assessment cycle for a major Australian energy distributor, from gap analysis and data collection reform through to final submission and internal handover.</li>
       <li>GHG inventory preparation time reduced by approximately 40%: built automated Excel and Python tools that replaced recurring manual workflows across active client accounts, with documented logic for ongoing internal operation.</li>
       <li>Technical input to NSW Treasury Net Zero Government Operations Policy: contributed emissions boundary definition and agency-level reporting methodology to the whole-of-government framework.</li>
       <li>Lifecycle carbon assessments delivered for hospital and commercial fitout projects: A1-A5 boundary analysis with material hotspot quantification and low-carbon specification recommendations referenced against IStructE and GBCA benchmarks.</li>
@@ -1105,9 +1084,10 @@ body.mode-textile .lever-group-textile .lever{display:block}
     </ul>
   </div>
 
-  <div class="exp-entry" data-mark="DoD" data-clr="amber">
+  <div class="exp-entry" data-mark="DoD" data-clr="defence">
     <div class="exp-hd">
       <div>
+        <img class="exp-logo logo-defence" src="Defence.png" alt="Australian Government Department of Defence crest" loading="lazy">
         <div class="exp-org-name">Department of Defence</div>
         <span class="exp-arrow">&#x2192;</span>
         <div class="exp-dept">Capital Facilities &amp; Infrastructure Branch</div>
@@ -1124,12 +1104,27 @@ body.mode-textile .lever-group-textile .lever{display:block}
     </ul>
   </div>
 
-  <div class="edu-block" data-mark="UNSW" data-clr="berry">
-    <div class="edu-row">
-      <div class="edu-inst">University of New South Wales</div>
-      <div class="edu-deg">Bachelor of Engineering (Civil Engineering with Architecture), Honours Class&nbsp;1</div>
+  <div class="edu-block" data-mark="UNSW" data-clr="unsw">
+    <div class="edu-inst">University of New South Wales</div>
+    <div class="edu-deg">Bachelor of Engineering (Civil Engineering with Architecture), Honours Class&nbsp;1</div>
+    <div class="edu-grid">
+      <div class="edu-cell">
+        <div class="edu-cell-l">Honours</div>
+        <div class="edu-cell-b"><strong>First Class</strong> &middot; Dean's Honours List</div>
+      </div>
+      <div class="edu-cell">
+        <div class="edu-cell-l">Thesis &middot; graded 92/100</div>
+        <div class="edu-cell-b"><strong>Vertical Greenery Systems and the Indoor Setting</strong></div>
+      </div>
+      <div class="edu-cell">
+        <div class="edu-cell-l">Leadership</div>
+        <div class="edu-cell-b"><strong>President, CEVSOC 2021</strong> &middot; Arc Club of the Year &middot; executive team of 56, 2,000-member society</div>
+      </div>
+      <div class="edu-cell">
+        <div class="edu-cell-l">Capstone</div>
+        <div class="edu-cell-b"><strong>Sustainable infrastructure masterplanning</strong> &middot; Green Star, NABERS, Envision</div>
+      </div>
     </div>
-    <div class="cred">Dean's Honours List &nbsp;&middot;&nbsp; Thesis: Vertical Greenery Systems and the Indoor Setting (Grade: 92) &nbsp;&middot;&nbsp; President, CEVSOC 2021 (Arc Constituent Club of the Year; executive team of 56; 2,000-member student body) &nbsp;&middot;&nbsp; Capstone: sustainable infrastructure masterplanning, Green Star / NABERS / Envision frameworks</div>
   </div>
 
   </div>
@@ -1152,9 +1147,15 @@ body.mode-textile .lever-group-textile .lever{display:block}
   <canvas id="stripes-canvas" role="img" aria-label="Warming stripes: global mean temperature anomaly for each year from 1850 to 2025, shading from blue (cooler than the 1850 to 1900 average) to deep red (warmer)"></canvas>
   <div class="stripes-scrim" aria-hidden="true"></div>
   <div class="stripes-hair" id="stripes-hair" aria-hidden="true"></div>
+  <div class="stripes-marks" aria-hidden="true">
+    <div class="stripe-mark" data-year="1997"><span style="top:32%">1997 &middot; Kyoto Protocol</span></div>
+    <div class="stripe-mark flip" data-year="2015"><span style="top:48%">Paris Agreement &middot; 2015</span></div>
+    <div class="stripe-mark flip mine" data-year="2020"><span style="top:64%">I join infrastructure &middot; 2020</span></div>
+    <div class="stripe-mark flip mine" data-year="2022"><span style="top:80%">I move into climate &middot; 2022</span></div>
+  </div>
   <div class="stripes-content">
     <div class="stripes-meta">
-      <span class="stripes-cap">Global mean temperature anomaly &middot; 1850&ndash;2025</span>
+      <span class="stripes-cap">The context for all of this work: every year since 1850, coloured by its distance from the pre-industrial average</span>
       <span class="stripes-readout" id="stripes-readout">2025 &middot; +1.46&deg;C vs 1850&ndash;1900</span>
     </div>
     <div class="footer-inner">
@@ -1273,9 +1274,32 @@ var F_TEXTILE=(function(){
   };
 })();
 
-/* ---- D. changeSector() ---- */
+/* ---- D. Scenario state + segmented controls ---- */
+var SCN={sector:'infrastructure',grid:'base',lv:'base',hv:'base',plant:'base',rev:'moderate'};
+document.addEventListener('DOMContentLoaded',function(){
+  /* Lever segments */
+  document.querySelectorAll('#scenario .seg-row[data-key]').forEach(function(row){
+    var key=row.getAttribute('data-key');
+    row.querySelectorAll('.seg-btn').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        SCN[key]=btn.getAttribute('data-value');
+        row.querySelectorAll('.seg-btn').forEach(function(b){b.classList.toggle('on',b===btn);});
+        run();
+      });
+    });
+  });
+  /* Sector segment */
+  var sec=document.getElementById('seg-sector');
+  if(sec) sec.querySelectorAll('.seg-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      SCN.sector=btn.getAttribute('data-value');
+      sec.querySelectorAll('.seg-btn').forEach(function(b){b.classList.toggle('on',b===btn);});
+      changeSector();
+    });
+  });
+});
 function changeSector(){
-  var sk=document.getElementById('sel-sector').value;
+  var sk=SCN.sector;
   var ll;
   if(sk==='textile'){
     _currentMode='textile';
@@ -1312,6 +1336,15 @@ function changeSector(){
   document.getElementById('cbar-name-plant').textContent=ll.cbar.plant;
   var subEl=document.getElementById('tool-sub-text');
   if(subEl) subEl.textContent=ll.sub;
+  var ctEl=document.getElementById('chart-title');
+  if(ctEl) ctEl.textContent=(sk==='textile'?'Value chain footprint pathway to FY50':'Scope 1 & 2 emissions pathway to FY50');
+  if(ch){
+    ch.data.datasets[1].label=ll.cbar.grid;
+    ch.data.datasets[2].label=ll.cbar.lv;
+    ch.data.datasets[3].label=ll.cbar.hv;
+    ch.data.datasets[4].label=ll.cbar.plant;
+    buildLegend();
+  }
   run();
 }
 
@@ -1494,107 +1527,113 @@ function initChart(){
       data:{
         labels:chartLabels,
         datasets:[
-          {label:'Net Emissions',
+          {label:'Net emissions',
            data:[],
-           borderColor:'#B5C42B',borderWidth:2,
-           backgroundColor:'rgba(80,80,80,0.22)',
+           borderColor:'#0F172A',borderWidth:2.5,
+           backgroundColor:'rgba(15,23,42,0.10)',
            fill:'origin',pointRadius:0,tension:0.15},
           {label:'Grid Decarbonisation',
            data:[],
            borderColor:'transparent',borderWidth:0,
-           backgroundColor:'rgba(125,191,56,0.18)',
+           backgroundColor:'rgba(99,91,255,0.28)',
            fill:'-1',pointRadius:0,tension:0.15},
-          {label:'Fleet Electrification (LV)',
+          {label:'LV Fleet',
            data:[],
            borderColor:'transparent',borderWidth:0,
-           backgroundColor:'rgba(80,160,200,0.18)',
+           backgroundColor:'rgba(181,196,43,0.38)',
            fill:'-1',pointRadius:0,tension:0.15},
-          {label:'Fleet Transition (HV)',
+          {label:'HV Fleet',
            data:[],
            borderColor:'transparent',borderWidth:0,
-           backgroundColor:'rgba(200,150,60,0.18)',
+           backgroundColor:'rgba(255,149,0,0.30)',
            fill:'-1',pointRadius:0,tension:0.15},
           {label:'Plant Electrification',
            data:[],
            borderColor:'transparent',borderWidth:0,
-           backgroundColor:'rgba(180,100,80,0.18)',
+           backgroundColor:'rgba(255,59,96,0.26)',
            fill:'-1',pointRadius:0,tension:0.15},
           {label:'Business as usual',
            data:[],
-           borderColor:'rgba(255,255,255,0.25)',borderWidth:1,borderDash:[4,4],
+           borderColor:'rgba(15,23,42,0.45)',borderWidth:1.5,borderDash:[5,4],
            backgroundColor:'transparent',
            fill:false,pointRadius:0,tension:0},
           {label:'Actuals',
            data:[],
-           borderColor:'rgba(255,255,255,0.55)',borderWidth:1.5,borderDash:[5,4],
+           borderColor:'#475569',borderWidth:1.5,borderDash:[2,3],
            backgroundColor:'transparent',
            fill:false,pointRadius:3,tension:0,
-           pointBackgroundColor:'rgba(255,255,255,0.55)'}
+           pointBackgroundColor:'#475569'}
         ]
       },
       options:{
         responsive:true,maintainAspectRatio:false,
         interaction:{mode:'index',intersect:false},
         plugins:{
-          legend:{
-            position:'bottom',
-            labels:{font:{family:"'JetBrains Mono',monospace",size:9},boxWidth:12,padding:12,color:'rgba(245,240,232,0.6)'}
-          },
+          legend:{display:false},
           tooltip:{
             callbacks:{
               label:function(c){return c.dataset.label+': '+Math.round(c.raw).toLocaleString()+' tCO\u2082-e';}
             },
-            backgroundColor:'rgba(28,24,20,0.97)',
-            titleColor:'var(--bg)',
-            bodyColor:'rgba(245,240,232,0.8)',
-            titleFont:{family:"'JetBrains Mono',monospace",size:10},
-            bodyFont:{family:"'JetBrains Mono',monospace",size:10},
-            borderColor:'rgba(62,110,52,0.4)',
+            backgroundColor:'rgba(15,23,42,0.96)',
+            titleColor:'#F8FAFC',
+            bodyColor:'rgba(248,250,252,0.85)',
+            titleFont:{family:"'JetBrains Mono',monospace",size:11},
+            bodyFont:{family:"'JetBrains Mono',monospace",size:11},
+            borderColor:'rgba(181,196,43,0.5)',
             borderWidth:1
-          },
-          backgroundColor:{color:'rgba(255,255,255,0.04)'}
+          }
         },
         scales:{
           x:{
-            grid:{color:'rgba(255,255,255,0.06)'},
+            grid:{color:'rgba(15,23,42,0.05)'},
             ticks:{
-              font:{family:"'JetBrains Mono',monospace",size:9},
-              color:'rgba(245,240,232,0.45)',
+              font:{family:"'JetBrains Mono',monospace",size:10},
+              color:'#64748B',
               callback:function(v,i){return i%5===0?'FY'+(2020+i):'';}
             }
           },
           y:{
-            grid:{color:'rgba(255,255,255,0.06)'},
-            title:{display:true,text:'tCO\u2082-e',font:{size:9},color:'rgba(245,240,232,0.45)'},
+            grid:{color:'rgba(15,23,42,0.05)'},
+            title:{display:true,text:'tCO\u2082-e',font:{size:10},color:'#64748B'},
             ticks:{
-              font:{family:"'JetBrains Mono',monospace",size:9},
-              color:'rgba(245,240,232,0.45)',
+              font:{family:"'JetBrains Mono',monospace",size:10},
+              color:'#64748B',
               callback:function(v){return (v/1000).toFixed(0)+'k';}
             }
           }
         }
       }
     });
+    buildLegend();
     run();
   }catch(e){console.error('Chart init error',e);}
 }
 
+/* Custom HTML legend: larger, readable, matches lever colours */
+function buildLegend(){
+  var el=document.getElementById('chart-legend');
+  if(!el||!ch) return;
+  var SW={
+    0:'<span class="cl-swatch line" style="color:#0F172A"></span>',
+    1:'<span class="cl-swatch" style="background:rgba(99,91,255,0.45)"></span>',
+    2:'<span class="cl-swatch" style="background:rgba(155,170,30,0.55)"></span>',
+    3:'<span class="cl-swatch" style="background:rgba(255,149,0,0.5)"></span>',
+    4:'<span class="cl-swatch" style="background:rgba(255,59,96,0.45)"></span>',
+    5:'<span class="cl-swatch dash" style="color:rgba(15,23,42,0.5)"></span>',
+    6:'<span class="cl-swatch dash" style="color:#475569"></span>'
+  };
+  el.innerHTML=ch.data.datasets.map(function(d,i){
+    return '<span class="cl-item">'+SW[i]+d.label+'</span>';
+  }).join('');
+}
+
 function run(){
   if(!ch) return;
-  var gk=document.getElementById('sel-grid').value;
-  var lk=document.getElementById('sel-lv').value;
-  var hk=document.getElementById('sel-hv').value;
-  var pk=document.getElementById('sel-plant').value;
-  var rk=document.getElementById('sel-rev').value;
-  ['sel-grid','sel-lv','sel-hv','sel-plant'].forEach(function(id){
-    var el=document.getElementById(id);
-    el.classList.toggle('changed',el.value!=='base'&&el.value!=='off');
-  });
-  document.getElementById('sel-rev').classList.toggle('changed',rk!=='moderate');
+  var gk=SCN.grid,lk=SCN.lv,hk=SCN.hv,pk=SCN.plant,rk=SCN.rev;
   var currentYear=new Date().getFullYear();
   var FT=_currentMode==='textile'?F_TEXTILE:F;
   var net=[],gridLayer=[],lvLayer=[],hvLayer=[],plantLayer=[],bau=[],actuals=[];
-  var net30=0;
+  var net30=0,bau30=0;
   for(var y=2020;y<=2050;y++){
     if(y<=2025){
       var h=HIST[y-2020];
@@ -1634,11 +1673,24 @@ function run(){
       } else {
         actuals.push(null);
       }
-      if(y===2030) net30=netVal;
+      if(y===2030){net30=netVal;bau30=g;}
     }
   }
   document.getElementById('kpi-net').textContent=Math.round(net30/1000)+'k t';
   document.getElementById('kpi-pct').textContent=((FY20-net30)/FY20*100).toFixed(1)+'% \u2193';
+  /* Dynamic takeaway: the headline a board slide would carry */
+  var tEl=document.getElementById('takeaway');
+  if(tEl){
+    var pct=(FY20-net30)/FY20*100;
+    var avoided=Math.max(0,Math.round((bau30-net30)/1000));
+    var rel=pct>=0?Math.round(pct)+'% below the FY20 baseline':Math.abs(Math.round(pct))+'% above the FY20 baseline';
+    var verdict=pct>=50
+      ?'ahead of a 1.5\u00b0C-aligned interim cut of ~50%.'
+      :'short of a 1.5\u00b0C-aligned interim cut of ~50% \u2014 the gap is the conversation.';
+    tEl.innerHTML='These levers land FY30 at <em>'+Math.round(net30/1000)+'k tCO\u2082-e</em> \u2014 '
+      +rel+', avoiding '+avoided+'k t against business-as-usual, '+verdict
+      +'<span class="tk-note">Headline recalculates from your lever settings \u00b7 FY30 interim target year \u00b7 illustrative figures</span>';
+  }
   ch.data.datasets[0].data=net;
   ch.data.datasets[1].data=gridLayer;
   ch.data.datasets[2].data=lvLayer;
@@ -1762,58 +1814,6 @@ function run(){
     }).observe(hero);
     raf=requestAnimationFrame(frame);
   }
-})();
-
-/* ---- J2. Kinetic variable-weight hero name ---- */
-(function(){
-  var el=document.querySelector('.hero-name');
-  if(!el) return;
-  var reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-  var fine=window.matchMedia('(hover:hover) and (pointer:fine)').matches;
-  // Wrap each letter in a span, grouped per word so words never break
-  // mid-letter, preserving the <em> colour split
-  (function wrapLetters(node){
-    Array.prototype.slice.call(node.childNodes).forEach(function(child){
-      if(child.nodeType===3){
-        var frag=document.createDocumentFragment();
-        child.textContent.split(/(\s+)/).forEach(function(part){
-          if(!part) return;
-          if(/^\s+$/.test(part)){frag.appendChild(document.createTextNode(' '));return;}
-          var word=document.createElement('span');
-          word.className='hww';
-          part.split('').forEach(function(ch){
-            var s=document.createElement('span');
-            s.className='hw';s.textContent=ch;
-            word.appendChild(s);
-          });
-          frag.appendChild(word);
-        });
-        node.replaceChild(frag,child);
-      } else if(child.nodeType===1){wrapLetters(child);}
-    });
-  })(el);
-  if(reduce) return;
-  var spans=el.querySelectorAll('.hw');
-  var mx=-9999,my=-9999;
-  if(fine){
-    document.getElementById('about').addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;});
-    document.getElementById('about').addEventListener('mouseleave',function(){mx=-9999;my=-9999;});
-  }
-  var start=performance.now();
-  (function tick(now){
-    var tt=(now-start)/1000;
-    for(var i=0;i<spans.length;i++){
-      var w=700+100*Math.sin(tt*1.3+i*0.45);
-      if(mx>-9000){
-        var r=spans[i].getBoundingClientRect();
-        var dist=Math.hypot(mx-(r.left+r.width/2),my-(r.top+r.height/2));
-        var pull=Math.max(0,1-dist/220);
-        w-=420*pull; // letters thin out under the cursor — pressure effect
-      }
-      spans[i].style.fontVariationSettings="'wght' "+Math.max(300,Math.min(800,w)).toFixed(0);
-    }
-    requestAnimationFrame(tick);
-  })(start);
 })();
 
 /* ---- K. Text scramble on section labels ---- */
@@ -2158,6 +2158,11 @@ window.addEventListener('load',function(){
     })(t0);
   }
   size();draw();
+  /* Position milestone marks along the year axis */
+  document.querySelectorAll('.stripe-mark').forEach(function(m){
+    var yv=parseInt(m.getAttribute('data-year'),10);
+    if(!isNaN(yv)) m.style.left=(((yv-START)+0.5)/N*100)+'%';
+  });
   if('IntersectionObserver' in window){
     new IntersectionObserver(function(es,o){
       es.forEach(function(e){if(e.isIntersecting){reveal();o.disconnect();}});
