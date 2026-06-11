@@ -656,6 +656,15 @@ body.mode-textile .lever-group-textile .lever{display:block}
 .label::before{content:attr(data-num);position:absolute;right:0;top:50%;transform:translateY(-46%);font-family:var(--disp);font-weight:800;font-size:clamp(3.2rem,9vw,6rem);line-height:1;color:transparent;-webkit-text-stroke:1.2px rgba(15,23,42,0.10);letter-spacing:-0.04em;pointer-events:none;user-select:none}
 #principles .label::before,#scenario .label::before{-webkit-text-stroke-color:rgba(255,255,255,0.10)}
 
+/* ---- Control-room scenario: sticky chart, scrolling controls ---- */
+.scn-grid{display:grid;grid-template-columns:1fr}
+@media(min-width:980px){
+  .scn-grid{grid-template-columns:minmax(0,1fr) 380px;column-gap:1.75rem;align-items:start}
+  .scn-left{position:sticky;top:66px}
+  .scn-left .chart-card{margin-bottom:0}
+  .scn-left .chart-wrap{height:380px}
+}
+
 /* ---- Terminal contact line ---- */
 .term-line{font-family:var(--mono);font-size:clamp(0.95rem,2.4vw,1.35rem);font-weight:600;letter-spacing:0.01em}
 .term-prompt{color:var(--matcha)}
@@ -944,6 +953,8 @@ body.mode-textile .lever-group-textile .lever{display:block}
     </select>
   </div>
   <div id="sector-desc" class="sector-desc">Infrastructure: heavy plant, diesel fleet, and mechanical processes drive the Scope&nbsp;1 footprint. Grid decarbonisation delivers Scope&nbsp;2 reduction.</div>
+  <div class="scn-grid">
+  <div class="scn-left">
   <div class="kpi-strip">
     <div class="kpi"><div class="kpi-l">FY20 Baseline</div><div class="kpi-v" id="kpi-base-v">347k t</div></div>
     <div class="kpi"><div class="kpi-l">FY26 Actuals</div><div class="kpi-v" id="kpi-fy26-v">271k t</div></div>
@@ -953,6 +964,8 @@ body.mode-textile .lever-group-textile .lever{display:block}
   <div class="chart-card">
     <div class="chart-wrap"><canvas id="mainChart"></canvas></div>
   </div>
+  </div>
+  <div class="scn-right">
   <div class="controls-card">
     <div class="controls-head">Scenario Controls: select a scenario for each lever</div>
     <div class="lever-grid">
@@ -1012,6 +1025,8 @@ body.mode-textile .lever-group-textile .lever{display:block}
     <div class="cbar"><div class="cbar-name" id="cbar-name-lv">LV Fleet</div><div class="cbar-track"><div class="cbar-fill" id="cb-lv" style="width:0%;background:var(--matcha)"></div></div><div class="cbar-val" id="cv-lv">&middot;</div></div>
     <div class="cbar"><div class="cbar-name" id="cbar-name-hv">HV Fleet</div><div class="cbar-track"><div class="cbar-fill" id="cb-hv" style="width:0%;background:var(--amber)"></div></div><div class="cbar-val" id="cv-hv">&middot;</div></div>
     <div class="cbar"><div class="cbar-name" id="cbar-name-plant">Plant Electrification</div><div class="cbar-track"><div class="cbar-fill" id="cb-plant" style="width:0%;background:var(--berry)"></div></div><div class="cbar-val" id="cv-plant">&middot;</div></div>
+  </div>
+  </div>
   </div>
   <div style="margin-top:1.75rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
     <p style="font-size:0.82rem;color:rgba(248,250,252,0.55);max-width:520px;line-height:1.6;margin:0">More examples of this work: emissions baselines, decarbonisation roadmaps, MCA prioritisation, and lifecycle carbon assessment across infrastructure, built environment, and government.</p>
@@ -1961,6 +1976,41 @@ window.addEventListener('load',function(){
       ticking=true;
     }
   });
+})();
+
+/* ---- 26: Scenario chart scrollytelling build — wedges assemble on first view ---- */
+(function(){
+  if(window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  if(!('IntersectionObserver' in window)) return;
+  var ORDER=[6,5,0,1,2,3,4]; /* actuals, BAU, net line, then wedges in stack order */
+  var armed=false,built=false;
+  function arm(){
+    if(armed||built||!window.ch) return;
+    var card=document.querySelector('#scenario .chart-card');
+    if(!card) return;
+    var r=card.getBoundingClientRect();
+    /* already on screen at load: show the finished chart, no build */
+    if(r.top<window.innerHeight&&r.bottom>0){built=true;return;}
+    armed=true;
+    ORDER.forEach(function(i){ch.setDatasetVisibility(i,false);});
+    ch.update('none');
+    new IntersectionObserver(function(es,o){
+      es.forEach(function(e){
+        if(!e.isIntersecting||built) return;
+        built=true;o.disconnect();
+        ORDER.forEach(function(i,k){
+          setTimeout(function(){
+            if(!window.ch) return;
+            ch.setDatasetVisibility(i,true);
+            ch.update();
+          },k*320);
+        });
+      });
+    },{threshold:0.3}).observe(card);
+  }
+  document.addEventListener('DOMContentLoaded',function(){setTimeout(arm,180);});
+  window.addEventListener('load',function(){setTimeout(arm,120);});
+  if(document.readyState==='complete') setTimeout(arm,180);
 })();
 
 /* ---- 25: Terminal contact line — types in on first view ---- */
