@@ -656,6 +656,20 @@ body.mode-textile .lever-group-textile .lever{display:block}
 .label::before{content:attr(data-num);position:absolute;right:0;top:50%;transform:translateY(-46%);font-family:var(--disp);font-weight:800;font-size:clamp(3.2rem,9vw,6rem);line-height:1;color:transparent;-webkit-text-stroke:1.2px rgba(15,23,42,0.10);letter-spacing:-0.04em;pointer-events:none;user-select:none}
 #principles .label::before,#scenario .label::before{-webkit-text-stroke-color:rgba(255,255,255,0.10)}
 
+/* ---- Experience timeline rail: self-drawing, scroll-linked ---- */
+.exp-timeline{position:relative;padding-left:3.4rem}
+.exp-timeline::before{content:'';position:absolute;left:17px;top:4px;bottom:4px;width:2px;background:var(--rule-lt)}
+.exp-rail-fill{position:absolute;left:17px;top:4px;bottom:4px;width:2px;background:linear-gradient(180deg,var(--matcha) 0%,var(--indigo) 38%,var(--amber) 72%,var(--berry) 100%);clip-path:inset(0 0 100% 0)}
+.exp-node{position:absolute;left:18px;transform:translateX(-50%);width:38px;height:38px;border-radius:50%;background:var(--bg);border:2px solid var(--rule-dk);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:0.48rem;font-weight:700;letter-spacing:0.05em;color:var(--subtle);transition:border-color 0.45s var(--ease),color 0.45s var(--ease),transform 0.45s var(--ease);z-index:1}
+.exp-node.lit{border-color:var(--nclr);color:var(--nclr);transform:translateX(-50%) scale(1.08)}
+@media(max-width:699px){
+  .exp-timeline{padding-left:1.6rem}
+  .exp-timeline::before{left:5px}
+  .exp-rail-fill{left:5px}
+  .exp-node{left:6px;width:13px;height:13px}
+  .exp-node span{display:none}
+}
+
 /* ---- Pipeline schematic flow line ---- */
 .pipeline{position:relative}
 .pipeline::before{content:'';position:absolute;left:-16px;top:4px;bottom:4px;width:2px;background-image:linear-gradient(180deg,var(--matcha) 0 55%,transparent 55% 100%);background-size:2px 14px;background-repeat:repeat-y;opacity:0.5;animation:pipeflow 1.4s linear infinite}
@@ -977,7 +991,9 @@ body.mode-textile .lever-group-textile .lever{display:block}
 <div class="wrap">
   <div class="label" data-num="03">Experience</div>
 
-  <div class="exp-entry">
+  <div class="exp-timeline" id="exp-timeline">
+
+  <div class="exp-entry" data-mark="DG" data-clr="matcha">
     <div class="exp-hd">
       <div>
         <div class="exp-org-name">Downer Group</div>
@@ -1008,7 +1024,7 @@ body.mode-textile .lever-group-textile .lever{display:block}
     </ul>
   </div>
 
-  <div class="exp-entry">
+  <div class="exp-entry" data-mark="WSP" data-clr="indigo">
     <div class="exp-hd">
       <div>
         <div class="exp-org-name">WSP in Australia</div>
@@ -1039,7 +1055,7 @@ body.mode-textile .lever-group-textile .lever{display:block}
     </ul>
   </div>
 
-  <div class="exp-entry">
+  <div class="exp-entry" data-mark="DoD" data-clr="amber">
     <div class="exp-hd">
       <div>
         <div class="exp-org-name">Department of Defence</div>
@@ -1058,12 +1074,14 @@ body.mode-textile .lever-group-textile .lever{display:block}
     </ul>
   </div>
 
-  <div class="edu-block">
+  <div class="edu-block" data-mark="UNSW" data-clr="berry">
     <div class="edu-row">
       <div class="edu-inst">University of New South Wales</div>
       <div class="edu-deg">Bachelor of Engineering (Civil Engineering with Architecture), Honours Class&nbsp;1</div>
     </div>
     <div class="cred">Dean's Honours List &nbsp;&middot;&nbsp; Thesis: Vertical Greenery Systems and the Indoor Setting (Grade: 92) &nbsp;&middot;&nbsp; President, CEVSOC 2021 (Arc Constituent Club of the Year; executive team of 56; 2,000-member student body) &nbsp;&middot;&nbsp; Capstone: sustainable infrastructure masterplanning, Green Star / NABERS / Envision frameworks</div>
+  </div>
+
   </div>
 
 </div>
@@ -1908,6 +1926,52 @@ window.addEventListener('load',function(){
       ticking=true;
     }
   });
+})();
+
+/* ---- 24: Experience timeline rail — draws with scroll, nodes ignite ---- */
+(function(){
+  var tl=document.getElementById('exp-timeline');
+  if(!tl) return;
+  var reduced=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var fill=document.createElement('div');
+  fill.className='exp-rail-fill';fill.setAttribute('aria-hidden','true');
+  tl.appendChild(fill);
+  var entries=Array.prototype.slice.call(tl.children).filter(function(el){
+    return el.classList.contains('exp-entry')||el.classList.contains('edu-block');
+  });
+  var nodes=entries.map(function(en){
+    var n=document.createElement('div');
+    n.className='exp-node';
+    n.setAttribute('aria-hidden','true');
+    n.style.setProperty('--nclr','var(--'+(en.getAttribute('data-clr')||'matcha')+')');
+    n.innerHTML='<span>'+(en.getAttribute('data-mark')||'')+'</span>';
+    tl.appendChild(n);
+    return n;
+  });
+  var railLen=1;
+  function layout(){
+    railLen=Math.max(1,tl.offsetHeight-8);
+    entries.forEach(function(en,i){
+      var pt=parseFloat(getComputedStyle(en).paddingTop)||0;
+      nodes[i].style.top=(en.offsetTop+pt+2)+'px';
+    });
+  }
+  function update(){
+    var r=tl.getBoundingClientRect();
+    var h=window.innerHeight*0.66-r.top;
+    h=reduced?railLen:Math.max(0,Math.min(railLen,h));
+    fill.style.clipPath='inset(0 0 '+((1-h/railLen)*100).toFixed(2)+'% 0)';
+    nodes.forEach(function(n,i){
+      n.classList.toggle('lit',entries[i].offsetTop+12<=h);
+    });
+  }
+  var tick=false;
+  window.addEventListener('scroll',function(){
+    if(!tick){requestAnimationFrame(function(){update();tick=false;});tick=true;}
+  },{passive:true});
+  window.addEventListener('resize',function(){layout();update();});
+  window.addEventListener('load',function(){layout();update();});
+  layout();update();
 })();
 
 /* ---- 23: Warming stripes footer — HadCRUT5 global mean anomaly vs 1850-1900,
