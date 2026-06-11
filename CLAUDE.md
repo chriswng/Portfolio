@@ -46,12 +46,13 @@ Sections map directly to `id` attributes used for anchor nav:
 
 The decarbonisation model is the centrepiece interactive feature. Key state/data structures in the JS:
 
-- **`sectorProfiles`** object — defines 4 sectors (infrastructure, property, government, textile retail), each with `FY20`/`FY25`/`FY26` baseline emissions and sector-specific lever definitions
-- **Levers** — sliders controlling: Grid decarbonisation, LV Fleet transition, HV Fleet transition, Plant electrification, Revenue growth
-- **Calculation engine** — recomputes on every lever change; updates a Chart.js bar chart and contribution bars showing abatement by lever
-- **Chart.js 4.4.1** — loaded via CDN (`https://cdn.jsdelivr.net/npm/chart.js`); the chart instance is stored in a module-level variable and `.update()`d in place
+- **`SECTOR_PROFILES`** object — defines 4 sectors (infrastructure, property, government, textile retail), each with `FY20`/`FY25`/`FY26` baseline emissions and sector-specific lever definitions
+- **`SCN` state object + segmented buttons** — all controls are `.seg-btn` button groups (`data-key`/`data-value`); a click writes to `SCN` and calls `run()` (or `changeSector()` for the profile row)
+- **Calculation engine (`run()`)** — recomputes on every lever change; updates the Chart.js stacked-wedge line chart, the dynamic takeaway headline (`#takeaway`), the KPI strip, and contribution bars showing abatement by lever
+- **Chart.js 4.4.1** — loaded via CDN; the chart instance is stored in a module-level variable and `.update()`d in place; the legend is custom HTML built by `buildLegend()` (the built-in Chart.js legend is disabled)
+- The section is light-themed and laid out as three numbered steps: profile → levers → result
 
-When modifying the scenario model, changes to `sectorProfiles` data, lever ranges, or the calculation logic all live in the same `<script>` block and are tightly coupled to the DOM structure of `#scenario`.
+When modifying the scenario model, changes to `SECTOR_PROFILES` data, lever curves, or the calculation logic all live in the same `<script>` block and are tightly coupled to the DOM structure of `#scenario`.
 
 ## Key Conventions
 
