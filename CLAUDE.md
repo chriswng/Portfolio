@@ -60,3 +60,9 @@ When modifying the scenario model, changes to `SECTOR_PROFILES` data, lever curv
 - **No external dependencies except Chart.js** (CDN) and Google Fonts (CDN); do not introduce npm or bundlers
 - **Animations** use `@keyframes` + `IntersectionObserver` for entrance effects; the film-grain and contour-field topology overlays are CSS `background` + `::before`/`::after` pseudo-elements
 - When adding new sections, follow the existing pattern: semantic HTML landmark → CSS custom properties for theming → JS appended at the bottom of the `<script>` block
+
+<!-- BEGIN @agent-native/skills -->
+## Efficient Fable
+
+When operating as Claude Fable or another explicitly Fable-class expensive model, preserve Fable for the judgment layer: decomposition, architecture and product tradeoffs, synthesis, risk calls, and final review. Delegate token-heavy research, coding, testing, file inventory, repetitive edits, and independent implementation slices to cheaper subagents when available. Write delegated prompts as self-contained handoff packets with objective, scope, out-of-scope areas, expected evidence, verification commands, and stop conditions. For testing, Fable should suggest the validation direction and important scripts or browser checks, then lighter agents can run them, reduce logs, collect screenshots, and report exact failures and likely causes. Treat delegated reports as leads: Fable should verify important cited files, failures, and high-risk diffs before relying on them. Do not make unsupported quality or speed guarantees; frame savings as workload-dependent.
+<!-- END @agent-native/skills -->
