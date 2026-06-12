@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<meta name="description" content="Design mockup: editorial visual language for itschriswang.github.io. Not the live site.">
+<title>Mockup &mdash; Editorial Direction | Christopher Wang</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   EDITORIAL DIRECTION — DESIGN MOCKUP
+   Two typefaces, one accent, no decorative animation.
+   Typography and whitespace carry the hierarchy.
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --paper:#F7F5F0;       /* warm off-white canvas */
+  --ink:#1B1916;         /* near-black text */
+  --ink-soft:#55524A;    /* secondary text */
+  --ink-faint:#8C887D;   /* meta / captions */
+  --accent:#2E5A41;      /* single accent: deep moss green */
+  --rule:rgba(27,25,22,0.16);
+  --rule-soft:rgba(27,25,22,0.08);
+  --serif:'Fraunces',Georgia,serif;
+  --sans:'Inter',system-ui,sans-serif;
+  --max:880px;
+  --pad:clamp(1.25rem,5vw,2rem);
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);font-size:1rem;line-height:1.75;color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--pad)}
+a{color:var(--accent)}
+
+/* ---- Mockup banner ---- */
+.mock-note{background:var(--ink);color:var(--paper);font-size:0.78rem;letter-spacing:0.06em;text-transform:uppercase;text-align:center;padding:0.5rem var(--pad)}
+.mock-note strong{color:#C9D8CE;font-weight:600}
+
+/* ---- Top bar ---- */
+header.top{border-bottom:1px solid var(--rule)}
+.top-inner{max-width:var(--max);margin:0 auto;padding:1.1rem var(--pad);display:flex;align-items:baseline;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.wordmark{font-family:var(--serif);font-size:1.05rem;font-weight:600;letter-spacing:-0.01em;text-decoration:none;color:var(--ink)}
+nav.tnav{display:flex;gap:1.6rem;flex-wrap:wrap}
+nav.tnav a{font-size:0.8rem;font-weight:500;letter-spacing:0.04em;color:var(--ink-soft);text-decoration:none}
+nav.tnav a:hover{color:var(--accent)}
+
+/* ---- Section scaffold ---- */
+section{padding:clamp(3.5rem,9vw,6rem) 0;border-bottom:1px solid var(--rule-soft)}
+.kicker{font-size:0.72rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:1.75rem}
+
+/* ---- Hero ---- */
+#hero h1{font-family:var(--serif);font-weight:500;font-size:clamp(2rem,5.6vw,3.4rem);line-height:1.12;letter-spacing:-0.015em;max-width:21ch;margin-bottom:1.75rem}
+#hero h1 em{font-style:italic;color:var(--accent)}
+.hero-sub{font-size:clamp(1rem,2.2vw,1.15rem);color:var(--ink-soft);max-width:54ch;margin-bottom:2.5rem}
+.hero-meta{font-size:0.82rem;color:var(--ink-faint);display:flex;gap:0.75rem;flex-wrap:wrap;margin-bottom:2.5rem}
+.hero-meta span+span::before{content:'\00B7';margin-right:0.75rem;color:var(--rule)}
+.cta-row{display:flex;gap:0.85rem;flex-wrap:wrap}
+.cta{display:inline-block;padding:0.7rem 1.5rem;font-size:0.88rem;font-weight:500;text-decoration:none;border:1px solid var(--ink);color:var(--ink);transition:background 0.2s,color 0.2s}
+.cta:hover{background:var(--ink);color:var(--paper)}
+.cta.solid{background:var(--accent);border-color:var(--accent);color:var(--paper)}
+.cta.solid:hover{background:#234734;border-color:#234734}
+
+/* ---- Point of view ---- */
+#pov .lede{font-family:var(--serif);font-size:clamp(1.2rem,2.8vw,1.55rem);font-weight:400;line-height:1.45;max-width:34ch;letter-spacing:-0.01em;margin-bottom:2rem}
+#pov p.body{max-width:62ch;color:var(--ink-soft);margin-bottom:1.25rem;font-size:0.95rem}
+#pov p.body strong{color:var(--ink);font-weight:600}
+
+/* ---- Case study sample ---- */
+.case{display:grid;gap:2.5rem;grid-template-columns:1fr}
+@media(min-width:860px){.case{grid-template-columns:7fr 6fr;align-items:start}}
+.case h2{font-family:var(--serif);font-weight:500;font-size:clamp(1.4rem,3.2vw,1.9rem);line-height:1.2;letter-spacing:-0.01em;margin-bottom:0.6rem}
+.case-meta{font-size:0.78rem;color:var(--ink-faint);letter-spacing:0.02em;margin-bottom:1.75rem;padding-bottom:1rem;border-bottom:1px solid var(--rule-soft)}
+.case dl{display:flex;flex-direction:column;gap:1.25rem}
+.case dt{font-size:0.72rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent);margin-bottom:0.25rem}
+.case dd{font-size:0.92rem;color:var(--ink-soft);max-width:58ch}
+.case dd strong{color:var(--ink);font-weight:600}
+/* the chart is a designed, static, annotated figure — not a widget */
+figure.chart{border:1px solid var(--rule);background:#FCFBF8;padding:1.5rem 1.5rem 1.1rem}
+figure.chart svg{width:100%;height:auto;display:block}
+figcaption{font-size:0.72rem;color:var(--ink-faint);line-height:1.6;margin-top:0.9rem;padding-top:0.75rem;border-top:1px solid var(--rule-soft)}
+
+/* ---- Career facts ---- */
+.fact-row{display:grid;grid-template-columns:1fr;border-top:1px solid var(--rule)}
+.fact{display:grid;grid-template-columns:110px 1fr auto;gap:1.25rem;align-items:baseline;padding:1.1rem 0;border-bottom:1px solid var(--rule)}
+.fact .when{font-size:0.78rem;color:var(--ink-faint);letter-spacing:0.02em}
+.fact .what{font-size:0.95rem}
+.fact .what strong{font-weight:600}
+.fact .org{font-family:var(--serif);font-style:italic;font-size:0.92rem;color:var(--ink-soft);text-align:right}
+@media(max-width:600px){.fact{grid-template-columns:1fr}.fact .org{text-align:left}}
+
+/* ---- Contact ---- */
+#contact p.big{font-family:var(--serif);font-size:clamp(1.3rem,3vw,1.8rem);font-weight:500;line-height:1.3;max-width:28ch;margin-bottom:2rem;letter-spacing:-0.01em}
+
+/* ---- Footer: warming stripes kept, as a quiet horizon line ---- */
+footer{border-top:1px solid var(--rule)}
+.stripes{height:56px;background:linear-gradient(90deg,
+  #3b6ba5 0%,#5485b8 8%,#7ba3c9 16%,#a8c4da 24%,#cfdde8 32%,
+  #e8e2d9 40%,#eedfd2 48%,#f2cdb4 56%,#eda873 64%,#e07b4f 72%,
+  #c85a3d 80%,#a93b30 88%,#7c1f24 96%,#5c1019 100%)}
+.foot-inner{max-width:var(--max);margin:0 auto;padding:1.1rem var(--pad);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;font-size:0.72rem;color:var(--ink-faint)}
+
+/* ---- Design notes panel (mockup only) ---- */
+#notes{background:#EFECE4}
+.note-grid{display:grid;gap:2rem;grid-template-columns:1fr}
+@media(min-width:760px){.note-grid{grid-template-columns:1fr 1fr}}
+.swatches{display:flex;gap:0.6rem;flex-wrap:wrap;margin:1rem 0 1.5rem}
+.sw{width:84px}
+.sw i{display:block;height:48px;border:1px solid var(--rule)}
+.sw span{font-size:0.66rem;color:var(--ink-faint);display:block;margin-top:0.3rem;line-height:1.4}
+.spec{font-family:var(--serif);font-size:1.5rem;line-height:1.3}
+.spec small{display:block;font-family:var(--sans);font-size:0.8rem;color:var(--ink-soft);margin-top:0.4rem}
+#notes ul{list-style:none;display:flex;flex-direction:column;gap:0.8rem}
+#notes li{font-size:0.88rem;color:var(--ink-soft);padding-left:1.1rem;position:relative;max-width:58ch}
+#notes li::before{content:'\2014';position:absolute;left:0;color:var(--accent)}
+#notes li strong{color:var(--ink);font-weight:600}
+</style>
+</head>
+<body>
+
+<div class="mock-note"><strong>Design mockup</strong> &mdash; editorial direction for review. Not the live site.</div>
+
+<header class="top">
+  <div class="top-inner">
+    <a class="wordmark" href="#">Christopher Wang</a>
+    <nav class="tnav">
+      <a href="#pov">Point of view</a>
+      <a href="#case">Case studies</a>
+      <a href="#career">Career</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<section id="hero">
+<div class="wrap">
+  <h1>Climate commitments that survive contact with <em>auditors, boards, and regulators.</em></h1>
+  <p class="hero-sub">I build the reporting infrastructure, decarbonisation models, and disclosure processes that let large organisations say what they mean about climate &mdash; and prove it.</p>
+  <div class="hero-meta">
+    <span>Sustainability &middot; Strategy</span>
+    <span>Melbourne, Australia</span>
+    <span>linkedin.com/in/itchriswang</span>
+  </div>
+  <div class="cta-row">
+    <a class="cta solid" href="#case">Read the case studies</a>
+    <a class="cta" href="#">Download CV (PDF)</a>
+  </div>
+</div>
+</section>
+
+<section id="pov">
+<div class="wrap">
+  <div class="kicker">Point of view</div>
+  <p class="lede">Most corporate climate programs fail at the same joint: the gap between the number on the slide and the data underneath it.</p>
+  <p class="body">Mandatory disclosure &mdash; AASB&nbsp;S2, ISSB, CSRD &mdash; is quietly turning sustainability reporting into a financial-controls problem. The organisations that treat it that way early will spend the next decade making strategy; the ones that treat it as a communications exercise will spend it restating numbers. <strong>The credibility of a net zero commitment is set by its inventory, not its ambition.</strong></p>
+  <p class="body">For consumer-facing companies, the hardest version of this problem lives in the supply chain: Scope&nbsp;3 numbers built on spend-based proxies that no buyer would bet a margin on. The work that matters is unglamorous &mdash; supplier data pipelines, boundary decisions, documented methodology &mdash; and it is exactly the work most programs defer.</p>
+</div>
+</section>
+
+<section id="case">
+<div class="wrap">
+  <div class="kicker">Case study &mdash; sample of three</div>
+  <div class="case">
+    <div>
+      <h2>A net zero pathway model the board could interrogate.</h2>
+      <div class="case-meta">Downer EDI &middot; Group climate strategy &middot; FY26</div>
+      <dl>
+        <dt>The situation</dt>
+        <dd>The Group&rsquo;s climate strategy needed a pathway the board could engage with directly, and business units needed a common reference for tracking abatement progress.</dd>
+        <dt>The call</dt>
+        <dd><strong>Make every assumption traceable or leave it out.</strong> Each lever sourced to published data &mdash; DCCEEW grid projections, NVES fleet trajectories, CSIRO pathways &mdash; so a director&rsquo;s &ldquo;what if the grid is slower?&rdquo; has an answer that moves, and an analyst can trace any number to its source.</dd>
+        <dt>The outcome</dt>
+        <dd>Presented to the board by senior leadership and adopted as the internal reference for business-unit abatement tracking &mdash; operated without me in the loop.</dd>
+      </dl>
+    </div>
+    <figure class="chart">
+      <svg viewBox="0 0 560 360" role="img" aria-label="Annotated emissions pathway chart: business as usual versus modelled net pathway, with the FY30 interim target gap called out">
+        <!-- grid -->
+        <g stroke="rgba(27,25,22,0.08)" stroke-width="1">
+          <line x1="48" y1="60"  x2="532" y2="60"/>
+          <line x1="48" y1="124" x2="532" y2="124"/>
+          <line x1="48" y1="188" x2="532" y2="188"/>
+          <line x1="48" y1="252" x2="532" y2="252"/>
+        </g>
+        <line x1="48" y1="316" x2="532" y2="316" stroke="rgba(27,25,22,0.35)" stroke-width="1"/>
+        <!-- y labels -->
+        <g font-family="Inter,sans-serif" font-size="10" fill="#8C887D">
+          <text x="40" y="63"  text-anchor="end">400k</text>
+          <text x="40" y="127" text-anchor="end">300k</text>
+          <text x="40" y="191" text-anchor="end">200k</text>
+          <text x="40" y="255" text-anchor="end">100k</text>
+          <text x="40" y="319" text-anchor="end">0</text>
+          <text x="48"  y="336">FY20</text>
+          <text x="208" y="336">FY30</text>
+          <text x="370" y="336">FY40</text>
+          <text x="510" y="336">FY50</text>
+        </g>
+        <!-- abatement wedge: gap between BAU and net -->
+        <path d="M128,140 C190,128 300,118 532,104 L532,300 C380,272 240,210 128,140 Z" fill="rgba(46,90,65,0.10)"/>
+        <!-- history -->
+        <path d="M48,96 C70,88 95,104 128,140" fill="none" stroke="#55524A" stroke-width="2"/>
+        <!-- BAU -->
+        <path d="M128,140 C190,128 300,118 532,104" fill="none" stroke="rgba(27,25,22,0.45)" stroke-width="1.5" stroke-dasharray="5 4"/>
+        <!-- net pathway -->
+        <path d="M128,140 C220,200 360,258 532,300" fill="none" stroke="#2E5A41" stroke-width="2.5"/>
+        <!-- FY30 marker -->
+        <line x1="214" y1="60" x2="214" y2="316" stroke="rgba(46,90,65,0.4)" stroke-width="1" stroke-dasharray="2 3"/>
+        <circle cx="214" cy="192" r="4" fill="#2E5A41"/>
+        <!-- annotation 1 -->
+        <g font-family="Inter,sans-serif" font-size="11">
+          <line x1="222" y1="180" x2="262" y2="148" stroke="rgba(27,25,22,0.3)" stroke-width="1"/>
+          <text x="268" y="142" fill="#1B1916" font-weight="600">FY30: &#8722;42% vs FY20</text>
+          <text x="268" y="158" fill="#55524A">short of a 1.5&#176;C-aligned ~50% cut.</text>
+          <text x="268" y="174" fill="#55524A">The gap is the conversation.</text>
+        </g>
+        <!-- annotation 2 -->
+        <g font-family="Inter,sans-serif" font-size="11">
+          <text x="330" y="246" fill="#2E5A41" font-weight="600">Every wedge traces to a</text>
+          <text x="330" y="262" fill="#2E5A41" font-weight="600">published source.</text>
+        </g>
+        <!-- series labels -->
+        <g font-family="Inter,sans-serif" font-size="10" fill="#8C887D">
+          <text x="466" y="96">Business as usual</text>
+          <text x="452" y="292" fill="#2E5A41">Net pathway</text>
+        </g>
+      </svg>
+      <figcaption>Fig. 02 &mdash; Scope 1 &amp; 2 pathway, illustrative. Sources: DCCEEW 2025 grid factors; NVES Act 2024; CSIRO Net Zero Pathways. In the editorial direction, each case study carries one designed, annotated figure: the chart states its conclusion instead of asking the reader to operate it.</figcaption>
+    </figure>
+  </div>
+</div>
+</section>
+
+<section id="career">
+<div class="wrap">
+  <div class="kicker">Career</div>
+  <div class="fact-row">
+    <div class="fact"><span class="when">2026 &mdash;</span><span class="what"><strong>Senior Sustainability Advisor</strong> &middot; Group reporting, decarbonisation modelling, statutory disclosure</span><span class="org">Downer EDI</span></div>
+    <div class="fact"><span class="when">2022 &ndash; 26</span><span class="what"><strong>Sustainability &amp; Climate Change Consultant</strong> &middot; GHG baselines, GRESB, NSW Treasury policy input</span><span class="org">WSP in Australia</span></div>
+    <div class="fact"><span class="when">2020 &ndash; 22</span><span class="what"><strong>Assistant Project Officer</strong> &middot; capital infrastructure delivery, $3.2bn portfolio</span><span class="org">Dept. of Defence</span></div>
+    <div class="fact"><span class="when">&ndash; 2020</span><span class="what"><strong>BEng (Hons I), Civil Engineering with Architecture</strong> &middot; Dean&rsquo;s Honours List</span><span class="org">UNSW</span></div>
+  </div>
+</div>
+</section>
+
+<section id="contact">
+<div class="wrap">
+  <div class="kicker">Contact</div>
+  <p class="big">Open to senior sustainability roles where the supply chain is the main event.</p>
+  <div class="cta-row">
+    <a class="cta solid" href="https://linkedin.com/in/itchriswang">LinkedIn</a>
+    <a class="cta" href="#">Download CV (PDF)</a>
+  </div>
+</div>
+</section>
+
+<section id="notes">
+<div class="wrap">
+  <div class="kicker">Design notes &mdash; this panel is not part of the site</div>
+  <div class="note-grid">
+    <div>
+      <p class="spec">Fraunces <small>Display serif &mdash; headlines, pull quotes, the editorial voice. Replaces Space Grotesk.</small></p>
+      <p class="spec" style="font-family:var(--sans);font-weight:500;margin-top:1.25rem">Inter <small>Everything else. JetBrains Mono is retired; small caps and letterspacing do the labelling work.</small></p>
+      <div class="swatches">
+        <div class="sw"><i style="background:#F7F5F0"></i><span>Paper #F7F5F0</span></div>
+        <div class="sw"><i style="background:#1B1916"></i><span>Ink #1B1916</span></div>
+        <div class="sw"><i style="background:#2E5A41"></i><span>Moss #2E5A41<br>(only accent)</span></div>
+        <div class="sw"><i style="background:#EFECE4"></i><span>Panel #EFECE4</span></div>
+      </div>
+    </div>
+    <ul>
+      <li><strong>One accent colour</strong> replaces the five-colour SaaS palette. Restraint is the credibility signal for fashion and corporate-strategy audiences.</li>
+      <li><strong>No decorative animation.</strong> No grain, contours, scramble effects, counters, or role cycling. Whitespace and type scale carry the hierarchy.</li>
+      <li><strong>Charts are figures, not widgets.</strong> Each case study gets one static, annotated graphic that states its conclusion. The interactive model survives as a single appendix artifact.</li>
+      <li><strong>The warming stripes stay</strong> &mdash; reduced to a quiet horizon line above the footer. It is the one decorative element that is about the subject matter.</li>
+      <li><strong>Reading order:</strong> positioning &rarr; point of view &rarr; three case studies &rarr; career facts &rarr; contact. Built for the 60-second recruiter first.</li>
+    </ul>
+  </div>
+</div>
+</section>
+
+<footer>
+  <div class="stripes" role="img" aria-label="Warming stripes: global mean temperature 1850 to 2025, blue to deep red" title="After Ed Hawkins / #ShowYourStripes"></div>
+  <div class="foot-inner">
+    <span>Christopher Wang &middot; 2026</span>
+    <span>Stripes after Ed Hawkins / #ShowYourStripes &middot; HadCRUT5</span>
+  </div>
+</footer>
+
+</body>
+</html>
