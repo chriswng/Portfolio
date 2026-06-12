@@ -93,11 +93,6 @@ section:last-of-type{border-bottom:none}
 .pipe-step:hover{background:var(--red-bg)}
 .pipe-n{font-family:var(--mono);font-size:0.66rem;letter-spacing:0.1em;color:var(--subtle);width:1.7rem;flex-shrink:0}
 .pipe-label{font-family:var(--mono);font-size:0.8rem;letter-spacing:0.09em;text-transform:uppercase;font-weight:600;color:var(--slate);transition:color 0.3s}
-.ticker-band{overflow:hidden;border-top:1px solid var(--rule-dk);border-bottom:1px solid var(--rule-dk);padding:0.75rem 0;background:#F1F5F9;cursor:default;position:relative}
-.ticker-track{display:flex;white-space:nowrap;animation:tick 40s linear infinite;will-change:transform}
-.ticker-band:hover .ticker-track{animation-play-state:paused}
-.ticker-run{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.13em;text-transform:uppercase;color:#64748B;flex-shrink:0}
-@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 #expertise{background:#F1F5F9;padding:clamp(4.5rem,10vw,7rem) 0}
 .exp-cols{display:grid;gap:3rem}
 @media(min-width:700px){.exp-cols{grid-template-columns:1fr 1fr;gap:3rem}}@media(min-width:960px){.exp-cols{grid-template-columns:1fr 1fr 1fr;gap:2.5rem}}
@@ -356,15 +351,6 @@ footer{border-top:1px solid var(--rule-dk);background:var(--slate);position:rela
 
 /* Artefact stagger removed for visual balance */
 
-/* ---- Ticker interactive terms ---- */
-.t-term{cursor:pointer;padding:0 0.12em;border-radius:1px;transition:background 0.18s ease,color 0.18s ease;letter-spacing:0.13em}
-.t-term:hover{background:var(--matcha);color:var(--bg)}
-.t-term.t-active{background:var(--matcha);color:var(--bg)}
-.t-sep{color:var(--mid);letter-spacing:0;flex-shrink:0}
-.ticker-tip{position:fixed;background:var(--slate);color:var(--bg);font-family:var(--mono);font-size:0.58rem;letter-spacing:0.03em;padding:0.65rem 1.9rem 0.65rem 0.8rem;z-index:10001;pointer-events:none;max-width:260px;line-height:1.6;border-left:2px solid var(--matcha);opacity:0;transition:opacity 0.15s;white-space:normal}
-.ticker-tip.vis{opacity:1;pointer-events:auto}
-.ticker-tip-close{position:absolute;top:0.25rem;right:0.4rem;font-family:var(--mono);font-size:0.85rem;line-height:1;color:rgba(248,250,252,0.55);background:none;border:none;cursor:pointer;padding:0.15rem 0.25rem;transition:color 0.2s}
-.ticker-tip-close:hover{color:var(--matcha)}
 
 /* ---- Responsive padding fixes ---- */
 @media(min-width:800px){section{padding:clamp(5rem,10vw,7rem) 0}#about{padding:clamp(1.75rem,4vw,2.5rem) 0 clamp(2rem,4vw,3rem)}#scenario{padding:clamp(5.5rem,12vw,9rem) 0}}
@@ -659,6 +645,41 @@ footer{border-top:1px solid var(--rule-dk);background:var(--slate);position:rela
 @keyframes pipeflow{to{background-position:0 14px}}
 @media(max-width:720px){.pipeline::before{display:none}}
 
+/* ---- Case studies: decision narratives ---- */
+#case-studies{background:#F1F5F9;padding:clamp(4.5rem,10vw,7rem) 0}
+.cs-intro{font-size:clamp(1rem,2.2vw,1.2rem);font-weight:300;color:#475569;max-width:640px;line-height:1.65;margin-bottom:3rem}
+.cs{background:var(--white);border:1px solid var(--rule-dk);margin-bottom:2rem}
+.cs-head{display:flex;align-items:flex-start;gap:1.25rem;padding:1.5rem 1.75rem;border-bottom:1px solid var(--rule-lt);flex-wrap:wrap}
+.cs-num{font-family:var(--mono);font-size:0.66rem;letter-spacing:0.16em;color:#75821D;font-weight:700;padding-top:0.45rem}
+.cs-head-main{flex:1;min-width:240px}
+.cs-title{font-family:var(--disp);font-size:clamp(1.1rem,2.6vw,1.4rem);font-weight:700;letter-spacing:-0.02em;color:var(--slate);line-height:1.25;margin-bottom:0.35rem}
+.cs-meta{font-family:var(--mono);font-size:0.64rem;color:var(--mid);letter-spacing:0.04em;line-height:1.5}
+.cs-stat{margin-left:auto;text-align:right}
+.cs-stat-v{font-family:var(--disp);font-size:clamp(1.6rem,4vw,2.2rem);font-weight:700;color:var(--matcha);line-height:1;letter-spacing:-0.02em}
+.cs-stat-l{font-family:var(--mono);font-size:0.58rem;color:var(--mid);letter-spacing:0.06em;text-transform:uppercase;margin-top:0.35rem;max-width:160px}
+.cs-grid{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule-lt)}
+@media(min-width:760px){.cs-grid{grid-template-columns:repeat(4,1fr)}}
+.cs-block{background:var(--white);padding:1.25rem 1.5rem}
+.cs-block h4{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:#75821D;font-weight:700;margin-bottom:0.6rem}
+.cs-block p{font-size:0.82rem;font-weight:400;color:#475569;line-height:1.7}
+.cs-handover{padding:1.1rem 1.75rem;border-top:1px solid var(--rule-lt);background:#FAFBFC;font-size:0.8rem;font-weight:400;color:#475569;line-height:1.65}
+.cs-handover strong{display:block;font-family:var(--mono);font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--slate);font-weight:600;margin-bottom:0.25rem}
+.cs-handover a{color:#75821D;font-weight:600;text-decoration:none;border-bottom:1px solid rgba(181,196,43,0.5);transition:color 0.2s,border-color 0.2s}
+.cs-handover a:hover{color:var(--matcha);border-bottom-color:var(--matcha)}
+.cs-more{margin-top:3rem}
+.cs-more-grid{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule-dk);border:1px solid var(--rule-dk)}
+@media(min-width:700px){.cs-more-grid{grid-template-columns:1fr 1fr}}
+.cs-more-item{background:var(--white);padding:1.15rem 1.35rem}
+.cs-more-name{font-weight:600;font-size:0.85rem;color:var(--slate);margin-bottom:0.3rem}
+.cs-more-body{font-size:0.78rem;font-weight:400;color:#475569;line-height:1.65;margin-bottom:0.4rem}
+.cs-more-tag{font-family:var(--mono);font-size:0.6rem;color:var(--mid);letter-spacing:0.03em;line-height:1.5}
+.cs,.cs-more-item{opacity:0;transform:translateY(20px);transition:opacity 0.65s var(--ease),transform 0.65s var(--ease)}
+.cs.revealed,.cs-more-item.revealed{opacity:1;transform:none}
+
+/* ---- Scenario as artifact: written conclusion above the model ---- */
+.tool-conclusion{background:var(--white);border-left:4px solid var(--matcha);padding:1.1rem 1.4rem;margin-top:1.25rem;font-size:0.92rem;font-weight:400;color:#334155;line-height:1.7;max-width:760px;box-shadow:0 1px 2px rgba(15,23,42,0.05)}
+.tool-conclusion strong{font-weight:600;color:var(--slate)}
+
 </style>
 </head><body>
 <div class="grain-overlay" aria-hidden="true"></div>
@@ -669,9 +690,9 @@ footer{border-top:1px solid var(--rule-dk);background:var(--slate);position:rela
       <a href="#about"><span class="ntl"><span>[ About ]</span><span aria-hidden="true">[ About ]</span></span></a>
       <a href="#bio"><span class="ntl"><span>[ Pipeline ]</span><span aria-hidden="true">[ Pipeline ]</span></span></a>
       <a href="#principles"><span class="ntl"><span>[ Approach ]</span><span aria-hidden="true">[ Approach ]</span></span></a>
-      <a href="#scenario"><span class="ntl"><span>[ Model ]</span><span aria-hidden="true">[ Model ]</span></span></a>
-      <a href="work/"><span class="ntl"><span>[ Work ]</span><span aria-hidden="true">[ Work ]</span></span></a>
+      <a href="#case-studies"><span class="ntl"><span>[ Case Studies ]</span><span aria-hidden="true">[ Case Studies ]</span></span></a>
       <a href="#experience"><span class="ntl"><span>[ Experience ]</span><span aria-hidden="true">[ Experience ]</span></span></a>
+      <a href="#scenario"><span class="ntl"><span>[ Model ]</span><span aria-hidden="true">[ Model ]</span></span></a>
       <a href="#contact"><span class="ntl"><span>[ Contact ]</span><span aria-hidden="true">[ Contact ]</span></span></a>
     </div>
   </div>
@@ -684,7 +705,7 @@ footer{border-top:1px solid var(--rule-dk);background:var(--slate);position:rela
   <h1 class="hero-name">Christopher <em>Wang</em></h1>
   <div class="hero-cycle"><span id="role-cycle">Sustainability Advisor</span></div>
   <div class="hero-meta">
-    <a href="https://linkedin.com/in/itschriswang" target="_blank" rel="noopener">linkedin.com/in/itschriswang</a>
+    <a href="https://linkedin.com/in/itchriswang" target="_blank" rel="noopener">linkedin.com/in/itchriswang</a>
     <span>Melbourne, Australia</span>
   </div>
   <p class="hero-prop">I help large organisations turn emissions data into governed reporting infrastructure and credible decarbonisation pathways. The work is repeatable, auditable, and built to be owned by the team.</p>
@@ -890,129 +911,92 @@ footer{border-top:1px solid var(--rule-dk);background:var(--slate);position:rela
 </div>
 </section>
 
-<div class="ticker-band" aria-hidden="true">
-  <div id="ticker-tip" class="ticker-tip" aria-hidden="true"></div>
-  <div class="ticker-track">
-    <span class="ticker-run"><span class="t-term" data-tip="Corporate value chain accounting standard: defines Scope 1, 2, and 3 emission boundaries and reporting methodology.">GHG Protocol</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="National Greenhouse and Energy Reporting Act: mandatory Australian corporate emissions reporting to DCCEEW.">NGER Act</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Australian mandatory climate disclosure standard aligned to ISSB S2, effective for large entities from FY2025.">AASB S2 / ISSB</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Annual supplier emissions disclosure programme managed on behalf of large buyer organisations via the CDP platform.">CDP Supply Chain</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Real assets ESG benchmark used by infrastructure fund managers and institutional investors for annual performance comparison.">GRESB Infrastructure</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Task Force on Climate-related Financial Disclosures: scenario analysis framework for transition and physical risk disclosure.">TCFD</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Science Based Targets initiative: validates near-term and long-term emission reduction targets against 1.5°C pathways.">SBTi</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="DCCEEW National Greenhouse Accounts emission factors, used for NGER fuel combustion and grid electricity calculations.">DCCEEW NGA Factors</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="External limited assurance over Group-level Scope 1 and 2 emissions for statutory and market reporting.">Externally Assured</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="IBM Envizi ESG Suite: platform for emissions data ingestion, normalisation, audit trail, and regulatory output.">Envizi</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Cloud-based platform for connected ESG and financial reporting with linked data, narrative, and disclosure workflow.">Workiva</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Net-zero Scope 1 and 2 emissions target by FY2050, with interim milestones and lever-tracked abatement pathways.">Net Zero FY2050</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Gross emissions scaled proportionally to revenue growth, isolates abatement impact from business volume changes.">Revenue-Indexed Forecasting</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Scope 2 accounting using supplier-specific emission rates or energy attribute certificates rather than grid averages.">Market-Based Scope 2</span><span class="t-sep"> &nbsp;&nbsp; </span></span>
-    <span class="ticker-run"><span class="t-term" data-tip="Corporate value chain accounting standard: defines Scope 1, 2, and 3 emission boundaries and reporting methodology.">GHG Protocol</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="National Greenhouse and Energy Reporting Act: mandatory Australian corporate emissions reporting to DCCEEW.">NGER Act</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Australian mandatory climate disclosure standard aligned to ISSB S2, effective for large entities from FY2025.">AASB S2 / ISSB</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Annual supplier emissions disclosure programme managed on behalf of large buyer organisations via the CDP platform.">CDP Supply Chain</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Real assets ESG benchmark used by infrastructure fund managers and institutional investors for annual performance comparison.">GRESB Infrastructure</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Task Force on Climate-related Financial Disclosures: scenario analysis framework for transition and physical risk disclosure.">TCFD</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Science Based Targets initiative: validates near-term and long-term emission reduction targets against 1.5°C pathways.">SBTi</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="DCCEEW National Greenhouse Accounts emission factors, used for NGER fuel combustion and grid electricity calculations.">DCCEEW NGA Factors</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="External limited assurance over Group-level Scope 1 and 2 emissions for statutory and market reporting.">Externally Assured</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="IBM Envizi ESG Suite: platform for emissions data ingestion, normalisation, audit trail, and regulatory output.">Envizi</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Cloud-based platform for connected ESG and financial reporting with linked data, narrative, and disclosure workflow.">Workiva</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Net-zero Scope 1 and 2 emissions target by FY2050, with interim milestones and lever-tracked abatement pathways.">Net Zero FY2050</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Gross emissions scaled proportionally to revenue growth, isolates abatement impact from business volume changes.">Revenue-Indexed Forecasting</span><span class="t-sep"> &nbsp;&middot;&nbsp; </span><span class="t-term" data-tip="Scope 2 accounting using supplier-specific emission rates or energy attribute certificates rather than grid averages.">Market-Based Scope 2</span><span class="t-sep"> &nbsp;&nbsp; </span></span>
-  </div>
-</div>
-
-<section id="scenario">
+<section id="case-studies">
 <div class="wrap">
-  <div class="label" data-num="02">Decarbonisation Scenario Model</div>
-  <p class="tool-decl" id="tool-decl-text">Every lever has a source. <strong>Set the levers, then read the story.</strong></p>
-  <p class="tool-sub" id="tool-sub-text">A working version of the pathway models I build for clients. Lever assumptions are drawn from DCCEEW 2025 grid emission factor tables, the NVES Act 2024 (LV fleet), and CSIRO Net Zero Pathways, the same sources used in production models.</p>
-  <span class="tool-disc">Illustrative model &middot; stylised numbers &middot; not client data &middot; FY30 used as the interim target year</span>
+  <div class="label" data-num="02">Case Studies</div>
+  <p class="cs-intro">Three engagements, told as decisions rather than deliverables: the situation, the constraint, the call that was made, and what it changed.</p>
 
-  <div class="scn-step">
-    <div class="scn-step-head">
-      <span class="scn-step-num">Step 01</span>
-      <h3 class="scn-step-title">Choose an operating profile</h3>
-      <p class="scn-step-sub">Each profile loads a different emissions mix and its own set of abatement levers.</p>
+  <article class="cs">
+    <header class="cs-head">
+      <span class="cs-num">01</span>
+      <div class="cs-head-main">
+        <h3 class="cs-title">GRESB Infrastructure: a 35% score uplift, then handed back</h3>
+        <div class="cs-meta">Major Australian energy distributor &middot; WSP in Australia &middot; GRESB Infrastructure Assessment</div>
+      </div>
+      <div class="cs-stat"><div class="cs-stat-v">+35%</div><div class="cs-stat-l">score, year one</div></div>
+    </header>
+    <div class="cs-grid">
+      <div class="cs-block"><h4>The situation</h4><p>An Australian energy distributor faced its GRESB Infrastructure Assessment with investor attention on the score and no internal process for producing the submission. The evidence existed, spread across asset, risk, and corporate teams, but nobody owned it end to end.</p></div>
+      <div class="cs-block"><h4>The constraint</h4><p>One submission window a year, a fixed team, and a benchmark that rewards documented process over good intentions. Improving everything at once was not an option; the cycle would be won or lost on where the effort went.</p></div>
+      <div class="cs-block"><h4>The call</h4><p>Treat it as data-collection reform, not disclosure writing. Gap analysis first, then effort ranked by the points available per unit of work across the management, performance, and stakeholder engagement components, with the methodology documented as we went.</p></div>
+      <div class="cs-block"><h4>The outcome</h4><p>A 35% score improvement in the first assessment cycle. More durable: the process was handed back as an internally operable one, structured to run from year two without advisory support.</p></div>
     </div>
-    <div class="seg-row" id="seg-sector" role="group" aria-label="Organisation type">
-      <button type="button" class="seg-btn on" data-value="infrastructure">Infrastructure</button>
-      <button type="button" class="seg-btn" data-value="property">Commercial Property</button>
-      <button type="button" class="seg-btn" data-value="government">Government</button>
-      <button type="button" class="seg-btn" data-value="textile">Textile Retail</button>
-    </div>
-    <p id="sector-desc" class="sector-desc">Infrastructure: heavy plant, diesel fleet, and mechanical processes drive the Scope&nbsp;1 footprint. Grid decarbonisation delivers Scope&nbsp;2 reduction.</p>
-  </div>
+    <div class="cs-handover"><strong>What stayed behind</strong>A documented assessment methodology and a reformed data collection process the client operates independently.</div>
+  </article>
 
-  <div class="scn-step">
-    <div class="scn-step-head">
-      <span class="scn-step-num">Step 02</span>
-      <h3 class="scn-step-title">Set the abatement levers</h3>
-      <p class="scn-step-sub">Every lever traces to a published source. Card colours match the wedges in the chart below.</p>
+  <article class="cs">
+    <header class="cs-head">
+      <span class="cs-num">02</span>
+      <div class="cs-head-main">
+        <h3 class="cs-title">A net zero pathway model the board could interrogate</h3>
+        <div class="cs-meta">Downer EDI &middot; Group climate strategy &middot; DCCEEW 2025 / NVES Act 2024 / CSIRO Net Zero Pathways</div>
+      </div>
+      <div class="cs-stat"><div class="cs-stat-v">Board</div><div class="cs-stat-l">presented by senior leadership</div></div>
+    </header>
+    <div class="cs-grid">
+      <div class="cs-block"><h4>The situation</h4><p>The Group&rsquo;s climate strategy needed a net zero pathway the board could engage with directly, and business units needed a common reference for tracking abatement progress against it.</p></div>
+      <div class="cs-block"><h4>The constraint</h4><p>The audience was directors, not analysts. A black-box consultant model fails the first hard question, and a tool that needs ongoing advisory support to operate was never going to be accepted.</p></div>
+      <div class="cs-block"><h4>The call</h4><p>Make every assumption traceable or leave it out. The model is toggle-based, each lever sourced to published data: DCCEEW 2025 grid factor projections, NVES Act 2024 fleet trajectories, CSIRO Net Zero Pathways. A director asking &ldquo;what if the grid is slower?&rdquo; watches the answer move; an analyst can trace any number to its source.</p></div>
+      <div class="cs-block"><h4>The outcome</h4><p>Presented to the board by senior leadership as part of the Group&rsquo;s climate strategy, and adopted as the internal reference tool for tracking business-unit abatement progress, operated without me in the loop.</p></div>
     </div>
-    <div class="lever-deck">
-      <div class="lever-card" style="--lc:var(--indigo)">
-        <div class="lever-top"><span class="lever-dot" aria-hidden="true"></span><span class="lever-name" id="lev-grid-name">Grid Decarbonisation</span></div>
-        <div class="lever-src" id="lev-grid-src">DCCEEW 2025 Table 42 NEM trajectory</div>
-        <div class="seg-row seg-sm" data-key="grid" role="group" aria-label="Grid decarbonisation scenario" style="--sc:var(--indigo)">
-          <button type="button" class="seg-btn on" data-value="base">Base</button>
-          <button type="button" class="seg-btn" data-value="faster">Faster</button>
-          <button type="button" class="seg-btn" data-value="slower">Slower</button>
-          <button type="button" class="seg-btn" data-value="off">Off</button>
-        </div>
-      </div>
-      <div class="lever-card" style="--lc:var(--matcha)">
-        <div class="lever-top"><span class="lever-dot" aria-hidden="true"></span><span class="lever-name" id="lev-lv-name">LV Fleet Transition</span></div>
-        <div class="lever-src" id="lev-lv-src">NVES Act 2024 &middot; 1-yr adoption lag</div>
-        <div class="seg-row seg-sm" data-key="lv" role="group" aria-label="LV fleet scenario" style="--sc:#75821D">
-          <button type="button" class="seg-btn on" data-value="base">Base</button>
-          <button type="button" class="seg-btn" data-value="faster">Faster</button>
-          <button type="button" class="seg-btn" data-value="slower">Slower</button>
-        </div>
-      </div>
-      <div class="lever-card" style="--lc:var(--amber)">
-        <div class="lever-top"><span class="lever-dot" aria-hidden="true"></span><span class="lever-name" id="lev-hv-name">HV Fleet Transition</span></div>
-        <div class="lever-src" id="lev-hv-src">CSIRO Net Zero Pathways 2023 &middot; 1-yr lag</div>
-        <div class="seg-row seg-sm" data-key="hv" role="group" aria-label="HV fleet scenario" style="--sc:#B56A00">
-          <button type="button" class="seg-btn on" data-value="base">Base</button>
-          <button type="button" class="seg-btn" data-value="faster">Faster</button>
-          <button type="button" class="seg-btn" data-value="slower">Slower</button>
-        </div>
-      </div>
-      <div class="lever-card" style="--lc:var(--berry)">
-        <div class="lever-top"><span class="lever-dot" aria-hidden="true"></span><span class="lever-name" id="lev-plant-name">Plant Electrification</span></div>
-        <div class="lever-src" id="lev-plant-src">Industry plant electrification analysis</div>
-        <div class="seg-row seg-sm" data-key="plant" role="group" aria-label="Plant electrification scenario" style="--sc:var(--berry)">
-          <button type="button" class="seg-btn on" data-value="base">Base</button>
-          <button type="button" class="seg-btn" data-value="faster">Faster</button>
-          <button type="button" class="seg-btn" data-value="slower">Slower</button>
-          <button type="button" class="seg-btn" data-value="off">Off</button>
-        </div>
-      </div>
-      <div class="lever-card lever-card-rev" style="--lc:var(--step-comms)">
-        <div class="lever-top"><span class="lever-dot" aria-hidden="true"></span><span class="lever-name" id="lev-rev-name">Volume / Revenue Growth Assumption</span></div>
-        <div class="lever-src">Scales gross emissions before abatement is applied</div>
-        <div class="seg-row seg-sm" data-key="rev" role="group" aria-label="Growth assumption" style="--sc:var(--step-comms)">
-          <button type="button" class="seg-btn" data-value="flat">Flat</button>
-          <button type="button" class="seg-btn on" data-value="moderate">+1.5% / yr</button>
-          <button type="button" class="seg-btn" data-value="high">+3.0% / yr</button>
-        </div>
-      </div>
-    </div>
-  </div>
+    <div class="cs-handover"><strong>See it work</strong>A working version of this model class is <a href="#scenario">the artifact at the bottom of this page</a>. Set the levers yourself.</div>
+  </article>
 
-  <div class="scn-step">
-    <div class="scn-step-head">
-      <span class="scn-step-num">Step 03</span>
-      <h3 class="scn-step-title">Read the result</h3>
-      <p class="scn-step-sub">The headline rewrites itself as you move the levers, the way a board slide should.</p>
+  <article class="cs">
+    <header class="cs-head">
+      <span class="cs-num">03</span>
+      <div class="cs-head-main">
+        <h3 class="cs-title">One reporting methodology for every NSW agency</h3>
+        <div class="cs-meta">NSW Treasury &middot; Net Zero Government Operations Policy &middot; via WSP in Australia</div>
+      </div>
+      <div class="cs-stat"><div class="cs-stat-v">WoG</div><div class="cs-stat-l">whole-of-government framework</div></div>
+    </header>
+    <div class="cs-grid">
+      <div class="cs-block"><h4>The situation</h4><p>NSW Treasury was developing the Net Zero Government Operations policy: a single emissions reporting framework for agencies ranging from data-mature operators to small bodies with almost no measurement history.</p></div>
+      <div class="cs-block"><h4>The constraint</h4><p>A methodology strict enough to make agency numbers comparable would exclude half the agencies. One loose enough to include everyone would produce numbers nobody could defend. Boundary treatment had to be settled once, for the whole of government.</p></div>
+      <div class="cs-block"><h4>The call</h4><p>Align the boundary to NGER operational control, so agencies already reporting are not asked to report two ways, and structure a data tier hierarchy that gives limited-data agencies a legitimate proxy-based entry point with a defined upgrade path: included at lower confidence rather than exempted.</p></div>
+      <div class="cs-block"><h4>The outcome</h4><p>The technical input on boundary definition and agency-level methodology was incorporated into the whole-of-government policy framework applied across NSW agencies.</p></div>
     </div>
-    <p class="takeaway" id="takeaway" aria-live="polite">&middot;</p>
-    <div class="kpi-strip">
-      <div class="kpi"><div class="kpi-l">FY20 Baseline</div><div class="kpi-v" id="kpi-base-v">347k t</div></div>
-      <div class="kpi"><div class="kpi-l">FY26 Actuals</div><div class="kpi-v" id="kpi-fy26-v">271k t</div></div>
-      <div class="kpi live"><div class="kpi-l">FY30 Net</div><div class="kpi-v" id="kpi-net">&middot;</div></div>
-      <div class="kpi live"><div class="kpi-l">FY30 vs FY20</div><div class="kpi-v" id="kpi-pct">&middot;</div></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-head"><div class="chart-title" id="chart-title">Scope 1 &amp; 2 emissions pathway to FY50</div></div>
-      <div class="chart-sub">tCO&#x2082;-e per year &middot; coloured wedges show the abatement each lever contributes against business&#8209;as&#8209;usual</div>
-      <div class="chart-wrap"><canvas id="mainChart"></canvas></div>
-      <div class="chart-legend" id="chart-legend" aria-hidden="true"></div>
-    </div>
-    <div class="contrib-card" style="margin-top:1.5rem">
-      <div class="contrib-head" id="contrib-head-text">Abatement contribution by lever at FY30 (interim target year): tCO&#x2082;-e avoided vs. gross pathway</div>
-      <div class="cbar"><div class="cbar-name" id="cbar-name-grid">Grid (Scope 2)</div><div class="cbar-track"><div class="cbar-fill" id="cb-grid" style="width:0%;background:var(--indigo)"></div></div><div class="cbar-val" id="cv-grid">&middot;</div></div>
-      <div class="cbar"><div class="cbar-name" id="cbar-name-lv">LV Fleet</div><div class="cbar-track"><div class="cbar-fill" id="cb-lv" style="width:0%;background:var(--matcha)"></div></div><div class="cbar-val" id="cv-lv">&middot;</div></div>
-      <div class="cbar"><div class="cbar-name" id="cbar-name-hv">HV Fleet</div><div class="cbar-track"><div class="cbar-fill" id="cb-hv" style="width:0%;background:var(--amber)"></div></div><div class="cbar-val" id="cv-hv">&middot;</div></div>
-      <div class="cbar"><div class="cbar-name" id="cbar-name-plant">Plant Electrification</div><div class="cbar-track"><div class="cbar-fill" id="cb-plant" style="width:0%;background:var(--berry)"></div></div><div class="cbar-val" id="cv-plant">&middot;</div></div>
-    </div>
-  </div>
+    <div class="cs-handover"><strong>Why it matters</strong>Policy work is the same discipline as corporate reporting: the methodology decides whether the numbers can carry the commitment.</div>
+  </article>
 
-  <div class="scn-foot">
-    <p>More examples of this work: emissions baselines, decarbonisation roadmaps, MCA prioritisation, and lifecycle carbon assessment across infrastructure, built environment, and government.</p>
-    <a href="work/" class="btn btn-primary">View work samples &#x2192;</a>
+  <div class="cs-more">
+    <div class="outcomes-head">Also in the portfolio</div>
+    <div class="cs-more-grid">
+      <div class="cs-more-item">
+        <div class="cs-more-name">Emissions baseline framework</div>
+        <div class="cs-more-body">Scope 1&ndash;3 baseline structure showing where a footprint actually sits, and why a value chain dominated by Scope&nbsp;3 changes the entire reduction playbook. Sector variants for infrastructure, commercial property, and government.</div>
+        <div class="cs-more-tag">GHG Protocol &middot; NGER &middot; illustrative framework, not client data</div>
+      </div>
+      <div class="cs-more-item">
+        <div class="cs-more-name">Decarbonisation roadmap methodology</div>
+        <div class="cs-more-body">Three stages: baseline and constraints, quantified mitigation options across Scope 1&ndash;3, then a screened and sequenced roadmap with CAPEX implications and interim targets aligned to SBTi / AASB&nbsp;S2 scenarios.</div>
+        <div class="cs-more-tag">Applied across infrastructure, property, and government &middot; WSP in Australia</div>
+      </div>
+      <div class="cs-more-item">
+        <div class="cs-more-name">MCA prioritisation framework</div>
+        <div class="cs-more-body">Six-criteria screen &mdash; carbon impact, cost per tonne avoided, readiness, ability to influence, risks, co-benefits &mdash; for narrowing a long-list of initiatives into a roadmap stakeholders actually own. The framework structures the decision; it does not make it.</div>
+        <div class="cs-more-tag">Used alongside marginal abatement cost curves and capital planning alignment</div>
+      </div>
+      <div class="cs-more-item">
+        <div class="cs-more-name">Lifecycle carbon assessment</div>
+        <div class="cs-more-body">A1&ndash;A5 embodied carbon assessments for hospital and commercial fitout projects: material hotspot quantification and low-carbon specification recommendations referenced against GBCA and IStructE benchmarks.</div>
+        <div class="cs-more-tag">WSP in Australia</div>
+      </div>
+    </div>
   </div>
 </div>
 </section>
-
-
 
 <section id="experience">
 <div class="wrap">
@@ -1132,13 +1116,128 @@ footer{border-top:1px solid var(--rule-dk);background:var(--slate);position:rela
 </div>
 </section>
 
+<section id="scenario">
+<div class="wrap">
+  <div class="label" data-num="04">Artifact &middot; Scenario Model</div>
+  <p class="tool-decl" id="tool-decl-text">A working example of the model class in case study 02. <strong>Every lever has a source.</strong></p>
+  <p class="tool-sub" id="tool-sub-text">Explore how a boutique apparel brand can reduce Scope 3 emissions through freight mode shift (air &#8594; ocean), material substitution (virgin polyester &#8594; closed-loop bio-synthetics), low-impact dyeing processes, and renewable energy procurement. Multipliers scaled to illustrative boutique retail footprint.</p>
+  <span class="tool-disc">Illustrative model &middot; stylised numbers &middot; not client data &middot; FY30 used as the interim target year</span>
+  <p class="tool-conclusion"><strong>If you never touch a toggle, the model&rsquo;s point is this:</strong> for an apparel brand it is freight mode and material substitution that decide whether FY30 lands anywhere near a 1.5&deg;C-aligned cut &mdash; not office energy. Switch profiles and the same discipline holds: every wedge traces to a published source, and the headline recalculates from the levers, not from ambition.</p>
+
+  <div class="scn-step">
+    <div class="scn-step-head">
+      <span class="scn-step-num">Step 01</span>
+      <h3 class="scn-step-title">Choose an operating profile</h3>
+      <p class="scn-step-sub">Each profile loads a different emissions mix and its own set of abatement levers.</p>
+    </div>
+    <div class="seg-row" id="seg-sector" role="group" aria-label="Organisation type">
+      <button type="button" class="seg-btn on" data-value="textile">Textile Retail</button>
+      <button type="button" class="seg-btn" data-value="infrastructure">Infrastructure</button>
+      <button type="button" class="seg-btn" data-value="property">Commercial Property</button>
+      <button type="button" class="seg-btn" data-value="government">Government</button>
+    </div>
+    <p id="sector-desc" class="sector-desc">Boutique textile retail: air freight logistics and raw material sourcing (virgin polyester vs bio-synthetics) dominate the Scope&nbsp;3 footprint. Renewable energy procurement addresses Scope&nbsp;2.</p>
+  </div>
+
+  <div class="scn-step">
+    <div class="scn-step-head">
+      <span class="scn-step-num">Step 02</span>
+      <h3 class="scn-step-title">Set the abatement levers</h3>
+      <p class="scn-step-sub">Every lever traces to a published source. Card colours match the wedges in the chart below.</p>
+    </div>
+    <div class="lever-deck">
+      <div class="lever-card" style="--lc:var(--indigo)">
+        <div class="lever-top"><span class="lever-dot" aria-hidden="true"></span><span class="lever-name" id="lev-grid-name">Renewable Energy Procurement</span></div>
+        <div class="lever-src" id="lev-grid-src">RE100 trajectory &middot; market-based instrument adoption</div>
+        <div class="seg-row seg-sm" data-key="grid" role="group" aria-label="Grid decarbonisation scenario" style="--sc:var(--indigo)">
+          <button type="button" class="seg-btn on" data-value="base">Base</button>
+          <button type="button" class="seg-btn" data-value="faster">Faster</button>
+          <button type="button" class="seg-btn" data-value="slower">Slower</button>
+          <button type="button" class="seg-btn" data-value="off">Off</button>
+        </div>
+      </div>
+      <div class="lever-card" style="--lc:var(--matcha)">
+        <div class="lever-top"><span class="lever-dot" aria-hidden="true"></span><span class="lever-name" id="lev-lv-name">Enzyme Dyeing Process Adoption</span></div>
+        <div class="lever-src" id="lev-lv-src">Textile Exchange &middot; low-impact wet processing pathway</div>
+        <div class="seg-row seg-sm" data-key="lv" role="group" aria-label="LV fleet scenario" style="--sc:#75821D">
+          <button type="button" class="seg-btn on" data-value="base">Base</button>
+          <button type="button" class="seg-btn" data-value="faster">Faster</button>
+          <button type="button" class="seg-btn" data-value="slower">Slower</button>
+        </div>
+      </div>
+      <div class="lever-card" style="--lc:var(--amber)">
+        <div class="lever-top"><span class="lever-dot" aria-hidden="true"></span><span class="lever-name" id="lev-hv-name">Air-to-Ocean Freight Modal Shift</span></div>
+        <div class="lever-src" id="lev-hv-src">Clean Cargo WG &middot; container shipping decarbonisation</div>
+        <div class="seg-row seg-sm" data-key="hv" role="group" aria-label="HV fleet scenario" style="--sc:#B56A00">
+          <button type="button" class="seg-btn on" data-value="base">Base</button>
+          <button type="button" class="seg-btn" data-value="faster">Faster</button>
+          <button type="button" class="seg-btn" data-value="slower">Slower</button>
+        </div>
+      </div>
+      <div class="lever-card" style="--lc:var(--berry)">
+        <div class="lever-top"><span class="lever-dot" aria-hidden="true"></span><span class="lever-name" id="lev-plant-name">Biosynthetics Material Substitution</span></div>
+        <div class="lever-src" id="lev-plant-src">Textile Exchange Preferred Fiber Report &middot; closed-loop pathway</div>
+        <div class="seg-row seg-sm" data-key="plant" role="group" aria-label="Plant electrification scenario" style="--sc:var(--berry)">
+          <button type="button" class="seg-btn on" data-value="base">Base</button>
+          <button type="button" class="seg-btn" data-value="faster">Faster</button>
+          <button type="button" class="seg-btn" data-value="slower">Slower</button>
+          <button type="button" class="seg-btn" data-value="off">Off</button>
+        </div>
+      </div>
+      <div class="lever-card lever-card-rev" style="--lc:var(--step-comms)">
+        <div class="lever-top"><span class="lever-dot" aria-hidden="true"></span><span class="lever-name" id="lev-rev-name">Volume / Revenue Growth Assumption</span></div>
+        <div class="lever-src">Scales gross emissions before abatement is applied</div>
+        <div class="seg-row seg-sm" data-key="rev" role="group" aria-label="Growth assumption" style="--sc:var(--step-comms)">
+          <button type="button" class="seg-btn" data-value="flat">Flat</button>
+          <button type="button" class="seg-btn on" data-value="moderate">+1.5% / yr</button>
+          <button type="button" class="seg-btn" data-value="high">+3.0% / yr</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scn-step">
+    <div class="scn-step-head">
+      <span class="scn-step-num">Step 03</span>
+      <h3 class="scn-step-title">Read the result</h3>
+      <p class="scn-step-sub">The headline rewrites itself as you move the levers, the way a board slide should.</p>
+    </div>
+    <p class="takeaway" id="takeaway" aria-live="polite">&middot;</p>
+    <div class="kpi-strip">
+      <div class="kpi"><div class="kpi-l">FY20 Baseline</div><div class="kpi-v" id="kpi-base-v">42k t</div></div>
+      <div class="kpi"><div class="kpi-l">FY26 Actuals</div><div class="kpi-v" id="kpi-fy26-v">35k t</div></div>
+      <div class="kpi live"><div class="kpi-l">FY30 Net</div><div class="kpi-v" id="kpi-net">&middot;</div></div>
+      <div class="kpi live"><div class="kpi-l">FY30 vs FY20</div><div class="kpi-v" id="kpi-pct">&middot;</div></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-head"><div class="chart-title" id="chart-title">Value chain footprint pathway to FY50</div></div>
+      <div class="chart-sub">tCO&#x2082;-e per year &middot; coloured wedges show the abatement each lever contributes against business&#8209;as&#8209;usual</div>
+      <div class="chart-wrap"><canvas id="mainChart"></canvas></div>
+      <div class="chart-legend" id="chart-legend" aria-hidden="true"></div>
+    </div>
+    <div class="contrib-card" style="margin-top:1.5rem">
+      <div class="contrib-head" id="contrib-head-text">Abatement contribution by lever at FY30 (interim target year): tCO&#x2082;-e avoided vs. gross pathway</div>
+      <div class="cbar"><div class="cbar-name" id="cbar-name-grid">Renewable Energy</div><div class="cbar-track"><div class="cbar-fill" id="cb-grid" style="width:0%;background:var(--indigo)"></div></div><div class="cbar-val" id="cv-grid">&middot;</div></div>
+      <div class="cbar"><div class="cbar-name" id="cbar-name-lv">Enzyme Dyeing</div><div class="cbar-track"><div class="cbar-fill" id="cb-lv" style="width:0%;background:var(--matcha)"></div></div><div class="cbar-val" id="cv-lv">&middot;</div></div>
+      <div class="cbar"><div class="cbar-name" id="cbar-name-hv">Freight Modal Shift</div><div class="cbar-track"><div class="cbar-fill" id="cb-hv" style="width:0%;background:var(--amber)"></div></div><div class="cbar-val" id="cv-hv">&middot;</div></div>
+      <div class="cbar"><div class="cbar-name" id="cbar-name-plant">Biosynthetics</div><div class="cbar-track"><div class="cbar-fill" id="cb-plant" style="width:0%;background:var(--berry)"></div></div><div class="cbar-val" id="cv-plant">&middot;</div></div>
+    </div>
+  </div>
+
+  <div class="scn-foot">
+    <p>An artifact, not the argument: the engagements this model class comes from are in the case studies above. This version exists so the method can be interrogated.</p>
+    <a href="#case-studies" class="btn btn-secondary">Back to the case studies</a>
+  </div>
+</div>
+</section>
+
 <section id="contact">
 <div class="wrap">
-  <div class="label" data-num="04">Contact</div>
+  <div class="label" data-num="05">Contact</div>
   <div class="contact-avail term-line"><span class="term-prompt">&gt;&nbsp;</span><span class="term-text" id="term-text">open to senior advisory and lead sustainability roles.</span><span class="term-caret" aria-hidden="true"></span></div>
   <div class="contact-loc">Melbourne, Victoria &nbsp;&middot;&nbsp; Flexible on arrangement</div>
   <div class="btns">
-    <a href="https://linkedin.com/in/itschriswang" target="_blank" rel="noopener" class="btn btn-secondary">LinkedIn</a>
+    <a href="https://linkedin.com/in/itchriswang" target="_blank" rel="noopener" class="btn btn-secondary">LinkedIn</a>
   </div>
 </div>
 </section>
@@ -1191,19 +1290,6 @@ document.addEventListener('DOMContentLoaded',function(){
     });
   });
 });
-
-/* ---- A. Tab switching ---- */
-function showTab(id){
-  var ids=['baseline','roadmap','mca','lca'];
-  document.querySelectorAll('.tab').forEach(function(t,i){
-    t.classList.toggle('on',ids[i]===id);
-    t.setAttribute('aria-selected',ids[i]===id?'true':'false');
-  });
-  ids.forEach(function(k){
-    var p=document.getElementById('p-'+k);
-    if(p) p.classList.toggle('on',k===id);
-  });
-}
 
 /* ---- B. Sector profiles + mutable state ---- */
 var SECTOR_PROFILES={
@@ -1275,7 +1361,7 @@ var F_TEXTILE=(function(){
 })();
 
 /* ---- D. Scenario state + segmented controls ---- */
-var SCN={sector:'infrastructure',grid:'base',lv:'base',hv:'base',plant:'base',rev:'moderate'};
+var SCN={sector:'textile',grid:'base',lv:'base',hv:'base',plant:'base',rev:'moderate'};
 document.addEventListener('DOMContentLoaded',function(){
   /* Lever segments */
   document.querySelectorAll('#scenario .seg-row[data-key]').forEach(function(row){
@@ -1348,73 +1434,6 @@ function changeSector(){
   run();
 }
 
-/* ---- E. BASELINE_SECTORS + updateBaseline() ---- */
-var BASELINE_SECTORS={
-  infrastructure:{
-    claim:'Value chain emissions dominate the footprint, shaping where Net Zero action must focus.',
-    meta:'FY25 Baseline \u00b7 Scope 1-3 \u00b7 Illustrative: representative infrastructure portfolio. Not client data.',
-    s1:'11.5%',s2:'5.8%',s3:'82.7%',
-    s1b:'Stationary combustion, fleet, and process emissions. Highest direct control. Largest lever is fleet electrification.',
-    s2b:'Driven by grid emission factor trajectory and on-site renewable procurement (PPA / GreenPower).',
-    s3b:'Embodied carbon (Cat 1), transport and distribution (Cat 4), and downstream leased assets (Cat 13). Reduction requires design choices and supplier collaboration.',
-    cat1:'42.5%',cat4:'20.4%',cat13:'19.9%',cat1w:100,cat4w:48,cat13w:47,sk:[11.5,5.8,82.7,42.5,20.4,19.9]
-  },
-  property:{
-    claim:'Grid electricity and leased building operations drive the footprint. All-electric design and energy procurement are the primary reduction levers.',
-    meta:'FY25 Baseline \u00b7 Scope 1-3 \u00b7 Illustrative: representative commercial office portfolio. Not client data.',
-    s1:'8.2%',s2:'22.4%',s3:'69.4%',
-    s1b:'On-site plant and minor combustion sources. Lower direct emissions than infrastructure-heavy portfolios.',
-    s2b:'Dominant category. Building electricity drives most Scope 2 exposure. Grid decarbonisation and renewable procurement (PPA) are the primary levers.',
-    s3b:'Purchased goods and services (Cat 1), supplier transport (Cat 4), and downstream leased assets (Cat 13: tenant electricity) dominate.',
-    cat1:'22.0%',cat4:'12.6%',cat13:'34.8%',cat1w:63,cat4w:36,cat13w:100,sk:[8.2,22.4,69.4,22.0,12.6,34.8]
-  },
-  government:{
-    claim:'Scope 2 and light vehicle fleet are the primary decarbonisation targets; supply chain engagement is needed for material Scope 3 reduction.',
-    meta:'FY25 Baseline \u00b7 Scope 1-3 \u00b7 Illustrative: representative government operations portfolio. Not client data.',
-    s1:'12.1%',s2:'31.8%',s3:'56.1%',
-    s1b:'Primarily light vehicle fleet. Fleet electrification aligned to NVES trajectory is the primary Scope 1 lever.',
-    s2b:'Office buildings and facilities. Grid decarbonisation and GreenPower procurement provide the most immediate pathway to net-zero Scope 2.',
-    s3b:'Purchased goods and services (Cat 1), supplier logistics (Cat 4), and leased property (Cat 13). Supply chain engagement and procurement policy drive reduction.',
-    cat1:'25.4%',cat4:'18.2%',cat13:'12.5%',cat1w:100,cat4w:72,cat13w:49,sk:[12.1,31.8,56.1,25.4,18.2,12.5]
-  }
-};
-function updateBaseline(sector){
-  var d=BASELINE_SECTORS[sector];
-  if(!d) return;
-  document.getElementById('bl-claim-text').textContent=d.claim;
-  document.getElementById('bl-meta-text').textContent=d.meta;
-  document.getElementById('bl-s1').textContent=d.s1;
-  document.getElementById('bl-s2').textContent=d.s2;
-  document.getElementById('bl-s3').textContent=d.s3;
-  document.getElementById('bl-s1-body').textContent=d.s1b;
-  document.getElementById('bl-s2-body').textContent=d.s2b;
-  document.getElementById('bl-s3-body').textContent=d.s3b;
-  var tiles={
-    infrastructure:[
-      {h:'83% of emissions sit outside direct control',b:'Reduction requires design choices and supplier collaboration: not operations management alone. The playbook is different.'},
-      {h:'Embodied carbon is the dominant driver',b:'Category 1 is primarily construction materials. Concrete and steel represent roughly 26% of the total footprint. Highest leverage occurs before construction begins.'},
-      {h:'Use-phase performance affects long-term value',b:'~20% of emissions occur during building operation. Strong influence via all-electric design, NABERS ratings, and green lease structures.'}
-    ],
-    property:[
-      {h:'69% of emissions sit outside direct operational control',b:'Tenant electricity (Cat 13) and supply chain (Cat 1) dominate. Green leases and procurement policy are the primary reduction mechanisms.'},
-      {h:'Grid decarbonisation is the largest near-term lever',b:'Scope 2 represents 22% of the portfolio footprint. PPA procurement and grid decarbonisation trajectory drive the most immediate pathway to net-zero Scope 2.'},
-      {h:'All-electric design locks in long-term performance',b:'Asset use-phase emissions track the grid. All-electric fitout paired with a renewable PPA eliminates Scope 2 at the portfolio level over time.'}
-    ],
-    government:[
-      {h:'56% of emissions are in the supply chain',b:'Purchased goods and services (Cat 1) and leased property (Cat 13) dominate. Procurement policy and lease provisions are the primary reduction levers.'},
-      {h:'Fleet electrification is the primary Scope 1 lever',b:'Light vehicle fleet aligned to NVES trajectories accounts for most direct emissions. Electrification pace is the key variable for Scope 1 reduction.'},
-      {h:'GreenPower procurement addresses Scope 2 immediately',b:'Office electricity drives 32% of the footprint. 100% GreenPower procurement eliminates location-based Scope 2 and demonstrates leadership.'}
-    ]
-  };
-  var td=tiles[sector]||tiles.infrastructure;
-  ['1','2','3'].forEach(function(i){
-    var h=document.getElementById('impl-head-'+i);
-    var b=document.getElementById('impl-body-'+i);
-    if(h&&b){h.textContent=td[i-1].h;b.textContent=td[i-1].b;}
-  });
-}
-
-
 /* ---- O. Textile scenario mode ---- */
 var _currentMode='industrial';
 var TEXTILE_PROFILE={
@@ -1440,60 +1459,6 @@ var LEVER_LABELS={
     sub:'Explore how a boutique apparel brand can reduce Scope 3 emissions through freight mode shift (air → ocean), material substitution (virgin polyester → closed-loop bio-synthetics), low-impact dyeing processes, and renewable energy procurement. Multipliers scaled to illustrative boutique retail footprint.'
   }
 };
-
-/* ---- P. Ticker term tooltips (click to open, dismissible) ---- */
-document.addEventListener('DOMContentLoaded',function(){
-  var tip=document.getElementById('ticker-tip');
-  if(!tip) return;
-  var navH=48;
-  var activeTerm=null;
-  var tracks=document.querySelectorAll('.ticker-track');
-  function setTicker(state){
-    tracks.forEach(function(t){t.style.animationPlayState=state;});
-  }
-  // Build content holder + close button once
-  tip.innerHTML='<button type="button" class="ticker-tip-close" aria-label="Close">×</button><span class="ticker-tip-body"></span>';
-  var tipBody=tip.querySelector('.ticker-tip-body');
-  var tipClose=tip.querySelector('.ticker-tip-close');
-  function hideTip(){
-    tip.classList.remove('vis');
-    setTicker('running');
-    if(activeTerm){activeTerm.classList.remove('t-active');activeTerm=null;}
-  }
-  function showTip(el){
-    tipBody.textContent=el.getAttribute('data-tip');
-    tip.classList.add('vis');
-    setTicker('paused');
-    if(activeTerm) activeTerm.classList.remove('t-active');
-    activeTerm=el;el.classList.add('t-active');
-    // Position relative to the clicked term, then clamp to viewport
-    var r=el.getBoundingClientRect();
-    var tw=tip.offsetWidth,th=tip.offsetHeight;
-    var x=r.left,y=r.bottom+8;
-    if(y+th+8>window.innerHeight) y=r.top-th-8;
-    x=Math.max(8,Math.min(x,window.innerWidth-tw-8));
-    y=Math.max(navH+8,Math.min(y,window.innerHeight-th-8));
-    tip.style.left=x+'px';
-    tip.style.top=y+'px';
-  }
-  var hoverable=window.matchMedia('(hover:hover) and (pointer:fine)').matches;
-  document.querySelectorAll('.t-term').forEach(function(el){
-    el.addEventListener('click',function(e){
-      e.stopPropagation();
-      if(activeTerm===el){hideTip();return;}
-      showTip(el);
-    });
-    if(hoverable){
-      el.addEventListener('mouseenter',function(){showTip(el);});
-      el.addEventListener('mouseleave',function(){hideTip();});
-    }
-  });
-  tipClose.addEventListener('click',function(e){e.stopPropagation();hideTip();});
-  tip.addEventListener('click',function(e){e.stopPropagation();});
-  document.addEventListener('click',function(){if(tip.classList.contains('vis')) hideTip();});
-  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&tip.classList.contains('vis')) hideTip();});
-});
-
 
 /* ---- G. Nav IntersectionObserver ---- */
 (function(){
@@ -1605,7 +1570,7 @@ function initChart(){
       }
     });
     buildLegend();
-    run();
+    changeSector();
   }catch(e){console.error('Chart init error',e);}
 }
 
@@ -1736,6 +1701,7 @@ function run(){
   stagger('.exp-entry',90);stagger('.cap-entry',50);stagger('.scope-cell',55);
   stagger('.impl',55);stagger('.mca',45);stagger('.stage',65);
   stagger('.instr',60);stagger('.princ',80);stagger('.fw-card',50);stagger('.built-item',55);
+  stagger('.cs',90);stagger('.cs-more-item',55);
 })();
 
 /* ---- J. Contour field — animated emissions topology (marching squares) ---- */
