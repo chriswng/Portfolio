@@ -50,7 +50,7 @@ html{scroll-behavior:smooth}
   --downer:#8DC63F;
   --wsp:#F9423A;
   --defence:#1B1B1B;
-  --unsw:#E5B80B;
+  --unsw:#FFD100;
 }
 body{font-family:var(--sans);font-weight:300;font-size:0.9rem;color:var(--slate);background:var(--bg);line-height:1.75;-webkit-font-smoothing:antialiased}
 .nav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--rule-dk)}
@@ -256,6 +256,8 @@ section:last-of-type{border-bottom:none}
 .edu-grid{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule-dk);border:1px solid var(--rule-dk)}
 @media(min-width:640px){.edu-grid{grid-template-columns:1fr 1fr}}
 .edu-cell{background:var(--white);padding:1rem 1.1rem;border-left:3px solid var(--unsw)}
+.vivid-photos{margin-top:0.75rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.5rem}
+.vivid-photos img{width:100%;height:140px;object-fit:cover;border-radius:3px;display:block}
 .edu-cell-l{font-family:var(--mono);font-size:0.64rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);font-weight:600;margin-bottom:0.3rem}
 .edu-cell-b{font-size:0.82rem;font-weight:400;color:#334155;line-height:1.6}
 .edu-cell-b strong{font-weight:600;color:var(--slate)}
@@ -647,7 +649,7 @@ footer{border-top:1px solid var(--rule-dk);background:var(--slate);position:rela
 /* ---- Experience timeline rail: self-drawing, scroll-linked ---- */
 .exp-timeline{position:relative;padding-left:3.4rem}
 .exp-timeline::before{content:'';position:absolute;left:17px;top:4px;bottom:4px;width:2px;background:var(--rule-lt)}
-.exp-rail-fill{position:absolute;left:17px;top:4px;bottom:4px;width:2px;background:linear-gradient(180deg,var(--downer) 0%,var(--downer) 26%,var(--wsp) 42%,var(--wsp) 60%,var(--defence) 74%,var(--defence) 86%,var(--unsw) 100%);clip-path:inset(0 0 100% 0)}
+.exp-rail-fill{position:absolute;left:17px;top:4px;bottom:4px;width:2px;background:var(--downer);clip-path:inset(0 0 100% 0)}
 .exp-node{position:absolute;left:18px;transform:translateX(-50%);width:38px;height:38px;border-radius:50%;background:var(--bg);border:2px solid var(--rule-dk);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:0.48rem;font-weight:700;letter-spacing:0.05em;color:var(--subtle);transition:border-color 0.45s var(--ease),color 0.45s var(--ease),transform 0.45s var(--ease);z-index:1}
 .exp-node.lit{border-color:var(--nclr);color:var(--nclr);transform:translateX(-50%) scale(1.08)}
 @media(max-width:699px){
@@ -1126,8 +1128,21 @@ footer{border-top:1px solid var(--rule-dk);background:var(--slate);position:rela
         <div class="edu-cell-b"><strong>President, CEVSOC 2021</strong> &middot; Arc Club of the Year &middot; executive team of 56, 2,000-member society</div>
       </div>
       <div class="edu-cell">
-        <div class="edu-cell-l">Capstone</div>
-        <div class="edu-cell-b"><strong>Sustainable infrastructure masterplanning</strong> &middot; Green Star, NABERS, Envision</div>
+        <div class="edu-cell-l">Vivid Sydney 2019</div>
+        <div class="edu-cell-b">
+          <strong>Designer &mdash; "Celestial Pancake"</strong> &mdash; an 8&times;8m suspended fibre-optic light installation at Sydney's Overseas Passenger Terminal; the only student-built entry in Vivid 2019. 17,500 LEDs, 500km of fibre optic cabling, music-reactive patterns.
+          <div class="vivid-photos">
+            <a href="https://www.youtube.com/watch?v=ccB1hl_MdNM" target="_blank" rel="noopener" aria-label="Celestial Pancake build video">
+              <img src="https://img.youtube.com/vi/ccB1hl_MdNM/hqdefault.jpg" alt="Celestial Pancake light installation — Vivid Sydney 2019" loading="lazy">
+            </a>
+            <a href="https://www.youtube.com/watch?v=ccB1hl_MdNM" target="_blank" rel="noopener" aria-label="Celestial Pancake installation detail">
+              <img src="https://img.youtube.com/vi/ccB1hl_MdNM/2.jpg" alt="Celestial Pancake detail — Vivid Sydney 2019" loading="lazy">
+            </a>
+            <a href="https://www.youtube.com/watch?v=ccB1hl_MdNM" target="_blank" rel="noopener" aria-label="Celestial Pancake at Vivid Sydney">
+              <img src="https://img.youtube.com/vi/ccB1hl_MdNM/3.jpg" alt="Celestial Pancake at Vivid Sydney 2019" loading="lazy">
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -2066,6 +2081,14 @@ window.addEventListener('load',function(){
       var pt=parseFloat(getComputedStyle(en).paddingTop)||0;
       nodes[i].style.top=(en.offsetTop+pt+2)+'px';
     });
+    var stops=['var(--'+(entries[0].getAttribute('data-clr')||'matcha')+') 0%'];
+    for(var i=1;i<entries.length;i++){
+      var pct=(entries[i].offsetTop/railLen*100).toFixed(1);
+      stops.push('var(--'+(entries[i-1].getAttribute('data-clr')||'matcha')+') '+pct+'%');
+      stops.push('var(--'+(entries[i].getAttribute('data-clr')||'matcha')+') '+pct+'%');
+    }
+    stops.push('var(--'+(entries[entries.length-1].getAttribute('data-clr')||'matcha')+') 100%');
+    fill.style.background='linear-gradient(180deg,'+stops.join(',')+')';
   }
   function update(){
     var r=tl.getBoundingClientRect();
