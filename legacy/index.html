@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html lang="en-AU">
 <head>
-   <link rel="shortcut icon" type="image/x-icon" href="favicon.svg">
+   <link rel="shortcut icon" type="image/x-icon" href="/favicon.svg">
+<style>
+.legacy-banner{position:fixed;bottom:0;left:0;right:0;background:#0F172A;color:#F8FAFC;text-align:center;padding:10px 16px;font-family:'JetBrains Mono',monospace;font-size:12px;z-index:9999;display:flex;align-items:center;justify-content:center;gap:16px}
+.legacy-banner a{color:#B5C42B;text-decoration:none;border:1px solid #B5C42B;padding:4px 12px;border-radius:2px}
+.legacy-banner a:hover{background:#B5C42B;color:#0F172A}
+</style>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Christopher Wang: Sustainability Advisor. GHG inventory infrastructure, decarbonisation pathway modelling, and regulatory disclosure for infrastructure, built environment, and government. Based in Melbourne.">
@@ -659,135 +664,6 @@ footer{border-top:1px solid var(--rule-dk);background:var(--slate);position:rela
 @keyframes pipeflow{to{background-position:0 14px}}
 @media(max-width:720px){.pipeline::before{display:none}}
 
-/* ============================================================
-   OVERHAUL — "model · room · narrative" thesis, Selected Work,
-   report-book, expanding cards, glow CTA, node constellation,
-   and a bespoke inline-SVG system. Light-matcha, reduced-motion safe.
-   ============================================================ */
-:root{--p-model:var(--indigo);--p-room:var(--amber);--p-narr:var(--berry)}
-
-/* ---- Generic bespoke-SVG animation (draw strokes + pop fills) ---- */
-.svg-draw [data-draw]{stroke-dasharray:1;stroke-dashoffset:1}
-.svg-draw.in [data-draw]{stroke-dashoffset:0;transition:stroke-dashoffset 1.3s var(--ease)}
-.svg-draw [data-pop]{opacity:0;transform:translateY(6px);transform-box:fill-box;transform-origin:center}
-.svg-draw.in [data-pop]{opacity:1;transform:none;transition:opacity 0.6s var(--ease),transform 0.6s var(--ease)}
-.svg-draw.in [data-pop="1"]{transition-delay:0.15s}.svg-draw.in [data-pop="2"]{transition-delay:0.3s}
-.svg-draw.in [data-pop="3"]{transition-delay:0.45s}.svg-draw.in [data-pop="4"]{transition-delay:0.6s}
-.svg-draw.in [data-pop="5"]{transition-delay:0.75s}.svg-draw.in [data-pop="6"]{transition-delay:0.9s}
-@media(prefers-reduced-motion:reduce){
-  .svg-draw [data-draw]{stroke-dashoffset:0 !important}
-  .svg-draw [data-pop]{opacity:1 !important;transform:none !important}
-}
-
-/* ---- A1: Hero triad — model / room / narrative ---- */
-.triad{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule-dk);border:1px solid var(--rule-dk);margin:1.75rem 0 1.25rem}
-@media(min-width:600px){.triad{grid-template-columns:repeat(3,1fr)}}
-.triad-cell{background:var(--white);padding:1.1rem 1.25rem 1.2rem;border-top:3px solid var(--pc,var(--matcha));position:relative}
-.triad-ic{width:30px;height:30px;display:block;margin-bottom:0.7rem;color:var(--pc,var(--matcha))}
-.triad-k{font-family:var(--mono);font-size:0.55rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--mid);margin-bottom:0.3rem;font-weight:600}
-.triad-t{font-family:var(--disp);font-size:1.05rem;font-weight:700;color:var(--slate);line-height:1.12;margin-bottom:0.35rem;letter-spacing:-0.01em}
-.triad-d{font-size:0.76rem;color:#475569;line-height:1.55}
-.hero-prop strong{color:var(--matcha);font-weight:600}
-
-/* ---- A2: Outcomes 4-up ---- */
-@media(min-width:900px){.outcomes-grid.cols-4{grid-template-columns:repeat(4,1fr)}}
-.outcome-num.word{font-size:clamp(1.5rem,3.4vw,2.05rem);line-height:1.05}
-
-/* ============================================================
-   A3 / B: Selected Work
-   ============================================================ */
-#selected-work{background:#F1F5F9;border-top:1px solid var(--rule-lt);padding:clamp(4.5rem,10vw,7rem) 0;position:relative;overflow:clip}
-#selected-work .wrap{position:relative;z-index:1}
-#work-constellation{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.55}
-.sw-lead{font-size:0.95rem;color:#475569;line-height:1.75;max-width:60ch;margin-bottom:0.9rem;font-weight:400}
-.sw-lead strong{color:var(--slate);font-weight:600}
-.sw-legend{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:2.5rem}
-.sw-tag{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;padding:0.3rem 0.65rem;border:1px solid var(--rule-dk);color:var(--mid);background:var(--white);display:inline-flex;align-items:center}
-.sw-tag i{font-style:normal;width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:0.45rem;background:var(--tc,var(--matcha))}
-.pill-model{--tc:var(--p-model)}.pill-room{--tc:var(--p-room)}.pill-narr{--tc:var(--p-narr)}
-
-/* ---- B3: Report that opens like a book ---- */
-.sw-sub{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--mid);font-weight:600;margin-bottom:1.1rem;display:flex;align-items:center;gap:0.75rem}
-.sw-sub::after{content:'';flex:1;height:1px;background:var(--rule-dk)}
-.sw-featured{display:grid;grid-template-columns:1fr;gap:1.75rem;margin-bottom:3rem;align-items:start}
-@media(min-width:880px){.sw-featured{grid-template-columns:1fr 1fr}}
-.report{position:relative;perspective:1800px}
-.report-spread{display:grid;grid-template-columns:1fr;background:var(--white);border:1px solid var(--rule-dk);min-height:320px;position:relative}
-@media(min-width:520px){.report-spread{grid-template-columns:1.05fr 1fr}}
-.report-page{padding:1.35rem 1.45rem;display:flex;flex-direction:column}
-.report-page.left{border-bottom:1px solid var(--rule-lt);background:#FCFDFE}
-@media(min-width:520px){.report-page.left{border-bottom:none;border-right:1px solid var(--rule-lt)}}
-.rp-k{font-family:var(--mono);font-size:0.55rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--mid);font-weight:600;margin-bottom:0.55rem}
-.rp-h{font-family:var(--disp);font-size:1.15rem;font-weight:700;color:var(--slate);line-height:1.18;letter-spacing:-0.01em;margin-bottom:0.55rem}
-.rp-b{font-size:0.78rem;color:#475569;line-height:1.6;margin-bottom:0.9rem}
-.rp-stat-row{display:flex;gap:1.25rem;margin-top:auto;flex-wrap:wrap}
-.rp-stat-n{font-family:var(--disp);font-size:1.7rem;font-weight:700;color:var(--mc,var(--matcha));line-height:1;letter-spacing:-0.02em}
-.rp-stat-n small{font-size:0.42em;font-weight:600}
-.rp-stat-l{font-family:var(--mono);font-size:0.56rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--mid);margin-top:0.3rem;line-height:1.4}
-.rp-fig{margin-top:0.4rem}
-.report-cover{position:absolute;inset:0;background:var(--slate);color:#F8FAFC;transform-origin:left center;transition:transform 0.95s var(--ease);backface-visibility:hidden;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;padding:1.5rem 1.55rem 1.4rem;z-index:3;border-left:5px solid var(--matcha)}
-.report.open .report-cover{transform:rotateY(-162deg)}
-.rc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}
-.rc-crest{width:34px;height:34px;color:var(--matcha);flex-shrink:0}
-.rc-emp{font-family:var(--mono);font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(248,250,252,0.62);font-weight:600}
-.rc-pill{font-family:var(--mono);font-size:0.52rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:#fff;background:var(--pcol,var(--matcha));padding:0.22rem 0.55rem;align-self:flex-start;display:inline-block}
-.rc-title{font-family:var(--disp);font-size:clamp(1.4rem,2.6vw,1.7rem);font-weight:700;line-height:1.1;letter-spacing:-0.02em;margin:0.9rem 0 0.4rem}
-.rc-sub{font-size:0.8rem;color:rgba(248,250,252,0.78);line-height:1.5;max-width:30ch}
-.rc-open{display:inline-flex;align-items:center;gap:0.5rem;font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--matcha);font-weight:600;margin-top:1rem}
-.rc-open .rc-arrow{transition:transform 0.3s var(--ease)}
-.report:hover .rc-open .rc-arrow{transform:translateX(4px)}
-.report-close{position:absolute;top:0.5rem;right:0.5rem;z-index:4;font-family:var(--mono);font-size:0.62rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--mid);background:var(--white);border:1px solid var(--rule-dk);padding:0.25rem 0.55rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity 0.4s,color 0.2s,border-color 0.2s}
-.report.open .report-close{opacity:1;pointer-events:auto;transition-delay:0.5s}
-.report-close:hover{color:var(--matcha);border-color:var(--matcha)}
-
-/* ---- B2: Expanding case-study cards ---- */
-.sw-deck{display:flex;flex-direction:column;gap:1px;background:var(--rule-dk);border:1px solid var(--rule-dk)}
-@media(min-width:780px){.sw-deck{flex-direction:row;height:360px}}
-.sw-card{background:var(--white);position:relative;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;border-left:3px solid var(--tc,var(--matcha));transition:flex 0.55s var(--ease),background 0.3s var(--ease)}
-@media(min-width:780px){.sw-card{flex:1 1 0;border-left:none;border-top:3px solid var(--tc,var(--matcha))}.sw-card.exp{flex:4.2 1 0}.sw-card:hover:not(.exp){background:#FAFBFC}}
-.sw-card:focus-visible{outline:2px solid var(--matcha);outline-offset:-3px}
-/* Collapsed spine */
-.sw-spine{display:flex;align-items:center;gap:0.75rem;padding:1rem 1.1rem;width:100%}
-.sw-dot{width:9px;height:9px;border-radius:50%;background:var(--tc,var(--matcha));flex-shrink:0}
-.sw-spine-txt{font-family:var(--disp);font-weight:700;font-size:0.95rem;color:var(--slate);letter-spacing:-0.01em;line-height:1.15}
-.sw-spine-meta{font-family:var(--mono);font-size:0.56rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);font-weight:600;margin-left:auto;white-space:nowrap}
-.sw-chev{font-size:0.7rem;color:var(--subtle);transition:transform 0.4s var(--ease);margin-left:0.4rem}
-.sw-card.exp .sw-chev{transform:rotate(90deg);color:var(--matcha)}
-@media(min-width:780px){
-  .sw-spine{flex-direction:column;align-items:flex-start;justify-content:flex-end;height:100%;padding:1.2rem 1rem}
-  .sw-spine-txt{writing-mode:vertical-rl;transform:rotate(180deg);margin-bottom:0.4rem;font-size:1rem}
-  .sw-spine-meta{margin-left:0;writing-mode:vertical-rl;transform:rotate(180deg)}
-  .sw-chev{display:none}
-  .sw-card.exp .sw-spine{display:none}
-}
-/* Expanded body */
-.sw-full{display:none;padding:1.25rem 1.4rem 1.4rem;width:100%;min-width:0}
-.sw-card.exp .sw-full{display:block}
-@media(min-width:780px){.sw-card .sw-full{display:none}.sw-card.exp .sw-full{display:flex;flex-direction:column;height:100%;animation:swFade 0.5s var(--ease) both 0.12s}}
-@keyframes swFade{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:none}}
-.sw-full-k{font-family:var(--mono);font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--tc,var(--mid));font-weight:600;margin-bottom:0.5rem}
-.sw-full-t{font-family:var(--disp);font-size:1.1rem;font-weight:700;color:var(--slate);line-height:1.18;letter-spacing:-0.01em;margin-bottom:0.5rem}
-.sw-full-b{font-size:0.79rem;color:#475569;line-height:1.62;margin-bottom:0.85rem}
-.sw-full-fig{margin:0.2rem 0 0.9rem}
-.sw-full-o{font-family:var(--mono);font-size:0.62rem;color:#75821D;letter-spacing:0.03em;line-height:1.5;margin-top:auto;padding-top:0.6rem;border-top:1px solid var(--rule-lt)}
-
-/* ---- B1: Glow gradient CTA ---- */
-.btn-glow{position:relative;border:none;border-radius:28px;padding:0;cursor:pointer;display:inline-flex;text-decoration:none;
-  background:radial-gradient(circle at 50% 50%,var(--matcha),var(--indigo) 88%);
-  box-shadow:0 2px 18px rgba(99,91,255,0.28),0 1px 3px rgba(15,23,42,0.2);-webkit-tap-highlight-color:transparent}
-.btn-glow::before{content:'';position:absolute;inset:0;border-radius:28px;box-shadow:inset 0 2px 9px rgba(255,255,255,0.45),inset 0 -3px 8px rgba(15,23,42,0.28);z-index:3;pointer-events:none}
-.btn-glow .bg-wrap{-webkit-mask-image:-webkit-radial-gradient(white,black);overflow:hidden;border-radius:28px;min-width:170px;padding:0.85rem 1.9rem;position:relative}
-.btn-glow .bg-label{position:relative;z-index:2;display:inline-flex;align-items:center;gap:0.5rem;font-family:var(--sans);font-weight:600;font-size:0.85rem;letter-spacing:0.01em;color:#fff;text-shadow:0 1px 2px rgba(15,23,42,0.25)}
-.btn-glow .bg-circle{position:absolute;border-radius:50%;filter:blur(11px);opacity:0.85;animation:bgFloat var(--d,7s) linear infinite;will-change:transform}
-.bgc1{width:42px;height:42px;background:var(--matcha);top:-14px;left:6%;--d:7s}
-.bgc2{width:50px;height:50px;background:var(--amber);top:10px;left:64%;--d:9s;animation-delay:-2s}
-.bgc3{width:38px;height:38px;background:var(--berry);top:-6px;left:36%;--d:8s;animation-delay:-4s}
-.bgc4{width:46px;height:46px;background:var(--indigo);top:12px;left:14%;--d:10s;animation-delay:-1s}
-.bgc5{width:34px;height:34px;background:#7C3AED;top:-10px;left:82%;--d:8.5s;animation-delay:-3s}
-@keyframes bgFloat{33%{transform:translate(24px,30px)}66%{transform:translate(-18px,14px)}}
-.btn-glow:hover{box-shadow:0 4px 26px rgba(99,91,255,0.4),0 1px 4px rgba(15,23,42,0.25)}
-@media(prefers-reduced-motion:reduce){.btn-glow .bg-circle{animation:none}}
-
 </style>
 </head><body>
 <div class="grain-overlay" aria-hidden="true"></div>
@@ -799,11 +675,9 @@ footer{border-top:1px solid var(--rule-dk);background:var(--slate);position:rela
       <a href="#bio"><span class="ntl"><span>[ Pipeline ]</span><span aria-hidden="true">[ Pipeline ]</span></span></a>
       <a href="#principles"><span class="ntl"><span>[ Approach ]</span><span aria-hidden="true">[ Approach ]</span></span></a>
       <a href="#scenario"><span class="ntl"><span>[ Model ]</span><span aria-hidden="true">[ Model ]</span></span></a>
-      <a href="#selected-work"><span class="ntl"><span>[ Selected ]</span><span aria-hidden="true">[ Selected ]</span></span></a>
       <a href="work/"><span class="ntl"><span>[ Work ]</span><span aria-hidden="true">[ Work ]</span></span></a>
       <a href="#experience"><span class="ntl"><span>[ Experience ]</span><span aria-hidden="true">[ Experience ]</span></span></a>
       <a href="#contact"><span class="ntl"><span>[ Contact ]</span><span aria-hidden="true">[ Contact ]</span></span></a>
-      <a href="/legacy/" style="opacity:0.45" title="Previous version — testing only"><span class="ntl"><span>[ v1 ]</span><span aria-hidden="true">[ v1 ]</span></span></a>
     </div>
   </div>
 </nav>
@@ -818,41 +692,7 @@ footer{border-top:1px solid var(--rule-dk);background:var(--slate);position:rela
     <a href="https://linkedin.com/in/itschriswang" target="_blank" rel="noopener">linkedin.com/in/itschriswang</a>
     <span>Melbourne, Australia</span>
   </div>
-  <p class="hero-prop">Sustainability work usually splits into people who can <strong>build the model</strong>, people who can <strong>run the room</strong>, and people who can <strong>write the narrative</strong>. I do all three &mdash; from the emissions data underneath to the board story on top.</p>
-  <div class="triad" aria-label="How I work">
-    <div class="triad-cell" style="--pc:var(--p-model)">
-      <svg class="triad-ic svg-draw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true">
-        <path data-draw pathLength="1" d="M12 3 L21 7.5 L12 12 L3 7.5 Z"/>
-        <path data-draw pathLength="1" d="M3 12 L12 16.5 L21 12"/>
-        <path data-draw pathLength="1" d="M3 16.5 L12 21 L21 16.5"/>
-      </svg>
-      <div class="triad-k">01 &middot; Build</div>
-      <div class="triad-t">The model</div>
-      <div class="triad-d">GHG inventories, Scope 1&ndash;3 baselines, and net-zero pathway models that survive external assurance.</div>
-    </div>
-    <div class="triad-cell" style="--pc:var(--p-room)">
-      <svg class="triad-ic svg-draw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-        <circle data-draw pathLength="1" cx="12" cy="12" r="4.6"/>
-        <circle data-draw pathLength="1" cx="12" cy="3.6" r="1.7"/>
-        <circle data-draw pathLength="1" cx="20.4" cy="12" r="1.7"/>
-        <circle data-draw pathLength="1" cx="12" cy="20.4" r="1.7"/>
-        <circle data-draw pathLength="1" cx="3.6" cy="12" r="1.7"/>
-      </svg>
-      <div class="triad-k">02 &middot; Facilitate</div>
-      <div class="triad-t">The room</div>
-      <div class="triad-d">Workshops that pull case studies, decisions, and buy-in out of stakeholders &mdash; up to General Manager level.</div>
-    </div>
-    <div class="triad-cell" style="--pc:var(--p-narr)">
-      <svg class="triad-ic svg-draw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true">
-        <path data-draw pathLength="1" d="M5.5 3 H14.5 L19 7.5 V21 H5.5 Z"/>
-        <path data-draw pathLength="1" d="M14.5 3 V7.5 H19"/>
-        <path data-draw pathLength="1" d="M8.5 12 H15.5 M8.5 15.4 H15.5 M8.5 18.8 H13"/>
-      </svg>
-      <div class="triad-k">03 &middot; Communicate</div>
-      <div class="triad-t">The narrative</div>
-      <div class="triad-d">Board pathways, company-wide training, and public disclosure &mdash; technical work made legible to non-specialists.</div>
-    </div>
-  </div>
+  <p class="hero-prop">I help large organisations turn emissions data into governed reporting infrastructure and credible decarbonisation pathways. The work is repeatable, auditable, and built to be owned by the team.</p>
   <div class="instr-grid">
     <div class="instr">
       <div class="instr-lbl">Years sustainability<br>advisory</div>
@@ -876,26 +716,21 @@ footer{border-top:1px solid var(--rule-dk);background:var(--slate);position:rela
 
     <div class="outcomes" aria-label="Selected outcomes">
       <div class="outcomes-head">Selected outcomes</div>
-      <div class="outcomes-grid cols-4">
-        <div class="outcome" style="--oc:var(--indigo)">
-          <div class="outcome-num word">Board</div>
-          <div class="outcome-what">Net-zero pathway model to FY2050, taken to board by senior leadership</div>
-          <div class="outcome-where">Group climate strategy &middot; Downer EDI</div>
-        </div>
-        <div class="outcome" style="--oc:var(--berry)">
-          <div class="outcome-num">18<small>&nbsp;nations</small></div>
-          <div class="outcome-what">Whole-life carbon regulatory study spanning global markets</div>
-          <div class="outcome-where">Global property &amp; buildings research &middot; WSP</div>
-        </div>
-        <div class="outcome" style="--oc:var(--amber)">
-          <div class="outcome-num word">All&#8202;staff</div>
-          <div class="outcome-what">Climate-change eLearning designed and rolled out company-wide</div>
-          <div class="outcome-where">Three role clusters, two formats &middot; Downer EDI</div>
-        </div>
+      <div class="outcomes-grid">
         <div class="outcome" style="--oc:var(--matcha)">
           <div class="outcome-num">+35<small>%</small></div>
-          <div class="outcome-what">First-year ESG benchmark uplift for a major infrastructure client</div>
-          <div class="outcome-where">Full assessment cycle, then handed back to operate &middot; WSP</div>
+          <div class="outcome-what">GRESB Infrastructure score uplift in year one</div>
+          <div class="outcome-where">Major Australian energy distributor &middot; full assessment cycle, then handed over &middot; WSP</div>
+        </div>
+        <div class="outcome" style="--oc:var(--indigo)">
+          <div class="outcome-num">&minus;40<small>%</small></div>
+          <div class="outcome-what">GHG inventory preparation time, through automation</div>
+          <div class="outcome-where">Excel + Python tooling, documented for internal operation &middot; WSP</div>
+        </div>
+        <div class="outcome" style="--oc:var(--amber)">
+          <div class="outcome-num">3<small>&nbsp;BUs</small></div>
+          <div class="outcome-what">Manual emissions data collection eliminated</div>
+          <div class="outcome-where">Pre-configured templates with automated Envizi upload &middot; Downer EDI</div>
         </div>
       </div>
     </div>
@@ -1184,261 +1019,16 @@ footer{border-top:1px solid var(--rule-dk);background:var(--slate);position:rela
 
 
 
-<section id="selected-work">
-<canvas id="work-constellation" aria-hidden="true"></canvas>
-<div class="wrap">
-  <div class="label" data-num="03">Selected Work</div>
-  <p class="sw-lead">A spread of real deliverables across two roles &mdash; <strong>the model, the room, and the narrative</strong>. Clients are described by sector, not named. Open a report, or expand a card.</p>
-  <div class="sw-legend" aria-label="Legend">
-    <span class="sw-tag pill-model"><i></i>Model &mdash; build the data</span>
-    <span class="sw-tag pill-room"><i></i>Room &mdash; facilitate the stakeholders</span>
-    <span class="sw-tag pill-narr"><i></i>Narrative &mdash; write the story</span>
-  </div>
-
-  <div class="sw-sub">Featured reports &middot; click to open</div>
-  <div class="sw-featured">
-
-    <!-- Report 1: Whole-Life Carbon global study (Narrative · WSP) -->
-    <div class="report" data-report role="group" aria-label="Featured report: Whole-Life Carbon global regulatory map">
-      <div class="report-spread" style="--mc:var(--p-narr)">
-        <button type="button" class="report-close" data-report-close>&times; Close</button>
-        <div class="report-page left">
-          <div class="rp-k">Research &middot; Narrative</div>
-          <div class="rp-h">One question, eighteen answers</div>
-          <div class="rp-b">Which countries actually require whole-life carbon assessment on buildings &mdash; and how far each has gone. Built with specialists across 18 markets into a single decision-ready briefing for a global property audience.</div>
-          <div class="rp-stat-row">
-            <div><div class="rp-stat-n">18</div><div class="rp-stat-l">Markets<br>mapped</div></div>
-            <div><div class="rp-stat-n">5<small>+</small></div><div class="rp-stat-l">Mandates<br>already live</div></div>
-          </div>
-        </div>
-        <div class="report-page right">
-          <div class="rp-k">Figure &middot; WLCA mandate status</div>
-          <svg class="rp-fig svg-draw" viewBox="0 0 720 360" role="img" aria-label="World map of the eighteen markets assessed for whole-life carbon assessment requirements" preserveAspectRatio="xMidYMid meet" style="width:100%;height:auto">
-            <g stroke="rgba(15,23,42,0.10)" stroke-width="1" fill="none">
-              <rect x="20" y="20" width="680" height="320"/>
-              <line x1="20" y1="100" x2="700" y2="100"/><line x1="20" y1="180" x2="700" y2="180"/><line x1="20" y1="260" x2="700" y2="260"/>
-              <line x1="160" y1="20" x2="160" y2="340"/><line x1="300" y1="20" x2="300" y2="340"/><line x1="440" y1="20" x2="440" y2="340"/><line x1="580" y1="20" x2="580" y2="340"/>
-            </g>
-            <g stroke="rgba(255,59,96,0.35)" stroke-width="1.4" fill="none">
-              <polyline data-draw pathLength="1" points="148,68 160,100 218,246"/>
-              <polyline data-draw pathLength="1" points="358,72 380,68 392,56 412,52 376,86 364,86 352,100 370,76 408,240"/>
-              <polyline data-draw pathLength="1" points="450,132 468,132 568,110 568,178 628,230 704,262"/>
-            </g>
-            <g fill="var(--berry)">
-              <circle data-pop="1" cx="160" cy="100" r="5"/><circle data-pop="1" cx="148" cy="68" r="5"/><circle data-pop="2" cx="218" cy="246" r="5"/>
-              <circle data-pop="2" cx="358" cy="72" r="5"/><circle data-pop="3" cx="364" cy="86" r="5"/><circle data-pop="3" cx="352" cy="100" r="5"/>
-              <circle data-pop="4" cx="370" cy="76" r="5"/><circle data-pop="4" cx="380" cy="68" r="5"/><circle data-pop="5" cx="392" cy="56" r="5"/>
-              <circle data-pop="5" cx="412" cy="52" r="5"/><circle data-pop="6" cx="376" cy="86" r="5"/><circle data-pop="6" cx="408" cy="240" r="5"/>
-              <circle data-pop="1" cx="450" cy="132" r="5"/><circle data-pop="2" cx="468" cy="132" r="5"/><circle data-pop="3" cx="568" cy="110" r="5"/>
-              <circle data-pop="4" cx="568" cy="178" r="5"/><circle data-pop="5" cx="628" cy="230" r="5"/><circle data-pop="6" cx="704" cy="262" r="5"/>
-            </g>
-          </svg>
-        </div>
-      </div>
-      <div class="report-cover" data-report-open tabindex="0" role="button" aria-label="Open report" style="--pcol:var(--p-narr)">
-        <div class="rc-top">
-          <svg class="rc-crest" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-            <path data-draw pathLength="1" d="M4 28 Q12 18 20 24 Q28 30 36 20"/>
-            <path data-draw pathLength="1" d="M4 34 Q12 24 20 30 Q28 36 36 26"/>
-            <path data-draw pathLength="1" d="M20 22 C20 14 26 10 30 6 C26 12 28 18 20 22 Z"/>
-          </svg>
-          <span class="rc-emp">WSP &middot; Property &amp; Buildings</span>
-        </div>
-        <div>
-          <span class="rc-pill">Narrative</span>
-          <div class="rc-title">Whole-Life Carbon:<br>The Global Map</div>
-          <div class="rc-sub">Where embodied-carbon rules are landing &mdash; 18 markets, one briefing.</div>
-          <span class="rc-open">Open report <span class="rc-arrow">&#x2192;</span></span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Report 2: Net Zero Pathway FY2050 (Model · Downer) -->
-    <div class="report" data-report role="group" aria-label="Featured report: Net-zero pathway to FY2050">
-      <div class="report-spread" style="--mc:var(--p-model)">
-        <button type="button" class="report-close" data-report-close>&times; Close</button>
-        <div class="report-page left">
-          <div class="rp-k">Strategy &middot; Model</div>
-          <div class="rp-h">A pathway you can interrogate</div>
-          <div class="rp-b">An integrated decarbonisation model: initiative-level abatement across business units, with grid and fleet trajectories from government and CSIRO sources &mdash; built so leadership can test scenarios live, not just read a static chart.</div>
-          <div class="rp-stat-row">
-            <div><div class="rp-stat-n">FY50</div><div class="rp-stat-l">Modelled<br>horizon</div></div>
-            <div><div class="rp-stat-n">130</div><div class="rp-stat-l">Initiatives<br>integrated</div></div>
-          </div>
-        </div>
-        <div class="report-page right">
-          <div class="rp-k">Figure &middot; gross vs net to FY2050</div>
-          <svg class="rp-fig svg-draw" viewBox="0 0 320 200" role="img" aria-label="Stacked emissions pathway declining from FY2026 toward net zero by FY2050" preserveAspectRatio="xMidYMid meet" style="width:100%;height:auto">
-            <g stroke="rgba(15,23,42,0.12)" stroke-width="1">
-              <line x1="28" y1="178" x2="306" y2="178"/><line x1="28" y1="22" x2="28" y2="178"/>
-            </g>
-            <path data-pop="1" d="M28,74 C120,96 210,140 306,158 L306,178 L28,178 Z" fill="rgba(99,91,255,0.16)"/>
-            <path data-pop="2" d="M28,74 C120,96 210,140 306,158 L306,166 C210,150 120,108 28,86 Z" fill="rgba(181,196,43,0.3)"/>
-            <path data-draw pathLength="1" d="M28,70 C120,62 210,58 306,56" stroke="rgba(15,23,42,0.4)" stroke-width="1.5" stroke-dasharray="5 4" fill="none"/>
-            <path data-draw pathLength="1" d="M28,74 C120,96 210,140 306,158" stroke="var(--slate)" stroke-width="2.4" fill="none"/>
-            <circle data-pop="3" cx="306" cy="158" r="4" fill="var(--matcha)"/>
-            <text x="36" y="38" font-family="'JetBrains Mono',monospace" font-size="9" fill="#64748B">Business as usual</text>
-            <text x="150" y="172" font-family="'JetBrains Mono',monospace" font-size="9" fill="#64748B">Net &middot; abated</text>
-          </svg>
-        </div>
-      </div>
-      <div class="report-cover" data-report-open tabindex="0" role="button" aria-label="Open report" style="--pcol:var(--p-model)">
-        <div class="rc-top">
-          <svg class="rc-crest" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-            <path data-draw pathLength="1" d="M4 32 C14 30 18 12 26 10 C24 18 30 22 36 20"/>
-            <path data-draw pathLength="1" d="M4 36 H36"/>
-            <circle data-draw pathLength="1" cx="26" cy="10" r="2.4"/>
-          </svg>
-          <span class="rc-emp">Downer EDI &middot; Group Sustainability</span>
-        </div>
-        <div>
-          <span class="rc-pill">Model</span>
-          <div class="rc-title">Net-Zero Pathway<br>to FY2050</div>
-          <div class="rc-sub">Every lever, every business unit, one board-ready curve.</div>
-          <span class="rc-open">Open report <span class="rc-arrow">&#x2192;</span></span>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="sw-sub">More work &middot; hover or tap to expand</div>
-  <div class="sw-deck" id="sw-deck">
-
-    <!-- Card A: Model · WSP -->
-    <div class="sw-card pill-model exp" tabindex="0" role="button" aria-expanded="true">
-      <div class="sw-spine"><span class="sw-dot"></span><span class="sw-spine-txt">Emissions baseline</span><span class="sw-spine-meta">Model &middot; WSP</span><span class="sw-chev">&#9656;</span></div>
-      <div class="sw-full">
-        <div class="sw-full-k">Model &middot; WSP</div>
-        <div class="sw-full-t">Group emissions baseline, major state water utility</div>
-        <p class="sw-full-b">A Scope 1&ndash;3 baseline for a large state-owned water utility: every emissions source traced, categorised, and made defensible as the foundation for target-setting.</p>
-        <svg class="sw-full-fig svg-draw" viewBox="0 0 220 120" role="img" aria-label="Sankey flow of Scope 1, 2 and 3 sources into a single footprint" style="width:100%;height:auto;max-width:260px">
-          <g>
-            <rect data-pop="1" x="6" y="14" width="10" height="22" fill="var(--indigo)"/>
-            <rect data-pop="2" x="6" y="50" width="10" height="20" fill="var(--matcha)"/>
-            <rect data-pop="3" x="6" y="84" width="10" height="26" fill="var(--amber)"/>
-            <rect data-pop="4" x="200" y="34" width="12" height="58" fill="var(--slate)"/>
-          </g>
-          <g fill="none" stroke-width="7" stroke-opacity="0.4">
-            <path data-draw pathLength="1" d="M16,25 C90,25 130,52 200,52" stroke="var(--indigo)"/>
-            <path data-draw pathLength="1" d="M16,60 C90,60 130,63 200,63" stroke="var(--matcha)"/>
-            <path data-draw pathLength="1" d="M16,97 C90,97 130,74 200,74" stroke="var(--amber)"/>
-          </g>
-          <g font-family="'JetBrains Mono',monospace" font-size="8" fill="#64748B">
-            <text x="6" y="10">S1</text><text x="6" y="48">S2</text><text x="6" y="82">S3</text><text x="176" y="28">Footprint</text>
-          </g>
-        </svg>
-        <div class="sw-full-o">Assured-grade Scope 1&ndash;3 baseline &middot; foundation for net-zero targets</div>
-      </div>
-    </div>
-
-    <!-- Card B: Room · WSP -->
-    <div class="sw-card pill-room" tabindex="0" role="button" aria-expanded="false">
-      <div class="sw-spine"><span class="sw-dot"></span><span class="sw-spine-txt">LCA workshop</span><span class="sw-spine-meta">Room &middot; WSP</span><span class="sw-chev">&#9656;</span></div>
-      <div class="sw-full">
-        <div class="sw-full-k">Room &middot; WSP</div>
-        <div class="sw-full-t">Life-cycle carbon workshop, landmark marketplace redevelopment</div>
-        <p class="sw-full-b">Designed and ran the LCA opportunities workshop for the redevelopment of an iconic Melbourne marketplace &mdash; turning life-cycle results into design decisions the project team could act on, mapped to Green Star.</p>
-        <svg class="sw-full-fig svg-draw" viewBox="0 0 220 120" role="img" aria-label="Whole-life carbon stages A1 to D with the materials stage highlighted as the hotspot" style="width:100%;height:auto;max-width:280px">
-          <line x1="10" y1="104" x2="214" y2="104" stroke="rgba(15,23,42,0.15)" stroke-width="1"/>
-          <g>
-            <rect data-pop="1" x="14" y="24" width="20" height="80" fill="var(--amber)"/>
-            <rect data-pop="2" x="40" y="64" width="20" height="40" fill="rgba(255,149,0,0.45)"/>
-            <rect data-pop="2" x="66" y="78" width="20" height="26" fill="rgba(255,149,0,0.45)"/>
-            <rect data-pop="3" x="92" y="56" width="20" height="48" fill="rgba(255,149,0,0.45)"/>
-            <rect data-pop="4" x="118" y="84" width="20" height="20" fill="rgba(255,149,0,0.45)"/>
-            <rect data-pop="5" x="144" y="90" width="20" height="14" fill="rgba(255,149,0,0.45)"/>
-            <rect data-pop="6" x="170" y="72" width="20" height="32" fill="rgba(255,149,0,0.45)"/>
-          </g>
-          <g font-family="'JetBrains Mono',monospace" font-size="7.5" fill="#64748B" text-anchor="middle">
-            <text x="24" y="116">A1-3</text><text x="50" y="116">A4</text><text x="76" y="116">A5</text><text x="102" y="116">B</text><text x="128" y="116">C</text><text x="154" y="116">D</text><text x="180" y="116">Op</text>
-          </g>
-          <text x="24" y="18" font-family="'JetBrains Mono',monospace" font-size="7.5" fill="var(--amber)" text-anchor="middle" font-weight="700">hotspot</text>
-        </svg>
-        <div class="sw-full-o">Material hotspots agreed in one session &middot; Green Star pathway</div>
-      </div>
-    </div>
-
-    <!-- Card C: Room · WSP -->
-    <div class="sw-card pill-room" tabindex="0" role="button" aria-expanded="false">
-      <div class="sw-spine"><span class="sw-dot"></span><span class="sw-spine-txt">Water resilience</span><span class="sw-spine-meta">Room &middot; WSP</span><span class="sw-chev">&#9656;</span></div>
-      <div class="sw-full">
-        <div class="sw-full-k">Room &middot; WSP</div>
-        <div class="sw-full-t">Water-resilience assessment, national property portfolio</div>
-        <p class="sw-full-b">Facilitated water-resilience workshops across the asset portfolio of a national ASX-listed property group: surfaced risks, mapped mitigating actions and tenant co-benefits, and validated the findings with asset teams.</p>
-        <svg class="sw-full-fig svg-draw" viewBox="0 0 240 110" role="img" aria-label="Flow from water risk to action to co-benefit" style="width:100%;height:auto;max-width:300px">
-          <path data-draw pathLength="1" d="M40,55 H100 M140,55 H196" stroke="var(--amber)" stroke-width="1.6" fill="none"/>
-          <path data-pop="1" d="M26,38 C36,48 36,60 26,66 C16,60 16,48 26,38 Z" fill="var(--amber)"/>
-          <circle data-pop="2" cx="120" cy="55" r="16" fill="none" stroke="var(--amber)" stroke-width="1.8"/>
-          <path data-pop="2" d="M113,55 l5,5 l9,-11" fill="none" stroke="var(--amber)" stroke-width="1.8"/>
-          <path data-pop="3" d="M212,55 l-9,-6 v4 h-9 v4 h9 v4 z" fill="var(--amber)"/>
-          <g font-family="'JetBrains Mono',monospace" font-size="8" fill="#64748B" text-anchor="middle">
-            <text x="26" y="86">Risk</text><text x="120" y="86">Action</text><text x="204" y="86">Co-benefit</text>
-          </g>
-        </svg>
-        <div class="sw-full-o">Portfolio water risks &amp; actions validated with asset teams</div>
-      </div>
-    </div>
-
-    <!-- Card D: Narrative · WSP -->
-    <div class="sw-card pill-narr" tabindex="0" role="button" aria-expanded="false">
-      <div class="sw-spine"><span class="sw-dot"></span><span class="sw-spine-txt">GHG guidelines</span><span class="sw-spine-meta">Narrative &middot; WSP</span><span class="sw-chev">&#9656;</span></div>
-      <div class="sw-full">
-        <div class="sw-full-k">Narrative &middot; WSP</div>
-        <div class="sw-full-t">GHG accounting &amp; reporting guidelines, federal climate department</div>
-        <p class="sw-full-b">Authored emissions accounting and reporting methodology guidance for the federal climate department &mdash; the kind of document other organisations end up reporting against.</p>
-        <svg class="sw-full-fig svg-draw" viewBox="0 0 200 120" role="img" aria-label="A methodology document with checked clauses" style="width:100%;height:auto;max-width:200px">
-          <path data-draw pathLength="1" d="M40,12 H120 L150 42 V108 H40 Z" stroke="var(--berry)" stroke-width="1.8" fill="none"/>
-          <path data-draw pathLength="1" d="M120,12 V42 H150" stroke="var(--berry)" stroke-width="1.8" fill="none"/>
-          <g stroke="var(--berry)" stroke-width="1.6" fill="none">
-            <path data-pop="1" d="M54,58 l4,4 l7,-9"/><path data-pop="2" d="M54,74 l4,4 l7,-9"/><path data-pop="3" d="M54,90 l4,4 l7,-9"/>
-          </g>
-          <g stroke="rgba(255,59,96,0.4)" stroke-width="3">
-            <line data-pop="1" x1="74" y1="60" x2="134" y2="60"/><line data-pop="2" x1="74" y1="76" x2="134" y2="76"/><line data-pop="3" x1="74" y1="92" x2="120" y2="92"/>
-          </g>
-        </svg>
-        <div class="sw-full-o">Methodology guidance for a national reporting audience</div>
-      </div>
-    </div>
-
-    <!-- Card E: Narrative · Downer -->
-    <div class="sw-card pill-narr" tabindex="0" role="button" aria-expanded="false">
-      <div class="sw-spine"><span class="sw-dot"></span><span class="sw-spine-txt">Climate eLearning</span><span class="sw-spine-meta">Narrative &middot; Downer</span><span class="sw-chev">&#9656;</span></div>
-      <div class="sw-full">
-        <div class="sw-full-k">Narrative &middot; Downer EDI</div>
-        <div class="sw-full-t">Company-wide climate-change eLearning</div>
-        <p class="sw-full-b">Co-designed an all-employee climate module from storyline to launch &mdash; three role clusters, two delivery formats &mdash; so the whole organisation shares one baseline understanding of its net-zero plan.</p>
-        <svg class="sw-full-fig svg-draw" viewBox="0 0 200 120" role="img" aria-label="A signal broadcasting outward to many people" style="width:100%;height:auto;max-width:220px">
-          <circle data-pop="1" cx="40" cy="60" r="9" fill="var(--berry)"/>
-          <g fill="none" stroke="var(--berry)" stroke-width="1.8">
-            <path data-draw pathLength="1" d="M56,46 A22 22 0 0 1 56,74"/>
-            <path data-draw pathLength="1" d="M64,38 A34 34 0 0 1 64,82"/>
-          </g>
-          <g fill="rgba(255,59,96,0.55)">
-            <circle data-pop="2" cx="120" cy="34" r="6"/><circle data-pop="3" cx="150" cy="60" r="6"/><circle data-pop="4" cx="120" cy="86" r="6"/>
-            <circle data-pop="5" cx="170" cy="40" r="5"/><circle data-pop="6" cx="170" cy="82" r="5"/>
-          </g>
-        </svg>
-        <div class="sw-full-o">Deployed company-wide &middot; Downer EDI</div>
-      </div>
-    </div>
-
-  </div>
-</div>
-</section>
-
-
-
 <section id="experience">
 <div class="wrap">
-  <div class="label" data-num="04">Experience</div>
+  <div class="label" data-num="03">Experience</div>
 
   <div class="exp-timeline" id="exp-timeline">
 
   <div class="exp-entry" data-mark="DG" data-clr="downer">
     <div class="exp-hd">
       <div>
-        <img class="exp-logo logo-downer" src="Downer_Group_logo.svg.png" alt="Downer Group logo" loading="lazy">
+        <img class="exp-logo logo-downer" src="/Downer_Group_logo.svg.png" alt="Downer Group logo" loading="lazy">
         <div class="exp-org-name">Downer EDI</div>
         <span class="exp-arrow">&#x2192;</span>
         <div class="exp-dept">Group Environment, Sustainability &amp; Reporting</div>
@@ -1451,24 +1041,26 @@ footer{border-top:1px solid var(--rule-dk);background:var(--slate);position:rela
       </div>
     </div>
     <ul class="exp-bullets">
-      <li class="exp-section-lbl-li"><span class="exp-section-lbl">Model &mdash; build the data</span></li>
-      <li>Built the group's <strong>board-level net-zero pathway model to FY2050</strong>: an integrated, scenario-testable view of decarbonisation across every business unit, taken to the board by senior leadership and used as the internal reference for tracking progress.</li>
-      <li>Designed reusable emissions data systems &mdash; automated reporting templates and independent recalculation checks &mdash; built so business-unit teams can run each cycle without ongoing advisory support.</li>
-      <li>Acted as an independent group reviewer, re-verifying business-unit decarbonisation initiatives from first principles to give leadership a defensible evidence base before targets were set.</li>
-      <li class="exp-section-lbl-li"><span class="exp-section-lbl">Room &mdash; facilitate the stakeholders</span></li>
-      <li>Ran an ESG report content workshop with a General Manager, pulling case studies and disclosure decisions out of four business units in a single session.</li>
-      <li>Became the shared sustainability-data point of contact across the group's major divisions within weeks, building a cross-division check-in cadence from scratch.</li>
-      <li class="exp-section-lbl-li"><span class="exp-section-lbl">Narrative &mdash; write the story</span></li>
-      <li>Co-designed and launched an <strong>all-employee climate-change eLearning module</strong> company-wide, across three role clusters and two delivery formats.</li>
-      <li>Managed a penalty-backed federal fuel-reporting obligation end to end &mdash; on deadline, with no existing playbook &mdash; and prepared executive briefings on the decarbonisation pathway.</li>
-      <li>Held 12+ concurrent workstreams from month one, across reporting, disclosure, modelling, and training.</li>
+      <li class="exp-section-lbl-li"><span class="exp-section-lbl">Facilitation &amp; Stakeholder Influence</span></li>
+      <li>Facilitated a cross-BU ESG Impact Report content workshop with a General Manager, coordinating four business unit disclosure reviews through Workiva for the annual ESG Impact Report.</li>
+      <li>Co-developed an all-employee climate eLearning module with an external learning design provider across three role clusters and two delivery formats, from content design through company-wide launch.</li>
+      <li class="exp-section-lbl-li"><span class="exp-section-lbl">Data Tools &amp; Systems</span></li>
+      <li>Built a toggle-based net zero pathway model using government and research-sourced lever assumptions, structured for internal operation without ongoing advisory support.</li>
+      <li>Designed pre-configured subcontractor diesel reporting templates with embedded calculation logic and automated Envizi upload generation, eliminating manual collection across three business units.</li>
+      <li>Developed an independent GHG recalculation module with operational control boundary filtering to support external assurance.</li>
+      <li>Rebuilt the Scope 3 subcontractor data collection pipeline, incorporating proxy rate calculations, prior-period response pooling, and CPI inflation adjustment.</li>
+      <li>Redesigned FY emissions data review tools with cross-BU anomaly detection, site completeness tracking, and emission factor verification logic.</li>
+      <li class="exp-section-lbl-li"><span class="exp-section-lbl">Portfolio &amp; Governance</span></li>
+      <li>Drafted and lodged a Section 13E statutory compliance response to DCCEEW under POFRA 2017 within a 30-day deadline.</li>
+      <li>Managed 12+ concurrent workstreams from Month 1, spanning GHG reporting, disclosure preparation, emissions modelling, and eLearning development.</li>
+      <li>Built a cross-BU stakeholder cadence from scratch, establishing fortnightly check-ins with six business unit contacts within the first six weeks.</li>
     </ul>
   </div>
 
   <div class="exp-entry" data-mark="WSP" data-clr="wsp">
     <div class="exp-hd">
       <div>
-        <img class="exp-logo logo-wsp" src="img-png-wsp-red.png" alt="WSP logo" loading="lazy">
+        <img class="exp-logo logo-wsp" src="/img-png-wsp-red.png" alt="WSP logo" loading="lazy">
         <div class="exp-org-name">WSP in Australia</div>
         <span class="exp-arrow">&#x2192;</span>
         <div class="exp-dept">Sustainability &amp; Climate Change Advisory</div>
@@ -1489,19 +1081,18 @@ footer{border-top:1px solid var(--rule-dk);background:var(--slate);position:rela
       </div>
     </div>
     <ul class="exp-bullets">
-      <li>Built a <strong>global whole-life carbon study across 18 markets</strong> &mdash; mapping where embodied-carbon regulation is landing &mdash; into a single decision-ready briefing for a worldwide property and buildings audience.</li>
-      <li><strong>35% first-year uplift</strong> on a major infrastructure client's ESG benchmark: led the full assessment cycle from gap analysis to submission, then handed it back to operate independently.</li>
-      <li>Authored greenhouse-gas accounting and reporting methodology guidance for the federal climate department &mdash; the kind of document other organisations report against.</li>
-      <li>Facilitated life-cycle carbon and water-resilience workshops for a landmark marketplace redevelopment and a national property portfolio, turning technical analysis into design and asset decisions.</li>
-      <li>Delivered Scope 1&ndash;3 baselines and decarbonisation roadmaps across infrastructure, government, and commercial-property portfolios &mdash; including an emissions baseline for a major state water utility.</li>
-      <li>Cut greenhouse-gas inventory preparation time by roughly 40% with documented automation built for clients to run themselves.</li>
+      <li>35% GRESB score improvement in year one: led the full Infrastructure Assessment cycle for a major Australian energy distributor, from gap analysis and data collection reform through to final submission and internal handover.</li>
+      <li>GHG inventory preparation time reduced by approximately 40%: built automated Excel and Python tools that replaced recurring manual workflows across active client accounts, with documented logic for ongoing internal operation.</li>
+      <li>Technical input to NSW Treasury Net Zero Government Operations Policy: contributed emissions boundary definition and agency-level reporting methodology to the whole-of-government framework.</li>
+      <li>Lifecycle carbon assessments delivered for hospital and commercial fitout projects: A1-A5 boundary analysis with material hotspot quantification and low-carbon specification recommendations referenced against IStructE and GBCA benchmarks.</li>
+      <li>Scope 1-3 baselines and decarbonisation roadmaps delivered across infrastructure and built environment portfolios for government and private sector clients.</li>
     </ul>
   </div>
 
   <div class="exp-entry" data-mark="DoD" data-clr="defence">
     <div class="exp-hd">
       <div>
-        <img class="exp-logo logo-defence" src="Defence.png" alt="Australian Government Department of Defence crest" loading="lazy">
+        <img class="exp-logo logo-defence" src="/Defence.png" alt="Australian Government Department of Defence crest" loading="lazy">
         <div class="exp-org-name">Department of Defence</div>
         <span class="exp-arrow">&#x2192;</span>
         <div class="exp-dept">Capital Facilities &amp; Infrastructure Branch</div>
@@ -1548,16 +1139,11 @@ footer{border-top:1px solid var(--rule-dk);background:var(--slate);position:rela
 
 <section id="contact">
 <div class="wrap">
-  <div class="label" data-num="05">Contact</div>
+  <div class="label" data-num="04">Contact</div>
   <div class="contact-avail term-line"><span class="term-prompt">&gt;&nbsp;</span><span class="term-text" id="term-text">open to senior advisory and lead sustainability roles.</span><span class="term-caret" aria-hidden="true"></span></div>
   <div class="contact-loc">Melbourne, Victoria &nbsp;&middot;&nbsp; Flexible on arrangement</div>
   <div class="btns">
-    <a href="https://linkedin.com/in/itschriswang" target="_blank" rel="noopener" class="btn-glow" aria-label="Connect on LinkedIn">
-      <span class="bg-wrap">
-        <span class="bg-circle bgc1" aria-hidden="true"></span><span class="bg-circle bgc2" aria-hidden="true"></span><span class="bg-circle bgc3" aria-hidden="true"></span><span class="bg-circle bgc4" aria-hidden="true"></span><span class="bg-circle bgc5" aria-hidden="true"></span>
-        <span class="bg-label">Connect on LinkedIn <span aria-hidden="true">&#x2197;</span></span>
-      </span>
-    </a>
+    <a href="https://linkedin.com/in/itschriswang" target="_blank" rel="noopener" class="btn btn-secondary">LinkedIn</a>
   </div>
 </div>
 </section>
@@ -2284,7 +1870,7 @@ document.addEventListener('DOMContentLoaded',function(){
 window.addEventListener('load',function(){
   _tryInitChart();
   /* Hero entrance animation */
-  var heroEls=['.hero-name','.hero-cycle','.hero-meta','.hero-prop','.triad','.instr-grid','.scroll-hint','.hero-offset-rule'];
+  var heroEls=['.hero-name','.hero-cycle','.hero-meta','.hero-prop','.instr-grid','.scroll-hint','.hero-offset-rule'];
   heroEls.forEach(function(sel,i){
     var el=document.querySelector(sel);
     if(!el) return;
@@ -2606,149 +2192,6 @@ window.addEventListener('load',function(){
   });
 })();
 
-/* ---- 27: Bespoke-SVG draw-in on first view ---- */
-(function(){
-  if(!('IntersectionObserver' in window)){
-    document.querySelectorAll('.svg-draw').forEach(function(el){el.classList.add('in');});
-    return;
-  }
-  var o=new IntersectionObserver(function(es,obs){
-    es.forEach(function(e){
-      if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target);}
-    });
-  },{rootMargin:'-8% 0px',threshold:0.18});
-  document.querySelectorAll('.svg-draw').forEach(function(el){o.observe(el);});
-})();
-
-/* ---- 28: Report-opens-like-a-book ---- */
-(function(){
-  var reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-  var reports=document.querySelectorAll('.report[data-report]');
-  if(!reports.length) return;
-  function setOpen(rep,open){
-    rep.classList.toggle('open',open);
-    var cover=rep.querySelector('[data-report-open]');
-    if(cover) cover.setAttribute('aria-expanded',open?'true':'false');
-  }
-  reports.forEach(function(rep){
-    var cover=rep.querySelector('[data-report-open]');
-    var closeBtn=rep.querySelector('[data-report-close]');
-    if(cover){
-      cover.addEventListener('click',function(){setOpen(rep,!rep.classList.contains('open'));});
-      cover.addEventListener('keydown',function(e){
-        if(e.key==='Enter'||e.key===' '){e.preventDefault();setOpen(rep,!rep.classList.contains('open'));}
-      });
-    }
-    if(closeBtn) closeBtn.addEventListener('click',function(e){e.stopPropagation();setOpen(rep,false);});
-  });
-  /* Auto-open once on first scroll-in, gently staggered */
-  if('IntersectionObserver' in window){
-    var io=new IntersectionObserver(function(es,obs){
-      es.forEach(function(e){
-        if(!e.isIntersecting) return;
-        obs.unobserve(e.target);
-        var rep=e.target,delay=reduce?0:(Array.prototype.indexOf.call(reports,rep)*260+360);
-        setTimeout(function(){setOpen(rep,true);},delay);
-      });
-    },{threshold:0.4});
-    reports.forEach(function(rep){io.observe(rep);});
-  } else {
-    reports.forEach(function(rep){setOpen(rep,true);});
-  }
-})();
-
-/* ---- 29: Expanding Selected-Work cards ---- */
-(function(){
-  var deck=document.getElementById('sw-deck');
-  if(!deck) return;
-  var cards=Array.prototype.slice.call(deck.querySelectorAll('.sw-card'));
-  var hoverable=window.matchMedia('(min-width:780px) and (hover:hover) and (pointer:fine)').matches;
-  function expand(card){
-    cards.forEach(function(c){
-      var on=c===card;
-      c.classList.toggle('exp',on);
-      c.setAttribute('aria-expanded',on?'true':'false');
-    });
-  }
-  cards.forEach(function(card){
-    card.addEventListener('click',function(){expand(card);});
-    card.addEventListener('keydown',function(e){
-      if(e.key==='Enter'||e.key===' '){e.preventDefault();expand(card);}
-    });
-    card.addEventListener('focus',function(){expand(card);});
-    if(hoverable) card.addEventListener('mouseenter',function(){expand(card);});
-  });
-})();
-
-/* ---- 30: Node constellation behind Selected Work (decorative) ---- */
-(function(){
-  var cv=document.getElementById('work-constellation');
-  var host=document.getElementById('selected-work');
-  if(!cv||!host||!cv.getContext) return;
-  var reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-  var ctx=cv.getContext('2d');
-  var W=0,H=0,raf=null,inView=true,nodes=[];
-  var COL=['rgba(181,196,43,0.9)','rgba(99,91,255,0.85)'];
-  function build(){
-    var area=W*H,n=Math.max(14,Math.min(40,Math.round(area/26000)));
-    nodes=[];
-    for(var i=0;i<n;i++){
-      nodes.push({x:Math.random()*W,y:Math.random()*H,
-        vx:(Math.random()-0.5)*0.22,vy:(Math.random()-0.5)*0.22,
-        r:1.4+Math.random()*1.8,c:COL[i%2]});
-    }
-  }
-  function draw(){
-    ctx.clearRect(0,0,W,H);
-    for(var i=0;i<nodes.length;i++){
-      for(var j=i+1;j<nodes.length;j++){
-        var dx=nodes[i].x-nodes[j].x,dy=nodes[i].y-nodes[j].y;
-        var d=Math.hypot(dx,dy);
-        if(d<132){
-          ctx.strokeStyle='rgba(15,23,42,'+(0.10*(1-d/132)).toFixed(3)+')';
-          ctx.lineWidth=1;
-          ctx.beginPath();ctx.moveTo(nodes[i].x,nodes[i].y);ctx.lineTo(nodes[j].x,nodes[j].y);ctx.stroke();
-        }
-      }
-    }
-    for(var k=0;k<nodes.length;k++){
-      var nd=nodes[k];
-      ctx.fillStyle=nd.c;
-      ctx.beginPath();ctx.arc(nd.x,nd.y,nd.r,0,Math.PI*2);ctx.fill();
-    }
-  }
-  function step(){
-    for(var k=0;k<nodes.length;k++){
-      var nd=nodes[k];
-      nd.x+=nd.vx;nd.y+=nd.vy;
-      if(nd.x<0||nd.x>W) nd.vx*=-1;
-      if(nd.y<0||nd.y>H) nd.vy*=-1;
-    }
-    draw();
-    raf=inView?requestAnimationFrame(step):null;
-  }
-  function resize(){
-    var dpr=Math.min(window.devicePixelRatio||1,1.5);
-    W=host.offsetWidth;H=host.offsetHeight;
-    cv.width=W*dpr;cv.height=H*dpr;
-    ctx.setTransform(dpr,0,0,dpr,0,0);
-    build();draw();
-  }
-  window.addEventListener('resize',function(){clearTimeout(cv._rt);cv._rt=setTimeout(resize,150);});
-  resize();
-  if(!reduce){
-    if('IntersectionObserver' in window){
-      new IntersectionObserver(function(es){
-        es.forEach(function(e){
-          inView=e.isIntersecting;
-          if(inView&&!raf) raf=requestAnimationFrame(step);
-        });
-      },{rootMargin:'120px'}).observe(host);
-    }
-    raf=requestAnimationFrame(step);
-  }
-})();
-
 /* ---- 22G: Smooth anchor scroll ---- */
 (function(){
   document.querySelectorAll('a[href^="#"]').forEach(function(a){
@@ -2764,5 +2207,9 @@ window.addEventListener('load',function(){
   });
 })();
 </script>
+<div class="legacy-banner" role="banner">
+  <span>This is the previous version of the site — for comparison only.</span>
+  <a href="/">View new version &rarr;</a>
+</div>
 </body>
 </html>
