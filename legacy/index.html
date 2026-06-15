@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-AU">
 <head>
-   <link rel="shortcut icon" type="image/x-icon" href="/favicon.svg">
+   <link rel="shortcut icon" type="image/x-icon" href="../favicon.svg">
 <style>
 .legacy-banner{position:fixed;bottom:0;left:0;right:0;background:#0F172A;color:#F8FAFC;text-align:center;padding:10px 16px;font-family:'JetBrains Mono',monospace;font-size:12px;z-index:9999;display:flex;align-items:center;justify-content:center;gap:16px}
 .legacy-banner a{color:#B5C42B;text-decoration:none;border:1px solid #B5C42B;padding:4px 12px;border-radius:2px}
@@ -1030,7 +1030,7 @@ footer{border-top:1px solid var(--rule-dk);background:var(--slate);position:rela
   <div class="exp-entry" data-mark="DG" data-clr="downer">
     <div class="exp-hd">
       <div>
-        <img class="exp-logo logo-downer" src="/Downer_Group_logo.svg.png" alt="Downer Group logo" loading="lazy">
+        <img class="exp-logo logo-downer" src="../Downer_Group_logo.svg.png" alt="Downer Group logo" loading="lazy">
         <div class="exp-org-name">Downer EDI</div>
         <span class="exp-arrow">&#x2192;</span>
         <div class="exp-dept">Group Environment, Sustainability &amp; Reporting</div>
@@ -1062,7 +1062,7 @@ footer{border-top:1px solid var(--rule-dk);background:var(--slate);position:rela
   <div class="exp-entry" data-mark="WSP" data-clr="wsp">
     <div class="exp-hd">
       <div>
-        <img class="exp-logo logo-wsp" src="/img-png-wsp-red.png" alt="WSP logo" loading="lazy">
+        <img class="exp-logo logo-wsp" src="../img-png-wsp-red.png" alt="WSP logo" loading="lazy">
         <div class="exp-org-name">WSP in Australia</div>
         <span class="exp-arrow">&#x2192;</span>
         <div class="exp-dept">Sustainability &amp; Climate Change Advisory</div>
@@ -1094,7 +1094,7 @@ footer{border-top:1px solid var(--rule-dk);background:var(--slate);position:rela
   <div class="exp-entry" data-mark="DoD" data-clr="defence">
     <div class="exp-hd">
       <div>
-        <img class="exp-logo logo-defence" src="/Defence.png" alt="Australian Government Department of Defence crest" loading="lazy">
+        <img class="exp-logo logo-defence" src="../Defence.png" alt="Australian Government Department of Defence crest" loading="lazy">
         <div class="exp-org-name">Department of Defence</div>
         <span class="exp-arrow">&#x2192;</span>
         <div class="exp-dept">Capital Facilities &amp; Infrastructure Branch</div>
@@ -2081,13 +2081,14 @@ window.addEventListener('load',function(){
       var pt=parseFloat(getComputedStyle(en).paddingTop)||0;
       nodes[i].style.top=(en.offsetTop+pt+2)+'px';
     });
-    var stops=['var(--'+(entries[0].getAttribute('data-clr')||'matcha')+') 0%'];
-    for(var i=1;i<entries.length;i++){
-      var pct=(entries[i].offsetTop/railLen*100).toFixed(1);
-      stops.push('var(--'+(entries[i-1].getAttribute('data-clr')||'matcha')+') '+pct+'%');
-      stops.push('var(--'+(entries[i].getAttribute('data-clr')||'matcha')+') '+pct+'%');
+    var stops=[];
+    for(var i=0;i<entries.length;i++){
+      var c='var(--'+(entries[i].getAttribute('data-clr')||'matcha')+')';
+      var mid=(entries[i].offsetTop+entries[i].offsetHeight/2)/railLen*100;
+      if(i===0) stops.push(c+' 0%');
+      stops.push(c+' '+mid.toFixed(1)+'%');
+      if(i===entries.length-1) stops.push(c+' 100%');
     }
-    stops.push('var(--'+(entries[entries.length-1].getAttribute('data-clr')||'matcha')+') 100%');
     fill.style.background='linear-gradient(180deg,'+stops.join(',')+')';
   }
   function update(){
@@ -2232,7 +2233,7 @@ window.addEventListener('load',function(){
 </script>
 <div class="legacy-banner" role="banner">
   <span>This is the previous version of the site — for comparison only.</span>
-  <a href="/">View new version &rarr;</a>
+  <a href="../">View new version &rarr;</a>
 </div>
 </body>
 </html>
