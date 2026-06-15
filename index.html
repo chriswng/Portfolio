@@ -691,6 +691,20 @@ footer{border-top:1px solid var(--rule-dk);background:var(--slate);position:rela
 .triad-d{font-size:0.76rem;color:#475569;line-height:1.55}
 .hero-prop strong{color:var(--matcha);font-weight:600}
 
+/* ---- WOW: decode eyebrows, cursor-tilt triad, cover spotlight ---- */
+.label-txt{display:inline-block;white-space:nowrap}
+.label.decoding .label-txt>i{color:var(--matcha);opacity:0.85;font-style:normal}
+@media(hover:hover) and (min-width:600px){
+  .triad-cell{transition:transform 0.5s var(--ease),box-shadow 0.5s var(--ease);transform-style:preserve-3d;will-change:transform}
+  .triad-cell.tilt{box-shadow:0 18px 40px -22px rgba(15,23,42,0.45)}
+  .triad-ic,.triad-k,.triad-t{transition:transform 0.45s var(--ease)}
+  .triad-cell.tilt .triad-ic{transform:translateZ(34px)}
+  .triad-cell.tilt .triad-t{transform:translateZ(20px)}
+  .triad-cell.tilt .triad-k{transform:translateZ(12px)}
+}
+.report-cover>.rc-glow{position:absolute;inset:0;z-index:0;pointer-events:none;backface-visibility:hidden;opacity:0;transition:opacity 0.35s var(--ease);background:radial-gradient(240px circle at var(--mx,50%) var(--my,50%),rgba(181,196,43,0.28),rgba(99,91,255,0.10) 38%,transparent 64%)}
+.report:hover .report-cover>.rc-glow{opacity:1}
+
 /* ---- A2: Outcomes 4-up ---- */
 @media(min-width:900px){.outcomes-grid.cols-4{grid-template-columns:repeat(4,1fr)}}
 .outcome-num.word{font-size:clamp(1.5rem,3.4vw,2.05rem);line-height:1.05}
@@ -713,7 +727,7 @@ footer{border-top:1px solid var(--rule-dk);background:var(--slate);position:rela
 .sw-sub::after{content:'';flex:1;height:1px;background:var(--rule-dk)}
 .sw-featured{display:grid;grid-template-columns:1fr;gap:1.75rem;margin-bottom:3rem;align-items:start}
 @media(min-width:880px){.sw-featured{grid-template-columns:1fr 1fr}}
-.report{position:relative;perspective:1800px}
+.report{position:relative;perspective:1400px;perspective-origin:left center}
 .report-spread{display:grid;grid-template-columns:1fr;background:var(--white);border:1px solid var(--rule-dk);min-height:320px;position:relative}
 @media(min-width:520px){.report-spread{grid-template-columns:1.05fr 1fr}}
 .report-page{padding:1.35rem 1.45rem;display:flex;flex-direction:column}
@@ -727,8 +741,14 @@ footer{border-top:1px solid var(--rule-dk);background:var(--slate);position:rela
 .rp-stat-n small{font-size:0.42em;font-weight:600}
 .rp-stat-l{font-family:var(--mono);font-size:0.56rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--mid);margin-top:0.3rem;line-height:1.4}
 .rp-fig{margin-top:0.4rem}
-.report-cover{position:absolute;inset:0;background:var(--slate);color:#F8FAFC;transform-origin:left center;transition:transform 0.95s var(--ease);backface-visibility:hidden;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;padding:1.5rem 1.55rem 1.4rem;z-index:3;border-left:5px solid var(--matcha)}
-.report.open .report-cover{transform:rotateY(-162deg)}
+.report-cover{position:absolute;inset:0;background:var(--slate);color:#F8FAFC;transform-origin:left center;transform-style:preserve-3d;transition:transform 1.2s cubic-bezier(0.62,0.04,0.2,1),box-shadow 1.2s ease;backface-visibility:hidden;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;padding:1.5rem 1.55rem 1.4rem;z-index:3;border-left:5px solid var(--matcha);will-change:transform}
+.report-cover>*{position:relative;z-index:1;backface-visibility:hidden}
+/* the page edge / shadow that sweeps across the cover as it lifts */
+.report-cover::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;backface-visibility:hidden;opacity:0;transition:opacity 1.2s ease;background:linear-gradient(95deg,rgba(0,0,0,0.42) 0%,rgba(0,0,0,0.12) 18%,rgba(255,255,255,0) 55%,rgba(255,255,255,0.10) 100%)}
+/* the printed inside of the cover, revealed once it turns past upright */
+.report-cover::after{content:'';position:absolute;inset:0;pointer-events:none;backface-visibility:hidden;transform:rotateY(180deg) translateZ(2px);border-right:5px solid var(--matcha);background-color:#EFEBDD;background-image:radial-gradient(130% 90% at 0% 50%,rgba(181,196,43,0.12),rgba(239,235,221,0) 62%),repeating-linear-gradient(0deg,rgba(15,23,42,0.04) 0 1px,rgba(0,0,0,0) 1px 27px)}
+.report.open .report-cover{transform:rotateY(-156deg);box-shadow:24px 14px 44px rgba(15,23,42,0.30)}
+.report.open .report-cover::before{opacity:1}
 .rc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}
 .rc-crest{width:34px;height:34px;color:var(--matcha);flex-shrink:0}
 .rc-emp{font-family:var(--mono);font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(248,250,252,0.62);font-weight:600}
@@ -1238,6 +1258,7 @@ footer{border-top:1px solid var(--rule-dk);background:var(--slate);position:rela
         </div>
       </div>
       <div class="report-cover" data-report-open tabindex="0" role="button" aria-label="Open report" style="--pcol:var(--p-narr)">
+        <span class="rc-glow" aria-hidden="true"></span>
         <div class="rc-top">
           <svg class="rc-crest" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
             <path data-draw pathLength="1" d="M4 28 Q12 18 20 24 Q28 30 36 20"/>
@@ -1285,6 +1306,7 @@ footer{border-top:1px solid var(--rule-dk);background:var(--slate);position:rela
         </div>
       </div>
       <div class="report-cover" data-report-open tabindex="0" role="button" aria-label="Open report" style="--pcol:var(--p-model)">
+        <span class="rc-glow" aria-hidden="true"></span>
         <div class="rc-top">
           <svg class="rc-crest" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
             <path data-draw pathLength="1" d="M4 32 C14 30 18 12 26 10 C24 18 30 22 36 20"/>
@@ -2495,13 +2517,14 @@ window.addEventListener('load',function(){
       var pt=parseFloat(getComputedStyle(en).paddingTop)||0;
       nodes[i].style.top=(en.offsetTop+pt+2)+'px';
     });
-    var stops=['var(--'+(entries[0].getAttribute('data-clr')||'matcha')+') 0%'];
-    for(var i=1;i<entries.length;i++){
-      var pct=(entries[i].offsetTop/railLen*100).toFixed(1);
-      stops.push('var(--'+(entries[i-1].getAttribute('data-clr')||'matcha')+') '+pct+'%');
-      stops.push('var(--'+(entries[i].getAttribute('data-clr')||'matcha')+') '+pct+'%');
+    var stops=[];
+    for(var i=0;i<entries.length;i++){
+      var c='var(--'+(entries[i].getAttribute('data-clr')||'matcha')+')';
+      var mid=(entries[i].offsetTop+entries[i].offsetHeight/2)/railLen*100;
+      if(i===0) stops.push(c+' 0%');
+      stops.push(c+' '+mid.toFixed(1)+'%');
+      if(i===entries.length-1) stops.push(c+' 100%');
     }
-    stops.push('var(--'+(entries[entries.length-1].getAttribute('data-clr')||'matcha')+') 100%');
     fill.style.background='linear-gradient(180deg,'+stops.join(',')+')';
   }
   function update(){
@@ -2783,6 +2806,90 @@ window.addEventListener('load',function(){
       var offset=navH?navH.offsetHeight:48;
       var top=target.getBoundingClientRect().top+window.scrollY-offset;
       window.scrollTo({top:top,behavior:'smooth'});
+    });
+  });
+})();
+
+/* ---- 31: Decode-scramble eyebrows on first view ---- */
+(function(){
+  var reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var labels=document.querySelectorAll('.label');
+  if(!labels.length) return;
+  var GLYPHS='ABCDEFGHIJKLMNOPQRSTUVWXYZ#%&/<>*+=-·';
+  labels.forEach(function(lab){
+    /* wrap the visible text node so the ghost number (::before) and rule (::after) are untouched */
+    var txt=null;
+    for(var i=0;i<lab.childNodes.length;i++){
+      var n=lab.childNodes[i];
+      if(n.nodeType===3&&n.textContent.trim()){txt=n;break;}
+    }
+    if(!txt) return;
+    var span=document.createElement('span');
+    span.className='label-txt';
+    span.textContent=txt.textContent;
+    lab.replaceChild(span,txt);
+    lab._final=span.textContent;
+    lab._span=span;
+  });
+  function decode(lab){
+    var full=lab._final,span=lab._span;
+    if(!span) return;
+    if(reduce){span.textContent=full;return;}
+    var frame=0,total=full.length*3+10;
+    lab.classList.add('decoding');
+    (function step(){
+      var revealed=Math.floor(frame/3);
+      var out='';
+      for(var i=0;i<full.length;i++){
+        if(full[i]===' '){out+=' ';continue;}
+        if(i<revealed){out+=full[i];}
+        else{out+='<i>'+GLYPHS[Math.floor(Math.random()*GLYPHS.length)]+'</i>';}
+      }
+      span.innerHTML=out;
+      frame++;
+      if(revealed<=full.length&&frame<=total){requestAnimationFrame(step);}
+      else{span.textContent=full;lab.classList.remove('decoding');}
+    })();
+  }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es,o){
+      es.forEach(function(e){
+        if(!e.isIntersecting) return;
+        o.unobserve(e.target);
+        decode(e.target);
+      });
+    },{threshold:0.6});
+    labels.forEach(function(lab){io.observe(lab);});
+  }
+})();
+
+/* ---- 32: Cursor-tilt hero triad with layered depth ---- */
+(function(){
+  if(!window.matchMedia('(hover:hover) and (min-width:600px)').matches) return;
+  if(window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  document.querySelectorAll('.triad-cell').forEach(function(cell){
+    cell.addEventListener('mousemove',function(e){
+      var r=cell.getBoundingClientRect();
+      var px=(e.clientX-r.left)/r.width-0.5;
+      var py=(e.clientY-r.top)/r.height-0.5;
+      cell.classList.add('tilt');
+      cell.style.transform='perspective(620px) rotateX('+(-py*7).toFixed(2)+'deg) rotateY('+(px*9).toFixed(2)+'deg)';
+    });
+    cell.addEventListener('mouseleave',function(){
+      cell.classList.remove('tilt');
+      cell.style.transform='';
+    });
+  });
+})();
+
+/* ---- 33: Spotlight glow that tracks the pointer on report covers ---- */
+(function(){
+  if(!window.matchMedia('(hover:hover)').matches) return;
+  document.querySelectorAll('.report-cover').forEach(function(cov){
+    cov.addEventListener('mousemove',function(e){
+      var r=cov.getBoundingClientRect();
+      cov.style.setProperty('--mx',((e.clientX-r.left)/r.width*100).toFixed(1)+'%');
+      cov.style.setProperty('--my',((e.clientY-r.top)/r.height*100).toFixed(1)+'%');
     });
   });
 })();
