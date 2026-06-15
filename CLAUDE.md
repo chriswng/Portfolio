@@ -1,62 +1,57 @@
-# CLAUDE.md
+# CLAUDE.md — Career Achievement Record Project State
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+**Owner:** Chris Wang | Senior Sustainability Advisor | Downer Group (Group ESR)
+**Contract:** March 2026 – March 2027 | Manager: Nathan Brogden
+**Last updated:** 12 June 2026
 
-## Project Overview
+---
 
-Personal portfolio website for Christopher Wang, a Sustainability Advisor. Deployed as GitHub Pages at `itschriswang.github.io`. This is a **no-build, no-framework** static site — HTML, CSS, and JS are hand-written and served directly.
+## Current authoritative files
 
-## Development
+| File | Status | Coverage |
+|---|---|---|
+| `CAR_Update_2026-06-12.md` | **Single source of truth** | Complete record, Weeks 1–15, March to 12 June 2026. 12 STAR stories. 8 sections. Supersedes all prior files. |
+| `Career_Achievement_Record_ChrisWang_MASTER.docx` | Superseded baseline | Weeks 1–5 only, to 13 April 2026. Do not use as source — all content folded into the update MD. |
+| `Career_Achievement_Record_ChrisWang.docx` | Superseded subset | Subset of MASTER. Do not use. |
 
-There are no build, lint, or test commands. To preview locally, open the HTML files directly in a browser or serve them with any static file server:
+---
 
-```bash
-python3 -m http.server 8080
-# then open http://localhost:8080
-```
+## Next DOCX rebuild instructions
 
-Changes are deployed by pushing to the `main` branch (GitHub Pages auto-deploys).
+The MASTER `.docx` is a UTF-8 text file despite the extension. Do not attempt in-place edits.
 
-## Architecture
+1. Read `CAR_Update_2026-06-12.md` as the sole content source
+2. Rebuild from scratch via Node.js with the `docx` npm library
+3. Read `/mnt/skills/public/docx/SKILL.md` before writing any code
+4. Output to `/mnt/user-data/outputs/Career_Achievement_Record_ChrisWang_MASTER.docx`
+5. Validate with `python3 validate.py` (copy validate script from skills to `/home/claude/` first)
+6. Document properties: `creator = ""` — no author attribution
+7. Next STAR number: **13**
 
-The project has exactly two pages:
+**Colour coding (Downer brand):**
+- Blue = Data / Structural
+- Green = Delivery / Impact
+- Amber = Outstanding / TBC
+- Dark grey = Supporting / Context
 
-- **`index.html`** — Main portfolio (~1900 lines). All CSS is in a `<style>` block (lines ~13–655), all JS is in a `<script>` block at the bottom (lines ~1081–1911).
-- **`work/index.html`** — Work samples sub-page (~100KB), same single-file structure.
+---
 
-### CSS Design System (index.html lines 16–43)
+## Outstanding TBC items (carry forward to next update)
 
-CSS custom properties define the entire design token system:
-- **Palette:** `--matcha` (#B5C42B), `--indigo`, `--berry`, `--amber` as brand/accent colors; `--primary`/`--secondary`/`--accent` semantic aliases
-- **Typography:** Space Grotesk (display), Inter (body), JetBrains Mono (code/labels) — all loaded via Google Fonts CDN
-- **Layout:** `--max-width: 960px`, content constrained via `.container` utility
+- `[AMBER]` PwC FY26 assurance final outcome
+- `[AMBER]` eLearning module launch engagement metrics (post 22 April Earth Day launch)
+- `[AMBER]` Board forum confirmation for the Net Zero Pathway Model
+- `[AMBER]` Subcontractor template hours-saved estimate
+- `[AMBER]` FY27 STI consultation outcomes (sessions held 9–12 June 2026)
 
-### Page Sections (index.html)
+---
 
-Sections map directly to `id` attributes used for anchor nav:
-- `#about` — Hero with animated role cycling and years-of-experience counter
-- `#bio` — Biography + "capability pipeline" accordion (5 steps: Raw Data → Calculation → Reporting → Strategy → Communication)
-- `#principles` — "My Practice" cards
-- `.ticker-band` — Animated sustainability glossary ticker
-- `#scenario` — **The most complex section** — interactive decarbonisation scenario model (see below)
-- `#experience` — Career timeline
-- `#contact` — LinkedIn CTA
+## Cross-project harvest process
 
-### Interactive Scenario Model (`#scenario`)
+Memory and search tools are scoped per project. To gather achievements from other projects, paste the harvest prompt (stored in this project's chat history, 13 June 2026 session) into each relevant project and return the output here.
 
-The decarbonisation model is the centrepiece interactive feature. Key state/data structures in the JS:
+**Harvest last run:** 13 June 2026
+**Projects harvested:** CDP Supply Chain project, Decarbonisation / STI modelling project, Assurance / data management project
 
-- **`SECTOR_PROFILES`** object — defines 4 sectors (infrastructure, property, government, textile retail), each with `FY20`/`FY25`/`FY26` baseline emissions and sector-specific lever definitions
-- **`SCN` state object + segmented buttons** — all controls are `.seg-btn` button groups (`data-key`/`data-value`); a click writes to `SCN` and calls `run()` (or `changeSector()` for the profile row)
-- **Calculation engine (`run()`)** — recomputes on every lever change; updates the Chart.js stacked-wedge line chart, the dynamic takeaway headline (`#takeaway`), the KPI strip, and contribution bars showing abatement by lever
-- **Chart.js 4.4.1** — loaded via CDN; the chart instance is stored in a module-level variable and `.update()`d in place; the legend is custom HTML built by `buildLegend()` (the built-in Chart.js legend is disabled)
-- The section is light-themed and laid out as three numbered steps: profile → levers → result
-
-When modifying the scenario model, changes to `SECTOR_PROFILES` data, lever curves, or the calculation logic all live in the same `<script>` block and are tightly coupled to the DOM structure of `#scenario`.
-
-## Key Conventions
-
-- **All styles and scripts are embedded** in each HTML file — no separate `.css` or `.js` files exist
-- **No external dependencies except Chart.js** (CDN) and Google Fonts (CDN); do not introduce npm or bundlers
-- **Animations** use `@keyframes` + `IntersectionObserver` for entrance effects; the film-grain and contour-field topology overlays are CSS `background` + `::before`/`::after` pseudo-elements
-- When adding new sections, follow the existing pattern: semantic HTML landmark → CSS custom properties for theming → JS appended at the bottom of the `<script>` block
+**Formatting rules:**
+Australian English. No em dashes. No en dash clause separators in prose. Active voice. All documents written in Chris's voice as if he prepared them.
