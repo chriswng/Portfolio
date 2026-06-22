@@ -1,0 +1,59 @@
+import { motion } from 'framer-motion';
+
+// Character-splitting headline with staggered springs. Each character rises
+// from y:80 to y:0 on viewport entry, staggered by 0.015s, on an organic
+// spring curve (stiffness 80, damping 14). Words are kept together so wrapping
+// stays clean; whitespace between words is preserved.
+const charVariants = {
+  hidden: { y: 80, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: { type: 'spring', stiffness: 80, damping: 14 },
+  },
+};
+
+export default function SplitText({ text, as = 'span', className, accentIndex = -1, style }) {
+  const MotionTag = motion[as] || motion.span;
+  const words = String(text).split(' ');
+  let charCounter = 0;
+
+  return (
+    <MotionTag
+      className={className}
+      style={{ display: 'inline-block', ...style }}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: '-12% 0px' }}
+      transition={{ staggerChildren: 0.015 }}
+      aria-label={text}
+    >
+      {words.map((word, wi) => (
+        <span
+          key={wi}
+          style={{ display: 'inline-block', whiteSpace: 'nowrap' }}
+          aria-hidden="true"
+        >
+          {word.split('').map((ch, ci) => {
+            const isAccent = wi === accentIndex;
+            charCounter += 1;
+            return (
+              <motion.span
+                key={ci}
+                variants={charVariants}
+                style={{
+                  display: 'inline-block',
+                  color: isAccent ? 'var(--matcha)' : undefined,
+                  willChange: 'transform',
+                }}
+              >
+                {ch}
+              </motion.span>
+            );
+          })}
+          {wi < words.length - 1 && <span style={{ display: 'inline-block', width: '0.28em' }}>&nbsp;</span>}
+        </span>
+      ))}
+    </MotionTag>
+  );
+}
