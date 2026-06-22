@@ -1,0 +1,236 @@
+import { useEffect, useMemo, useRef, useState } from 'react';
+import Chart from 'chart.js/auto';
+import { runModel, chartLabels, LEVER_LABELS, SECTOR_OPTIONS, resolveSector } from '../data/scenario';
+import SplitText from './SplitText';
+
+const LEVERS = [
+  { key: 'grid', lc: 'var(--indigo)', sc: 'var(--indigo)', opts: ['base', 'faster', 'slower', 'off'] },
+  { key: 'lv', lc: 'var(--matcha)', sc: '#75821D', opts: ['base', 'faster', 'slower'] },
+  { key: 'hv', lc: 'var(--amber)', sc: '#B56A00', opts: ['base', 'faster', 'slower'] },
+  { key: 'plant', lc: 'var(--berry)', sc: 'var(--berry)', opts: ['base', 'faster', 'slower', 'off'] },
+];
+const OPT_LABEL = { base: 'Base', faster: 'Faster', slower: 'Slower', off: 'Off' };
+const REV_OPTS = [
+  { v: 'flat', l: 'Flat' },
+  { v: 'moderate', l: '+1.5% / yr' },
+  { v: 'high', l: '+3.0% / yr' },
+];
+
+const LEGEND_SWATCH = [
+  '<span class="cl-swatch line" style="color:#0F172A"></span>',
+  '<span class="cl-swatch" style="background:rgba(99,91,255,0.45)"></span>',
+  '<span class="cl-swatch" style="background:rgba(155,170,30,0.55)"></span>',
+  '<span class="cl-swatch" style="background:rgba(255,149,0,0.5)"></span>',
+  '<span class="cl-swatch" style="background:rgba(255,59,96,0.45)"></span>',
+  '<span class="cl-swatch dash" style="color:rgba(15,23,42,0.5)"></span>',
+  '<span class="cl-swatch dash" style="color:#475569"></span>',
+];
+
+function Seg({ value, options, onChange, sc, small }) {
+  return (
+    <div className={'seg-row' + (small ? ' seg-sm' : '')} role="group" style={small ? { '--sc': sc } : undefined}>
+      {options.map((o) => {
+        const v = typeof o === 'string' ? o : o.v;
+        const l = typeof o === 'string' ? OPT_LABEL[o] : o.l;
+        return (
+          <button key={v} type="button" className={'seg-btn' + (value === v ? ' on' : '')} onClick={() => onChange(v)}>
+            {l}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+export default function Scenario() {
+  const [scn, setScn] = useState({ sector: 'infrastructure', grid: 'base', lv: 'base', hv: 'base', plant: 'base', rev: 'moderate' });
+  const result = useMemo(() => runModel(scn), [scn]);
+  const labels = LEVER_LABELS[result.mode];
+  const sectorDesc = resolveSector(scn.sector).desc;
+
+  const canvasRef = useRef(null);
+  const chartRef = useRef(null);
+  const builtRef = useRef(false);
+  const legendRef = useRef(null);
+
+  const set = (key, value) => setScn((s) => ({ ...s, [key]: value }));
+
+  // Build the chart once.
+  useEffect(() => {
+    const ctx = canvasRef.current;
+    if (!ctx) return;
+    const ch = new Chart(ctx.getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: chartLabels,
+        datasets: [
+          { label: 'Net emissions', data: [], borderColor: '#0F172A', borderWidth: 2.5, backgroundColor: 'rgba(15,23,42,0.10)', fill: 'origin', pointRadius: 0, tension: 0.15 },
+          { label: 'Grid Decarbonisation', data: [], borderColor: 'transparent', borderWidth: 0, backgroundColor: 'rgba(99,91,255,0.28)', fill: '-1', pointRadius: 0, tension: 0.15 },
+          { label: 'LV Fleet', data: [], borderColor: 'transparent', borderWidth: 0, backgroundColor: 'rgba(181,196,43,0.38)', fill: '-1', pointRadius: 0, tension: 0.15 },
+          { label: 'HV Fleet', data: [], borderColor: 'transparent', borderWidth: 0, backgroundColor: 'rgba(255,149,0,0.30)', fill: '-1', pointRadius: 0, tension: 0.15 },
+          { label: 'Plant Electrification', data: [], borderColor: 'transparent', borderWidth: 0, backgroundColor: 'rgba(255,59,96,0.26)', fill: '-1', pointRadius: 0, tension: 0.15 },
+          { label: 'Business as usual', data: [], borderColor: 'rgba(15,23,42,0.45)', borderWidth: 1.5, borderDash: [5, 4], backgroundColor: 'transparent', fill: false, pointRadius: 0, tension: 0 },
+          { label: 'Actuals', data: [], borderColor: '#475569', borderWidth: 1.5, borderDash: [2, 3], backgroundColor: 'transparent', fill: false, pointRadius: 3, tension: 0, pointBackgroundColor: '#475569' },
+        ],
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: { label: (c) => c.dataset.label + ': ' + Math.round(c.raw).toLocaleString() + ' tCO₂-e' },
+            backgroundColor: 'rgba(15,23,42,0.96)', titleColor: '#F8FAFC', bodyColor: 'rgba(248,250,252,0.85)',
+            titleFont: { family: "'JetBrains Mono',monospace", size: 11 }, bodyFont: { family: "'JetBrains Mono',monospace", size: 11 },
+            borderColor: 'rgba(181,196,43,0.5)', borderWidth: 1,
+          },
+        },
+        scales: {
+          x: { grid: { color: 'rgba(15,23,42,0.05)' }, ticks: { font: { family: "'JetBrains Mono',monospace", size: 10 }, color: '#64748B', callback: (v, i) => (i % 5 === 0 ? 'FY' + (2020 + i) : '') } },
+          y: { grid: { color: 'rgba(15,23,42,0.05)' }, title: { display: true, text: 'tCO₂-e', font: { size: 10 }, color: '#64748B' }, ticks: { font: { family: "'JetBrains Mono',monospace", size: 10 }, color: '#64748B', callback: (v) => (v / 1000).toFixed(0) + 'k' } },
+        },
+      },
+    });
+    chartRef.current = ch;
+
+    // Scrollytelling build — wedges assemble on first view (unless already visible).
+    const card = ctx.closest('.chart-card');
+    const ORDER = [6, 5, 0, 1, 2, 3, 4];
+    const reduce = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    let io;
+    if (!reduce && card) {
+      const r = card.getBoundingClientRect();
+      if (r.top < window.innerHeight && r.bottom > 0) {
+        builtRef.current = true;
+      } else {
+        ORDER.forEach((i) => ch.setDatasetVisibility(i, false));
+        ch.update('none');
+        io = new IntersectionObserver((es, o) => {
+          es.forEach((e) => {
+            if (!e.isIntersecting || builtRef.current) return;
+            builtRef.current = true; o.disconnect();
+            ORDER.forEach((i, k) => setTimeout(() => { ch.setDatasetVisibility(i, true); ch.update(); }, k * 320));
+          });
+        }, { threshold: 0.3 });
+        io.observe(card);
+      }
+    } else {
+      builtRef.current = true;
+    }
+
+    return () => { if (io) io.disconnect(); ch.destroy(); chartRef.current = null; };
+  }, []);
+
+  // Push model output + labels into the chart and the HTML legend whenever state changes.
+  useEffect(() => {
+    const ch = chartRef.current;
+    if (!ch) return;
+    const s = result.series;
+    ch.data.datasets[0].data = s.net;
+    ch.data.datasets[1].data = s.gridLayer;
+    ch.data.datasets[2].data = s.lvLayer;
+    ch.data.datasets[3].data = s.hvLayer;
+    ch.data.datasets[4].data = s.plantLayer;
+    ch.data.datasets[5].data = s.bau;
+    ch.data.datasets[6].data = s.actuals;
+    ch.data.datasets[1].label = labels.cbar.grid;
+    ch.data.datasets[2].label = labels.cbar.lv;
+    ch.data.datasets[3].label = labels.cbar.hv;
+    ch.data.datasets[4].label = labels.cbar.plant;
+    ch.update(builtRef.current ? 'none' : 'none');
+    if (legendRef.current) {
+      legendRef.current.innerHTML = ch.data.datasets
+        .map((d, i) => '<span class="cl-item">' + LEGEND_SWATCH[i] + d.label + '</span>').join('');
+    }
+  }, [result, labels]);
+
+  const cbars = [
+    { key: 'grid', cls: 'grid', fill: 'var(--indigo)', name: labels.cbar.grid, data: result.contrib.grid },
+    { key: 'lv', cls: 'lv', fill: 'var(--matcha)', name: labels.cbar.lv, data: result.contrib.lv },
+    { key: 'hv', cls: 'hv', fill: 'var(--amber)', name: labels.cbar.hv, data: result.contrib.hv },
+    { key: 'plant', cls: 'plant', fill: 'var(--berry)', name: labels.cbar.plant, data: result.contrib.plant },
+  ];
+
+  return (
+    <section id="scenario">
+      <div className="canvas">
+        <div className="sec-tag" data-idx="02 / ">Decarbonisation Scenario Model</div>
+        <p className="tool-decl" style={{ marginTop: '1.5rem' }}>Every lever has a source. <strong>Set the levers, then read the story.</strong></p>
+        <p className="tool-sub">{labels.sub}</p>
+        <span className="tool-disc">Illustrative model · stylised numbers · not client data · FY30 used as the interim target year</span>
+
+        {/* Step 01 */}
+        <div className="scn-step">
+          <span className="scn-step-num">Step 01</span>
+          <h3 className="scn-step-title">Choose an operating profile</h3>
+          <p className="scn-step-sub">Each profile loads a different emissions mix and its own set of abatement levers.</p>
+          <div className="seg-row" role="group" aria-label="Organisation type">
+            {SECTOR_OPTIONS.map((o) => (
+              <button key={o.value} type="button" className={'seg-btn' + (scn.sector === o.value ? ' on' : '')} onClick={() => set('sector', o.value)}>{o.label}</button>
+            ))}
+          </div>
+          <p className="sector-desc">{sectorDesc}</p>
+        </div>
+
+        {/* Step 02 */}
+        <div className="scn-step">
+          <span className="scn-step-num">Step 02</span>
+          <h3 className="scn-step-title">Set the abatement levers</h3>
+          <p className="scn-step-sub">Every lever traces to a published source. Card colours match the wedges in the chart below.</p>
+          <div className="lever-deck">
+            {LEVERS.map((lv) => (
+              <div className="lever-card" key={lv.key} style={{ '--lc': lv.lc }}>
+                <div className="lever-top"><span className="lever-dot" aria-hidden="true" /><span className="lever-name">{labels[lv.key].name}</span></div>
+                <div className="lever-src">{labels[lv.key].src}</div>
+                <Seg value={scn[lv.key]} options={lv.opts} onChange={(v) => set(lv.key, v)} sc={lv.sc} small />
+              </div>
+            ))}
+            <div className="lever-card lever-card-rev" style={{ '--lc': 'var(--step-comms)' }}>
+              <div className="lever-top"><span className="lever-dot" aria-hidden="true" /><span className="lever-name">Volume / Revenue Growth Assumption</span></div>
+              <div className="lever-src">Scales gross emissions before abatement is applied</div>
+              <Seg value={scn.rev} options={REV_OPTS} onChange={(v) => set('rev', v)} sc="var(--step-comms)" small />
+            </div>
+          </div>
+        </div>
+
+        {/* Step 03 */}
+        <div className="scn-step">
+          <span className="scn-step-num">Step 03</span>
+          <h3 className="scn-step-title">Read the result</h3>
+          <p className="scn-step-sub">The headline rewrites itself as you move the levers, the way a board slide should.</p>
+          <p className="takeaway" aria-live="polite">
+            {result.takeaway.head}<em>{result.takeaway.value}</em>{result.takeaway.tail}
+            <span className="tk-note">{result.takeaway.note}</span>
+          </p>
+          <div className="kpi-strip">
+            <div className="kpi"><div className="kpi-l">FY20 Baseline</div><div className="kpi-v">{result.kpiBase}</div></div>
+            <div className="kpi"><div className="kpi-l">FY26 Actuals</div><div className="kpi-v">{result.kpiFy26}</div></div>
+            <div className="kpi live"><div className="kpi-l">FY30 Net</div><div className="kpi-v">{result.kpiNet}</div></div>
+            <div className="kpi live"><div className="kpi-l">FY30 vs FY20</div><div className="kpi-v">{result.kpiPct}</div></div>
+          </div>
+          <div className="chart-card">
+            <div className="chart-head"><div className="chart-title">{result.chartTitle}</div></div>
+            <div className="chart-sub">tCO₂-e per year · coloured wedges show the abatement each lever contributes against business‑as‑usual</div>
+            <div className="chart-wrap"><canvas ref={canvasRef} /></div>
+            <div className="chart-legend" ref={legendRef} aria-hidden="true" />
+          </div>
+          <div className="contrib-card" style={{ marginTop: '1.5rem' }}>
+            <div className="contrib-head">Abatement contribution by lever at FY30 (interim target year): tCO₂-e avoided vs. gross pathway</div>
+            {cbars.map((c) => (
+              <div className="cbar" key={c.key}>
+                <div className={'cbar-name ' + c.cls}>{c.name}</div>
+                <div className="cbar-track"><div className="cbar-fill" style={{ width: c.data.width + '%', background: c.fill }} /></div>
+                <div className="cbar-val">{c.data.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="scn-foot">
+          <p>More examples of this work: emissions baselines, decarbonisation roadmaps, MCA prioritisation, and lifecycle carbon assessment across infrastructure, built environment, and government.</p>
+          <a href="work/" className="btn btn-primary">View work samples →</a>
+        </div>
+      </div>
+    </section>
+  );
+}
