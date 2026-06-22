@@ -1,0 +1,114 @@
+import { useEffect, useRef } from 'react';
+import { EXPERIENCE, EDUCATION } from '../data/content';
+import SplitText from './SplitText';
+
+export default function Experience() {
+  const tlRef = useRef(null);
+  const fillRef = useRef(null);
+  const entryRefs = useRef([]);
+  const nodeRefs = useRef([]);
+
+  // The rail draws with scroll; nodes ignite as the fill passes them.
+  useEffect(() => {
+    const tl = tlRef.current;
+    const fill = fillRef.current;
+    if (!tl || !fill) return;
+    const reduced = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    const entries = entryRefs.current.filter(Boolean);
+    const nodes = nodeRefs.current.filter(Boolean);
+    let railLen = 1;
+
+    function layout() {
+      railLen = Math.max(1, tl.offsetHeight - 8);
+      entries.forEach((en, i) => {
+        const pt = parseFloat(getComputedStyle(en).paddingTop) || 0;
+        if (nodes[i]) nodes[i].style.top = (en.offsetTop + pt + 2) + 'px';
+      });
+    }
+    function update() {
+      const r = tl.getBoundingClientRect();
+      let h = window.innerHeight * 0.66 - r.top;
+      h = reduced ? railLen : Math.max(0, Math.min(railLen, h));
+      fill.style.clipPath = 'inset(0 0 ' + ((1 - h / railLen) * 100).toFixed(2) + '% 0)';
+      nodes.forEach((n, i) => { n.classList.toggle('lit', entries[i].offsetTop + 12 <= h); });
+    }
+    let tick = false;
+    const onScroll = () => { if (!tick) { requestAnimationFrame(() => { update(); tick = false; }); tick = true; } };
+    const onResize = () => { layout(); update(); };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onResize);
+    layout(); update();
+    return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onResize); };
+  }, []);
+
+  // entries = experience entries + education block (in DOM order)
+  const allMarks = [...EXPERIENCE, EDUCATION];
+
+  return (
+    <section id="experience">
+      <div className="canvas">
+        <div className="sec-tag" data-idx="03 / ">Experience</div>
+        <h2 className="display" style={{ fontSize: 'clamp(2rem,6vw,4.5rem)', marginTop: '1.2rem' }}>
+          <SplitText text="Track record" accentIndex={1} />
+        </h2>
+
+        <div className="exp-timeline" ref={tlRef}>
+          <div className="exp-rail-fill" ref={fillRef} aria-hidden="true" />
+
+          {EXPERIENCE.map((exp, ei) => (
+            <div className="exp-entry" key={exp.org} ref={(el) => (entryRefs.current[ei] = el)}>
+              <div className="exp-hd">
+                <div>
+                  <img className={'exp-logo ' + exp.logoClass} src={exp.logo} alt={exp.logoAlt} loading="lazy" />
+                  <div className="exp-org-name">{exp.org}</div>
+                  <div className="exp-dept">{exp.dept}</div>
+                </div>
+                <div className="exp-meta">
+                  {exp.roles.map((r, i) => (
+                    <div className="exp-meta-row" key={i}>
+                      <span className="exp-role-title">{r.title}</span>
+                      <span className="exp-date">{r.date}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <ul className="exp-bullets">
+                {exp.bullets.map((b, i) => (
+                  b.section
+                    ? <li key={i} style={{ paddingLeft: 0 }}><span className="exp-section-lbl">{b.section}</span></li>
+                    : <li key={i} className="has-mark">{b.text}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+
+          <div className="edu-block" ref={(el) => (entryRefs.current[EXPERIENCE.length] = el)}>
+            <div className="edu-inst">{EDUCATION.inst}</div>
+            <div className="edu-deg">{EDUCATION.deg}</div>
+            <div className="edu-grid">
+              {EDUCATION.cells.map((c, i) => (
+                <div className="edu-cell" key={i}>
+                  <div className="edu-cell-l">{c.l}</div>
+                  <div className="edu-cell-b"><strong>{c.b[0]}</strong>{c.b[1]}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Nodes, one per entry + education, positioned in layout effect. */}
+          {allMarks.map((m, i) => (
+            <div
+              key={i}
+              className="exp-node"
+              aria-hidden="true"
+              ref={(el) => (nodeRefs.current[i] = el)}
+              style={{ '--nclr': 'var(--' + (m.clr || 'matcha') + ')' }}
+            >
+              <span>{m.mark}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
