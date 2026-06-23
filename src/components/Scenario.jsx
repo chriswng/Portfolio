@@ -227,8 +227,8 @@ export default function Scenario() {
         </div>
 
         <div className="scn-foot">
-          <p>More examples of this work: emissions baselines, decarbonisation roadmaps, MCA prioritisation, and lifecycle carbon assessment across infrastructure, built environment, and government.</p>
-          <a href="work/" className="btn btn-primary">View work samples →</a>
+          <p>How is a decarbonisation roadmap sequenced? How is embodied carbon assessed across a building's lifecycle? The Work Samples page shows four frameworks applied to real engagements: Decarb Roadmap, MCA prioritisation, Lifecycle Carbon, and Emissions Baseline.</p>
+          <a href="work/" className="btn btn-primary">Explore the frameworks →</a>
         </div>
       </div>
     </section>
