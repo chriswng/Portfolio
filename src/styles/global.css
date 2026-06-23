@@ -100,12 +100,27 @@ section { position:relative; }
    NAV
    ============================================================================ */
 .nav{ position:sticky; top:0; z-index:100; background:rgba(248,250,252,0.82); backdrop-filter:blur(10px); border-bottom:1px solid var(--rule-dk); }
-.nav-inner{ display:flex; justify-content:space-between; align-items:center; min-height:52px; gap:0.5rem; padding-top:0.3rem; padding-bottom:0.3rem; }
-.nav-logo{ font-family:var(--mono); font-size:1rem; font-weight:500; color:var(--matcha); text-decoration:none; letter-spacing:-0.02em; flex-shrink:0; transition:opacity 0.25s; }
+.nav-inner{ display:flex; justify-content:space-between; align-items:center; min-height:52px; gap:0.5rem; padding-top:0.3rem; padding-bottom:0.3rem; flex-wrap:wrap; }
+.nav-logo{ font-family:var(--mono); font-size:1rem; font-weight:500; color:var(--matcha); text-decoration:none; letter-spacing:-0.02em; flex-shrink:0; transition:opacity 0.25s; order:1; }
 .nav-logo:hover{ opacity:0.55; }
-.nav-links{ display:flex; flex-wrap:wrap; justify-content:flex-end; gap:0.1rem 0.2rem; }
+.nav-links{ display:flex; flex-wrap:wrap; justify-content:flex-end; gap:0.1rem 0.2rem; order:2; }
 .nav-links a{ font-family:var(--mono); font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--mid); text-decoration:none; padding:0.45rem 0.7rem; transition:color 0.3s var(--ease); white-space:nowrap; }
 .nav-links a:hover, .nav-links a.active{ color:var(--matcha); }
+
+/* Hamburger — hidden on desktop */
+.nav-hamburger{ display:none; flex-direction:column; justify-content:center; gap:5px; background:none; border:none; cursor:pointer; padding:0.45rem; flex-shrink:0; order:3; }
+.nav-hamburger span{ display:block; width:20px; height:2px; background:var(--slate); border-radius:1px; transition:transform 0.25s var(--ease),opacity 0.2s; transform-origin:center; }
+.nav-hamburger.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2){ opacity:0; }
+.nav-hamburger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+
+@media(max-width:680px){
+  .nav-hamburger{ display:flex; margin-left:auto; }
+  .nav-links{ display:none; flex-direction:column; width:100%; order:4; border-top:1px solid var(--rule-lt); padding:0.4rem 0; gap:0; }
+  .nav-links.open{ display:flex; }
+  .nav-links a{ padding:0.75rem 0; border-bottom:1px solid var(--rule-lt); letter-spacing:0.15em; justify-content:flex-start; }
+  .nav-links a:last-child{ border-bottom:none; }
+}
 
 /* ============================================================================
    HERO / ABOUT
@@ -130,7 +145,7 @@ section { position:relative; }
 .hero-name em{ color:var(--matcha); font-style:normal; }
 .hero-side{ grid-column:1 / 10; align-self:start; margin-top:clamp(1rem,2.5vw,1.8rem); }
 @media(max-width:680px){
-  .hero-name{ grid-column:1 / 5; font-size:clamp(2.8rem,18vw,5rem); }
+  .hero-name{ grid-column:1 / 5; font-size:clamp(2.2rem,14vw,5rem); }
   .hero-side{ grid-column:1 / 5; margin-top:1.2rem; }
 }
 .role-cycle{
