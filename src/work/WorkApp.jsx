@@ -19,7 +19,7 @@ function WorkNav() {
         <div className="nav-links" role="navigation">
           {NAV_LINKS.map((l) => {
             const href = l.external ? './' : '../' + l.href;
-            const active = l.label === 'Work';
+            const active = l.href === 'work/';
             return <a key={l.label} href={href} className={active ? 'active' : undefined}>[ {l.label} ]</a>;
           })}
         </div>
@@ -160,7 +160,7 @@ export default function WorkApp() {
         <div className="canvas" style={{ position: 'relative', zIndex: 1 }}>
           <div className="sec-tag" data-idx="01 / ">Work Samples</div>
           <h1 className="wi-title display"><SplitText text="Frameworks" /> <SplitText text="in practice." accentIndex={1} /></h1>
-          <p className="wi-sub">Four analytical frameworks applied in production across infrastructure, built environment, and government. Each tab shows a live version of a methodology I have delivered for clients.</p>
+          <p className="wi-sub">Four analytical frameworks, each shown as a live working example drawn from production engagements across infrastructure, built environment, and government. Select a tab to explore the methodology.</p>
           <a href="../" className="wi-back"><span>←</span>&nbsp;Back to profile</a>
         </div>
       </section>
