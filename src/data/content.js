@@ -3,10 +3,10 @@
 
 export const NAV_LINKS = [
   { href: '#about', label: 'About' },
-  { href: '#bio', label: 'Pipeline' },
-  { href: '#principles', label: 'Approach' },
-  { href: '#scenario', label: 'Model' },
-  { href: 'work/', label: 'Work', external: true },
+  { href: '#bio', label: 'Capabilities' },
+  { href: '#principles', label: 'My Practice' },
+  { href: '#scenario', label: 'Decarb Model' },
+  { href: 'work/', label: 'Work Samples', external: true },
   { href: '#experience', label: 'Experience' },
   { href: '#contact', label: 'Contact' },
 ];
