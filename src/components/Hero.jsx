@@ -54,7 +54,6 @@ export default function Hero() {
   const baseY = useTransform(scrollY, [0, 600], [0, 80]);
   const velY = useTransform(smoothVel, [-1500, 0, 1500], [-24, 0, 24]);
   const lowerY = useTransform(scrollY, [0, 600], [0, 140]);
-  const ghostY = useTransform(scrollY, [0, 600], [0, -60]);
 
   return (
     <section id="about" ref={sectionRef}>
@@ -62,8 +61,6 @@ export default function Hero() {
         <div className="bloom bloom-a" /><div className="bloom bloom-b" /><div className="bloom bloom-c" />
       </div>
       <ContourField />
-
-      <motion.div className="hero-ghost" aria-hidden="true" style={{ y: ghostY }}>CO₂</motion.div>
 
       <motion.div className="canvas matrix hero-grid" style={{ y: baseY }}>
         <motion.h1 className="hero-name display" style={{ y: velY }}>

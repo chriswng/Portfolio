@@ -16,7 +16,22 @@ export default function Experience() {
     const reduced = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
     const entries = entryRefs.current.filter(Boolean);
     const nodes = nodeRefs.current.filter(Boolean);
+    const marks = [...EXPERIENCE, EDUCATION];
     let railLen = 1;
+
+    // Map the rail gradient to actual node positions so each node sits exactly
+    // on its own colour — guarantees the UNSW node reads yellow, not black.
+    function paintRail() {
+      const stops = [`var(--${marks[0].clr}) 0%`];
+      entries.forEach((en, i) => {
+        const pt = parseFloat(getComputedStyle(en).paddingTop) || 0;
+        const center = en.offsetTop + pt + 2;
+        const pct = Math.max(0, Math.min(100, (center / railLen) * 100));
+        stops.push(`var(--${marks[i].clr}) ${pct.toFixed(1)}%`);
+      });
+      stops.push(`var(--${marks[marks.length - 1].clr}) 100%`);
+      fill.style.background = `linear-gradient(180deg, ${stops.join(', ')})`;
+    }
 
     function layout() {
       railLen = Math.max(1, tl.offsetHeight - 8);
@@ -24,6 +39,7 @@ export default function Experience() {
         const pt = parseFloat(getComputedStyle(en).paddingTop) || 0;
         if (nodes[i]) nodes[i].style.top = (en.offsetTop + pt + 2) + 'px';
       });
+      paintRail();
     }
     function update() {
       const r = tl.getBoundingClientRect();

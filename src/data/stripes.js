@@ -26,6 +26,4 @@ export const STRIPES_T = [
 export const STRIPES_MARKS = [
   { year: 1997, top: '32%', label: '1997 · Kyoto Protocol', flip: false, mine: false },
   { year: 2015, top: '48%', label: 'Paris Agreement · 2015', flip: true, mine: false },
-  { year: 2020, top: '64%', label: 'I join infrastructure · 2020', flip: true, mine: true },
-  { year: 2022, top: '80%', label: 'I move into climate · 2022', flip: true, mine: true },
 ];
