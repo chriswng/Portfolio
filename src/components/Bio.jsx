@@ -11,7 +11,7 @@ const reveal = {
 export default function Bio() {
   return (
     <section id="bio">
-      <div className="canvas matrix" style={{ rowGap: 0 }}>
+      <div className="canvas matrix bio-matrix">
         <div className="bio-head">
           <div className="sec-tag" data-idx="00 / ">Profile</div>
         </div>
