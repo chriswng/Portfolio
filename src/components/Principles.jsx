@@ -12,7 +12,7 @@ export default function Principles() {
     <section id="principles">
       <div className="canvas">
         <div className="sec-tag" data-idx="01 / ">My Practice</div>
-        <h2 className="display" style={{ fontSize: 'clamp(2rem,6vw,4.5rem)', marginTop: '1.2rem', maxWidth: '14ch' }}>
+        <h2 className="display princ-headline">
           <SplitText text="How I work" accentIndex={1} />
         </h2>
         <div className="princ-grid">
@@ -22,8 +22,10 @@ export default function Principles() {
               custom={i} variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-60px' }}
             >
               <div className="princ-num">{p.num}</div>
-              <div className="princ-title">{p.title}</div>
-              <div className="princ-body">{p.body}</div>
+              <div className="princ-main">
+                <div className="princ-title">{p.title}</div>
+                <div className="princ-body">{p.body}</div>
+              </div>
             </motion.div>
           ))}
         </div>
