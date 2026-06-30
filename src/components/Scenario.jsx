@@ -159,70 +159,76 @@ export default function Scenario() {
         <p className="tool-sub">{labels.sub}</p>
         <span className="tool-disc">Illustrative model · stylised numbers · not client data · FY30 used as the interim target year</span>
 
-        {/* Step 01 */}
-        <div className="scn-step">
-          <span className="scn-step-num">Step 01</span>
-          <h3 className="scn-step-title">Choose an operating profile</h3>
-          <p className="scn-step-sub">Each profile loads a different emissions mix and its own set of abatement levers.</p>
-          <div className="seg-row" role="group" aria-label="Organisation type">
-            {SECTOR_OPTIONS.map((o) => (
-              <button key={o.value} type="button" className={'seg-btn' + (scn.sector === o.value ? ' on' : '')} onClick={() => set('sector', o.value)}>{o.label}</button>
-            ))}
-          </div>
-          <p className="sector-desc">{sectorDesc}</p>
-        </div>
-
-        {/* Step 02 */}
-        <div className="scn-step">
-          <span className="scn-step-num">Step 02</span>
-          <h3 className="scn-step-title">Set the abatement levers</h3>
-          <p className="scn-step-sub">Every lever traces to a published source. Card colours match the wedges in the chart below.</p>
-          <div className="lever-deck">
-            {LEVERS.map((lv) => (
-              <div className="lever-card" key={lv.key} style={{ '--lc': lv.lc }}>
-                <div className="lever-top"><span className="lever-dot" aria-hidden="true" /><span className="lever-name">{labels[lv.key].name}</span></div>
-                <div className="lever-src">{labels[lv.key].src}</div>
-                <Seg value={scn[lv.key]} options={lv.opts} onChange={(v) => set(lv.key, v)} sc={lv.sc} small />
+        <div className="scn-grid">
+          <div className="scn-controls">
+            {/* Step 01 */}
+            <div className="scn-step">
+              <span className="scn-step-num">Step 01</span>
+              <h3 className="scn-step-title">Choose an operating profile</h3>
+              <p className="scn-step-sub">Each profile loads a different emissions mix and its own set of abatement levers.</p>
+              <div className="seg-row" role="group" aria-label="Organisation type">
+                {SECTOR_OPTIONS.map((o) => (
+                  <button key={o.value} type="button" className={'seg-btn' + (scn.sector === o.value ? ' on' : '')} onClick={() => set('sector', o.value)}>{o.label}</button>
+                ))}
               </div>
-            ))}
-            <div className="lever-card lever-card-rev" style={{ '--lc': 'var(--step-comms)' }}>
-              <div className="lever-top"><span className="lever-dot" aria-hidden="true" /><span className="lever-name">Volume / Revenue Growth Assumption</span></div>
-              <div className="lever-src">Scales gross emissions before abatement is applied</div>
-              <Seg value={scn.rev} options={REV_OPTS} onChange={(v) => set('rev', v)} sc="var(--step-comms)" small />
+              <p className="sector-desc">{sectorDesc}</p>
+            </div>
+
+            {/* Step 02 */}
+            <div className="scn-step">
+              <span className="scn-step-num">Step 02</span>
+              <h3 className="scn-step-title">Set the abatement levers</h3>
+              <p className="scn-step-sub">Every lever traces to a published source. Card colours match the wedges in the chart.</p>
+              <div className="lever-deck">
+                {LEVERS.map((lv) => (
+                  <div className="lever-card" key={lv.key} style={{ '--lc': lv.lc }}>
+                    <div className="lever-top"><span className="lever-dot" aria-hidden="true" /><span className="lever-name">{labels[lv.key].name}</span></div>
+                    <div className="lever-src">{labels[lv.key].src}</div>
+                    <Seg value={scn[lv.key]} options={lv.opts} onChange={(v) => set(lv.key, v)} sc={lv.sc} small />
+                  </div>
+                ))}
+                <div className="lever-card lever-card-rev" style={{ '--lc': 'var(--step-comms)' }}>
+                  <div className="lever-top"><span className="lever-dot" aria-hidden="true" /><span className="lever-name">Volume / Revenue Growth Assumption</span></div>
+                  <div className="lever-src">Scales gross emissions before abatement is applied</div>
+                  <Seg value={scn.rev} options={REV_OPTS} onChange={(v) => set('rev', v)} sc="var(--step-comms)" small />
+                </div>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Step 03 */}
-        <div className="scn-step">
-          <span className="scn-step-num">Step 03</span>
-          <h3 className="scn-step-title">Read the result</h3>
-          <p className="scn-step-sub">The headline rewrites itself as you move the levers, the way a board slide should.</p>
-          <p className="takeaway" aria-live="polite">
-            {result.takeaway.head}<em>{result.takeaway.value}</em>{result.takeaway.tail}
-            <span className="tk-note">{result.takeaway.note}</span>
-          </p>
-          <div className="kpi-strip">
-            <div className="kpi"><div className="kpi-l">FY20 Baseline</div><div className="kpi-v">{result.kpiBase}</div></div>
-            <div className="kpi"><div className="kpi-l">FY26 Actuals</div><div className="kpi-v">{result.kpiFy26}</div></div>
-            <div className="kpi live"><div className="kpi-l">FY30 Net</div><div className="kpi-v">{result.kpiNet}</div></div>
-            <div className="kpi live"><div className="kpi-l">FY30 vs FY20</div><div className="kpi-v">{result.kpiPct}</div></div>
-          </div>
-          <div className="chart-card">
-            <div className="chart-head"><div className="chart-title">{result.chartTitle}</div></div>
-            <div className="chart-sub">tCO₂-e per year · coloured wedges show the abatement each lever contributes against business‑as‑usual</div>
-            <div className="chart-wrap"><canvas ref={canvasRef} /></div>
-            <div className="chart-legend" ref={legendRef} aria-hidden="true" />
-          </div>
-          <div className="contrib-card" style={{ marginTop: '1.5rem' }}>
-            <div className="contrib-head">Abatement contribution by lever at FY30 (interim target year): tCO₂-e avoided vs. gross pathway</div>
-            {cbars.map((c) => (
-              <div className="cbar" key={c.key}>
-                <div className={'cbar-name ' + c.cls}>{c.name}</div>
-                <div className="cbar-track"><div className="cbar-fill" style={{ width: c.data.width + '%', background: c.fill }} /></div>
-                <div className="cbar-val">{c.data.label}</div>
+          {/* Step 03 */}
+          <div className="scn-results">
+            <div className="scn-step">
+              <span className="scn-step-num">Step 03</span>
+              <h3 className="scn-step-title">Read the result</h3>
+              <p className="scn-step-sub">The headline rewrites itself as you move the levers, the way a board slide should.</p>
+              <p className="takeaway" aria-live="polite">
+                {result.takeaway.head}<em>{result.takeaway.value}</em>{result.takeaway.tail}
+                <span className="tk-note">{result.takeaway.note}</span>
+              </p>
+              <div className="kpi-strip">
+                <div className="kpi"><div className="kpi-l">FY20 Baseline</div><div className="kpi-v">{result.kpiBase}</div></div>
+                <div className="kpi"><div className="kpi-l">FY26 Actuals</div><div className="kpi-v">{result.kpiFy26}</div></div>
+                <div className="kpi live"><div className="kpi-l">FY30 Net</div><div className="kpi-v">{result.kpiNet}</div></div>
+                <div className="kpi live"><div className="kpi-l">FY30 vs FY20</div><div className="kpi-v">{result.kpiPct}</div></div>
               </div>
-            ))}
+              <div className="chart-card">
+                <div className="chart-head"><div className="chart-title">{result.chartTitle}</div></div>
+                <div className="chart-sub">tCO₂-e per year · coloured wedges show the abatement each lever contributes against business‑as‑usual</div>
+                <div className="chart-wrap"><canvas ref={canvasRef} /></div>
+                <div className="chart-legend" ref={legendRef} aria-hidden="true" />
+              </div>
+              <div className="contrib-card">
+                <div className="contrib-head">Abatement contribution by lever at FY30 (interim target year): tCO₂-e avoided vs. gross pathway</div>
+                {cbars.map((c) => (
+                  <div className="cbar" key={c.key}>
+                    <div className={'cbar-name ' + c.cls}>{c.name}</div>
+                    <div className="cbar-track"><div className="cbar-fill" style={{ width: c.data.width + '%', background: c.fill }} /></div>
+                    <div className="cbar-val">{c.data.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 
