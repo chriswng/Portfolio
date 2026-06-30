@@ -166,7 +166,7 @@ export default function Scenario() {
               <span className="scn-step-num">Step 01</span>
               <h3 className="scn-step-title">Choose an operating profile</h3>
               <p className="scn-step-sub">Each profile loads a different emissions mix and its own set of abatement levers.</p>
-              <div className="seg-row" role="group" aria-label="Organisation type">
+              <div className="seg-row seg-grid" role="group" aria-label="Organisation type">
                 {SECTOR_OPTIONS.map((o) => (
                   <button key={o.value} type="button" className={'seg-btn' + (scn.sector === o.value ? ' on' : '')} onClick={() => set('sector', o.value)}>{o.label}</button>
                 ))}
