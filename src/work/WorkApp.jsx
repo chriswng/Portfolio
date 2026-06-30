@@ -12,17 +12,29 @@ import Baseline from './Baseline';
 import CaseStudy from './CaseStudy';
 
 function WorkNav() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <nav className="nav" aria-label="Primary">
       <div className="nav-inner canvas">
         <a href="../" className="nav-logo">./</a>
-        <div className="nav-links" role="navigation">
+        <div className={`nav-links${menuOpen ? ' open' : ''}`} role="navigation">
           {NAV_LINKS.map((l) => {
             const href = l.external ? './' : '../' + l.href;
             const active = l.href === 'work/';
-            return <a key={l.label} href={href} className={active ? 'active' : undefined}>[ {l.label} ]</a>;
+            return <a key={l.label} href={href} className={active ? 'active' : undefined}>{l.label}</a>;
           })}
         </div>
+        <button
+          className={`nav-hamburger${menuOpen ? ' open' : ''}`}
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((v) => !v)}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
       </div>
     </nav>
   );

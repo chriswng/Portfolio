@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform, useVelocity, useSpring, useMotionValue
 import { HERO } from '../data/content';
 import SplitText from './SplitText';
 import ContourField from './ContourField';
+import SoftAurora from './SoftAurora';
 
 // Live "years" from a start date, matching the original calc.
 function yearsSince(startISO) {
@@ -60,6 +61,20 @@ export default function Hero() {
       <div className="bloom-wrap" aria-hidden="true">
         <div className="bloom bloom-a" /><div className="bloom bloom-b" /><div className="bloom bloom-c" />
       </div>
+      <SoftAurora
+        speed={0.25}
+        brightness={0.38}
+        color1="#B5C42B"
+        color2="#635BFF"
+        noiseFrequency={2.0}
+        noiseAmplitude={0.85}
+        bandHeight={0.58}
+        bandSpread={0.75}
+        octaveDecay={0.2}
+        layerOffset={2.2}
+        colorSpeed={0.8}
+        enableMouseInteraction={false}
+      />
       <ContourField />
 
       <motion.div className="canvas matrix hero-grid" style={{ y: baseY }}>
