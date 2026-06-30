@@ -134,7 +134,7 @@ section { position:relative; }
 /* ============================================================================
    HERO / ABOUT
    ============================================================================ */
-#about{ background:#EEF2FF; border-bottom:1px solid var(--rule-dk); padding:clamp(2.5rem,7vw,5rem) 0 clamp(3rem,7vw,6rem); overflow:hidden; }
+#about{ background:#EEF2FF; border-bottom:1px solid var(--rule-dk); padding:0 0 clamp(3rem,7vw,6rem); overflow:hidden; }
 .bloom-wrap{ position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:0; }
 .bloom{ position:absolute; border-radius:50%; filter:blur(90px); mix-blend-mode:multiply; }
 .bloom-a{ width:560px; height:380px; background:radial-gradient(ellipse,rgba(181,196,43,0.10) 0%,transparent 70%); top:-60px; left:-80px; animation:bloomA 26s ease-in-out infinite; }
@@ -145,7 +145,7 @@ section { position:relative; }
 @keyframes bloomC{0%,100%{transform:translate(0,0)}50%{transform:translate(18px,-16px)}}
 #contour-field{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:0; opacity:0.55; }
 
-.hero-grid{ position:relative; z-index:1; row-gap:0; align-items:end; }
+.hero-grid{ position:relative; z-index:1; row-gap:0; align-items:end; padding-top:clamp(2.5rem,7vw,5rem); }
 .hero-name{
   grid-column:1 / 13; position:relative; z-index:2;
   font-size:clamp(1.5rem,6.5vw,5.5rem); line-height:0.82; letter-spacing:-0.045em;

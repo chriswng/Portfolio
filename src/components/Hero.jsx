@@ -65,6 +65,7 @@ export default function Hero() {
         colorStops={['#2d5016', '#B5C42B', '#7cff67']}
         amplitude={0.8}
         blend={0.6}
+        opacity={0.25}
       />
       <ContourField />
 
