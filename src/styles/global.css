@@ -345,6 +345,31 @@ section { position:relative; }
 .cbar-fill{ height:100%; transition:width 0.35s var(--ease); }
 .cbar-val{ font-family:var(--mono); font-size:0.7rem; color:#475569; text-align:right; }
 
+/* Desktop: controls + results side by side so the whole model fits one viewport. */
+@media(min-width:1024px){
+  .scn-grid{ display:grid; grid-template-columns:minmax(0,5fr) minmax(0,7fr); gap:clamp(1.5rem,3vw,2.75rem); align-items:start; }
+  .scn-controls{ display:flex; flex-direction:column; }
+  /* Steps stack inside the left rail without the big top gap / divider chrome. */
+  .scn-grid .scn-step{ margin-top:0; padding-top:0; border-top:none; }
+  .scn-controls .scn-step + .scn-step{ margin-top:1.5rem; }
+  /* Results column tracks the levers while you read. */
+  .scn-results{ position:sticky; top:1.5rem; }
+  /* Trim the lever cards so all five selectors sit above the fold. */
+  .scn-controls .lever-deck{ margin-top:1rem; }
+  .scn-controls .lever-card{ padding:0.85rem 1rem; }
+  .scn-controls .lever-src{ margin-bottom:0.6rem; }
+  .scn-controls .seg-row{ margin-top:1rem; }
+  /* Tighten the result stack and let the chart flex to the viewport height. */
+  .scn-results .takeaway{ margin-bottom:1rem; }
+  .scn-results .kpi-strip{ margin-bottom:1rem; }
+  .scn-results .chart-card{ margin-bottom:1rem; padding:1.2rem 1.4rem 1rem; }
+  .scn-results .chart-wrap{ height:clamp(240px,34vh,340px); }
+}
+/* Tall desktop screens: give the chart a little more room. */
+@media(min-width:1024px) and (min-height:920px){
+  .scn-results .chart-wrap{ height:clamp(300px,40vh,400px); }
+}
+
 .scn-foot{ margin-top:2.5rem; padding-top:1.5rem; border-top:1px solid var(--rule-dk); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
 .scn-foot p{ font-size:0.82rem; color:var(--mid); max-width:520px; line-height:1.6; }
 
