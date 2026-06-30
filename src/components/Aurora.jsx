@@ -13,7 +13,7 @@ precision highp float;
 
 uniform float uTime;
 uniform float uAmplitude;
-uniform vec3 uColorStops[3];
+uniform vec3 uColorStops[4];
 uniform vec2 uResolution;
 uniform float uBlend;
 uniform float uOpacity;
@@ -70,35 +70,20 @@ float snoise(vec2 v){
   return 130.0 * dot(m, g);
 }
 
-struct ColorStop {
-  vec3 color;
-  float position;
-};
-
-#define COLOR_RAMP(colors, factor, finalColor) {              \
-  int index = 0;                                            \
-  for (int i = 0; i < 2; i++) {                               \
-     ColorStop currentColor = colors[i];                    \
-     bool isInBetween = currentColor.position <= factor;    \
-     index = int(mix(float(index), float(i), float(isInBetween))); \
-  }                                                         \
-  ColorStop currentColor = colors[index];                   \
-  ColorStop nextColor = colors[index + 1];                  \
-  float range = nextColor.position - currentColor.position; \
-  float lerpFactor = (factor - currentColor.position) / range; \
-  finalColor = mix(currentColor.color, nextColor.color, lerpFactor); \
-}
-
 void main() {
   vec2 uv = gl_FragCoord.xy / uResolution;
 
-  ColorStop colors[3];
-  colors[0] = ColorStop(uColorStops[0], 0.0);
-  colors[1] = ColorStop(uColorStops[1], 0.5);
-  colors[2] = ColorStop(uColorStops[2], 1.0);
-
-  vec3 rampColor;
-  COLOR_RAMP(colors, uv.x, rampColor);
+  // Green carries the field. The other three stops only ever show up as
+  // faint, patchy wisps (independent noise fields, low max weight) so
+  // they read as a hint of colour, not a band — and never average down
+  // into a muddy blend with the green base.
+  vec3 rampColor = uColorStops[1];
+  float blueWisp = pow(max(snoise(vec2(uv.x * 1.1 - uTime * 0.05, uv.y * 1.4 + 4.1)), 0.0), 1.4) * 0.55;
+  float amberWisp = pow(max(snoise(vec2(uv.x * 1.1 + uTime * 0.06 + 9.2, uv.y * 1.4 - 1.7)), 0.0), 1.4) * 0.5;
+  float berryWisp = pow(max(snoise(vec2(uv.x * 1.1 + uTime * 0.04 - 5.3, uv.y * 1.4 + 2.6)), 0.0), 1.5) * 0.42;
+  rampColor = mix(rampColor, uColorStops[0], blueWisp);
+  rampColor = mix(rampColor, uColorStops[2], amberWisp);
+  rampColor = mix(rampColor, uColorStops[3], berryWisp);
 
   // A gently drifting horizon line, not a hard band — the noise only
   // nudges where the glow centres, it never multiplies into the alpha.
@@ -115,7 +100,7 @@ void main() {
 `;
 
 export default function Aurora(props) {
-  const { colorStops = ['#2d5016', '#B5C42B', '#7cff67'], amplitude = 1.0, blend = 0.5, opacity = 1.0 } = props;
+  const { colorStops = ['#635BFF', '#B5C42B', '#FF9500', '#FF3B60'], amplitude = 1.0, blend = 0.5, opacity = 1.0 } = props;
   const propsRef = useRef(props);
   propsRef.current = props;
 

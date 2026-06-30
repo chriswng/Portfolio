@@ -62,7 +62,7 @@ export default function Hero() {
         <div className="bloom bloom-a" /><div className="bloom bloom-b" /><div className="bloom bloom-c" />
       </div>
       <Aurora
-        colorStops={['#635BFF', '#B5C42B', '#FF9500']}
+        colorStops={['#635BFF', '#B5C42B', '#FF9500', '#FF3B60']}
         amplitude={0.7}
         blend={0.5}
         opacity={0.26}
