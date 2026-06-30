@@ -1,6 +1,9 @@
 .soft-aurora-container {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60vh;
   pointer-events: none;
   z-index: 0;
   overflow: hidden;
