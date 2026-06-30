@@ -20,6 +20,12 @@ uniform float uOpacity;
 
 out vec4 fragColor;
 
+// Smooth gaussian-ish falloff in [0, 1] — no hard edges, never overshoots.
+float glowFalloff(float d, float width) {
+  float x = d / width;
+  return exp(-x * x);
+}
+
 vec3 permute(vec3 x) {
   return mod(((x * 34.0) + 1.0) * x, 289.0);
 }
@@ -94,17 +100,17 @@ void main() {
   vec3 rampColor;
   COLOR_RAMP(colors, uv.x, rampColor);
 
-  float height = snoise(vec2(uv.x * 2.0 + uTime * 0.1, uTime * 0.25)) * 0.5 * uAmplitude;
-  height = exp(height);
-  height = (uv.y * 2.0 - height + 0.2);
-  float intensity = 0.6 * height;
+  // A gently drifting horizon line, not a hard band — the noise only
+  // nudges where the glow centres, it never multiplies into the alpha.
+  float drift = snoise(vec2(uv.x * 1.6 + uTime * 0.12, uTime * 0.18)) * 0.07 * uAmplitude;
+  float center = 0.93 + drift;
 
-  float midPoint = 0.20;
-  float auroraAlpha = smoothstep(midPoint - uBlend * 0.5, midPoint + uBlend * 0.5, intensity);
+  float glow = glowFalloff(uv.y - center, 0.07 + 0.09 * uBlend);
+  glow += 0.4 * glowFalloff(uv.y - (center - 0.14), 0.06 + 0.07 * uBlend);
 
-  vec3 auroraColor = intensity * rampColor;
+  float auroraAlpha = clamp(glow, 0.0, 1.0) * uOpacity;
 
-  fragColor = vec4(auroraColor * auroraAlpha, auroraAlpha * uOpacity);
+  fragColor = vec4(rampColor * auroraAlpha, auroraAlpha);
 }
 `;
 
@@ -199,5 +205,5 @@ export default function Aurora(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [amplitude]);
 
-  return <div ref={ctnDom} className="w-full h-full" />;
+  return <div id="aurora-field" ref={ctnDom} aria-hidden="true" />;
 }
