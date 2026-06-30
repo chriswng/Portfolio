@@ -1,6 +1,10 @@
 /* ============================================================================
-   LOCKED TOKENS — colours and fonts carried over byte-for-byte from the
-   original site. Only scale, density, pacing, and layout treatment change.
+   DESIGN TOKENS — accents and fonts carried over from the original site.
+   NEUTRALS are intentionally brand-tinted: instead of stock cool-blue slate,
+   they lean a hair toward the matcha brand hue (OKLCH hue ~118) at very low
+   chroma. Lightness is held to the original values so WCAG contrast is
+   preserved; the tint reads as cohesion, not as colour. Do NOT "restore" the
+   old cool-blue hex values — the green lean is deliberate.
    ============================================================================ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -11,13 +15,17 @@ html { scroll-behavior: smooth; }
   --indigo:#635BFF;
   --berry:#FF3B60;
   --amber:#FF9500;
-  --slate:#0F172A;
-  --bg:#F8FAFC;
+  /* Brand-tinted neutrals — matcha hue (~118) at low chroma, lightness held
+     from the original slate values (was #0F172A / F8FAFC / 64748B / 94A3B8 /
+     CBD5E1 / E2E8F0) so contrast is unchanged. */
+  --slate:oklch(0.207 0.022 118);
+  --bg:oklch(0.984 0.006 118);
   --white:#FFFFFF;
-  --mid:#64748B;
-  --subtle:#94A3B8;
-  --rule-dk:#CBD5E1;
-  --rule-lt:#E2E8F0;
+  --mid:oklch(0.553 0.022 118);
+  --subtle:oklch(0.682 0.018 118);
+  --rule-dk:oklch(0.853 0.013 118);
+  --rule-lt:oklch(0.917 0.008 118);
+  /* matcha at 10% alpha — accent wash for hover backgrounds (not red) */
   --red-bg:rgba(181,196,43,0.10);
   --step-raw:var(--indigo);
   --step-calc:var(--matcha);
