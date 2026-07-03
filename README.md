@@ -28,8 +28,8 @@ npm run preview  # preview the production build
 - `src/components/` — section components
 - `src/data/` — content, scenario model, warming-stripes data
 - `src/hooks/` — magnetic interaction
-- `public/work/` — the standalone work-samples page (served at `/work/`)
-- `public/*.png`, `public/favicon.svg` — shared static assets
+- `work/` + `src/work/` — the standalone work-samples page (served at `/work/`)
+- `public/` — shared static assets: logos, favicon, social og-image, robots.txt, sitemap.xml
 
 ## Deployment
 

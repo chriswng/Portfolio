@@ -160,27 +160,51 @@ export default function Aurora(props) {
     const mesh = new Mesh(gl, { geometry, program });
     ctn.appendChild(gl.canvas);
 
+    // Convert colour stops only when the array changes — doing this per frame
+    // allocated four Color objects and a new array on every RAF tick.
+    let lastStops = colorStops;
+    let lastStopsArray = colorStopsArray;
+    const stopsToVec3 = (stops) => {
+      if (stops !== lastStops) {
+        lastStops = stops;
+        lastStopsArray = stops.map(hex => {
+          const c = new Color(hex);
+          return [c.r, c.g, c.b];
+        });
+      }
+      return lastStopsArray;
+    };
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
     let animateId = 0;
+    let inView = true;
     const update = t => {
-      animateId = requestAnimationFrame(update);
+      animateId = inView && !reduceMotion ? requestAnimationFrame(update) : 0;
       const { time = t * 0.01, speed = 1.0 } = propsRef.current;
       program.uniforms.uTime.value = time * speed * 0.1;
       program.uniforms.uAmplitude.value = propsRef.current.amplitude ?? 1.0;
       program.uniforms.uBlend.value = propsRef.current.blend ?? blend;
       program.uniforms.uOpacity.value = propsRef.current.opacity ?? opacity;
-      const stops = propsRef.current.colorStops ?? colorStops;
-      program.uniforms.uColorStops.value = stops.map(hex => {
-        const c = new Color(hex);
-        return [c.r, c.g, c.b];
-      });
+      program.uniforms.uColorStops.value = stopsToVec3(propsRef.current.colorStops ?? colorStops);
       renderer.render({ scene: mesh });
     };
     animateId = requestAnimationFrame(update);
 
+    // The hero scrolls out of view early in the page; keeping the WebGL loop
+    // running underneath the rest of the site wastes GPU and battery.
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        inView = e.isIntersecting;
+        if (inView && !animateId && !reduceMotion) animateId = requestAnimationFrame(update);
+      });
+    });
+    io.observe(ctn);
+
     resize();
 
     return () => {
-      cancelAnimationFrame(animateId);
+      if (animateId) cancelAnimationFrame(animateId);
+      io.disconnect();
       window.removeEventListener('resize', resize);
       if (ctn && gl.canvas.parentNode === ctn) {
         ctn.removeChild(gl.canvas);

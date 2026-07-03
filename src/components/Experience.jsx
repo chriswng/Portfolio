@@ -75,7 +75,7 @@ export default function Experience() {
             <div className="exp-entry" key={exp.org} ref={(el) => (entryRefs.current[ei] = el)}>
               <div className="exp-hd">
                 <div>
-                  <img className={'exp-logo ' + exp.logoClass} src={exp.logo} alt={exp.logoAlt} loading="lazy" />
+                  <img className={'exp-logo ' + exp.logoClass} src={exp.logo} alt={exp.logoAlt} width={exp.logoW} height={exp.logoH} loading="lazy" decoding="async" />
                   <div className="exp-org-name">{exp.org}</div>
                   <div className="exp-dept">{exp.dept}</div>
                 </div>
