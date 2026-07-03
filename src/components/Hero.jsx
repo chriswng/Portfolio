@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { motion, useScroll, useTransform, useVelocity, useSpring, useMotionValue, animate } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform, useVelocity, useSpring, useMotionValue, animate } from 'framer-motion';
 import { HERO } from '../data/content';
 import SplitText from './SplitText';
 import ContourField from './ContourField';
@@ -32,16 +32,21 @@ function RoleCycle({ roles }) {
   }, [roles.length]);
   return (
     <span className="role-cycle" style={{ overflow: 'hidden' }}>
-      <motion.span
-        key={idx}
-        initial={{ y: '60%', opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: '-60%', opacity: 0 }}
-        transition={{ duration: 0.32, ease: [0.25, 1, 0.5, 1] }}
-        style={{ display: 'inline-block' }}
-      >
-        {roles[idx]}
-      </motion.span>
+      {/* AnimatePresence is required for the exit variant to actually play —
+          without it the key swap remounts instantly and the upward slide-out
+          never renders. */}
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.span
+          key={idx}
+          initial={{ y: '60%', opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: '-60%', opacity: 0 }}
+          transition={{ duration: 0.32, ease: [0.25, 1, 0.5, 1] }}
+          style={{ display: 'inline-block' }}
+        >
+          {roles[idx]}
+        </motion.span>
+      </AnimatePresence>
     </span>
   );
 }

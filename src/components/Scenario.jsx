@@ -1,5 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import Chart from 'chart.js/auto';
+import { Chart, LineController, LineElement, PointElement, LinearScale, CategoryScale, Filler, Tooltip } from 'chart.js';
+
+// Register only what the pathway chart uses — chart.js/auto pulls in every
+// controller, scale, and plugin and roughly doubles the chart bundle.
+Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale, Filler, Tooltip);
 import { runModel, chartLabels, LEVER_LABELS, SECTOR_OPTIONS, resolveSector } from '../data/scenario';
 import SplitText from './SplitText';
 
@@ -98,6 +102,7 @@ export default function Scenario() {
     const ORDER = [6, 5, 0, 1, 2, 3, 4];
     const reduce = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
     let io;
+    const timers = [];
     if (!reduce && card) {
       const r = card.getBoundingClientRect();
       if (r.top < window.innerHeight && r.bottom > 0) {
@@ -109,7 +114,7 @@ export default function Scenario() {
           es.forEach((e) => {
             if (!e.isIntersecting || builtRef.current) return;
             builtRef.current = true; o.disconnect();
-            ORDER.forEach((i, k) => setTimeout(() => { ch.setDatasetVisibility(i, true); ch.update(); }, k * 320));
+            ORDER.forEach((i, k) => timers.push(setTimeout(() => { ch.setDatasetVisibility(i, true); ch.update(); }, k * 320)));
           });
         }, { threshold: 0.3 });
         io.observe(card);
@@ -118,7 +123,7 @@ export default function Scenario() {
       builtRef.current = true;
     }
 
-    return () => { if (io) io.disconnect(); ch.destroy(); chartRef.current = null; };
+    return () => { timers.forEach(clearTimeout); if (io) io.disconnect(); ch.destroy(); chartRef.current = null; };
   }, []);
 
   // Push model output + labels into the chart and the HTML legend whenever state changes.
@@ -137,7 +142,7 @@ export default function Scenario() {
     ch.data.datasets[2].label = labels.cbar.lv;
     ch.data.datasets[3].label = labels.cbar.hv;
     ch.data.datasets[4].label = labels.cbar.plant;
-    ch.update(builtRef.current ? 'none' : 'none');
+    ch.update('none');
     if (legendRef.current) {
       legendRef.current.innerHTML = ch.data.datasets
         .map((d, i) => '<span class="cl-item">' + LEGEND_SWATCH[i] + d.label + '</span>').join('');
@@ -215,7 +220,7 @@ export default function Scenario() {
               <div className="chart-card">
                 <div className="chart-head"><div className="chart-title">{result.chartTitle}</div></div>
                 <div className="chart-sub">tCO₂-e per year · coloured wedges show the abatement each lever contributes against business‑as‑usual</div>
-                <div className="chart-wrap"><canvas ref={canvasRef} /></div>
+                <div className="chart-wrap"><canvas ref={canvasRef} role="img" aria-label="Line chart of the modelled emissions pathway from FY2020 to FY2050, showing net emissions against business-as-usual with coloured abatement wedges per lever" /></div>
                 <div className="chart-legend" ref={legendRef} aria-hidden="true" />
               </div>
               <div className="contrib-card">

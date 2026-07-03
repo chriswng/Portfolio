@@ -41,8 +41,7 @@ export function Nav() {
     if (!target) return;
     e.preventDefault();
     setMenuOpen(false);
-    const nav = document.querySelector('.nav');
-    const offset = nav ? nav.offsetHeight : 52;
+    const offset = navRef.current ? navRef.current.offsetHeight : 52;
     const top = target.getBoundingClientRect().top + window.scrollY - offset;
     window.scrollTo({ top, behavior: 'smooth' });
   };

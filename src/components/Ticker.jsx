@@ -75,7 +75,9 @@ export default function Ticker() {
         style={{ left: tip.x, top: tip.y, opacity: tip.visible ? 1 : 0, pointerEvents: tip.visible ? 'auto' : 'none' }}
         onClick={(e) => e.stopPropagation()}
       >
-        <button type="button" className="ticker-tip-close" aria-label="Close" onClick={(e) => { e.stopPropagation(); hide(); }}>×</button>
+        {/* tabIndex -1: the whole band is aria-hidden, so nothing inside it may
+            receive keyboard focus. */}
+        <button type="button" className="ticker-tip-close" aria-label="Close" tabIndex={-1} onClick={(e) => { e.stopPropagation(); hide(); }}>×</button>
         <span className="ticker-tip-body">{tip.text}</span>
       </div>
       <div className="ticker-track" ref={trackRef}>
