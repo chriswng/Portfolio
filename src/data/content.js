@@ -108,7 +108,7 @@ export const TICKER_TERMS = [
 export const EXPERIENCE = [
   {
     mark: 'DG', clr: 'downer',
-    logo: 'Downer_Group_logo.svg.png', logoClass: 'logo-downer', logoAlt: 'Downer Group logo',
+    logo: 'Downer_Group_logo.svg.png', logoClass: 'logo-downer', logoAlt: 'Downer Group logo', logoW: 252, logoH: 90,
     org: 'Downer EDI', dept: 'Group Environment, Sustainability & Reporting',
     roles: [{ title: 'Senior Sustainability Advisor', date: 'Mar 2026 - Mar 2027' }],
     bullets: [
@@ -129,7 +129,7 @@ export const EXPERIENCE = [
   },
   {
     mark: 'WSP', clr: 'wsp',
-    logo: 'img-png-wsp-red.png', logoClass: 'logo-wsp', logoAlt: 'WSP logo',
+    logo: 'img-png-wsp-red.png', logoClass: 'logo-wsp', logoAlt: 'WSP logo', logoW: 126, logoH: 60,
     org: 'WSP in Australia', dept: 'Sustainability & Climate Change Advisory',
     roles: [
       { title: 'Project Consultant', date: 'Oct 2025 - Feb 2026' },
@@ -146,7 +146,7 @@ export const EXPERIENCE = [
   },
   {
     mark: 'DoD', clr: 'defence',
-    logo: 'Defence.png', logoClass: 'logo-defence', logoAlt: 'Australian Government Department of Defence crest',
+    logo: 'Defence.png', logoClass: 'logo-defence', logoAlt: 'Australian Government Department of Defence crest', logoW: 168, logoH: 168,
     org: 'Department of Defence', dept: 'Capital Facilities & Infrastructure Branch',
     roles: [{ title: 'Assistant Project Officer', date: 'Feb 2020 - Jan 2022' }],
     bullets: [
