@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Grain, ScrollProgress } from '../components/Chrome';
+import { Grain, ScrollProgress, SkipLink } from '../components/Chrome';
 import SplitText from '../components/SplitText';
 import { NAV_LINKS } from '../data/content';
 import {
@@ -163,10 +163,12 @@ export default function WorkApp() {
 
   return (
     <>
+      <SkipLink />
       <Grain />
       <ScrollProgress />
       <WorkNav />
 
+      <main id="main-content">
       <section id="work-intro">
         <div className="bloom-wrap" aria-hidden="true"><div className="bloom bloom-a" /><div className="bloom bloom-b" /><div className="bloom bloom-c" /></div>
         <div className="canvas" style={{ position: 'relative', zIndex: 1 }}>
@@ -216,6 +218,7 @@ export default function WorkApp() {
           <CaseStudy />
         </div>
       </section>
+      </main>
 
       <footer className="work-footer">
         <div className="canvas work-footer-inner">
