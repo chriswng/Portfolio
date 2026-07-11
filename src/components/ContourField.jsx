@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { prefersReducedMotion } from '../utils/media';
 
 // Animated emissions topology (marching squares), ported from the original.
 // Reads as a soft background texture behind the hero.
@@ -10,7 +11,7 @@ export default function ContourField() {
     if (!cv || !cv.getContext) return;
     const ctx = cv.getContext('2d');
     const hero = cv.parentElement;
-    const reduce = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    const reduce = prefersReducedMotion();
     let W = 0, H = 0, t = 0, raf = null, inView = true;
     const CELL = 20, LEVELS = [-1.6, -0.8, 0, 0.8, 1.6];
 

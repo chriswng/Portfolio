@@ -2,13 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { CONTACT } from '../data/content';
 import { useMagnetic } from '../hooks/useMagnetic';
+import { prefersReducedMotion } from '../utils/media';
 
 // Terminal contact line that types itself on first view.
 function TermLine({ full }) {
   const [text, setText] = useState(full);
   const ref = useRef(null);
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+    if (prefersReducedMotion()) return;
     if (!('IntersectionObserver' in window)) return;
     let started = false;
     const node = ref.current;

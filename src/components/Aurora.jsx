@@ -1,5 +1,6 @@
 import { Renderer, Program, Mesh, Color, Triangle } from 'ogl';
 import { useEffect, useRef } from 'react';
+import { prefersReducedMotion } from '../utils/media';
 
 const VERT = `#version 300 es
 in vec2 position;
@@ -175,7 +176,7 @@ export default function Aurora(props) {
       return lastStopsArray;
     };
 
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    const reduceMotion = prefersReducedMotion();
     let animateId = 0;
     let inView = true;
     const update = t => {

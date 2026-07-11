@@ -1,57 +1,70 @@
-# CLAUDE.md — Career Achievement Record Project State
+# CLAUDE.md — Christopher Wang Portfolio
 
-**Owner:** Chris Wang | Senior Sustainability Advisor | Downer Group (Group ESR)
-**Contract:** March 2026 – March 2027 | Manager: Nathan Brogden
-**Last updated:** 12 June 2026
+Premium editorial portfolio for Christopher Wang (Sustainability Advisor),
+built as a React + Vite multi-page app and deployed to GitHub Pages.
 
----
+## Stack
 
-## Current authoritative files
+- React 18 + Vite 5, `framer-motion` for motion, `chart.js` for the scenario
+  model, `ogl` for the hero aurora (WebGL), plus hand-written canvas renderers
+  (contour field, warming stripes).
+- Two pages: the main profile (`index.html` → `src/main.jsx` → `App.jsx`) and a
+  standalone work-samples page (`work/index.html` → `src/work/main.jsx`), served
+  at `/work/`.
 
-| File | Status | Coverage |
-|---|---|---|
-| `CAR_Update_2026-06-12.md` | **Single source of truth** | Complete record, Weeks 1–15, March to 12 June 2026. 12 STAR stories. 8 sections. Supersedes all prior files. |
-| `Career_Achievement_Record_ChrisWang_MASTER.docx` | Superseded baseline | Weeks 1–5 only, to 13 April 2026. Do not use as source — all content folded into the update MD. |
-| `Career_Achievement_Record_ChrisWang.docx` | Superseded subset | Subset of MASTER. Do not use. |
+## Layout
 
----
+| Path | What lives here |
+|---|---|
+| `src/components/` | Main-page sections (Hero, Bio, Principles, Ticker, Scenario, Experience, Contact, StripesFooter) plus shared Chrome (nav, grain, scroll progress, skip link). |
+| `src/work/` | Work-samples page: `WorkApp`, `Baseline`, `CaseStudy`, data in `workData.js`, styles in `work.css`. |
+| `src/data/` | Content and model inputs: `content.js` (all editorial copy), `scenario.js` (decarbonisation model), `stripes.js` (warming-stripes series). |
+| `src/hooks/` | `useMagnetic` — cursor-follow interaction. |
+| `src/utils/` | `media.js` — `prefersReducedMotion()` / `canHover()` guards. |
+| `src/styles/global.css` | Design tokens + all main-page styles. |
+| `public/` | Shared static assets (logos, favicon, og-image, robots.txt, sitemap.xml). |
+| `docs/` | Non-app material: `skill-reference/` and `career-record/`. Not built or deployed. |
 
-## Next DOCX rebuild instructions
+## Conventions
 
-The MASTER `.docx` is a UTF-8 text file despite the extension. Do not attempt in-place edits.
+- **Design tokens** (colours, fonts, easing, z-index) live in `:root` in
+  `global.css`. Neutrals are intentionally tinted toward the matcha brand hue at
+  low chroma — do not "restore" cool-blue slate values; the green lean is
+  deliberate and contrast is held to the original lightness.
+- **All editorial copy is data**, not JSX. Add or edit words in `src/data/`,
+  never inline in components.
+- **Motion respects preferences.** Gate every animation/loop on
+  `prefersReducedMotion()` and cursor-only interactions on `canHover()` (both
+  from `src/utils/media.js`). Canvas/WebGL loops must pause off-screen via
+  `IntersectionObserver` and clean up on unmount.
+- **Accessibility:** keep the skip link first, `aria-current` on the active nav
+  link, decorative canvases `aria-hidden`, and purely visual motion (e.g. the
+  cycling role text) hidden from assistive tech with a static `.sr-only` label.
 
-1. Read `CAR_Update_2026-06-12.md` as the sole content source
-2. Rebuild from scratch via Node.js with the `docx` npm library
-3. Read `/mnt/skills/public/docx/SKILL.md` before writing any code
-4. Output to `/mnt/user-data/outputs/Career_Achievement_Record_ChrisWang_MASTER.docx`
-5. Validate with `python3 validate.py` (copy validate script from skills to `/home/claude/` first)
-6. Document properties: `creator = ""` — no author attribution
-7. Next STAR number: **13**
+## Develop
 
-**Colour coding (Downer brand):**
-- Blue = Data / Structural
-- Green = Delivery / Impact
-- Amber = Outstanding / TBC
-- Dark grey = Supporting / Context
+```bash
+npm install
+npm run dev      # local dev server
+npm run build    # production build to dist/ (also the CI check)
+npm run preview  # preview the production build
+```
 
----
+Run `npm run build` before committing — it is the only automated gate.
 
-## Outstanding TBC items (carry forward to next update)
+## Deployment
 
-- `[AMBER]` PwC FY26 assurance final outcome
-- `[AMBER]` eLearning module launch engagement metrics (post 22 April Earth Day launch)
-- `[AMBER]` Board forum confirmation for the Net Zero Pathway Model
-- `[AMBER]` Subcontractor template hours-saved estimate
-- `[AMBER]` FY27 STI consultation outcomes (sessions held 9–12 June 2026)
+GitHub Actions (`.github/workflows/deploy.yml`) builds and publishes `dist/` to
+GitHub Pages on push to `main`. `base: './'` in `vite.config.js` keeps asset
+paths relative so both the domain root and a `/Portfolio/` sub-path work.
 
----
+## Writing rules (for any site copy)
 
-## Cross-project harvest process
+Australian English. No em dashes. No en dash clause separators in prose. Active
+voice. Written in Chris's voice.
 
-Memory and search tools are scoped per project. To gather achievements from other projects, paste the harvest prompt (stored in this project's chat history, 13 June 2026 session) into each relevant project and return the output here.
+## Career record
 
-**Harvest last run:** 13 June 2026
-**Projects harvested:** CDP Supply Chain project, Decarbonisation / STI modelling project, Assurance / data management project
-
-**Formatting rules:**
-Australian English. No em dashes. No en dash clause separators in prose. Active voice. All documents written in Chris's voice as if he prepared them.
+Chris's separate career-achievement record and its DOCX rebuild notes live in
+`docs/career-record/` — that is a personal document workflow, unrelated to the
+website build. Leave it out of anything that ships in `dist/`.

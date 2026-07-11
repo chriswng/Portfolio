@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { TICKER_TERMS } from '../data/content';
+import { canHover } from '../utils/media';
 
 function Run({ onTermClick, onTermEnter, onTermLeave }) {
   return (
@@ -27,7 +28,7 @@ export default function Ticker() {
   const tipRef = useRef(null);
   const [tip, setTip] = useState({ visible: false, text: '', x: 0, y: 0 });
   const activeRef = useRef(null);
-  const hoverable = typeof window !== 'undefined' && window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+  const hoverable = canHover();
 
   const pause = (p) => { if (trackRef.current) trackRef.current.classList.toggle('paused', p); };
 

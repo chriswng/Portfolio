@@ -31,13 +31,15 @@ function RoleCycle({ roles }) {
     return () => clearInterval(id);
   }, [roles.length]);
   return (
+    // The cycling text is decorative motion: announcing a new job title every
+    // 3.2s would spam assistive tech, so the animated span is hidden from it
+    // and a single static label carries the role list instead.
     <span className="role-cycle" style={{ overflow: 'hidden' }}>
-      {/* AnimatePresence is required for the exit variant to actually play —
-          without it the key swap remounts instantly and the upward slide-out
-          never renders. */}
+      <span className="sr-only">{roles.join(', ')}</span>
       <AnimatePresence mode="wait" initial={false}>
         <motion.span
           key={idx}
+          aria-hidden="true"
           initial={{ y: '60%', opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: '-60%', opacity: 0 }}
