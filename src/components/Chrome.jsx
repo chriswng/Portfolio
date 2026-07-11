@@ -1,9 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { NAV_LINKS } from '../data/content';
+import { prefersReducedMotion } from '../utils/media';
 
 export function Grain() {
   return <div className="grain-overlay" aria-hidden="true" />;
+}
+
+// First focusable element on the page: lets keyboard and screen-reader users
+// jump straight past the sticky nav to the content. Visually hidden until
+// focused (see .skip-link in global.css).
+export function SkipLink() {
+  return <a href="#main-content" className="skip-link">Skip to content</a>;
 }
 
 export function ScrollProgress() {
@@ -43,7 +51,7 @@ export function Nav() {
     setMenuOpen(false);
     const offset = navRef.current ? navRef.current.offsetHeight : 52;
     const top = target.getBoundingClientRect().top + window.scrollY - offset;
-    window.scrollTo({ top, behavior: 'smooth' });
+    window.scrollTo({ top, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
   };
 
   return (
@@ -51,16 +59,20 @@ export function Nav() {
       <div className="nav-inner canvas">
         <a href="#about" className="nav-logo" onClick={(e) => onClick(e, '#about')}>./</a>
         <div className={`nav-links${menuOpen ? ' open' : ''}`} role="navigation">
-          {NAV_LINKS.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              className={!l.external && active === l.href.slice(1) ? 'active' : undefined}
-              onClick={(e) => onClick(e, l.href)}
-            >
-              {l.label}
-            </a>
-          ))}
+          {NAV_LINKS.map((l) => {
+            const isActive = !l.external && active === l.href.slice(1);
+            return (
+              <a
+                key={l.href}
+                href={l.href}
+                className={isActive ? 'active' : undefined}
+                aria-current={isActive ? 'true' : undefined}
+                onClick={(e) => onClick(e, l.href)}
+              >
+                {l.label}
+              </a>
+            );
+          })}
         </div>
         <button
           className={`nav-hamburger${menuOpen ? ' open' : ''}`}

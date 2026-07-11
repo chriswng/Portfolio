@@ -1,4 +1,4 @@
-import { Grain, ScrollProgress, Nav } from './components/Chrome';
+import { Grain, ScrollProgress, Nav, SkipLink } from './components/Chrome';
 import Hero from './components/Hero';
 import Bio from './components/Bio';
 import Principles from './components/Principles';
@@ -11,10 +11,11 @@ import StripesFooter from './components/StripesFooter';
 export default function App() {
   return (
     <>
+      <SkipLink />
       <Grain />
       <ScrollProgress />
       <Nav />
-      <main>
+      <main id="main-content">
         <Hero />
         <Bio />
         <Principles />

@@ -1,5 +1,6 @@
 import { useRef, useEffect } from 'react';
 import { useMotionValue, useSpring } from 'framer-motion';
+import { canHover } from '../utils/media';
 
 // Magnetic interaction: when the cursor enters a threshold around the element,
 // the element is pulled toward the cursor with spring physics. Returns a ref to
@@ -15,7 +16,7 @@ export function useMagnetic({ threshold = 50, strength = 0.4 } = {}) {
     const el = ref.current;
     if (!el) return;
     // Fine-pointer only — magnetic pull is meaningless on touch.
-    if (!window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
+    if (!canHover()) return;
 
     const onMove = (e) => {
       const r = el.getBoundingClientRect();

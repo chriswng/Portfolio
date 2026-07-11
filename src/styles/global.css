@@ -60,6 +60,28 @@ body {
 a { color:inherit; }
 img { max-width:100%; }
 
+/* Visually hidden but available to assistive tech. */
+.sr-only{
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+}
+
+/* Skip link — off-screen until focused, then pinned top-left. */
+.skip-link{
+  position:fixed; top:0; left:0; z-index:calc(var(--z-nav) + 10);
+  transform:translateY(-120%); transition:transform 0.2s var(--ease);
+  background:var(--slate); color:var(--bg); font-family:var(--mono);
+  font-size:11px; letter-spacing:0.1em; text-transform:uppercase;
+  text-decoration:none; padding:0.7rem 1.1rem; border-bottom-right-radius:3px;
+}
+.skip-link:focus{ transform:translateY(0); outline:2px solid var(--matcha); outline-offset:2px; }
+
+/* Consistent brand focus ring for keyboard users across all interactive
+   elements that don't set their own. */
+a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
+  outline:2px solid var(--matcha); outline-offset:2px; border-radius:1px;
+}
+
 /* Helpers for components that previously used inline styles */
 .bio-matrix{ row-gap:0; }
 .princ-headline{ font-size:clamp(2rem,6vw,4.5rem); margin-top:1.2rem; max-width:14ch; }
@@ -121,8 +143,11 @@ section { position:relative; }
 .nav-logo{ font-family:var(--mono); font-size:1rem; font-weight:500; color:var(--matcha); text-decoration:none; letter-spacing:-0.02em; flex-shrink:0; transition:opacity 0.25s; order:1; }
 .nav-logo:hover{ opacity:0.55; }
 .nav-links{ display:flex; flex-wrap:wrap; justify-content:flex-end; gap:0.1rem 0.2rem; order:2; }
-.nav-links a{ font-family:var(--mono); font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--mid); text-decoration:none; padding:0.45rem 0.7rem; transition:color 0.3s var(--ease); white-space:nowrap; }
+.nav-links a{ position:relative; font-family:var(--mono); font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--mid); text-decoration:none; padding:0.45rem 0.7rem; transition:color 0.3s var(--ease); white-space:nowrap; }
 .nav-links a:hover, .nav-links a.active{ color:var(--matcha); }
+/* Editorial underline: wipes in from the left on hover, holds on the active link. */
+.nav-links a::after{ content:''; position:absolute; left:0.7rem; right:0.7rem; bottom:0.2rem; height:1px; background:var(--matcha); transform:scaleX(0); transform-origin:left; transition:transform 0.3s var(--ease); }
+.nav-links a:hover::after, .nav-links a.active::after{ transform:scaleX(1); }
 
 /* Hamburger — hidden on desktop */
 .nav-hamburger{ display:none; flex-direction:column; justify-content:center; gap:5px; background:none; border:none; cursor:pointer; padding:0.45rem; flex-shrink:0; order:3; }
@@ -137,6 +162,8 @@ section { position:relative; }
   .nav-links.open{ display:flex; }
   .nav-links a{ padding:0.75rem 0; border-bottom:1px solid var(--rule-lt); letter-spacing:0.15em; justify-content:flex-start; }
   .nav-links a:last-child{ border-bottom:none; }
+  /* The wipe underline is a desktop affordance; mobile uses the row dividers. */
+  .nav-links a::after{ display:none; }
 }
 
 /* ============================================================================
@@ -480,7 +507,8 @@ footer{ background:var(--slate); position:relative; overflow:hidden; }
    MOTION PREFERENCES
    ============================================================================ */
 @media(prefers-reduced-motion:reduce){
-  *, *::before, *::after{ animation-duration:0.01ms !important; transition-duration:0.01ms !important; }
+  html{ scroll-behavior:auto; }
+  *, *::before, *::after{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important; }
 }
 ::-webkit-scrollbar{ width:5px; }
 ::-webkit-scrollbar-track{ background:var(--bg); }

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { EXPERIENCE, EDUCATION } from '../data/content';
 import SplitText from './SplitText';
+import { prefersReducedMotion } from '../utils/media';
 
 export default function Experience() {
   const tlRef = useRef(null);
@@ -13,7 +14,7 @@ export default function Experience() {
     const tl = tlRef.current;
     const fill = fillRef.current;
     if (!tl || !fill) return;
-    const reduced = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    const reduced = prefersReducedMotion();
     const entries = entryRefs.current.filter(Boolean);
     const nodes = nodeRefs.current.filter(Boolean);
     const marks = [...EXPERIENCE, EDUCATION];

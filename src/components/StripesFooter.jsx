@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { STRIPES_START, STRIPES_T, STRIPES_MARKS } from '../data/stripes';
+import { prefersReducedMotion } from '../utils/media';
 
 export default function StripesFooter() {
   const footerRef = useRef(null);
@@ -15,7 +16,7 @@ export default function StripesFooter() {
     const hair = hairRef.current;
     if (!canvas || !footer || !canvas.getContext) return;
     const ctx = canvas.getContext('2d');
-    const reduced = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    const reduced = prefersReducedMotion();
     const T = STRIPES_T, START = STRIPES_START, N = T.length;
 
     // ColorBrewer RdBu anchors; colour keyed to the series midpoint baseline.

@@ -25,11 +25,13 @@ npm run preview  # preview the production build
 
 ## Structure
 
-- `src/components/` — section components
+- `src/components/` — section components + shared chrome (nav, grain, scroll progress, skip link)
 - `src/data/` — content, scenario model, warming-stripes data
 - `src/hooks/` — magnetic interaction
+- `src/utils/` — shared helpers (`media.js`: reduced-motion / hover guards)
 - `work/` + `src/work/` — the standalone work-samples page (served at `/work/`)
 - `public/` — shared static assets: logos, favicon, social og-image, robots.txt, sitemap.xml
+- `docs/` — non-app material (skill reference, career record); not built or deployed
 
 ## Deployment
 

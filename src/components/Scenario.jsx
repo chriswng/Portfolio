@@ -6,6 +6,7 @@ import { Chart, LineController, LineElement, PointElement, LinearScale, Category
 Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale, Filler, Tooltip);
 import { runModel, chartLabels, LEVER_LABELS, SECTOR_OPTIONS, resolveSector } from '../data/scenario';
 import SplitText from './SplitText';
+import { prefersReducedMotion } from '../utils/media';
 
 const LEVERS = [
   { key: 'grid', lc: 'var(--indigo)', sc: 'var(--indigo)', opts: ['base', 'faster', 'slower', 'off'] },
@@ -100,7 +101,7 @@ export default function Scenario() {
     // Scrollytelling build — wedges assemble on first view (unless already visible).
     const card = ctx.closest('.chart-card');
     const ORDER = [6, 5, 0, 1, 2, 3, 4];
-    const reduce = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    const reduce = prefersReducedMotion();
     let io;
     const timers = [];
     if (!reduce && card) {
