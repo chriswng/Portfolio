@@ -83,12 +83,13 @@ export const gasS3 = (state) => GAS.s3_per_MJ[state] ?? GAS.s3_per_MJ.NSW;
 // ---------------------------------------------------------------------------
 export const ROAD_SOURCE = {
   name: 'DCCEEW, Australian National Greenhouse Accounts Factors 2025',
-  detail: 'Table 9, cars and light commercial vehicles: petrol 67.62 kg CO2-e/GJ scope 1 and 17.2 scope 3 at 34.2 GJ/kL; diesel 70.41 and 17.3 at 38.6 GJ/kL. Converted to per litre.',
+  detail: 'Table 9, cars and light commercial vehicles: petrol 67.62 kg CO2-e/GJ scope 1 and 17.2 scope 3 at 34.2 GJ/kL; diesel 70.41 and 17.3 at 38.6 GJ/kL. Converted to per litre. A hybrid burns petrol at the petrol factors; only the default consumption differs (4.5 L/100km, indicative real-world figure for current hybrids).',
   url: 'https://www.dcceew.gov.au/climate-change/publications/national-greenhouse-accounts-factors-2025',
 };
 
 export const ROAD_FUELS = {
   petrol: { label: 'Petrol', s1_per_L: 2.31, s3_per_L: 0.59, defaultL100km: 7.0 },
+  hybrid: { label: 'Hybrid (petrol)', s1_per_L: 2.31, s3_per_L: 0.59, defaultL100km: 4.5 },
   diesel: { label: 'Diesel', s1_per_L: 2.72, s3_per_L: 0.67, defaultL100km: 6.5 },
   ev: { label: 'Electric (grid-charged)', s1_per_L: 0, s3_per_L: 0, kWhPerKm: 0.16 },
 };

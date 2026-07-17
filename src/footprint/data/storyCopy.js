@@ -9,6 +9,7 @@ export const CHROME = {
   replay: 'Replay the reveal',
   home: './',
   progressLabel: 'Story progress',
+  next: 'Next:',
 };
 
 export const CHAPTERS = [
@@ -20,6 +21,7 @@ export const CHAPTERS = [
   { id: 'st-hotspots', label: 'Hotspots' },
   { id: 'st-months', label: 'Worst month' },
   { id: 'st-bench', label: 'Context' },
+  { id: 'st-character', label: 'Your character' },
   { id: 'st-needle', label: 'The needle' },
   { id: 'st-outro', label: 'The audit' },
 ];
@@ -30,9 +32,9 @@ export const COVER = {
   h1b: 'of me.',
   sub: {
     example:
-      'I build GHG inventories for large organisations. This is the same discipline pointed at my own life: a year of flights, bills, parcels and dinners, priced in carbon on published factors, told properly.',
+      'I measure carbon for big organisations. This is the same maths pointed at my own life: a year of flights, bills, parcels and dinners, honestly added up.',
     own:
-      'Your year of flights, bills, parcels and dinners, priced in carbon on published factors. Logged in your browser, and nowhere else. Told properly.',
+      'Your year, measured in carbon: flights, power, food, deliveries. It stays in this browser and nowhere else.',
   },
   start: 'Start your own audit',
   startNote: 'Ten minutes, your bills, no account.',
@@ -43,23 +45,23 @@ export const YEAR = {
   tag: '01 · The year',
   headline: { example: 'Twelve months.', own: 'Your twelve months.' },
   sub: {
-    example: 'entries: every itinerary, meter read and parcel, dated, factored and priced.',
-    own: 'entries: everything you logged, dated, factored and priced.',
+    example: 'entries in the log. Every flight, bill and dinner, each with its own number.',
+    own: 'entries built from your answers, each with its own number.',
   },
   // Suffixes for the streaming ticker rows.
   tickerAria: 'A stream of the individual log entries behind this audit.',
 };
 
 export const GUESS = {
-  tag: '02 · Call it',
-  headline: { example: 'Before the reveal: call it.', own: 'You saw the pieces. Call it.' },
+  tag: '02 · Guess',
+  headline: { example: 'Guess my number.', own: 'Guess your number.' },
   sub: {
-    example: 'A year of me, in tonnes of CO₂-e. Flights included. What does one human add up to?',
-    own: 'Your whole year, in tonnes of CO₂-e, before the spreadsheet tells you. Trust your gut.',
+    example: 'One person, one year: every flight, power bill, meal and delivery. How many tonnes of carbon? Have a guess.',
+    own: 'How many tonnes did your year add up to? Have a guess.',
   },
-  unit: 'tCO₂-e',
+  unit: 'tonnes',
   lockIn: 'Lock it in',
-  noIdea: 'No idea, just show me',
+  noIdea: 'Skip the guess',
   sliderLabel: 'Your guess in tonnes of CO2-e per year',
 };
 
@@ -80,46 +82,51 @@ export const GUESS_RESULT = {
 
 export const TOTAL = {
   tag: '03 · The number',
-  kicker: { example: 'My FY2026 total', own: 'Your total' },
+  chipsLabel: 'Gather a category in the particle field',
+  kicker: { example: 'My FY2026 total', own: 'Your year in carbon' },
   unit: 'tonnes CO₂-e',
   line: {
     example: 'Every flight, bill, parcel and dinner. Counted, not confessed.',
-    own: 'Every line you logged, factored and added up. No rounding away the awkward bits.',
+    own: 'Everything you logged, added up. The awkward bits left in.',
   },
 };
 
 export const SCOPES = {
   tag: '04 · Three scopes',
-  headline: 'One life, three scopes.',
+  headline: 'One life, three buckets.',
+  gloss: 'Carbon accountants call the buckets scopes. In plain words: what you burn, the power you buy, and everything made or moved for you.',
   items: [
     {
       n: '1',
-      name: 'Scope 1 of me',
+      name: 'Scope 1',
+      plain: { example: 'What I burn', own: 'What you burn' },
       line: {
-        example: 'Fuel burned on my behalf at home. The gas under the hot water and the cooktop.',
-        own: 'Fuel burned directly on your behalf: gas, petrol, your name on the flame.',
+        example: 'The gas under my hot water and cooktop. Fuel burned at home, in my name.',
+        own: 'Gas and petrol burned directly by you.',
       },
     },
     {
       n: '2',
-      name: 'Scope 2 of me',
+      name: 'Scope 2',
+      plain: { example: 'The power I buy', own: 'The power you buy' },
       line: {
-        example: 'Purchased electricity for a small flat that runs on surprisingly little.',
-        own: 'The electricity you buy, at your state grid factor.',
+        example: 'Electricity for a small flat that runs on surprisingly little.',
+        own: 'Your electricity, at your state grid factor.',
       },
     },
     {
       n: '3',
-      name: 'Scope 3 of me',
+      name: 'Scope 3',
+      plain: { example: 'Everything else', own: 'Everything else' },
       line: {
-        example: 'Everything I cause but do not combust. Flights, trains, freight, food.',
-        own: 'Everything you cause but do not combust. This is where the tonnes hide.',
+        example: 'Flights, trains, deliveries, food. Made or moved for me by someone else.',
+        own: 'Flights, transport, deliveries, food. Made or moved for you by someone else.',
       },
     },
   ],
   punch: {
-    example: 'of my year is scope 3. Same as every inventory I have ever built.',
-    own: 'of your year is scope 3. Welcome to every corporate inventory ever written.',
+    example: 'of my year is bucket three. Same as every company I have ever audited.',
+    own: 'of your year is bucket three. Same as almost everyone.',
   },
 };
 
@@ -150,33 +157,38 @@ export const MONTHS_ST = {
   kicker: 'Worst month',
   line: {
     example: 'in one month. The year started as it meant to continue.',
-    own: 'in one month. Point events land where they happen; bills spread across what they cover.',
+    own: 'in one month. Bills spread out evenly; big trips spike.',
   },
   chartAria: 'Twelve small bars, one per month, with the worst month highlighted.',
 };
 
 export const BENCH_ST = {
   tag: '07 · Context',
-  headline: 'Context, honestly.',
+  headline: { example: 'How my year compares.', own: 'How your year compares.' },
   rows: {
     you: { example: 'This audit', own: 'Your audit' },
     aus: 'Australian average',
-    global: 'Global average',
-    budget: '1.5°C budget, 2030',
+    global: 'World average',
+    budget: '2030 climate budget',
+  },
+  tiles: {
+    aus: 'of the Australian average',
+    global: 'of the world average',
+    budget: 'of the 2030 climate budget',
   },
   line: {
-    example: 'Under the national average, miles over the budget. The gap is not a rounding error; it is a decision I have not made yet.',
-    own: 'The benchmarks carry a wider boundary than this audit, so the honest comparison is even less flattering. The budget line is the one that matters.',
+    example: 'Under the Australian average, still miles over the 2030 budget of 2.5 tonnes a person. Closing that gap is the plan below.',
+    own: 'The 2030 budget of 2.5 tonnes a person is the line that matters. The plan below is how you move toward it.',
   },
-  caveat: 'National figures carry a wider boundary than this audit, so totals here understate a full consumption footprint.',
+  caveat: 'The averages count more things than this audit does (clothes, gadgets, services), so the true gap is bigger, not smaller.',
 };
 
 export const NEEDLE = {
   tag: '08 · The needle',
   headline: 'What would actually move it.',
   sub: {
-    example: 'Each action priced against my audited numbers, not a national average. Ranked by tonnes, not by vibes.',
-    own: 'Each action priced against your audited numbers, not a national average. Ranked by tonnes, not by vibes.',
+    example: 'The three changes that would cut the most, sized to my actual year. Ranked by tonnes saved, not by vibes.',
+    own: 'The three changes that would cut the most, sized to your actual year. Ranked by tonnes saved, not by vibes.',
   },
   perYear: 't / yr',
   saves: 'pays you',
@@ -189,8 +201,8 @@ export const OUTRO = {
   tag: '09 · The audit',
   headline: { example: 'That is the story.', own: 'That is your story.' },
   sub: {
-    example: 'The full audit lives below: every entry, every factor, the abatement cost curve and the basis of preparation. Rigour in the numbers, and now you have seen the shape of them.',
-    own: 'Your full audit lives below: every entry, every factor, your own cost curve and pathway. It saves to this browser as you edit.',
+    example: 'Below: every entry, every source, what each fix costs, and the method in writing.',
+    own: 'Below: every entry, what each fix would save you, and your plan. It saves in this browser as you edit.',
   },
   explore: 'Explore the full audit',
   start: 'Start your own audit',
@@ -203,6 +215,7 @@ export const SHARE_ST = {
   copyLink: 'Copy link',
   linkCopied: 'Link copied.',
   shareAria: 'Share this moment',
+  linkedin: 'LinkedIn banner (PNG)',
   // Card footers and titles by moment.
   site: 'itschriswang.github.io/Portfolio/footprint',
   method: 'Scope 1, 2 and 3 of me · published factors, no offsets',
@@ -212,7 +225,22 @@ export const SHARE_ST = {
     guess: { example: 'I CALLED IT', own: 'I CALLED IT' },
     bench: { example: 'IN CONTEXT', own: 'IN CONTEXT' },
     needle: { example: 'THE PLAN', own: 'MY PLAN' },
+    character: { example: 'MY CARBON CHARACTER', own: 'MY CARBON CHARACTER' },
   },
+};
+
+export const CHARACTER_ST = {
+  tag: '08 · The character',
+  kicker: { example: 'My audit classifies as', own: 'Your audit classifies as' },
+  headline: 'Twelve shapes a footprint takes.',
+  sub: {
+    example: 'Every audit here lands on one of twelve profiles, from its size and its biggest wedge. Mine lands here.',
+    own: 'Every audit here lands on one of twelve profiles, from its size and its biggest wedge. Yours lands here.',
+  },
+  topLine: '{share}% of the year in the top wedge',
+  othersTitle: 'The other eleven',
+  othersNote: 'Assigned by rule, not by quiz. The classification method is in the basis of preparation below, next to everything else.',
+  yoursFlag: 'you',
 };
 
 export const OB = {
@@ -233,6 +261,7 @@ export const OB = {
   done: {
     title: 'Your audit is live.',
     sub: 'Saved to this browser, priced on the same factors as everything else on this page. Now the good part.',
+    character: 'You audit as {name}.',
     watch: 'Watch your reveal',
     skip: 'Straight to the dashboard',
   },
@@ -248,6 +277,7 @@ export const DASH_EXTRA = {
     overlaid: 'Overlaid: {label}, {t} t total.',
   },
   replayChip: 'Replay the reveal',
+  characterLabel: 'Profile',
 };
 
 // Strings drawn onto the canvas share cards.

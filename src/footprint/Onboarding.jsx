@@ -2,10 +2,12 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { animate, AnimatePresence, motion } from 'framer-motion';
 import { ELECTRICITY, FLIGHT_ROUTES, ROAD_FUELS, DIET_TYPES } from './data/factors';
 import { CONVERSIONS } from './data/vendorMap';
-import { ONBOARD, fmtT } from './data/copy';
+import { ONBOARD, ENERGY_PRESETS, fmtT } from './data/copy';
 import { OB, fill } from './data/storyCopy';
+import { classifyCharacter } from './data/characters';
 import { priceEntry, aggregate } from './lib/engine';
 import { audio } from './lib/audio';
+import { EmblemDots } from './story/CarbonField';
 import { prefersReducedMotion } from '../utils/media';
 
 // Last 12 complete months, ending last day of the previous month.
@@ -28,6 +30,7 @@ export function buildProfileFromOnboarding(a) {
   const settings = {
     name: '', state: a.state, householdSize: a.householdSize, dwelling: a.dwelling,
     dietType: a.dietType, fuelType: a.fuelType, greenpowerPct: a.greenpowerPct,
+    carOccupancy: a.carOccupancy,
   };
   const E = (draft) => priceEntry(draft, settings);
   const entries = [];
@@ -50,8 +53,9 @@ export function buildProfileFromOnboarding(a) {
   if (a.carKmWeek > 0) {
     entries.push(E({
       category: 'road', date: period.end, period_months: 12, label: 'Driving, typical year (onboarding)',
-      meta: { mode: 'car', fuel: a.fuelType, km: Math.round(a.carKmWeek * 52) },
-      notes: 'From the guided audit: ' + a.carKmWeek + ' km a week, annualised.',
+      meta: { mode: 'car', fuel: a.fuelType, km: Math.round(a.carKmWeek * 52), occupants: a.carOccupancy },
+      notes: 'From the guided audit: ' + a.carKmWeek + ' km a week, annualised'
+        + (a.carOccupancy > 1 ? ', split across ' + a.carOccupancy + ' occupants on average.' : '.'),
     }));
   }
   if (a.rideshareWeek > 0) {
@@ -107,7 +111,7 @@ export function buildProfileFromOnboarding(a) {
 
 const DEFAULTS = {
   state: 'NSW', householdSize: 2, dwelling: 'apartment', dietType: 'medMeat', fuelType: 'petrol',
-  greenpowerPct: 0, kwhQuarter: 1000, mjQuarter: 3000, carKmWeek: 0, rideshareWeek: 0, ptWeek: 0,
+  greenpowerPct: 0, kwhQuarter: 1000, mjQuarter: 3000, carKmWeek: 0, carOccupancy: 1, rideshareWeek: 0, ptWeek: 0,
   parcelsMonth: 2, intlOrdersMonth: 0, flights: [],
 };
 
@@ -130,7 +134,7 @@ function liveT(a, draft) {
 const LIVE = {
   electricity: (a) => liveT(a, { category: 'electricity', meta: { kwh: a.kwhQuarter * 4, wholeHousehold: true } }),
   gas: (a) => liveT(a, { category: 'gas', meta: { mj: a.mjQuarter * 4, wholeHousehold: true } }),
-  car: (a) => liveT(a, { category: 'road', meta: { mode: 'car', fuel: a.fuelType, km: Math.round(a.carKmWeek * 52) } }),
+  car: (a) => liveT(a, { category: 'road', meta: { mode: 'car', fuel: a.fuelType, km: Math.round(a.carKmWeek * 52), occupants: a.carOccupancy } }),
   rideshare: (a) => liveT(a, { category: 'road', meta: { mode: 'rideshare', km: Math.round((a.rideshareWeek * 52) / CONVERSIONS.ridesharePerKm.value) } }),
   pt: (a) => liveT(a, { category: 'road', meta: { mode: 'pt', km: Math.round((a.ptWeek * 52) / CONVERSIONS.ptPerKm.value) } }),
   flight: (a, fl) => {
@@ -243,6 +247,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
 
   const runningTotal = useMemo(() => aggregate(buildProfileFromOnboarding(a)).total, [a]);
   const doneProfile = useMemo(() => (step === 5 ? buildProfileFromOnboarding(a) : null), [step, a]);
+  const doneCharacter = useMemo(() => (doneProfile ? classifyCharacter(aggregate(doneProfile)) : null), [doneProfile]);
 
   // The done pane says the audit is saved, so save it as the pane appears;
   // closing with Escape or the cross after that point loses nothing.
@@ -289,13 +294,16 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
     const entries = buildProfileFromOnboarding(next).entries.sort((x, y) => y.tco2e - x.tco2e);
     const rank = entries.findIndex((e) => Math.abs(e.tco2e - t) < 0.0005) + 1;
     audio.tick(0.8);
-    setReaction(rank === 1
+    setReaction((rank === 1
       ? fill(OB.flightTop, { t: fmtT(t) })
-      : fill(OB.flightAdded[Math.min(next.flights.length - 1, OB.flightAdded.length - 1)], { t: fmtT(t), rank: Math.max(rank, 2) }));
+      : fill(OB.flightAdded[Math.min(next.flights.length - 1, OB.flightAdded.length - 1)], { t: fmtT(t), rank: Math.max(rank, 2) }))
+      + ' ' + ONBOARD.flights.added);
   };
 
   const dietOptions = Object.entries(DIET_TYPES).map(([k, v]) => ({
-    value: k, label: v.label.split(' (')[0], note: fill(OB.approx, { t: fmtT(LIVE.diet(a, k)) }),
+    value: k,
+    label: v.label.split(' (')[0],
+    note: (ONBOARD.food.dietHints[k] || '') + ' · ' + fill(OB.approx, { t: fmtT(LIVE.diet(a, k)) }),
   }));
 
   const steps = [
@@ -321,12 +329,30 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
     <div key="energy">
       <h3 ref={headRef} tabIndex={-1}>{ONBOARD.energy.title}</h3>
       <p>{ONBOARD.energy.sub}</p>
+      <Chips
+        label={ONBOARD.energy.presetLabel}
+        options={ENERGY_PRESETS.map((pr) => ({ value: pr.id, label: pr.label }))}
+        value={(ENERGY_PRESETS.find((pr) => pr.kwh === a.kwhQuarter && pr.mj === a.mjQuarter) || {}).id}
+        onChange={(id) => {
+          const pr = ENERGY_PRESETS.find((x) => x.id === id);
+          if (pr) setA((s) => ({ ...s, kwhQuarter: pr.kwh, mjQuarter: pr.mj }));
+        }}
+        note={ONBOARD.energy.presetNote}
+      />
       <SliderField label={ONBOARD.energy.kwh} value={a.kwhQuarter} min={0} max={6000} step={10} unit="kWh"
         onChange={(v) => set('kwhQuarter', v)} live={approx(LIVE.electricity(a))} />
       <SliderField label={ONBOARD.energy.mj} value={a.mjQuarter} min={0} max={30000} step={50} unit="MJ"
         onChange={(v) => set('mjQuarter', v)} live={approx(LIVE.gas(a))} />
-      <SliderField label={ONBOARD.energy.greenpower} value={a.greenpowerPct} min={0} max={100} step={5} unit="%"
-        onChange={(v) => set('greenpowerPct', v)} />
+      <Chips
+        label={ONBOARD.energy.greenpower}
+        options={[
+          { value: 0, label: ONBOARD.energy.gpNo },
+          { value: 50, label: ONBOARD.energy.gpHalf },
+          { value: 100, label: ONBOARD.energy.gpFull },
+        ]}
+        value={a.greenpowerPct} onChange={(v) => set('greenpowerPct', v)}
+        note={ONBOARD.energy.greenpowerNote}
+      />
     </div>,
     <div key="travel">
       <h3 ref={headRef} tabIndex={-1}>{ONBOARD.travel.title}</h3>
@@ -334,11 +360,16 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
       <SliderField label={ONBOARD.travel.car} value={a.carKmWeek} min={0} max={1000} step={5} unit="km / wk"
         onChange={(v) => set('carKmWeek', v)} live={a.carKmWeek > 0 ? approx(LIVE.car(a)) : null} />
       {a.carKmWeek > 0 && (
-        <Chips
-          label={ONBOARD.travel.fuelType}
-          options={Object.entries(ROAD_FUELS).map(([k, v]) => ({ value: k, label: v.label }))}
-          value={a.fuelType} onChange={(v) => set('fuelType', v)}
-        />
+        <>
+          <Chips
+            label={ONBOARD.travel.fuelType}
+            options={Object.entries(ROAD_FUELS).map(([k, v]) => ({ value: k, label: v.label }))}
+            value={a.fuelType} onChange={(v) => set('fuelType', v)}
+          />
+          <Stepper label={ONBOARD.travel.occupancy} value={a.carOccupancy} min={1} max={7}
+            onChange={(v) => set('carOccupancy', v)} live={approx(LIVE.car(a))} />
+          <p className="ob-note">{ONBOARD.travel.occupancyNote}</p>
+        </>
       )}
       <SliderField label={ONBOARD.travel.rideshare} value={a.rideshareWeek} min={0} max={400} step={5} unit="$ / wk"
         onChange={(v) => set('rideshareWeek', v)} live={a.rideshareWeek > 0 ? approx(LIVE.rideshare(a)) : null} />
@@ -378,18 +409,34 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         </button>
       </div>
       <p className="ob-reaction" role="status">{reaction}</p>
-      <ul className="fp-ob-flights">
-        {a.flights.map((f, i) => {
-          const routeLabel = (FLIGHT_ROUTES.find((r) => r.id === f.route) || { label: f.km + ' km' }).label;
-          return (
-            <li key={i}>
-              {routeLabel}{f.ret ? ' return' : ''} · {f.cabin} · <strong>{fmtT(LIVE.flight(a, f), 2)} t</strong>
-              <button type="button" aria-label={'Remove ' + routeLabel} onClick={() => setA((s) => ({ ...s, flights: s.flights.filter((_, j) => j !== i) }))}>×</button>
-            </li>
-          );
-        })}
-        {!a.flights.length && <li className="ob-none">{ONBOARD.flights.none}</li>}
-      </ul>
+      <div className="ob-flight-list">
+        <div className="ob-flight-list-head">
+          <span className="ob-label">{ONBOARD.flights.listTitle} ({a.flights.length})</span>
+          {a.flights.length > 0 && (
+            <span className="ob-flight-subtotal">
+              {ONBOARD.flights.subtotal}: <strong>{fmtT(a.flights.reduce((s, f) => s + LIVE.flight(a, f), 0))} t</strong>
+            </span>
+          )}
+        </div>
+        <ul className="ob-flights">
+          {a.flights.map((f, i) => {
+            const routeLabel = (FLIGHT_ROUTES.find((r) => r.id === f.route) || { label: f.km + ' km' }).label;
+            return (
+              <li key={i} className="ob-flight-item">
+                <span className="ob-flight-name">{routeLabel}{f.ret ? ' return' : ''}</span>
+                <span className="ob-flight-meta">{f.cabin} · <strong>{fmtT(LIVE.flight(a, f), 2)} t</strong></span>
+                <button
+                  type="button" className="ob-remove"
+                  onClick={() => { setReaction(''); setA((s) => ({ ...s, flights: s.flights.filter((_, j) => j !== i) })); }}
+                >
+                  {ONBOARD.flights.remove} ×
+                </button>
+              </li>
+            );
+          })}
+          {!a.flights.length && <li className="ob-none">{ONBOARD.flights.none}</li>}
+        </ul>
+      </div>
     </div>,
     <div key="food">
       <h3 ref={headRef} tabIndex={-1}>{ONBOARD.food.title}</h3>
@@ -406,6 +453,12 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         <span className="sr-only">{fmtT(runningTotal) + ' tonnes per year'}</span>
         <LiveNumber value={runningTotal} /> <span className="ob-done-unit" aria-hidden="true">t / yr</span>
       </div>
+      {doneCharacter && (
+        <div className="ob-done-char">
+          <EmblemDots stencil={doneCharacter.stencil} hex={doneCharacter.hex} size={54} />
+          <span>{fill(OB.done.character, { name: doneCharacter.name })} <em>{doneCharacter.tagline}</em></span>
+        </div>
+      )}
       <p>{OB.done.sub}</p>
       <div className="ob-done-ctas">
         <button type="button" className="btn btn-primary fp-btn" onClick={() => onDone(doneProfile, { watch: true })}>{OB.done.watch} →</button>

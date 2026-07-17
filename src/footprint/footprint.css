@@ -317,3 +317,25 @@
   .fp-toggle, .fp-mode-btn, .fp-linkbtn, .fp-card, .fp-kpi, .fp-hotcard, .fp-compare, .fp-replay, .ob-chip, .ob-stepper button{ transition:none; }
   .fp-hotcard:hover, .ob-chip:hover{ transform:none; }
 }
+
+/* ---- Guided audit: flight list, presets, done-pane character ---- */
+.ob-flight-list{ margin-top:1.2rem; border-top:1px solid var(--rule-lt); padding-top:1rem; }
+.ob-flight-list-head{ display:flex; justify-content:space-between; align-items:baseline; gap:1rem; flex-wrap:wrap; }
+.ob-flight-subtotal{ font-family:var(--mono); font-size:11px; color:var(--mid); }
+.ob-flight-subtotal strong{ color:var(--slate); }
+.ob-flights{ list-style:none; display:flex; flex-direction:column; gap:0.5rem; margin-top:0.6rem; padding:0; }
+.ob-flight-item{ display:flex; align-items:center; gap:0.8rem; flex-wrap:wrap; background:var(--white); border:1px solid var(--rule-dk); border-left:3px solid var(--fp-flight); padding:0.65rem 0.9rem; }
+.ob-flight-name{ font-weight:600; font-size:0.85rem; color:var(--slate); flex:1; min-width:140px; }
+.ob-flight-meta{ font-family:var(--mono); font-size:11px; color:var(--mid); }
+.ob-flight-meta strong{ color:var(--slate); }
+.ob-remove{ font-family:var(--mono); font-size:10px; letter-spacing:0.06em; text-transform:uppercase; font-weight:700; color:#A81F3D; background:none; border:1px solid var(--rule-dk); padding:0.35rem 0.7rem; cursor:pointer; border-radius:999px; transition:all 0.25s var(--ease); }
+.ob-remove:hover{ border-color:#C7274A; background:rgba(199,39,74,0.06); }
+.ob-done-char{ display:flex; align-items:center; gap:0.9rem; background:var(--white); border:1px solid var(--rule-dk); border-left:3px solid var(--matcha); padding:0.8rem 1rem; margin:0.4rem 0 1.1rem; max-width:520px; }
+.ob-done-char span{ font-size:0.88rem; color:#475569; line-height:1.55; }
+.ob-done-char strong{ color:var(--slate); }
+.ob-done-char em{ font-style:normal; color:var(--mid); }
+
+/* ---- Dashboard character strip ---- */
+.fp-char-strip{ display:flex; align-items:center; gap:0.9rem; background:var(--white); border:1px solid var(--rule-dk); border-top:none; padding:0.75rem 1.25rem; margin-bottom:0.75rem; }
+.fp-char-strip span{ font-size:0.85rem; color:#475569; }
+.fp-char-strip strong{ color:var(--slate); }

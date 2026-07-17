@@ -21,7 +21,7 @@ function Field({ label, children }) {
 // ---------------------------------------------------------------------------
 function EntryForm({ onAdd }) {
   const [cat, setCat] = useState('flight');
-  const [f, setF] = useState({ date: todayIso(), route: 'SYD-MEL', cabin: 'economy', ret: true, km: '', amount: '', household: true, months: 3, mode: 'car', fuel: 'petrol', freightKind: 'parcels', dietType: 'medMeat', days: 365, label: '' });
+  const [f, setF] = useState({ date: todayIso(), route: 'SYD-MEL', cabin: 'economy', ret: true, km: '', amount: '', household: true, months: 3, mode: 'car', fuel: 'petrol', occupants: 1, freightKind: 'parcels', dietType: 'medMeat', days: 365, label: '' });
   const set = (k, v) => setF((s) => ({ ...s, [k]: v }));
   const num = (v) => (v === '' || isNaN(Number(v)) ? 0 : Number(v));
 
@@ -44,7 +44,7 @@ function EntryForm({ onAdd }) {
     } else if (cat === 'road') {
       if (!num(f.km)) return;
       const label = f.label || (f.mode === 'pt' ? 'Public transport' : f.mode === 'car' ? 'Driving' : 'Rideshare');
-      draft = { ...base, category: 'road', label, period_months: num(f.months), meta: f.mode === 'car' ? { mode: 'car', fuel: f.fuel, km: num(f.km) } : { mode: f.mode, km: num(f.km) } };
+      draft = { ...base, category: 'road', label, period_months: num(f.months), meta: f.mode === 'car' ? { mode: 'car', fuel: f.fuel, km: num(f.km), occupants: Math.max(1, num(f.occupants) || 1) } : { mode: f.mode, km: num(f.km) } };
     } else if (cat === 'freight') {
       if (!num(f.amount)) return;
       draft = f.freightKind === 'parcels'
@@ -110,11 +110,16 @@ function EntryForm({ onAdd }) {
             </select>
           </Field>
           {f.mode === 'car' && (
-            <Field label="Fuel">
-              <select value={f.fuel} onChange={(e) => set('fuel', e.target.value)}>
-                {Object.entries(ROAD_FUELS).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
-              </select>
-            </Field>
+            <>
+              <Field label="Fuel">
+                <select value={f.fuel} onChange={(e) => set('fuel', e.target.value)}>
+                  {Object.entries(ROAD_FUELS).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
+                </select>
+              </Field>
+              <Field label="People in the car (avg)">
+                <input type="number" min="1" max="7" value={f.occupants} onChange={(e) => set('occupants', e.target.value)} />
+              </Field>
+            </>
           )}
           <Field label="km"><input type="number" min="0" value={f.km} onChange={(e) => set('km', e.target.value)} /></Field>
           <Field label="Months covered"><input type="number" min="1" max="12" value={f.months} onChange={(e) => set('months', e.target.value)} /></Field>
