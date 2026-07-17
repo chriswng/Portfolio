@@ -187,7 +187,10 @@ export function aggregate(profile) {
   for (const e of inWindow) {
     total += e.tco2e;
     byCategory[e.category] = (byCategory[e.category] || 0) + e.tco2e;
-    for (const c of e.components || [{ scope: e.scope, tco2e: e.tco2e }]) byScope[c.scope] += c.tco2e;
+    for (const c of e.components || [{ scope: e.scope, tco2e: e.tco2e }]) {
+      // Malformed imports fold into scope 3 rather than poisoning the tiles with NaN.
+      byScope[byScope[c.scope] != null ? c.scope : '3'] += c.tco2e;
+    }
     if (!largest || e.tco2e > largest.tco2e) largest = e;
     // Spread bills across the months they cover (date = period end).
     const span = Math.max(1, e.period_months || 1);
@@ -214,7 +217,7 @@ export function aggregate(profile) {
 export function baselineState(profile, agg) {
   const s = profile.settings;
   const share = 1 / Math.max(1, s.householdSize || 1);
-  let kwh = 0, mj = 0, kmCar = 0, litres = 0, kmRide = 0, kmPt = 0;
+  let kwh = 0, mj = 0, kmCar = 0, kmEv = 0, litres = 0, kmRide = 0, kmPt = 0;
   let dietDays = 0, freightAirT = 0, freightOtherT = 0, otherT = 0;
   const flights = [];
   for (const e of profile.entries) {
@@ -225,12 +228,19 @@ export function baselineState(profile, agg) {
     else if (e.category === 'road') {
       const mode = m.mode || 'car';
       // Per-person shares carry into the pathway model: occupancy divides
-      // car activity the same way pricing divides its emissions.
+      // car activity the same way pricing divides its emissions. EV
+      // kilometres stay electric (no synthetic litres), and km-only entries
+      // reconstruct fuel at the same default consumption pricing used, so
+      // the plan always starts from the audited numbers.
       const occ = Math.max(1, Math.round(m.occupants || 1));
       if (mode === 'rideshare' || mode === 'taxi') kmRide += m.km || 0;
       else if (mode === 'pt') kmPt += m.km || 0;
-      else if (m.litres != null) { litres += m.litres / occ; kmCar += (m.litres * 100) / (m.l100km || 7) / occ; }
-      else { kmCar += (m.km || 0) / occ; litres += ((m.km || 0) * (m.l100km || 7)) / 100 / occ; }
+      else if (m.fuel === 'ev') { kmCar += (m.km || 0) / occ; kmEv += (m.km || 0) / occ; }
+      else {
+        const dflt = (ROAD_FUELS[m.fuel] || ROAD_FUELS.petrol).defaultL100km || 7;
+        if (m.litres != null) { litres += m.litres / occ; kmCar += (m.litres * 100) / (m.l100km || dflt) / occ; }
+        else { kmCar += (m.km || 0) / occ; litres += ((m.km || 0) * (m.l100km || dflt)) / 100 / occ; }
+      }
     } else if (e.category === 'flight') flights.push(e);
     else if (e.category === 'diet') dietDays += m.days || 0;
     else if (e.category === 'freight') {
@@ -244,9 +254,12 @@ export function baselineState(profile, agg) {
     greenpowerPct: (s.greenpowerPct || 0) / 100,
     kwh, mj,
     kmCar, kmRide, kmPt,
-    l100km: kmCar > 0 ? (litres / kmCar) * 100 : (ROAD_FUELS[s.fuelType || 'petrol'].defaultL100km || 7),
+    // l100km describes the combustion share only; audited EV kilometres set
+    // the starting evShare so an EV driver is never offered "switch to an EV".
+    l100km: kmCar - kmEv > 0 ? (litres / (kmCar - kmEv)) * 100 : (ROAD_FUELS[s.fuelType || 'petrol'].defaultL100km || 7),
     fuelType: s.fuelType || 'petrol',
-    evShare: 0, solarReduction: 0, seaShift: 0,
+    evShare: kmCar > 0 ? kmEv / kmCar : 0,
+    solarReduction: 0, seaShift: 0,
     flights,
     flightT: flights.reduce((t, f) => t + f.tco2e, 0),
     droppedFlightT: 0,

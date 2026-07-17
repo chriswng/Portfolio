@@ -39,9 +39,12 @@ function LinkedInShare({ d, voice, character }) {
     window.setTimeout(() => setState('idle'), 2600);
   };
   return (
-    <button type="button" className="st-share" onClick={click}>
-      <span aria-hidden="true">⤓</span> {state === 'done' ? SHARE_ST.copied : SHARE_ST.linkedin}
-    </button>
+    <>
+      <button type="button" className="st-share" onClick={click}>
+        <span aria-hidden="true">⤓</span> {state === 'done' ? SHARE_ST.copied : SHARE_ST.linkedin}
+      </button>
+      <span className="sr-only" role="status">{state === 'done' ? SHARE_ST.copied : ''}</span>
+    </>
   );
 }
 
@@ -98,7 +101,7 @@ export default function CharacterMoment({ d, voice, character }) {
           <ul className="st-char-grid">
             {CHARACTERS.map((c) => (
               <li key={c.id} className={'st-char-cell' + (c.id === character.id ? ' you' : '')}>
-                <EmblemDots stencil={c.stencil} hex={c.id === character.id ? accent : '#5C665A'} size={44} />
+                <EmblemDots stencil={c.stencil} hex={c.id === character.id ? accent : lighten(c.hex, 0.2)} size={44} />
                 <span className="st-char-cell-name">{c.name}</span>
                 {c.id === character.id && <span className="st-char-you">{CHARACTER_ST.yoursFlag}</span>}
               </li>

@@ -4,8 +4,8 @@ import { Grain, ScrollProgress, SkipLink } from '../components/Chrome';
 import SplitText from '../components/SplitText';
 import { NAV_LINKS } from '../data/content';
 import { buildSeedProfile } from './data/seedProfile';
-import { INTRO, MODE, SHARE, FOOTER, fmtT } from './data/copy';
-import { DASH_EXTRA } from './data/storyCopy';
+import { INTRO, MODE, SHARE, FOOTER, LOG, TOASTS, fmtT } from './data/copy';
+import { DASH_EXTRA, fill } from './data/storyCopy';
 import { categoryById } from './data/factors';
 import { aggregate, priceEntry, projectPathway, maccData, newId } from './lib/engine';
 import {
@@ -98,12 +98,12 @@ export default function FootprintApp() {
 
   const onAdd = (draft) => {
     updateOwn((p) => ({ ...p, entries: [...p.entries, priceEntry({ ...draft, id: newId() }, p.settings)] }));
-    flash('Entry added and priced.');
+    flash(TOASTS.entryAdded);
   };
   const onAddEntries = (entries) => {
-    if (!entries.length) { flash('Nothing selected to add.'); return; }
+    if (!entries.length) { flash(TOASTS.nothingSelected); return; }
     updateOwn((p) => ({ ...p, entries: [...p.entries, ...entries] }));
-    flash(entries.length + ' estimate' + (entries.length > 1 ? 's' : '') + ' added from the CSV.');
+    flash(fill(TOASTS.csvAdded, { n: entries.length, s: entries.length > 1 ? 's' : '' }));
   };
   const onDelete = (id) => updateOwn((p) => ({ ...p, entries: p.entries.filter((e) => e.id !== id) }));
 
@@ -126,17 +126,17 @@ export default function FootprintApp() {
     });
     try {
       await navigator.clipboard.writeText(url);
-      flash('Share link copied. Summary only; the log stays here.');
+      flash(TOASTS.shareCopied);
     } catch {
-      window.prompt('Copy your share link:', url);
+      window.prompt(TOASTS.sharePrompt, url);
     }
   };
   const onReset = () => {
-    if (!window.confirm('Delete your audit from this browser? Export a backup first if you want to keep it.')) return;
+    if (!window.confirm(LOG.controls.resetConfirm)) return;
     clearOwnProfile();
     setOwn(null);
     setMode('example');
-    flash('Audit deleted from this browser.');
+    flash(TOASTS.auditDeleted);
   };
   const onStart = () => setOnboarding(true);
   // The audit persists the moment it is built (the done pane says so), not
@@ -153,7 +153,7 @@ export default function FootprintApp() {
       setStoryOpen(true);
       window.scrollTo({ top: 0, behavior: 'auto' });
     } else {
-      flash('Your audit is live. It saves to this browser as you edit.');
+      flash(TOASTS.auditLive);
       markStorySeen();
       setStoryOpen(false);
       window.setTimeout(() => document.getElementById('fp-dash')?.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth' }), 60);
@@ -161,13 +161,17 @@ export default function FootprintApp() {
   };
 
   const toggleSound = () => setSoundOn(audio.toggle());
+  const muteAudio = useCallback(() => {
+    if (audio.on) audio.disable();
+    setSoundOn(false);
+  }, []);
   const landOnDashboard = () => {
     window.setTimeout(() => document.getElementById('fp-dash')?.scrollIntoView({ behavior: 'auto' }), 50);
   };
   const onStorySkip = () => {
     markStorySeen();
     setStoryOpen(false);
-    if (soundOn) { audio.disable(); setSoundOn(false); }
+    muteAudio();
     landOnDashboard();
   };
   // "Explore the full audit" from the outro: the show ends, the house lights
@@ -175,6 +179,7 @@ export default function FootprintApp() {
   const onStoryFinish = () => {
     markStorySeen();
     setStoryOpen(false);
+    muteAudio();
     landOnDashboard();
   };
   const onStoryEnd = useCallback(() => { markStorySeen(); }, []);
@@ -190,6 +195,9 @@ export default function FootprintApp() {
 
   return (
     <MotionConfig reducedMotion="user">
+      {/* While the guided audit is open, the whole page behind it is inert:
+          declaratively, so a story remount mid-flow is covered too. */}
+      <div inert={onboarding ? '' : undefined}>
       <SkipLink />
       <Grain />
       <ScrollProgress />
@@ -208,6 +216,7 @@ export default function FootprintApp() {
           onCopyLink={onShare}
           soundOn={soundOn}
           onToggleSound={toggleSound}
+          onAutoMute={muteAudio}
         />
       )}
 
@@ -260,9 +269,9 @@ export default function FootprintApp() {
           </section>
         )}
 
-        <div className="fp-modebar" role="status">
+        <div className="fp-modebar">
           <div className="canvas fp-modebar-inner">
-            <span>{isExample ? MODE.example : MODE.mine}</span>
+            <span role="status">{isExample ? MODE.example : MODE.mine}</span>
             <span className="fp-modebar-btns">
               {own && (
                 <button type="button" className={'fp-mode-btn' + (!isExample ? ' on' : '')} onClick={() => setMode('mine')}>{MODE.switchToMine}</button>
@@ -284,10 +293,6 @@ export default function FootprintApp() {
         <Market />
       </main>
 
-      {onboarding && <Onboarding onDone={onOnboardDone} onBuilt={onOnboardBuilt} onCancel={() => setOnboarding(false)} />}
-      {/* Mounted permanently so assistive tech announces text arriving in it. */}
-      <div className={'fp-toast' + (toast ? ' show' : '')} role="status">{toast}</div>
-
       <footer className="fp-footer">
         <div className="canvas fp-footer-inner">
           <a href="../" className="fp-footer-home">./</a>
@@ -295,6 +300,11 @@ export default function FootprintApp() {
           <a href="../" className="fp-footer-back">← {FOOTER.back}</a>
         </div>
       </footer>
+      </div>
+
+      {onboarding && <Onboarding onDone={onOnboardDone} onBuilt={onOnboardBuilt} onCancel={() => setOnboarding(false)} />}
+      {/* Mounted permanently so assistive tech announces text arriving in it. */}
+      <div className={'fp-toast' + (toast ? ' show' : '')} role="status">{toast}</div>
     </MotionConfig>
   );
 }

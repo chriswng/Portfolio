@@ -25,23 +25,29 @@ const inView = { once: true, margin: '-18% 0px' };
 // ---------------------------------------------------------------------------
 // Per-moment share affordance: renders a PNG card composed for social.
 // ---------------------------------------------------------------------------
+export const shareSlug = (label) => label.replace(/[^a-z0-9-]+/gi, '-').toLowerCase();
+
 export function MomentShare({ kind, data, fy }) {
   const [state, setState] = useState('idle');
   const click = async () => {
     if (state === 'busy') return;
     setState('busy');
     try {
-      const ok = await shareCard(kind, { ...data, fy }, `life-footprint-${kind}-${fy.replace(/\s+/g, '-').toLowerCase()}.png`);
+      const ok = await shareCard(kind, { ...data, fy }, `life-footprint-${kind}-${shareSlug(fy)}.png`);
       setState(ok ? 'done' : 'idle');
       if (!ok) return;
     } catch { setState('idle'); return; }
     window.setTimeout(() => setState('idle'), 2600);
   };
   return (
-    <button type="button" className="st-share" onClick={click}>
-      <span aria-hidden="true">⤓</span> {state === 'done' ? SHARE_ST.copied : SHARE_ST.button}
+    <>
+      <button type="button" className="st-share" onClick={click}>
+        <span aria-hidden="true">⤓</span> {state === 'done' ? SHARE_ST.copied : SHARE_ST.button}
+      </button>
+      {/* Announcement lives outside the button so it never rewrites the
+          control's accessible name mid-press. */}
       <span className="sr-only" role="status">{state === 'done' ? SHARE_ST.copied : ''}</span>
-    </button>
+    </>
   );
 }
 
@@ -136,18 +142,17 @@ export function YearTicker({ d, voice, reduced }) {
 // ---------------------------------------------------------------------------
 // 2 · The guess: the playable moment.
 // ---------------------------------------------------------------------------
-export function Guess({ d, voice, guess, setGuess }) {
-  const scrollMode = () => (prefersReducedMotion() ? 'auto' : 'smooth');
+export function Guess({ d, voice, guess, setGuess, goTo }) {
   const slide = (v) => setGuess({ ...guess, value: v });
   const lock = () => {
     audio.chime();
     // Accepting the default without touching the slider still counts.
     setGuess({ value: guess.value ?? 10, locked: true });
-    document.getElementById('st-total')?.scrollIntoView({ behavior: scrollMode() });
+    goTo('st-total');
   };
   const skip = () => {
     setGuess({ value: null, locked: false });
-    document.getElementById('st-total')?.scrollIntoView({ behavior: scrollMode() });
+    goTo('st-total');
   };
 
   return (
@@ -195,7 +200,11 @@ export function TotalReveal({ d, voice, guess, onGuessAgain, onCopyLink, reduced
   const ref = useRef(null);
   // The carbon field behind the number: one particle per 10 kg. Hovering or
   // focusing a category chip gathers that category's particles.
-  const [focusCat, setFocusCat] = useState(null);
+  // Pinned (clicked) and hover/focus previews are separate states so a tap
+  // pins, a second tap unpins, and mouse traversal only previews.
+  const [pinnedCat, setPinnedCat] = useState(null);
+  const [hoverCat, setHoverCat] = useState(null);
+  const focusCat = pinnedCat ?? hoverCat;
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end end'] });
   const raw = useTransform(scrollYProgress, [0.02, 0.52], [0.42, 1]);
   const scale = useSpring(raw, { stiffness: 90, damping: 24, mass: 0.6 });
@@ -215,32 +224,32 @@ export function TotalReveal({ d, voice, guess, onGuessAgain, onCopyLink, reduced
       </motion.div>
       <motion.div className="st-total-tail" style={reduced ? undefined : { opacity: tailO, y: tailY }}>
         <p className="st-line">{TOTAL.line[voice]}</p>
-        {!reduced && (
-          <div className="st-cat-chips" role="group" aria-label={TOTAL.chipsLabel}>
-            {d.ranked.map((c) => (
-              <button
-                key={c.id}
-                type="button"
-                className={'st-cat-chip' + (focusCat === c.id ? ' on' : '')}
-                aria-pressed={focusCat === c.id}
-                onPointerEnter={() => setFocusCat(c.id)}
-                onPointerLeave={() => setFocusCat((f) => (f === c.id ? null : f))}
-                onFocus={() => setFocusCat(c.id)}
-                onBlur={() => setFocusCat((f) => (f === c.id ? null : f))}
-                onClick={() => setFocusCat((f) => (f === c.id ? null : c.id))}
-              >
-                <span className="fp-leg-dot" style={{ background: c.hex }} aria-hidden="true" />
-                {c.label} · {fmtT(c.t)} t
-              </button>
-            ))}
-          </div>
-        )}
+        <div className="st-cat-chips" role="group" aria-label={TOTAL.chipsLabel}>
+          {d.ranked.map((c) => (
+            <button
+              key={c.id}
+              type="button"
+              className={'st-cat-chip' + (focusCat === c.id ? ' on' : '')}
+              aria-pressed={pinnedCat === c.id}
+              onPointerEnter={() => { if (canHover()) setHoverCat(c.id); }}
+              onPointerLeave={() => { if (canHover()) setHoverCat((f) => (f === c.id ? null : f)); }}
+              onFocus={(e) => { if (e.target.matches(':focus-visible')) setHoverCat(c.id); }}
+              onBlur={() => setHoverCat((f) => (f === c.id ? null : f))}
+              onClick={() => setPinnedCat((f) => (f === c.id ? null : c.id))}
+            >
+              <span className="fp-leg-dot" style={{ background: c.hex }} aria-hidden="true" />
+              {c.label} · {fmtT(c.t)} t
+            </button>
+          ))}
+        </div>
         {locked && (
-          <div className="st-verdict" role="status">
+          <div className="st-verdict">
             <strong>{v.result}</strong> {v.verdict}
             <button type="button" className="st-quiet" onClick={onGuessAgain}>{GUESS_RESULT.playAgain}</button>
           </div>
         )}
+        {/* Persistent live region: mounts with the moment, fills on reveal. */}
+        <span className="sr-only" role="status">{locked ? v.result + ' ' + v.verdict : ''}</span>
         <div className="st-share-row">
           {locked ? (
             <MomentShare kind="guess" fy={d.fy} data={{
@@ -346,6 +355,10 @@ export function Hotspots({ d, voice, reduced }) {
         </motion.div>
         <motion.div className="st-hot-detail" style={reduced ? undefined : { opacity: restO }}>
           <h2 className="st-h2 display">{HOTSPOTS_ST.headline[voice]}</h2>
+          {/* The title card is visual-only (aria-hidden, removed under reduced
+              motion), so the quip also lives here: visibly when the card is
+              gone, sr-only otherwise. */}
+          <p className={reduced ? 'st-line' : 'sr-only'}>{HOTSPOTS_ST.rankWord} 1: {top.label}. {top.quip}</p>
           <div className="st-hot-big">
             <span className="st-hot-num display" style={{ color: top.hex }}>
               <ScrubNumber progress={numP} value={top.t} decimals={1} />
@@ -396,7 +409,8 @@ export function WorstMonth({ d, voice }) {
         <motion.p className="st-line" variants={rise} custom={2}>
           <CountUp value={d.worst.total} decimals={1} className="st-line-num" /> t {MONTHS_ST.line[voice]}
         </motion.p>
-        <motion.div className="st-months-chart" variants={rise} custom={3} role="img" aria-label={MONTHS_ST.chartAria}>
+        <motion.div className="st-months-chart" variants={rise} custom={3} role="img"
+          aria-label={fill(MONTHS_ST.chartAria, { name: d.worst.name, t: fmtT(d.worst.total) })}>
           {d.monthly.map((m, i) => (
             <div className="st-month-col" key={m.key}>
               {m.worst && <span className="st-month-flag">{fmtT(m.total, 1)} t</span>}
@@ -443,7 +457,9 @@ export function Bench({ d, voice }) {
           {tiles.map((t, i) => (
             <motion.div className="st-bench-tile" key={t.key} variants={rise} custom={1.5 + i * 0.5}>
               <span className="st-bench-tile-v display">{ratioLabel(d.total, t.base.t)}</span>
-              <span className="st-bench-tile-l">{BENCH_ST.tiles[t.key]}</span>
+              <span className="st-bench-tile-l">
+                {d.total / t.base.t < 1 ? BENCH_ST.tiles[t.key] : BENCH_ST.tiles[t.key].replace(/^of /, '')}
+              </span>
             </motion.div>
           ))}
         </div>
@@ -496,8 +512,8 @@ export function Needle({ d, voice }) {
               <div className="st-needle-name">{a.action}</div>
               <div className="st-needle-cost">
                 {a.costPerTonne == null ? '' : a.costPerTonne <= 0
-                  ? `${NEEDLE.saves} $${Math.abs(a.costPerTonne).toLocaleString()} / t`
-                  : `${NEEDLE.costs} $${a.costPerTonne.toLocaleString()} / t`}
+                  ? `${NEEDLE.saves} $${Math.abs(a.costPerTonne).toLocaleString()} ${NEEDLE.perTonne}`
+                  : `${NEEDLE.costs} $${a.costPerTonne.toLocaleString()} ${NEEDLE.perTonne}`}
               </div>
             </motion.div>
           ))}

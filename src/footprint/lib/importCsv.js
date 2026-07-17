@@ -121,7 +121,14 @@ export function buildEntriesFromImport(analysis, include, settings) {
     entries.push(priceEntry({
       category: 'road', date: endDate, period_months: 12,
       label: 'Petrol (from bank import, ' + analysis.groups.fuel.count + ' fills)',
-      meta: { fuel: settings.fuelType || 'petrol', litres: Math.round(litres) },
+      // Litres of pump fuel cannot belong to an EV: fall back to petrol
+      // factors. Declared average occupancy carries over so the split rule
+      // applies to imported fuel the same as logged fuel.
+      meta: {
+        fuel: !settings.fuelType || settings.fuelType === 'ev' ? 'petrol' : settings.fuelType,
+        litres: Math.round(litres),
+        occupants: Math.max(1, Math.round(settings.carOccupancy || 1)),
+      },
       notes: 'Estimated from bank CSV: $' + Math.round(analysis.groups.fuel.total) + ' at $' + c.petrolPerLitre.value.toFixed(2) + '/L. Replace with odometer or receipts for a tighter number.',
     }, settings));
   }

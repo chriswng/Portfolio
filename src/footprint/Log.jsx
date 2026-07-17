@@ -1,11 +1,15 @@
 import { useRef, useState } from 'react';
 import SplitText from '../components/SplitText';
 import { CATEGORIES, categoryById, FLIGHT_ROUTES, ROAD_FUELS, DIET_TYPES } from './data/factors';
-import { LOG, fmtT } from './data/copy';
+import { LOG, ONBOARD, fmtT } from './data/copy';
 import { analyseCsv, buildEntriesFromImport, templateCsv } from './lib/importCsv';
 import { exportProfile, parseImported } from './lib/store';
 
-const todayIso = () => new Date().toISOString().slice(0, 10);
+// Local date: toISOString gives yesterday before ~10am in Australian zones.
+const todayIso = () => {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+};
 
 function Field({ label, children }) {
   return (
@@ -19,9 +23,9 @@ function Field({ label, children }) {
 // ---------------------------------------------------------------------------
 // Manual entry form: minimal fields per category, priced on submit.
 // ---------------------------------------------------------------------------
-function EntryForm({ onAdd }) {
+function EntryForm({ onAdd, settings }) {
   const [cat, setCat] = useState('flight');
-  const [f, setF] = useState({ date: todayIso(), route: 'SYD-MEL', cabin: 'economy', ret: true, km: '', amount: '', household: true, months: 3, mode: 'car', fuel: 'petrol', occupants: 1, freightKind: 'parcels', dietType: 'medMeat', days: 365, label: '' });
+  const [f, setF] = useState({ date: todayIso(), route: 'SYD-MEL', cabin: 'economy', ret: true, km: '', amount: '', household: true, months: 3, mode: 'car', fuel: 'petrol', occupants: Math.max(1, Math.round((settings && settings.carOccupancy) || 1)), freightKind: 'parcels', dietType: 'medMeat', days: 365, label: '' });
   const set = (k, v) => setF((s) => ({ ...s, [k]: v }));
   const num = (v) => (v === '' || isNaN(Number(v)) ? 0 : Number(v));
 
@@ -74,14 +78,13 @@ function EntryForm({ onAdd }) {
           <Field label="Route">
             <select value={f.route} onChange={(e) => set('route', e.target.value)}>
               {FLIGHT_ROUTES.map((r) => <option key={r.id} value={r.id}>{r.label}</option>)}
-              <option value="custom">Custom distance…</option>
+              <option value="custom">{ONBOARD.flights.customOpt}</option>
             </select>
           </Field>
           {f.route === 'custom' && <Field label="km, one way"><input type="number" min="50" value={f.km} onChange={(e) => set('km', e.target.value)} /></Field>}
           <Field label="Cabin">
             <select value={f.cabin} onChange={(e) => set('cabin', e.target.value)}>
-              <option value="economy">Economy</option><option value="premium">Premium</option>
-              <option value="business">Business</option><option value="first">First</option>
+              {Object.entries(ONBOARD.flights.cabins).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
             </select>
           </Field>
           <Field label="Return">
@@ -277,7 +280,7 @@ export default function Log({ profile, isExample, onAdd, onAddEntries, onDelete,
         <div className="fp-scroll-x">
           <table className="fp-table">
             <thead>
-              <tr><th>Date</th><th>Entry</th><th>Category</th><th>Activity</th><th>Factor</th><th>Scope</th><th>tCO₂-e</th>{!isExample && <th aria-label="Actions" />}</tr>
+              <tr>{LOG.table.head.map((h) => <th key={h}>{h}</th>)}{!isExample && <th aria-label="Actions" />}</tr>
             </thead>
             <tbody>
               {entries.map((e) => (
@@ -297,21 +300,21 @@ export default function Log({ profile, isExample, onAdd, onAddEntries, onDelete,
                   )}
                 </tr>
               ))}
-              {!entries.length && <tr><td colSpan={8}>No entries yet. Add one below or run the guided audit.</td></tr>}
+              {!entries.length && <tr><td colSpan={8}>{LOG.table.empty}</td></tr>}
             </tbody>
           </table>
         </div>
 
         {isExample ? (
           <div className="fp-example-note">
-            <p>This log is the worked example, so it is read-only. Your own log is editable, private to your browser, and starts with one click.</p>
-            <button type="button" className="btn btn-primary fp-btn" onClick={onStart}>Start your own audit →</button>
+            <p>{LOG.exampleNote.body}</p>
+            <button type="button" className="btn btn-primary fp-btn" onClick={onStart}>{LOG.exampleNote.cta} →</button>
           </div>
         ) : (
           <>
             <div className="fp-card">
               <div className="fp-card-head">{LOG.addTitle}</div>
-              <EntryForm onAdd={onAdd} />
+              <EntryForm onAdd={onAdd} settings={profile.settings} />
             </div>
 
             <div className="fp-card">
