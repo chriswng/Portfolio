@@ -1,0 +1,296 @@
+import { useEffect, useRef, useState } from 'react';
+import { Renderer, Program, Geometry, Mesh } from 'ogl';
+import { prefersReducedMotion } from '../../utils/media';
+import { stencilPoints, drawEmblemDots, lighten } from '../lib/emblem';
+
+// The carbon field: a WebGL particle system where one particle is 10 kg of
+// CO2-e, so the audited year is literally on screen as matter. Two modes:
+// 'swarm' drifts behind the total reveal, coloured by category, repelled by
+// the pointer, and clusters a category when the visitor focuses its chip;
+// 'emblem' pulls every particle into the character's stencil. Follows the
+// Aurora house rules: RAF pauses off-screen, reduced motion never mounts a
+// loop, context is released on unmount.
+
+const VERT = `#version 300 es
+in vec2 position;
+in vec3 color;
+in float size;
+uniform vec2 uScale;
+uniform float uDpr;
+out vec3 vColor;
+void main() {
+  vColor = color;
+  gl_PointSize = size * uDpr;
+  gl_Position = vec4(position * uScale, 0.0, 1.0);
+}
+`;
+
+const FRAG = `#version 300 es
+precision highp float;
+in vec3 vColor;
+uniform float uAlpha;
+out vec4 fragColor;
+void main() {
+  float d = distance(gl_PointCoord, vec2(0.5));
+  if (d > 0.5) discard;
+  float a = smoothstep(0.5, 0.32, d) * uAlpha;
+  fragColor = vec4(vColor * a, a);
+}
+`;
+
+const KG_PER_PARTICLE = 10;
+
+// Golden-angle disc: category-contiguous so the swarm forms readable arcs.
+function swarmTargets(n, radius) {
+  const pts = new Float32Array(n * 2);
+  const GA = Math.PI * (3 - Math.sqrt(5));
+  for (let i = 0; i < n; i++) {
+    const r = radius * Math.sqrt((i + 0.5) / n);
+    const a = i * GA;
+    pts[i * 2] = Math.cos(a) * r;
+    pts[i * 2 + 1] = Math.sin(a) * r;
+  }
+  return pts;
+}
+
+export default function CarbonField({
+  mode, total, categories = [], stencil = null, hex = '#B5C42B',
+  focus = null, alpha = 1, className, fallback = null,
+}) {
+  const ctnRef = useRef(null);
+  const stateRef = useRef({ mode, focus, stencil, hex });
+  stateRef.current = { mode, focus, stencil, hex };
+  const [failed, setFailed] = useState(false);
+  const reduced = prefersReducedMotion();
+
+  useEffect(() => {
+    const ctn = ctnRef.current;
+    if (!ctn || reduced) return undefined;
+
+    let renderer;
+    try {
+      renderer = new Renderer({ alpha: true, premultipliedAlpha: true, dpr: Math.min(2, window.devicePixelRatio || 1) });
+    } catch { setFailed(true); return undefined; }
+    const gl = renderer.gl;
+    if (!gl) { setFailed(true); return undefined; }
+    gl.clearColor(0, 0, 0, 0);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    gl.canvas.style.position = 'absolute';
+    gl.canvas.style.inset = '0';
+
+    const small = window.innerWidth < 700;
+    const N = Math.max(240, Math.min(small ? 900 : 1400, Math.round((total * 1000) / KG_PER_PARTICLE)));
+
+    // Category assignment: contiguous blocks proportional to share.
+    const catOf = new Uint8Array(N);
+    const catHex = categories.length ? categories : [{ hex }];
+    {
+      let idx = 0;
+      const totalShare = catHex.reduce((s, c) => s + (c.share || 1), 0);
+      catHex.forEach((c, ci) => {
+        const count = ci === catHex.length - 1 ? N - idx : Math.round(((c.share || 1) / totalShare) * N);
+        for (let k = 0; k < count && idx < N; k++, idx++) catOf[idx] = ci;
+      });
+      while (idx < N) catOf[idx++] = catHex.length - 1;
+    }
+
+    const pos = new Float32Array(N * 2);
+    const vel = new Float32Array(N * 2);
+    const target = new Float32Array(N * 2);
+    const colors = new Float32Array(N * 3);
+    const sizes = new Float32Array(N);
+    const seeds = new Float32Array(N);
+
+    const setColors = (m) => {
+      for (let i = 0; i < N; i++) {
+        const c = m === 'emblem' ? lighten(stateRef.current.hex, 0.28) : lighten(catHex[catOf[i]].hex, 0.35);
+        const n = parseInt(c.slice(1), 16);
+        colors[i * 3] = ((n >> 16) & 255) / 255;
+        colors[i * 3 + 1] = ((n >> 8) & 255) / 255;
+        colors[i * 3 + 2] = (n & 255) / 255;
+      }
+    };
+
+    const base = swarmTargets(N, 0.72);
+    const rebuildTargets = () => {
+      const { mode: m, focus: f, stencil: st } = stateRef.current;
+      if (m === 'emblem' && st) {
+        const pts = stencilPoints(st, N);
+        for (let i = 0; i < N; i++) { target[i * 2] = pts[i].x * 0.78; target[i * 2 + 1] = pts[i].y * 0.78; }
+      } else {
+        const fi = f ? catHex.findIndex((c) => c.id === f) : -1;
+        for (let i = 0; i < N; i++) {
+          if (fi >= 0 && catOf[i] === fi) {
+            // Focused category gathers into a tight inner disc.
+            const a = seeds[i] * Math.PI * 2;
+            const r = 0.26 * Math.sqrt((i % 97) / 97);
+            target[i * 2] = Math.cos(a) * r;
+            target[i * 2 + 1] = Math.sin(a) * r;
+          } else if (fi >= 0) {
+            target[i * 2] = base[i * 2] * 1.35;
+            target[i * 2 + 1] = base[i * 2 + 1] * 1.35;
+          } else {
+            target[i * 2] = base[i * 2];
+            target[i * 2 + 1] = base[i * 2 + 1];
+          }
+        }
+      }
+    };
+
+    for (let i = 0; i < N; i++) {
+      seeds[i] = (i * 0.618033) % 1;
+      const a = seeds[i] * Math.PI * 2;
+      pos[i * 2] = Math.cos(a) * (1.4 + seeds[i]);
+      pos[i * 2 + 1] = Math.sin(a) * (1.4 + ((i * 0.754877) % 1));
+      sizes[i] = 2.2 + seeds[i] * 2.6;
+    }
+    setColors(mode);
+    rebuildTargets();
+
+    const geometry = new Geometry(gl, {
+      position: { size: 2, data: pos, usage: gl.DYNAMIC_DRAW },
+      color: { size: 3, data: colors },
+      size: { size: 1, data: sizes },
+    });
+    const program = new Program(gl, {
+      vertex: VERT, fragment: FRAG,
+      uniforms: {
+        uScale: { value: [1, 1] },
+        uDpr: { value: Math.min(2, window.devicePixelRatio || 1) },
+        uAlpha: { value: alpha },
+      },
+      transparent: true, depthTest: false,
+    });
+    const mesh = new Mesh(gl, { geometry, program, mode: gl.POINTS });
+    ctn.appendChild(gl.canvas);
+
+    const resize = () => {
+      const w = ctn.offsetWidth, h = ctn.offsetHeight;
+      if (!w || !h) return;
+      renderer.setSize(w, h);
+      // Keep the field square-ish so emblems never stretch.
+      program.uniforms.uScale.value = w > h ? [h / w, 1] : [1, w / h];
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Pointer in field units (matches uScale mapping).
+    const pointer = { x: 0, y: 0, on: false };
+    const onMove = (e) => {
+      const r = ctn.getBoundingClientRect();
+      const nx = ((e.clientX - r.left) / r.width) * 2 - 1;
+      const ny = -(((e.clientY - r.top) / r.height) * 2 - 1);
+      const [sx, sy] = program.uniforms.uScale.value;
+      pointer.x = nx / sx;
+      pointer.y = ny / sy;
+      pointer.on = true;
+    };
+    const onLeave = () => { pointer.on = false; };
+    ctn.addEventListener('pointermove', onMove);
+    ctn.addEventListener('pointerdown', onMove);
+    ctn.addEventListener('pointerleave', onLeave);
+
+    let lastSig = mode + '|' + (focus || '') + '|' + hex;
+    let raf = 0;
+    let inView = true;
+    let lastT = 0;
+    const tick = (t) => {
+      raf = inView ? requestAnimationFrame(tick) : 0;
+      const dt = Math.min(0.05, (t - lastT) / 1000 || 0.016);
+      lastT = t;
+      const { mode: m, focus: f, hex: hx } = stateRef.current;
+      const sig = m + '|' + (f || '') + '|' + hx;
+      if (sig !== lastSig) { lastSig = sig; rebuildTargets(); setColors(m); geometry.attributes.color.needsUpdate = true; }
+
+      const spring = m === 'emblem' ? 4.2 : 1.6;
+      const damp = m === 'emblem' ? 0.86 : 0.92;
+      const time = t * 0.001;
+      for (let i = 0; i < N; i++) {
+        const ix = i * 2, iy = ix + 1;
+        let ax = (target[ix] - pos[ix]) * spring;
+        let ay = (target[iy] - pos[iy]) * spring;
+        // Gentle organic wobble, calmer once an emblem has formed.
+        const w = m === 'emblem' ? 0.05 : 0.22;
+        ax += Math.sin(time * (0.6 + seeds[i]) + seeds[i] * 40) * w;
+        ay += Math.cos(time * (0.5 + seeds[i]) + seeds[i] * 60) * w;
+        if (pointer.on) {
+          const dx = pos[ix] - pointer.x, dy = pos[iy] - pointer.y;
+          const d2 = dx * dx + dy * dy;
+          if (d2 < 0.16 && d2 > 0.00001) {
+            const push = (0.16 - d2) * 26;
+            ax += (dx / Math.sqrt(d2)) * push;
+            ay += (dy / Math.sqrt(d2)) * push;
+          }
+        }
+        vel[ix] = (vel[ix] + ax * dt) * damp;
+        vel[iy] = (vel[iy] + ay * dt) * damp;
+        pos[ix] += vel[ix];
+        pos[iy] += vel[iy];
+      }
+      geometry.attributes.position.needsUpdate = true;
+      renderer.render({ scene: mesh });
+    };
+    raf = requestAnimationFrame(tick);
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        inView = e.isIntersecting && !document.hidden;
+        if (inView && !raf) { lastT = performance.now(); raf = requestAnimationFrame(tick); }
+      });
+    });
+    io.observe(ctn);
+    const onVis = () => {
+      inView = !document.hidden;
+      if (inView && !raf) { lastT = performance.now(); raf = requestAnimationFrame(tick); }
+    };
+    document.addEventListener('visibilitychange', onVis);
+
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+      io.disconnect();
+      document.removeEventListener('visibilitychange', onVis);
+      window.removeEventListener('resize', resize);
+      ctn.removeEventListener('pointermove', onMove);
+      ctn.removeEventListener('pointerdown', onMove);
+      ctn.removeEventListener('pointerleave', onLeave);
+      if (gl.canvas.parentNode === ctn) ctn.removeChild(gl.canvas);
+      gl.getExtension('WEBGL_lose_context')?.loseContext();
+    };
+    // Rebuild only when the audit itself changes; mode and focus flow
+    // through stateRef without tearing the context down.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [total, reduced]);
+
+  if (reduced || failed) {
+    return <div className={className} aria-hidden="true">{fallback}</div>;
+  }
+  return <div className={className} ref={ctnRef} aria-hidden="true" />;
+}
+
+// Static dot-matrix emblem: the reduced-motion and no-WebGL face of a
+// character, and the badge used on the dashboard and in onboarding.
+export function EmblemDots({ stencil, hex, size = 120, className, label }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const canvas = ref.current;
+    if (!canvas) return;
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, size, size);
+    drawEmblemDots(ctx, stencil, { x: 0, y: 0, size, color: hex });
+  }, [stencil, hex, size]);
+  return (
+    <canvas
+      ref={ref}
+      className={className}
+      style={{ width: size, height: size }}
+      role={label ? 'img' : undefined}
+      aria-label={label}
+      aria-hidden={label ? undefined : 'true'}
+    />
+  );
+}

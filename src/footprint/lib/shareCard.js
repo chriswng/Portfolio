@@ -5,6 +5,7 @@
 // falls back to a straight download.
 
 import { SHARE_ST, CARD_TEXT, NEEDLE } from '../data/storyCopy';
+import { drawEmblemDots } from './emblem';
 
 const W = 1080;
 const H = 1350;
@@ -118,7 +119,40 @@ function bars(ctx, rows, top, opts = {}) {
   });
 }
 
+function wrapText(ctx, text, x, y, maxW, lineH) {
+  const words = text.split(' ');
+  let line = '', yy = y;
+  for (const w of words) {
+    const probe = line ? line + ' ' + w : w;
+    if (ctx.measureText(probe).width > maxW && line) {
+      ctx.fillText(line, x, yy);
+      line = w;
+      yy += lineH;
+    } else line = probe;
+  }
+  if (line) ctx.fillText(line, x, yy);
+  return yy;
+}
+
 const PAINTERS = {
+  character(ctx, d) {
+    drawEmblemDots(ctx, d.stencil, { x: 84, y: 300, size: 430, color: d.hex });
+    ctx.fillStyle = INK;
+    ctx.font = `700 250px ${DISP}`;
+    ctx.fillText(d.total, 560, 480);
+    ctx.fillStyle = MID;
+    ctx.font = `500 28px ${MONO}`;
+    ctx.fillText(CARD_TEXT.tonnes + d.fy.toUpperCase(), 560, 540);
+    ctx.fillStyle = INK;
+    ctx.font = `700 100px ${DISP}`;
+    ctx.fillText(d.name, 78, 900);
+    ctx.fillStyle = d.hex;
+    ctx.font = `600 40px ${DISP}`;
+    ctx.fillText(d.tagline, 80, 968);
+    ctx.fillStyle = MID;
+    ctx.font = `400 33px ${SANS}`;
+    wrapText(ctx, d.line, 84, 1050, W - 168, 48);
+  },
   total(ctx, d) {
     bigNumber(ctx, d.total, 't', 560);
     ctx.fillStyle = MID;
@@ -195,8 +229,77 @@ export async function drawShareCard(kind, data) {
   return canvas;
 }
 
-export async function shareCard(kind, data, filename) {
-  const canvas = await drawShareCard(kind, data);
+// LinkedIn banner: 1200 x 627, the feed's native landscape ratio, so the
+// card posts full-bleed with nothing cropped.
+const LW = 1200;
+const LH = 627;
+
+export async function drawLinkedInCard(d) {
+  await ensureFonts();
+  const canvas = document.createElement('canvas');
+  canvas.width = LW;
+  canvas.height = LH;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = BG;
+  ctx.fillRect(0, 0, LW, LH);
+  const g = ctx.createRadialGradient(LW * 0.9, -40, 0, LW * 0.9, -40, 620);
+  g.addColorStop(0, 'rgba(181,196,43,0.16)');
+  g.addColorStop(1, 'rgba(181,196,43,0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, LW, LH);
+
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillStyle = MATCHA;
+  ctx.font = `500 26px ${MONO}`;
+  ctx.fillText('./', 72, 64);
+  ctx.letterSpacing = '5px';
+  ctx.fillStyle = INK;
+  ctx.font = `500 22px ${MONO}`;
+  ctx.fillText(d.title, 128, 64);
+  ctx.letterSpacing = '0px';
+  ctx.fillStyle = MID;
+  ctx.font = `500 22px ${MONO}`;
+  ctx.textAlign = 'right';
+  ctx.fillText(d.fy.toUpperCase(), LW - 72, 64);
+  ctx.textAlign = 'left';
+  ctx.strokeStyle = RULE;
+  ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(72, 92); ctx.lineTo(LW - 72, 92); ctx.stroke();
+
+  drawEmblemDots(ctx, d.stencil, { x: 60, y: 128, size: 330, color: d.hex });
+
+  ctx.fillStyle = INK;
+  ctx.font = `700 84px ${DISP}`;
+  ctx.fillText(d.name, 428, 248);
+  ctx.fillStyle = d.hex;
+  ctx.font = `600 32px ${DISP}`;
+  ctx.fillText(d.tagline, 430, 300);
+
+  ctx.fillStyle = INK;
+  ctx.font = `700 108px ${DISP}`;
+  ctx.fillText(d.total + ' t', 428, 448);
+  ctx.fillStyle = MID;
+  ctx.font = `500 24px ${MONO}`;
+  ctx.fillText(CARD_TEXT.tonnes.replace(' · ', '') + ', AUDITED', 434, 490);
+  if (d.mix) {
+    ctx.fillStyle = MID;
+    ctx.font = `500 24px ${MONO}`;
+    ctx.fillText(d.mix, 434, 528);
+  }
+
+  ctx.beginPath(); ctx.moveTo(72, 556); ctx.lineTo(LW - 72, 556); ctx.stroke();
+  ctx.fillStyle = MID;
+  ctx.font = `400 21px ${SANS}`;
+  ctx.fillText(SHARE_ST.method, 72, 596);
+  ctx.fillStyle = MATCHA;
+  ctx.font = `500 21px ${MONO}`;
+  ctx.textAlign = 'right';
+  ctx.fillText(SHARE_ST.site, LW - 72, 596);
+  ctx.textAlign = 'left';
+  return canvas;
+}
+
+async function shareCanvas(canvas, filename) {
   const blob = await new Promise((res) => canvas.toBlob(res, 'image/png'));
   if (!blob) return false;
   const file = new File([blob], filename, { type: 'image/png' });
@@ -218,4 +321,14 @@ export async function shareCard(kind, data, filename) {
   a.remove();
   URL.revokeObjectURL(url);
   return true;
+}
+
+export async function shareCard(kind, data, filename) {
+  const canvas = await drawShareCard(kind, data);
+  return shareCanvas(canvas, filename);
+}
+
+export async function shareLinkedIn(data, filename) {
+  const canvas = await drawLinkedInCard(data);
+  return shareCanvas(canvas, filename);
 }
