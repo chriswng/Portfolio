@@ -8,9 +8,10 @@ built as a React + Vite multi-page app and deployed to GitHub Pages.
 - React 18 + Vite 5, `framer-motion` for motion, `chart.js` for the scenario
   model, `ogl` for the hero aurora (WebGL), plus hand-written canvas renderers
   (contour field, warming stripes).
-- Two pages: the main profile (`index.html` → `src/main.jsx` → `App.jsx`) and a
-  standalone work-samples page (`work/index.html` → `src/work/main.jsx`), served
-  at `/work/`.
+- Three pages: the main profile (`index.html` → `src/main.jsx` → `App.jsx`), a
+  standalone work-samples page (`work/index.html` → `src/work/main.jsx`) at
+  `/work/`, and the Life Footprint dashboard (`footprint/index.html` →
+  `src/footprint/main.jsx`) at `/footprint/`.
 
 ## Layout
 
@@ -18,6 +19,7 @@ built as a React + Vite multi-page app and deployed to GitHub Pages.
 |---|---|
 | `src/components/` | Main-page sections (Hero, Bio, Principles, Ticker, Scenario, Experience, Contact, StripesFooter) plus shared Chrome (nav, grain, scroll progress, skip link). |
 | `src/work/` | Work-samples page: `WorkApp`, `Baseline`, `CaseStudy`, data in `workData.js`, styles in `work.css`. |
+| `src/footprint/` | Life Footprint page: calculation engine and factor data in `lib/` and `data/` (keep rigorous; every factor cites its source), the Wrapped-style reveal in `story/` (WebGL carbon field, carbon characters, share cards), guided audit in `Onboarding.jsx`, dashboard sections alongside. Copy lives in `data/copy.js` and `data/storyCopy.js`. |
 | `src/data/` | Content and model inputs: `content.js` (all editorial copy), `scenario.js` (decarbonisation model), `stripes.js` (warming-stripes series). |
 | `src/hooks/` | `useMagnetic` — cursor-follow interaction. |
 | `src/utils/` | `media.js` — `prefersReducedMotion()` / `canHover()` guards. |
