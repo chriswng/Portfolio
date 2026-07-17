@@ -119,6 +119,17 @@ function bars(ctx, rows, top, opts = {}) {
   });
 }
 
+function fitText(ctx, text, x, y, maxW, weight, family, startPx, minPx = 40) {
+  let px = startPx;
+  ctx.font = `${weight} ${px}px ${family}`;
+  while (px > minPx && ctx.measureText(text).width > maxW) {
+    px -= 4;
+    ctx.font = `${weight} ${px}px ${family}`;
+  }
+  ctx.fillText(text, x, y);
+  return px;
+}
+
 function wrapText(ctx, text, x, y, maxW, lineH) {
   const words = text.split(' ');
   let line = '', yy = y;
@@ -144,8 +155,7 @@ const PAINTERS = {
     ctx.font = `500 28px ${MONO}`;
     ctx.fillText(CARD_TEXT.tonnes + d.fy.toUpperCase(), 560, 540);
     ctx.fillStyle = INK;
-    ctx.font = `700 100px ${DISP}`;
-    ctx.fillText(d.name, 78, 900);
+    fitText(ctx, d.name, 78, 900, W - 156, 700, DISP, 100);
     ctx.fillStyle = d.hex;
     ctx.font = `600 40px ${DISP}`;
     ctx.fillText(d.tagline, 80, 968);
@@ -269,8 +279,7 @@ export async function drawLinkedInCard(d) {
   drawEmblemDots(ctx, d.stencil, { x: 60, y: 128, size: 330, color: d.hex });
 
   ctx.fillStyle = INK;
-  ctx.font = `700 84px ${DISP}`;
-  ctx.fillText(d.name, 428, 248);
+  fitText(ctx, d.name, 428, 248, LW - 428 - 72, 700, DISP, 84);
   ctx.fillStyle = d.hex;
   ctx.font = `600 32px ${DISP}`;
   ctx.fillText(d.tagline, 430, 300);
@@ -280,7 +289,7 @@ export async function drawLinkedInCard(d) {
   ctx.fillText(d.total + ' t', 428, 448);
   ctx.fillStyle = MID;
   ctx.font = `500 24px ${MONO}`;
-  ctx.fillText(CARD_TEXT.tonnes.replace(' · ', '') + ', AUDITED', 434, 490);
+  ctx.fillText(CARD_TEXT.tonnes.replace(' · ', '') + ', ' + CARD_TEXT.counted, 434, 490);
   if (d.mix) {
     ctx.fillStyle = MID;
     ctx.font = `500 24px ${MONO}`;

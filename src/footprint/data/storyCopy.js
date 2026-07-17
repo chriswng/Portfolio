@@ -159,7 +159,7 @@ export const MONTHS_ST = {
     example: 'in one month. The year started as it meant to continue.',
     own: 'in one month. Bills spread out evenly; big trips spike.',
   },
-  chartAria: 'Twelve small bars, one per month, with the worst month highlighted.',
+  chartAria: 'One small bar per month; the worst month, {name} at {t} tonnes, is highlighted.',
 };
 
 export const BENCH_ST = {
@@ -184,21 +184,22 @@ export const BENCH_ST = {
 };
 
 export const NEEDLE = {
-  tag: '08 · The needle',
+  tag: '09 · The needle',
   headline: 'What would actually move it.',
   sub: {
     example: 'The three changes that would cut the most, sized to my actual year. Ranked by tonnes saved, not by vibes.',
     own: 'The three changes that would cut the most, sized to your actual year. Ranked by tonnes saved, not by vibes.',
   },
   perYear: 't / yr',
-  saves: 'pays you',
-  costs: 'costs',
+  perTonne: 'a tonne',
+  saves: 'saves you about',
+  costs: 'costs about',
   punch: 'One decision beats fifty habits.',
   cta: 'Open the full plan',
 };
 
 export const OUTRO = {
-  tag: '09 · The audit',
+  tag: '10 · The audit',
   headline: { example: 'That is the story.', own: 'That is your story.' },
   sub: {
     example: 'Below: every entry, every source, what each fix costs, and the method in writing.',
@@ -218,7 +219,7 @@ export const SHARE_ST = {
   linkedin: 'LinkedIn banner (PNG)',
   // Card footers and titles by moment.
   site: 'itschriswang.github.io/Portfolio/footprint',
-  method: 'Scope 1, 2 and 3 of me · published factors, no offsets',
+  method: 'Home energy, travel, freight and diet · published factors, no offsets',
   cards: {
     total: { example: 'MY YEAR IN CARBON', own: 'MY YEAR IN CARBON' },
     hotspot: { example: 'HOTSPOT №1', own: 'MY HOTSPOT №1' },
@@ -251,6 +252,7 @@ export const OB = {
   soFarSr: 'About {t} tonnes per year so far.',
   stepOf: 'Step {n} of {total}',
   perYear: 't / yr',
+  perTonne: 'a tonne',
   flightAdded: [
     'That one is {t} t on its own.',
     '{t} t. Now your #{rank} line.',
@@ -261,7 +263,7 @@ export const OB = {
   done: {
     title: 'Your audit is live.',
     sub: 'Saved to this browser, priced on the same factors as everything else on this page. Now the good part.',
-    character: 'You audit as {name}.',
+    profileLabel: 'Your profile:',
     watch: 'Watch your reveal',
     skip: 'Straight to the dashboard',
   },
@@ -287,6 +289,7 @@ export const CARD_TEXT = {
   guessLabel: 'THE GUESS',
   auditLabel: 'THE AUDIT',
   benchNote: 'National figures carry a wider boundary than this audit.',
+  counted: 'SELF-COUNTED',
 };
 
 // Small helpers shared by story components.

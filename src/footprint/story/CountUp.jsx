@@ -12,7 +12,7 @@ const fmt = (v, decimals) =>
 // pentatonic ticks when sound is on, and renders the final value immediately
 // under reduced motion. Assistive tech reads a visually-hidden copy of the
 // finished value; the animated digits are hidden from it.
-export function CountUp({ value, decimals = 1, duration = 1.6, delay = 0, className, ticks = true }) {
+export function CountUp({ value, decimals = 1, duration = 0.9, delay = 0, className, ticks = true }) {
   const ref = useRef(null);
   const shown = useRef(0);
   const inView = useInView(ref, { once: true, margin: '-15% 0px' });

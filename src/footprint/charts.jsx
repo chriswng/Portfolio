@@ -200,7 +200,8 @@ export function MaccChart({ rows }) {
         ))}
         <line x1={padL} x2={W - padR} y1={y0} y2={y0} stroke="#475569" strokeWidth="1.5" />
         {bars.map((b) => (
-          <g key={b.id} tabIndex={0} className="fp-macc-bar"
+          <g key={b.id} tabIndex={0} className="fp-macc-bar" role="img"
+            aria-label={b.action + ': ' + b.reduction.toFixed(2) + ' tonnes a year at ' + (b.costPerTonne < 0 ? 'a saving of $' + Math.abs(b.costPerTonne) : '$' + b.costPerTonne) + ' per tonne' + (b.offScale ? ', beyond the axis cap' : '')}
             onMouseEnter={() => setTip(b)} onMouseLeave={() => setTip(null)}
             onFocus={() => setTip(b)} onBlur={() => setTip(null)}>
             <title>{b.action + ': ' + b.reduction.toFixed(2) + ' t/yr at ' + (b.costPerTonne < 0 ? '-$' + Math.abs(b.costPerTonne) : '$' + b.costPerTonne) + '/t' + (b.offScale ? ' (beyond the axis cap)' : '')}</title>

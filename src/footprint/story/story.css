@@ -21,7 +21,9 @@
   flex-direction: column;
   justify-content: center;
   overflow: clip;
-  padding: 4.5rem var(--gut);
+  /* Headroom for the fixed chrome pills, footroom for the Next pill. */
+  padding: 5.5rem var(--gut) 5.5rem;
+  scroll-margin-top: 0.5rem;
 }
 .st-center { max-width: 720px; margin: 0 auto; width: 100%; text-align: left; }
 .st-wide { max-width: 860px; }
@@ -39,7 +41,7 @@
   flex-direction: column;
   align-items: stretch;
   justify-content: center;
-  padding: 4.5rem var(--gut);
+  padding: 5.5rem var(--gut) 5.5rem;
   overflow: clip;
 }
 /* Reduced motion: the stage stops being a scrub track. */
@@ -144,6 +146,10 @@
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
+  background: rgba(23, 28, 19, 0.4);
+  backdrop-filter: blur(6px);
+  border-radius: 999px;
+  padding: 0.5rem 0.3rem;
 }
 .st-rail-dot {
   position: relative;
@@ -158,7 +164,8 @@
   border: 1px solid rgba(110, 116, 105, 0.5);
   transition: transform 0.3s var(--ease), background 0.3s var(--ease);
 }
-.st-rail-dot.on::before { background: var(--matcha); border-color: var(--matcha); transform: scale(1.5); }
+.st-rail .st-rail-dot::before { background: rgba(244, 246, 238, 0.55); border-color: rgba(244, 246, 238, 0.4); }
+.st-rail .st-rail-dot.on::before { background: var(--matcha); border-color: var(--matcha); transform: scale(1.5); }
 .st-rail-label {
   position: absolute;
   right: 26px; top: 50%;
@@ -292,10 +299,10 @@
 
 /* ---- Months ---- */
 .st-months-chart { display: flex; align-items: flex-end; gap: clamp(4px, 1.2vw, 12px); height: clamp(160px, 30vh, 260px); margin-top: 2.4rem; }
-.st-month-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 0.45rem; position: relative; }
-.st-month-bar { display: block; width: 100%; background: oklch(0.853 0.013 118); border-radius: 3px 3px 0 0; transform-origin: bottom; }
-.st-month-bar.worst { background: var(--matcha); }
-.st-month-flag { font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--slate); background: var(--matcha); padding: 0.15rem 0.4rem; border-radius: 2px; white-space: nowrap; }
+.st-month-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 0.45rem; position: relative; padding-top: 1.6rem; }
+.st-month-bar { display: block; width: 100%; flex-shrink: 0; background: oklch(0.62 0.02 118); border-radius: 3px 3px 0 0; transform-origin: bottom; }
+.st-month-bar.worst { background: #75821D; }
+.st-month-flag { position: absolute; top: -0.4rem; left: 50%; transform: translateX(-50%); font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--slate); background: var(--matcha); padding: 0.15rem 0.4rem; border-radius: 2px; white-space: nowrap; z-index: 1; }
 .st-month-l { font-family: var(--mono); font-size: 9px; color: #475569; text-transform: uppercase; }
 
 /* ---- Bench ---- */
@@ -303,8 +310,8 @@
 .st-bench-row { display: grid; grid-template-columns: minmax(110px, 190px) 1fr 70px; gap: 0.9rem; align-items: center; }
 .st-bench-name { font-size: 0.85rem; font-weight: 600; color: var(--slate); line-height: 1.3; }
 .st-bench-track { display: block; height: 26px; background: var(--rule-lt); border-radius: 4px; overflow: hidden; }
-.st-bench-fill { display: block; height: 100%; background: oklch(0.75 0.02 118); border-radius: 0 4px 4px 0; transform-origin: left; }
-.st-bench-fill.you { background: var(--matcha); }
+.st-bench-fill { display: block; height: 100%; background: oklch(0.62 0.02 118); border-radius: 0 4px 4px 0; transform-origin: left; }
+.st-bench-fill.you { background: #75821D; }
 .st-bench-val { font-family: var(--mono); font-size: 0.82rem; font-weight: 600; color: var(--slate); text-align: right; font-variant-numeric: tabular-nums; }
 
 /* ---- Needle ---- */
@@ -314,7 +321,7 @@
 .st-needle-card:hover { transform: translateY(-3px); box-shadow: 0 14px 34px rgba(23, 28, 19, 0.10); }
 .st-needle-t { font-size: clamp(2.2rem, 5vw, 3.2rem); font-weight: 700; color: var(--slate); line-height: 1; margin-bottom: 0.6rem; font-variant-numeric: tabular-nums; }
 .st-needle-name { font-weight: 700; font-size: 0.92rem; color: var(--slate); line-height: 1.4; margin-bottom: 0.45rem; }
-.st-needle-cost { font-family: var(--mono); font-size: 10.5px; color: #75821D; font-weight: 600; }
+.st-needle-cost { font-family: var(--mono); font-size: 10.5px; color: #66731A; font-weight: 600; }
 
 /* ---- Outro ---- */
 .st-outro { border-bottom: 1px solid var(--st-dark-rule); }
@@ -330,7 +337,11 @@
 
 /* ---- Small screens ---- */
 @media (max-width: 680px) {
-  .st-moment, .st-sticky { padding-left: 5vw; padding-right: 5vw; }
+  .st-moment, .st-sticky { padding-left: 5vw; padding-right: 5vw; padding-top: 6rem; padding-bottom: 5.5rem; }
+  .st-total .st-field {
+    -webkit-mask-image: linear-gradient(#000 52%, transparent 76%);
+    mask-image: linear-gradient(#000 52%, transparent 76%);
+  }
   .st-chrome { padding: 0.55rem 3vw; }
   .st-skip { max-width: 52vw; overflow: hidden; text-overflow: ellipsis; }
   /* The rail is a desktop affordance: on phones it crowds the text edge and
@@ -359,14 +370,14 @@
 .st-cat-chip {
   font-family: var(--mono); font-size: 10px; letter-spacing: 0.05em; font-weight: 600;
   color: var(--st-dark-ink); background: rgba(244, 246, 238, 0.05);
-  border: 1px solid var(--st-dark-rule); border-radius: 999px; padding: 0.45rem 0.8rem;
+  border: 1px solid rgba(244, 246, 238, 0.32); border-radius: 999px; padding: 0.45rem 0.8rem;
   cursor: pointer; display: inline-flex; align-items: center; gap: 0.45rem;
   transition: border-color 0.25s var(--ease), background 0.25s var(--ease), transform 0.25s var(--ease);
 }
 .st-cat-chip:hover, .st-cat-chip.on { border-color: var(--matcha); background: rgba(181, 196, 43, 0.12); transform: translateY(-1px); }
 
 /* ---- Scopes: plain labels ---- */
-.st-scope-plain { font-family: var(--disp); font-weight: 700; font-size: clamp(1.15rem, 2.4vw, 1.6rem); color: var(--st-dark-ink); letter-spacing: -0.02em; margin: 0.15rem 0 0.3rem; }
+.st-scope-plain { font-family: var(--disp); font-weight: 700; font-size: clamp(1.15rem, 2.4vw, 1.6rem); color: var(--slate); letter-spacing: -0.02em; margin: 0.15rem 0 0.3rem; }
 .st-scopes .st-scope-name { font-size: 9.5px; }
 
 /* ---- Bench tiles ---- */

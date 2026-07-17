@@ -117,6 +117,7 @@ export default function CarbonField({
       const { mode: m, focus: f, stencil: st } = stateRef.current;
       if (m === 'emblem' && st) {
         const pts = stencilPoints(st, N);
+        if (!pts.length) return;
         for (let i = 0; i < N; i++) { target[i * 2] = pts[i].x * 0.78; target[i * 2 + 1] = pts[i].y * 0.78; }
       } else {
         const fi = f ? catHex.findIndex((c) => c.id === f) : -1;
@@ -148,12 +149,14 @@ export default function CarbonField({
     setColors(mode);
     rebuildTargets();
 
-    const geometry = new Geometry(gl, {
+    let geometry, program;
+    try {
+      geometry = new Geometry(gl, {
       position: { size: 2, data: pos, usage: gl.DYNAMIC_DRAW },
       color: { size: 3, data: colors },
       size: { size: 1, data: sizes },
     });
-    const program = new Program(gl, {
+    program = new Program(gl, {
       vertex: VERT, fragment: FRAG,
       uniforms: {
         uScale: { value: [1, 1] },
@@ -162,6 +165,11 @@ export default function CarbonField({
       },
       transparent: true, depthTest: false,
     });
+    } catch {
+      gl.getExtension('WEBGL_lose_context')?.loseContext();
+      setFailed(true);
+      return undefined;
+    }
     const mesh = new Mesh(gl, { geometry, program, mode: gl.POINTS });
     ctn.appendChild(gl.canvas);
 
@@ -193,8 +201,13 @@ export default function CarbonField({
 
     let lastSig = mode + '|' + (focus || '') + '|' + hex;
     let raf = 0;
+    let intersecting = true;
     let inView = true;
     let lastT = 0;
+    const syncInView = () => {
+      inView = intersecting && !document.hidden;
+      if (inView && !raf) { lastT = performance.now(); raf = requestAnimationFrame(tick); }
+    };
     const tick = (t) => {
       raf = inView ? requestAnimationFrame(tick) : 0;
       const dt = Math.min(0.05, (t - lastT) / 1000 || 0.016);
@@ -234,16 +247,11 @@ export default function CarbonField({
     raf = requestAnimationFrame(tick);
 
     const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => {
-        inView = e.isIntersecting && !document.hidden;
-        if (inView && !raf) { lastT = performance.now(); raf = requestAnimationFrame(tick); }
-      });
+      entries.forEach((e) => { intersecting = e.isIntersecting; });
+      syncInView();
     });
     io.observe(ctn);
-    const onVis = () => {
-      inView = !document.hidden;
-      if (inView && !raf) { lastT = performance.now(); raf = requestAnimationFrame(tick); }
-    };
+    const onVis = () => syncInView();
     document.addEventListener('visibilitychange', onVis);
 
     return () => {
@@ -258,7 +266,11 @@ export default function CarbonField({
       gl.getExtension('WEBGL_lose_context')?.loseContext();
     };
     // Rebuild only when the audit itself changes; mode and focus flow
-    // through stateRef without tearing the context down.
+    // through stateRef without tearing the context down. Invariant: the
+    // categories array and stencil identity only change together with the
+    // audit (Story remounts on voice switch via key), so they are read
+    // through stateRef instead of deps; adding the array itself to deps
+    // would tear the context down on every parent render.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [total, reduced]);
 

@@ -8,21 +8,26 @@ import { classifyCharacter } from './data/characters';
 import { priceEntry, aggregate } from './lib/engine';
 import { audio } from './lib/audio';
 import { EmblemDots } from './story/CarbonField';
+import { lighten } from './lib/emblem';
 import { prefersReducedMotion } from '../utils/media';
+
+// Local-date formatter. toISOString converts to UTC, which in Australian
+// timezones lands on the previous calendar day and stretched the reporting
+// window to thirteen months; format from local components instead.
+const localIso = (d) =>
+  d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
 
 // Last 12 complete months, ending last day of the previous month.
 function lastTwelveMonths() {
   const now = new Date();
   const end = new Date(now.getFullYear(), now.getMonth(), 0);
   const start = new Date(end.getFullYear() - 1, end.getMonth() + 1, 1);
-  const iso = (d) => d.toISOString().slice(0, 10);
-  return { label: 'Last 12 months', start: iso(start), end: iso(end) };
+  return { label: 'Last 12 months', start: localIso(start), end: localIso(end) };
 }
 
 const shiftMonths = (isoDate, delta, day) => {
   const d = new Date(isoDate + 'T00:00:00');
-  const t = new Date(d.getFullYear(), d.getMonth() + delta, day);
-  return t.toISOString().slice(0, 10);
+  return localIso(new Date(d.getFullYear(), d.getMonth() + delta, day));
 };
 
 export function buildProfileFromOnboarding(a) {
@@ -32,7 +37,7 @@ export function buildProfileFromOnboarding(a) {
     dietType: a.dietType, fuelType: a.fuelType, greenpowerPct: a.greenpowerPct,
     carOccupancy: a.carOccupancy,
   };
-  const E = (draft) => priceEntry(draft, settings);
+  const E = (draft) => priceEntry({ ...draft, meta: { ...draft.meta, synthetic: true } }, settings);
   const entries = [];
   const qEnds = [-9, -6, -3, 0].map((d) => shiftMonths(period.end, d, 28));
 
@@ -208,6 +213,8 @@ function Stepper({ label, value, onChange, min = 0, max = 99, step = 1, live }) 
         />
         <button type="button" aria-label={'Increase ' + label} onClick={() => onChange(clamp(value + step))}>+</button>
         {live != null && <span className="ob-live">{live}</span>}
+        {/* The +/- buttons keep focus, so echo the new value politely. */}
+        <span className="sr-only" role="status">{value}</span>
       </div>
     </div>
   );
@@ -224,6 +231,7 @@ function SliderField({ label, value, onChange, min, max, step, unit, live }) {
         type="range" className="ob-range"
         min={min} max={max} step={step} value={value}
         aria-label={label}
+        aria-valuetext={value.toLocaleString() + ' ' + unit}
         onChange={(e) => onChange(Number(e.target.value))}
       />
       {live != null && <span className="ob-live">{live}</span>}
@@ -260,17 +268,18 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
   }, [step]);
 
   useEffect(() => {
+    // Modality itself (inert on everything behind) is applied declaratively
+    // by FootprintApp, so it survives story remounts mid-flow. This effect
+    // handles the rest: Escape, scroll lock, and returning focus to the
+    // control that opened the dialog when it closes.
+    const opener = document.activeElement;
     const onKey = (e) => { if (e.key === 'Escape') onCancel(); };
     window.addEventListener('keydown', onKey);
     document.body.style.overflow = 'hidden';
-    // The overlay is modal: everything behind it goes inert so keyboard and
-    // screen-reader focus cannot wander into the covered page.
-    const behind = document.querySelectorAll('nav.nav, #main-content, footer.fp-footer, .st-root');
-    behind.forEach((el) => el.setAttribute('inert', ''));
     return () => {
       window.removeEventListener('keydown', onKey);
       document.body.style.overflow = '';
-      behind.forEach((el) => el.removeAttribute('inert'));
+      if (opener && typeof opener.focus === 'function') opener.focus({ preventScroll: true });
     };
   }, [onCancel]);
 
@@ -291,8 +300,11 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
     const next = { ...a, flights: [...a.flights, entry] };
     setA(next);
     // Micro-reaction: rank this flight among every line logged so far.
-    const entries = buildProfileFromOnboarding(next).entries.sort((x, y) => y.tco2e - x.tco2e);
-    const rank = entries.findIndex((e) => Math.abs(e.tco2e - t) < 0.0005) + 1;
+    // Flights build in list order, so the new one is the last flight entry;
+    // rank by identity so a duplicate itinerary cannot misreport.
+    const built = buildProfileFromOnboarding(next).entries;
+    const newEntry = built.filter((e) => e.category === 'flight')[next.flights.length - 1];
+    const rank = [...built].sort((x, y) => y.tco2e - x.tco2e).indexOf(newEntry) + 1;
     audio.tick(0.8);
     setReaction((rank === 1
       ? fill(OB.flightTop, { t: fmtT(t) })
@@ -312,7 +324,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
       <p>{ONBOARD.you.sub}</p>
       <Chips
         label={ONBOARD.you.state}
-        options={Object.entries(ELECTRICITY).map(([k, v]) => ({ value: k, label: v.label }))}
+        options={Object.entries(ELECTRICITY).map(([k, v]) => ({ value: k, label: v.label.replace(/\s*\(.*\)/, '') }))}
         value={a.state} onChange={(v) => set('state', v)}
       />
       <Stepper label={ONBOARD.you.household} value={a.householdSize} min={1} max={10} onChange={(v) => set('householdSize', v)} />
@@ -383,7 +395,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         <label className="fp-field"><span>{ONBOARD.flights.route}</span>
           <select value={fl.route} onChange={(e) => setFl((s) => ({ ...s, route: e.target.value }))}>
             {FLIGHT_ROUTES.map((r) => <option key={r.id} value={r.id}>{r.label}</option>)}
-            <option value="custom">Custom distance…</option>
+            <option value="custom">{ONBOARD.flights.customOpt}</option>
           </select>
         </label>
         {fl.route === 'custom' && (
@@ -393,15 +405,12 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         )}
         <Chips
           label={ONBOARD.flights.cabin}
-          options={[
-            { value: 'economy', label: 'Economy' }, { value: 'premium', label: 'Premium' },
-            { value: 'business', label: 'Business' }, { value: 'first', label: 'First' },
-          ]}
+          options={Object.entries(ONBOARD.flights.cabins).map(([k, v]) => ({ value: k, label: v }))}
           value={fl.cabin} onChange={(v) => setFl((s) => ({ ...s, cabin: v }))}
         />
         <Chips
           label={ONBOARD.flights.return}
-          options={[{ value: true, label: 'Return' }, { value: false, label: 'One way' }]}
+          options={[{ value: true, label: ONBOARD.flights.return }, { value: false, label: ONBOARD.flights.oneWay }]}
           value={fl.ret} onChange={(v) => setFl((s) => ({ ...s, ret: v }))}
         />
         <button type="button" className="btn btn-primary fp-btn" onClick={addFlight}>
@@ -448,21 +457,32 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         onChange={(v) => set('intlOrdersMonth', v)} live={a.intlOrdersMonth > 0 ? approx(LIVE.intl(a)) : null} />
     </div>,
     <div key="done" className="ob-done">
-      <h3 ref={headRef} tabIndex={-1}>{OB.done.title}</h3>
-      <div className="ob-done-num display">
-        <span className="sr-only">{fmtT(runningTotal) + ' tonnes per year'}</span>
-        <LiveNumber value={runningTotal} /> <span className="ob-done-unit" aria-hidden="true">t / yr</span>
-      </div>
-      {doneCharacter && (
-        <div className="ob-done-char">
-          <EmblemDots stencil={doneCharacter.stencil} hex={doneCharacter.hex} size={54} />
-          <span>{fill(OB.done.character, { name: doneCharacter.name })} <em>{doneCharacter.tagline}</em></span>
+      <div className="ob-done-grid">
+        {doneCharacter && (
+          <div className="ob-done-stage" aria-hidden="true">
+            <EmblemDots stencil={doneCharacter.stencil} hex={lighten(doneCharacter.hex, 0.22)} size={200} />
+          </div>
+        )}
+        <div>
+          <h3 ref={headRef} tabIndex={-1}>{OB.done.title}</h3>
+          <div className="ob-done-num display">
+            <span className="sr-only">{fmtT(runningTotal) + ' tonnes per year'}</span>
+            <LiveNumber value={runningTotal} /> <span className="ob-done-unit" aria-hidden="true">t / yr</span>
+          </div>
+          {doneCharacter && (
+            <div className="ob-done-char">
+              <span>
+                {OB.done.profileLabel} <strong style={{ color: doneCharacter.hex }}>{doneCharacter.name}.</strong>
+                <em> {doneCharacter.tagline}</em>
+              </span>
+            </div>
+          )}
+          <p>{OB.done.sub}</p>
+          <div className="ob-done-ctas">
+            <button type="button" className="btn btn-primary fp-btn" onClick={() => onDone(doneProfile, { watch: true })}>{OB.done.watch} →</button>
+            <button type="button" className="fp-linkbtn" onClick={() => onDone(doneProfile, { watch: false })}>{OB.done.skip}</button>
+          </div>
         </div>
-      )}
-      <p>{OB.done.sub}</p>
-      <div className="ob-done-ctas">
-        <button type="button" className="btn btn-primary fp-btn" onClick={() => onDone(doneProfile, { watch: true })}>{OB.done.watch} →</button>
-        <button type="button" className="fp-linkbtn" onClick={() => onDone(doneProfile, { watch: false })}>{OB.done.skip}</button>
       </div>
     </div>,
   ];

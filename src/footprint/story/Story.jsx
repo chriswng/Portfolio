@@ -39,13 +39,18 @@ function buildStoryData(profile, agg, macc, voice) {
     };
   });
   // A "worst month" is only a story when the months are real and uneven.
-  // Guided-audit profiles place entries on synthetic dates, and a flat year
-  // has no worst month worth announcing; both skip the moment.
-  const isSurvey = profile.entries.length > 0 && profile.entries.every(
-    (e) => (e.notes || '').includes('guided audit') || (e.label || '').includes('(onboarding)'),
+  // Guided-audit entries sit on synthetic dates (structural meta.synthetic
+  // tag, with a text fallback for older saves), so the moment is skipped
+  // unless the worst month contains at least one genuinely dated entry and
+  // clearly spikes above the mean.
+  const synthetic = (e) => (e.meta && e.meta.synthetic)
+    || (e.notes || '').includes('guided audit') || (e.label || '').includes('(onboarding)');
+  const worstKey = agg.worstMonth ? agg.worstMonth.month : null;
+  const worstMonthReal = worstKey && profile.entries.some(
+    (e) => !synthetic(e) && e.date.slice(0, 7) === worstKey,
   );
   const meanMonth = agg.total / Math.max(1, agg.months.length);
-  const monthsWorthTelling = !isSurvey && agg.worstMonth && agg.worstMonth.total > meanMonth * 1.35;
+  const monthsWorthTelling = worstMonthReal && agg.worstMonth.total > meanMonth * 1.35;
   const worst = monthsWorthTelling
     ? {
       name: MONTH_NAMES[Number(agg.worstMonth.month.split('-')[1]) - 1] + ' ' + agg.worstMonth.month.split('-')[0],
@@ -80,6 +85,16 @@ function buildStoryData(profile, agg, macc, voice) {
   };
 }
 
+// Scroll to a moment AND move focus there, so a keyboard user's next Tab
+// continues from the destination instead of yanking the page back.
+export function goToMoment(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
+  el.setAttribute('tabindex', '-1');
+  el.focus({ preventScroll: true });
+}
+
 function ChapterRail({ active, chapters }) {
   return (
     <nav className="st-rail" aria-label={CHROME.progressLabel}>
@@ -90,7 +105,7 @@ function ChapterRail({ active, chapters }) {
           className={'st-rail-dot' + (active === c.id ? ' on' : '')}
           aria-label={c.label}
           aria-current={active === c.id ? 'step' : undefined}
-          onClick={() => document.getElementById(c.id)?.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth' })}
+          onClick={() => goToMoment(c.id)}
         >
           <span className="st-rail-label">{c.label}</span>
         </button>
@@ -110,7 +125,7 @@ function NextChapter({ active, chapters }) {
     <button
       type="button"
       className="st-next"
-      onClick={() => document.getElementById(next.id)?.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth' })}
+      onClick={() => goToMoment(next.id)}
     >
       {CHROME.next} <strong>{next.label}</strong> <span aria-hidden="true">↓</span>
     </button>
@@ -120,7 +135,7 @@ function NextChapter({ active, chapters }) {
 // Act I: the reveal. A continuous scroll of full-screen moments above the
 // working dashboard. Purely presentational: it reads the same aggregates the
 // dashboard reads and never touches the store.
-export default function Story({ profile, agg, macc, voice, onStart, onSkip, onEnd, onFinish, onCopyLink, soundOn, onToggleSound }) {
+export default function Story({ profile, agg, macc, voice, onStart, onSkip, onEnd, onFinish, onCopyLink, soundOn, onToggleSound, onAutoMute }) {
   const reduced = useMemo(() => prefersReducedMotion(), []);
   const d = useMemo(() => buildStoryData(profile, agg, macc, voice), [profile, agg, macc, voice]);
   const character = useMemo(() => classifyCharacter(agg), [agg]);
@@ -141,7 +156,9 @@ export default function Story({ profile, agg, macc, voice, onStart, onSkip, onEn
     return true;
   }), [d, voice]);
 
-  // Track the active chapter for the rail.
+  // Track the active chapter for the rail. Re-registered whenever the
+  // chapter set changes, so moments that appear or vanish after a log edit
+  // stay observed and `active` never points at an unmounted section.
   useEffect(() => {
     const sections = rootRef.current?.querySelectorAll('.st-moment');
     if (!sections || !('IntersectionObserver' in window)) return undefined;
@@ -150,7 +167,7 @@ export default function Story({ profile, agg, macc, voice, onStart, onSkip, onEn
     }, { rootMargin: '-45% 0px -45% 0px' });
     sections.forEach((s) => obs.observe(s));
     return () => obs.disconnect();
-  }, []);
+  }, [chapters]);
 
   // Reaching the outro marks the story as seen for future visits.
   useEffect(() => {
@@ -165,19 +182,24 @@ export default function Story({ profile, agg, macc, voice, onStart, onSkip, onEn
 
   // The story chrome belongs to the story: once the visitor scrolls past it
   // into the dashboard, the skip button, sound pill and rail step aside.
+  // The sound toggle is the only way to stop the audio, so leaving the
+  // story also mutes it rather than orphaning a playing sound (WCAG 1.4.2).
   useEffect(() => {
     const el = rootRef.current;
     if (!el || !('IntersectionObserver' in window)) return undefined;
     const obs = new IntersectionObserver((entries) => {
-      entries.forEach((e) => setChromeOn(e.isIntersecting));
+      entries.forEach((e) => {
+        setChromeOn(e.isIntersecting);
+        if (!e.isIntersecting) onAutoMute();
+      });
     });
     obs.observe(el);
     return () => obs.disconnect();
-  }, []);
+  }, [onAutoMute]);
 
   const onGuessAgain = () => {
     setGuess((g) => ({ ...g, locked: false }));
-    document.getElementById('st-guess')?.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
+    goToMoment('st-guess');
   };
   const onReplay = () => {
     setGuess({ value: null, locked: false });
@@ -209,7 +231,7 @@ export default function Story({ profile, agg, macc, voice, onStart, onSkip, onEn
 
       <Cover d={d} voice={voice} onStart={onStart} reduced={reduced} />
       <YearTicker d={d} voice={voice} reduced={reduced} />
-      {voice === 'example' && <Guess d={d} voice={voice} guess={guess} setGuess={setGuess} />}
+      {voice === 'example' && <Guess d={d} voice={voice} guess={guess} setGuess={setGuess} goTo={goToMoment} />}
       <TotalReveal d={d} voice={voice} guess={guess} onGuessAgain={onGuessAgain} onCopyLink={onCopyLink} reduced={reduced} />
       <Scopes d={d} voice={voice} />
       <Hotspots d={d} voice={voice} reduced={reduced} />
