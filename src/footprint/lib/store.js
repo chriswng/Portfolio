@@ -30,6 +30,21 @@ export function clearOwnProfile() {
   try { window.localStorage.removeItem(KEY); } catch { /* ignore */ }
 }
 
+// ---- Story flag -------------------------------------------------------------
+// Whether this browser has watched the reveal story. Separate key so the
+// audit store above stays exactly as it is; returning visitors land on the
+// dashboard and can replay the story on demand.
+
+const STORY_KEY = 'cw-footprint-story-v1';
+
+export function storySeen() {
+  try { return window.localStorage.getItem(STORY_KEY) === 'seen'; } catch { return false; }
+}
+
+export function markStorySeen() {
+  try { window.localStorage.setItem(STORY_KEY, 'seen'); } catch { /* session-only */ }
+}
+
 // ---- Export / import -------------------------------------------------------
 
 export function exportProfile(profile) {
