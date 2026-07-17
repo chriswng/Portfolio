@@ -4,7 +4,7 @@
 // separate palette validation. Uses the Web Share API where it exists and
 // falls back to a straight download.
 
-import { SHARE_ST } from '../data/storyCopy';
+import { SHARE_ST, CARD_TEXT, NEEDLE } from '../data/storyCopy';
 
 const W = 1080;
 const H = 1350;
@@ -123,7 +123,7 @@ const PAINTERS = {
     bigNumber(ctx, d.total, 't', 560);
     ctx.fillStyle = MID;
     ctx.font = `500 30px ${MONO}`;
-    ctx.fillText('TONNES CO₂-E · ' + d.fy.toUpperCase(), 84, 622);
+    ctx.fillText(CARD_TEXT.tonnes + d.fy.toUpperCase(), 84, 622);
     bars(ctx, d.cats.slice(0, 5), 760);
   },
   hotspot(ctx, d) {
@@ -136,7 +136,7 @@ const PAINTERS = {
     bigNumber(ctx, d.t, 't', 850, 300);
     ctx.fillStyle = MATCHA;
     ctx.font = `500 32px ${MONO}`;
-    ctx.fillText(d.pct + '% OF THE YEAR', 84, 920);
+    ctx.fillText(d.pct + CARD_TEXT.ofYear, 84, 920);
     ctx.fillStyle = MID;
     ctx.font = `400 34px ${SANS}`;
     ctx.fillText(d.quip, 84, 1010);
@@ -144,13 +144,13 @@ const PAINTERS = {
   guess(ctx, d) {
     ctx.fillStyle = MID;
     ctx.font = `500 32px ${MONO}`;
-    ctx.fillText('THE GUESS', 84, 400);
+    ctx.fillText(CARD_TEXT.guessLabel, 84, 400);
     ctx.fillStyle = INK;
     ctx.font = `700 170px ${DISP}`;
     ctx.fillText(d.guess + ' t', 78, 560);
     ctx.fillStyle = MID;
     ctx.font = `500 32px ${MONO}`;
-    ctx.fillText('THE AUDIT', 84, 720);
+    ctx.fillText(CARD_TEXT.auditLabel, 84, 720);
     ctx.fillStyle = MATCHA;
     ctx.font = `700 170px ${DISP}`;
     ctx.fillText(d.actual + ' t', 78, 880);
@@ -162,7 +162,7 @@ const PAINTERS = {
     bars(ctx, d.rows, 420, { gap: 150, barH: 44 });
     ctx.fillStyle = MID;
     ctx.font = `400 28px ${SANS}`;
-    ctx.fillText('National figures carry a wider boundary than this audit.', 84, 1080);
+    ctx.fillText(CARD_TEXT.benchNote, 84, 1080);
   },
   needle(ctx, d) {
     d.actions.slice(0, 3).forEach((a, i) => {
@@ -179,7 +179,7 @@ const PAINTERS = {
     });
     ctx.fillStyle = INK;
     ctx.font = `400 38px ${SANS}`;
-    ctx.fillText('One decision beats fifty habits.', 84, 1120);
+    ctx.fillText(NEEDLE.punch, 84, 1120);
   },
 };
 
@@ -205,7 +205,8 @@ export async function shareCard(kind, data, filename) {
       await navigator.share({ files: [file] });
       return true;
     } catch (err) {
-      if (err && err.name === 'AbortError') return true; // user closed the sheet
+      // The user closed the share sheet: not an error, but not "saved" either.
+      if (err && err.name === 'AbortError') return false;
     }
   }
   const url = URL.createObjectURL(blob);

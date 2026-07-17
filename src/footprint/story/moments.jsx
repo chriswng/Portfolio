@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { motion, useMotionValue, useScroll, useSpring, useTransform } from 'framer-motion';
-import { canHover } from '../../utils/media';
+import { canHover, prefersReducedMotion } from '../../utils/media';
 import SplitText from '../../components/SplitText';
 import { CountUp, ScrubNumber } from './CountUp';
 import { fmtT } from '../data/copy';
@@ -24,20 +24,22 @@ const inView = { once: true, margin: '-18% 0px' };
 // ---------------------------------------------------------------------------
 // Per-moment share affordance: renders a PNG card composed for social.
 // ---------------------------------------------------------------------------
-export function MomentShare({ kind, data, fy, label }) {
+export function MomentShare({ kind, data, fy }) {
   const [state, setState] = useState('idle');
   const click = async () => {
     if (state === 'busy') return;
     setState('busy');
     try {
-      await shareCard(kind, { ...data, fy }, `life-footprint-${kind}-${fy.replace(/\s+/g, '-').toLowerCase()}.png`);
-      setState('done');
+      const ok = await shareCard(kind, { ...data, fy }, `life-footprint-${kind}-${fy.replace(/\s+/g, '-').toLowerCase()}.png`);
+      setState(ok ? 'done' : 'idle');
+      if (!ok) return;
     } catch { setState('idle'); return; }
     window.setTimeout(() => setState('idle'), 2600);
   };
   return (
-    <button type="button" className="st-share" onClick={click} aria-label={label || SHARE_ST.shareAria}>
+    <button type="button" className="st-share" onClick={click}>
       <span aria-hidden="true">⤓</span> {state === 'done' ? SHARE_ST.copied : SHARE_ST.button}
+      <span className="sr-only" role="status">{state === 'done' ? SHARE_ST.copied : ''}</span>
     </button>
   );
 }
@@ -134,15 +136,17 @@ export function YearTicker({ d, voice, reduced }) {
 // 2 · The guess: the playable moment.
 // ---------------------------------------------------------------------------
 export function Guess({ d, voice, guess, setGuess }) {
+  const scrollMode = () => (prefersReducedMotion() ? 'auto' : 'smooth');
   const slide = (v) => setGuess({ ...guess, value: v });
   const lock = () => {
     audio.chime();
-    setGuess({ ...guess, locked: true });
-    document.getElementById('st-total')?.scrollIntoView({ behavior: 'smooth' });
+    // Accepting the default without touching the slider still counts.
+    setGuess({ value: guess.value ?? 10, locked: true });
+    document.getElementById('st-total')?.scrollIntoView({ behavior: scrollMode() });
   };
   const skip = () => {
     setGuess({ value: null, locked: false });
-    document.getElementById('st-total')?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('st-total')?.scrollIntoView({ behavior: scrollMode() });
   };
 
   return (
@@ -160,6 +164,7 @@ export function Guess({ d, voice, guess, setGuess }) {
             value={guess.value ?? 10}
             onChange={(e) => slide(Number(e.target.value))}
             aria-label={GUESS.sliderLabel}
+            aria-valuetext={(guess.value ?? 10).toFixed(1) + ' tonnes'}
             className="st-slider"
           />
           <div className="st-guess-ctas">
@@ -245,8 +250,8 @@ export function TotalReveal({ d, voice, guess, onGuessAgain, onCopyLink, reduced
 // ---------------------------------------------------------------------------
 // 4 · Scopes
 // ---------------------------------------------------------------------------
-// Light-to-dark matcha steps, tuned for the dark scopes moment.
-const SCOPE_STEPS = ['#E7EDB4', '#C6D455', '#8FA028'];
+// Light-to-dark matcha steps for the stacked scope bar (light scene).
+const SCOPE_STEPS = ['#DCE3A8', '#B5C42B', '#75821D'];
 
 export function Scopes({ d, voice }) {
   const total = Math.max(d.total, 0.001);
@@ -259,7 +264,7 @@ export function Scopes({ d, voice }) {
         <div className="st-scope-rows">
           {SCOPES.items.map((s, i) => (
             <motion.div className="st-scope-row" key={s.n} variants={rise} custom={2 + i}>
-              <span className="st-scope-n" style={{ color: SCOPE_STEPS[i] }} aria-hidden="true">{s.n}</span>
+              <span className="st-scope-n" aria-hidden="true">{s.n}</span>
               <div>
                 <div className="st-scope-name">{s.name}</div>
                 <div className="st-scope-val">
@@ -301,7 +306,7 @@ export function Hotspots({ d, voice, reduced }) {
   return (
     <section className={'st-moment st-hot' + (reduced ? ' st-static' : '')} id="st-hotspots" ref={ref} aria-label="Hotspots">
       <div className="st-sticky">
-        <motion.div className="st-hot-title" style={reduced ? undefined : { opacity: titleO, scale: titleS }} aria-hidden={reduced ? undefined : 'true'}>
+        <motion.div className="st-hot-title" style={reduced ? undefined : { opacity: titleO, scale: titleS }} aria-hidden="true">
           <div className="st-kicker">{HOTSPOTS_ST.rankWord} №1</div>
           <div className="st-hot-name display" style={{ color: top.hex }}>{top.label}</div>
           <p className="st-line">{top.quip}</p>
@@ -356,7 +361,7 @@ export function WorstMonth({ d, voice }) {
         <motion.div className="sec-tag" data-idx="" variants={rise}>{MONTHS_ST.tag}</motion.div>
         <motion.h2 className="st-h2 display" variants={rise} custom={1}>{d.worst.name}.</motion.h2>
         <motion.p className="st-line" variants={rise} custom={2}>
-          <CountUp value={d.worst.total} decimals={2} className="st-line-num" /> t {MONTHS_ST.line[voice]}
+          <CountUp value={d.worst.total} decimals={1} className="st-line-num" /> t {MONTHS_ST.line[voice]}
         </motion.p>
         <motion.div className="st-months-chart" variants={rise} custom={3} role="img" aria-label={MONTHS_ST.chartAria}>
           {d.monthly.map((m, i) => (
@@ -452,8 +457,8 @@ export function Needle({ d, voice }) {
             actions: d.needle.map((a) => ({
               action: a.action, t: fmtT(a.reduction),
               cost: a.costPerTonne == null ? '' : a.costPerTonne <= 0
-                ? `pays you $${Math.abs(a.costPerTonne).toLocaleString()} a tonne`
-                : `costs $${a.costPerTonne.toLocaleString()} a tonne`,
+                ? `${NEEDLE.saves} $${Math.abs(a.costPerTonne).toLocaleString()} / t`
+                : `${NEEDLE.costs} $${a.costPerTonne.toLocaleString()} / t`,
             })),
           }} />
         </motion.div>
@@ -471,13 +476,21 @@ export function Outro({ d, voice, onStart, onExplore, onReplay, endRef }) {
       <div ref={endRef} className="st-end-sentinel" aria-hidden="true" />
       <motion.div className="st-center" initial="hidden" whileInView="visible" viewport={inView}>
         <motion.div className="sec-tag" data-idx="" variants={rise}>{OUTRO.tag}</motion.div>
-        <motion.h2 className="st-h2 display" variants={rise} custom={1}>{OUTRO.headline[voice]}</motion.h2>
-        <motion.p className="st-line" variants={rise} custom={2}>{OUTRO.sub[voice]}</motion.p>
-        <motion.div className="st-share-row" variants={rise} custom={3}>
+        <motion.div className="st-outro-recap display" variants={rise} custom={1}>
+          <span className="st-outro-kicker">{TOTAL.kicker[voice]}</span>
+          {fmtT(d.total)}<span className="st-outro-unit"> t</span>
+        </motion.div>
+        <motion.h2 className="st-h2 display" variants={rise} custom={2}>{OUTRO.headline[voice]}</motion.h2>
+        <motion.p className="st-line" variants={rise} custom={3}>{OUTRO.sub[voice]}</motion.p>
+        <motion.div className="st-share-row" variants={rise} custom={4}>
           <button type="button" className="btn btn-primary fp-btn" onClick={onExplore}>{OUTRO.explore} ↓</button>
           {voice === 'example' && (
             <button type="button" className="btn btn-secondary" onClick={onStart}>{OUTRO.start}</button>
           )}
+          <MomentShare kind="total" fy={d.fy} data={{
+            title: SHARE_ST.cards.total[voice],
+            total: fmtT(d.total), cats: d.ranked.map((c) => ({ label: c.label, t: c.t })),
+          }} />
           <button type="button" className="st-quiet" onClick={onReplay}>{OUTRO.again}</button>
         </motion.div>
       </motion.div>
