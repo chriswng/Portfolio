@@ -65,24 +65,30 @@ export function priceEntry(draft, settings) {
         components = [{ scope: '3', tco2e: meta.km * ROAD_MODES.pt.perKm / 1000 }];
         scope = '3'; source = ROAD_MODES.pt.source.split('.')[0] + '.';
       } else if (meta.fuel === 'ev') {
+        // Average occupancy splits car emissions per person, the same
+        // equal-share attribution used for household bills.
+        const occ = Math.max(1, Math.round(meta.occupants || 1));
         const f = ELECTRICITY[settings.state] || ELECTRICITY.NSW;
-        const kwh = meta.km * ROAD_FUELS.ev.kWhPerKm;
+        const kwh = meta.km * ROAD_FUELS.ev.kWhPerKm / occ;
         activity = meta.km; unit = 'km';
         components = [
           { scope: '2', tco2e: kwh * f.s2 / 1000 },
           { scope: '3', tco2e: kwh * f.s3 / 1000 },
         ];
-        scope = '2'; source = ELECTRICITY_SOURCE.name + ' (EV at ' + ROAD_FUELS.ev.kWhPerKm + ' kWh/km, ' + f.label + ')';
+        scope = '2'; source = ELECTRICITY_SOURCE.name + ' (EV at ' + ROAD_FUELS.ev.kWhPerKm + ' kWh/km, ' + f.label + ')'
+          + (occ > 1 ? ', split across ' + occ + ' occupants' : '');
       } else {
+        const occ = Math.max(1, Math.round(meta.occupants || 1));
         const fuel = ROAD_FUELS[meta.fuel] || ROAD_FUELS.petrol;
         const litres = meta.litres != null ? meta.litres : (meta.km * (meta.l100km || fuel.defaultL100km)) / 100;
         activity = meta.litres != null ? litres : meta.km;
         unit = meta.litres != null ? 'L' : 'km';
         components = [
-          { scope: '1', tco2e: litres * fuel.s1_per_L / 1000 },
-          { scope: '3', tco2e: litres * fuel.s3_per_L / 1000 },
+          { scope: '1', tco2e: litres * fuel.s1_per_L / occ / 1000 },
+          { scope: '3', tco2e: litres * fuel.s3_per_L / occ / 1000 },
         ];
-        scope = '1'; source = ROAD_SOURCE.name + ' (' + fuel.label.toLowerCase() + ')';
+        scope = '1'; source = ROAD_SOURCE.name + ' (' + fuel.label.toLowerCase() + ')'
+          + (occ > 1 ? ', split across ' + occ + ' occupants' : '');
       }
       break;
     }
@@ -218,10 +224,13 @@ export function baselineState(profile, agg) {
     else if (e.category === 'gas') mj += (m.mj || 0) * (m.wholeHousehold ? share : 1);
     else if (e.category === 'road') {
       const mode = m.mode || 'car';
+      // Per-person shares carry into the pathway model: occupancy divides
+      // car activity the same way pricing divides its emissions.
+      const occ = Math.max(1, Math.round(m.occupants || 1));
       if (mode === 'rideshare' || mode === 'taxi') kmRide += m.km || 0;
       else if (mode === 'pt') kmPt += m.km || 0;
-      else if (m.litres != null) { litres += m.litres; kmCar += (m.litres * 100) / (m.l100km || 7); }
-      else { kmCar += m.km || 0; litres += ((m.km || 0) * (m.l100km || 7)) / 100; }
+      else if (m.litres != null) { litres += m.litres / occ; kmCar += (m.litres * 100) / (m.l100km || 7) / occ; }
+      else { kmCar += (m.km || 0) / occ; litres += ((m.km || 0) * (m.l100km || 7)) / 100 / occ; }
     } else if (e.category === 'flight') flights.push(e);
     else if (e.category === 'diet') dietDays += m.days || 0;
     else if (e.category === 'freight') {

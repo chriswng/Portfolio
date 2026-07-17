@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import SplitText from '../components/SplitText';
 import { CATEGORIES, categoryById } from './data/factors';
+import { classifyCharacter } from './data/characters';
+import { EmblemDots } from './story/CarbonField';
 import { BENCHMARKS, AUS_AVG, BUDGET_2030, BENCHMARK_CAVEAT } from './data/benchmarks';
 import { DASH, HOTSPOTS, fmtT } from './data/copy';
 import { DASH_EXTRA, fill } from './data/storyCopy';
@@ -22,6 +24,7 @@ const fadeUp = {
 
 export default function Dashboard({ agg, period, compareAgg, comparePeriod, isExample }) {
   const [compareOn, setCompareOn] = useState(false);
+  const character = useMemo(() => classifyCharacter(agg), [agg]);
   const total = agg.total;
   const cats = CATEGORIES
     .map((c) => ({ ...c, t: agg.byCategory[c.id] || 0 }))
@@ -70,6 +73,12 @@ export default function Dashboard({ agg, period, compareAgg, comparePeriod, isEx
             <div className="fp-kpi-v">{agg.largest ? fmtT(agg.largest.tco2e) : '0'}<span> t</span></div>
             {agg.largest && <div className="fp-kpi-n">{agg.largest.label}</div>}
           </div>
+        </motion.div>
+        <motion.div className="fp-char-strip" {...fadeUp}>
+          <EmblemDots stencil={character.stencil} hex={character.hex} size={40} />
+          <span>
+            <strong>{DASH_EXTRA.characterLabel}: {character.name}.</strong> {character.tagline}
+          </span>
         </motion.div>
         <p className="fp-caveat">{BENCHMARK_CAVEAT}</p>
 

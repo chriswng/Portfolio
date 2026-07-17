@@ -100,55 +100,85 @@ export const LOG = {
 
 export const ONBOARD = {
   title: 'Start your own audit',
-  intro: 'Five steps, ten minutes with your bills open, and you leave with a footprint, hotspots and a plan. Everything stays in this browser.',
+  intro: 'Five quick steps. Rough answers are fine; you can put real bills in later. Everything stays in this browser.',
   steps: ['You', 'Home energy', 'Getting around', 'Flights', 'Food & parcels'],
   you: {
     title: 'About you',
-    sub: 'These set your grid factors and how shared bills are split.',
+    sub: 'Where you live sets your electricity factors, and adults at home split the bills.',
     state: 'Where do you live?',
-    household: 'Adults sharing the bills',
-    householdNote: 'Household bills are split evenly per adult. The method calls this equal-share attribution; housemates call it fair.',
+    household: 'How many adults live at your place? (including you)',
+    householdNote: 'Power and gas get split evenly between the adults at home. Two adults means half of each bill counts as yours.',
     dwelling: 'Your place',
     dwellingHouse: 'House I own or could put solar on',
     dwellingApartment: 'Apartment or rental',
   },
   energy: {
     title: 'Home energy',
-    sub: 'Off the bills, household totals: the split happens automatically. A typical quarterly power bill shows kWh on page one; gas bills show MJ.',
-    kwh: 'Electricity, kWh per quarter (household)',
-    mj: 'Gas, MJ per quarter (household, 0 if none)',
-    greenpower: 'GreenPower percentage on your plan',
+    sub: 'Best case: read the kWh and MJ straight off a power and gas bill. No bills handy? Start from a typical home and adjust.',
+    presetLabel: 'No bills handy? Start from a typical home',
+    presetNote: 'Rough starting points for a whole household per quarter. Swap in your real bills whenever you find them.',
+    kwh: 'Electricity, kWh per quarter (whole household)',
+    mj: 'Gas, MJ per quarter (0 if no gas)',
+    greenpower: 'Is your electricity on GreenPower?',
+    greenpowerNote: 'GreenPower is an optional 100% renewable add-on some electricity plans include. If you have never heard of it, you are almost certainly not on it: pick No.',
+    gpNo: 'No / not sure',
+    gpHalf: 'Partly (50%)',
+    gpFull: 'Yes, 100%',
   },
   travel: {
     title: 'Getting around',
     sub: 'Rough weekly figures are fine; the log can take real numbers later.',
     car: 'Car kilometres per week (0 if car-free)',
     fuelType: 'Car fuel',
+    occupancy: 'People in the car, on average (including you)',
+    occupancyNote: 'Car emissions are split per person in the car, the same way the household bills are split. Two people halves your share.',
     rideshare: 'Rideshare spend per week, $',
     pt: 'Public transport spend per week, $',
   },
   flights: {
-    title: 'Flights in a typical year',
-    sub: 'Add each return trip. Distance does the work: pick a route or type kilometres one way.',
+    title: 'Your flights, one trip at a time',
+    sub: 'Think through a typical year: holidays, work trips, weddings. Pick a route, press add, and it joins your list below. Repeat for every trip.',
     route: 'Route',
     custom: 'Custom distance, km one way',
     cabin: 'Cabin',
     return: 'Return trip',
-    add: 'Add flight',
-    none: 'No flights added yet. Enviable.',
+    add: 'Add this flight',
+    added: 'Added. Add your next trip, or press Next.',
+    listTitle: 'Your flights',
+    subtotal: 'Flights so far',
+    remove: 'Remove',
+    none: 'No flights in the list yet. If you flew this year, add each trip above.',
   },
   food: {
     title: 'Food and parcels',
-    sub: 'Diet is priced per day from published LCA work, coarse on purpose. Parcels use an indicative per-parcel factor.',
+    sub: 'Pick the diet that sounds most like your week. Each option shows roughly what it adds over a year.',
     diet: 'Your diet, honestly',
+    dietHints: {
+      highMeat: 'Meat at most meals',
+      medMeat: 'Meat about once a day',
+      lowMeat: 'Meat a few times a week',
+      pescetarian: 'Fish, but no other meat',
+      vegetarian: 'No meat or fish',
+      vegan: 'No animal products',
+    },
     parcels: 'Parcels delivered per month',
-    intlOrders: 'Overseas marketplace orders per month (air express)',
+    intlOrders: 'Overseas orders per month (the ones that arrive by air)',
   },
   finish: 'Build my audit',
   back: 'Back',
   next: 'Next',
   cancel: 'Cancel',
 };
+
+// Typical-household starting points for the energy step, whole household per
+// quarter. Deliberately coarse: they exist so someone without a bill in reach
+// can still finish, and the note tells them to swap in real numbers later.
+export const ENERGY_PRESETS = [
+  { id: 'aptSmall', label: 'Small apartment', kwh: 700, mj: 0 },
+  { id: 'apt', label: 'Apartment', kwh: 1100, mj: 2500 },
+  { id: 'house', label: 'House', kwh: 1600, mj: 5500 },
+  { id: 'houseLarge', label: 'Large house', kwh: 2300, mj: 9000 },
+];
 
 export const METHOD = {
   tag: '05 / Basis of preparation',
@@ -159,6 +189,7 @@ export const METHOD = {
     paras: [
       'The inventory covers the activities a person directly controls or directly purchases: household electricity and gas, personal ground travel, flights, parcel freight, and diet. Scope labels follow GHG Protocol logic translated to a person: scope 1 is fuel I combust (home gas, petrol if I owned a car), scope 2 is purchased electricity, and scope 3 is everything performed by someone else on my behalf, which is most of a modern life.',
       'Shared household consumption (energy) is attributed per adult by equal share. I pay half the bills, I carry half the kilowatt hours. Operational control of the thermostat is contested and has not been material to the result.',
+      'Shared kilometres follow the same rule. Car entries carry an average occupancy, and the fuel is divided per occupant: a full car is a different vehicle, emissions-wise, to a solo one. Rideshare and public transport factors are already per passenger, so they need no split.',
     ],
   },
   period: {

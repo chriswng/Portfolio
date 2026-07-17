@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { motion, useMotionValue, useScroll, useSpring, useTransform } from 'framer-motion';
 import { canHover, prefersReducedMotion } from '../../utils/media';
 import SplitText from '../../components/SplitText';
+import CarbonField from './CarbonField';
 import { CountUp, ScrubNumber } from './CountUp';
 import { fmtT } from '../data/copy';
 import { shareCard } from '../lib/shareCard';
@@ -192,6 +193,9 @@ export function guessVerdict(guessValue, total) {
 // ---------------------------------------------------------------------------
 export function TotalReveal({ d, voice, guess, onGuessAgain, onCopyLink, reduced }) {
   const ref = useRef(null);
+  // The carbon field behind the number: one particle per 10 kg. Hovering or
+  // focusing a category chip gathers that category's particles.
+  const [focusCat, setFocusCat] = useState(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end end'] });
   const raw = useTransform(scrollYProgress, [0.02, 0.52], [0.42, 1]);
   const scale = useSpring(raw, { stiffness: 90, damping: 24, mass: 0.6 });
@@ -211,6 +215,26 @@ export function TotalReveal({ d, voice, guess, onGuessAgain, onCopyLink, reduced
       </motion.div>
       <motion.div className="st-total-tail" style={reduced ? undefined : { opacity: tailO, y: tailY }}>
         <p className="st-line">{TOTAL.line[voice]}</p>
+        {!reduced && (
+          <div className="st-cat-chips" role="group" aria-label={TOTAL.chipsLabel}>
+            {d.ranked.map((c) => (
+              <button
+                key={c.id}
+                type="button"
+                className={'st-cat-chip' + (focusCat === c.id ? ' on' : '')}
+                aria-pressed={focusCat === c.id}
+                onPointerEnter={() => setFocusCat(c.id)}
+                onPointerLeave={() => setFocusCat((f) => (f === c.id ? null : f))}
+                onFocus={() => setFocusCat(c.id)}
+                onBlur={() => setFocusCat((f) => (f === c.id ? null : f))}
+                onClick={() => setFocusCat((f) => (f === c.id ? null : c.id))}
+              >
+                <span className="fp-leg-dot" style={{ background: c.hex }} aria-hidden="true" />
+                {c.label} · {fmtT(c.t)} t
+              </button>
+            ))}
+          </div>
+        )}
         {locked && (
           <div className="st-verdict" role="status">
             <strong>{v.result}</strong> {v.verdict}
@@ -241,6 +265,13 @@ export function TotalReveal({ d, voice, guess, onGuessAgain, onCopyLink, reduced
     <section className={'st-moment st-total' + (reduced ? ' st-static' : '')} id="st-total" ref={ref} aria-label="The total">
       <div className="st-sticky">
         <motion.div className="st-ghost st-ghost-unit" style={reduced ? undefined : { y: ghostY }} aria-hidden="true">tCO₂e</motion.div>
+        <CarbonField
+          mode="swarm"
+          total={d.total}
+          categories={d.ranked.map((c) => ({ id: c.id, hex: c.hex, share: c.t }))}
+          focus={focusCat}
+          className="st-field"
+        />
         <div className="st-center st-total-center">{body}</div>
       </div>
     </section>
@@ -261,12 +292,14 @@ export function Scopes({ d, voice }) {
       <motion.div className="st-center st-wide" initial="hidden" whileInView="visible" viewport={inView}>
         <motion.div className="sec-tag" data-idx="" variants={rise}>{SCOPES.tag}</motion.div>
         <motion.h2 className="st-h2 display" variants={rise} custom={1}>{SCOPES.headline}</motion.h2>
+        <motion.p className="st-line" variants={rise} custom={1.5}>{SCOPES.gloss}</motion.p>
         <div className="st-scope-rows">
           {SCOPES.items.map((s, i) => (
             <motion.div className="st-scope-row" key={s.n} variants={rise} custom={2 + i}>
               <span className="st-scope-n" aria-hidden="true">{s.n}</span>
               <div>
                 <div className="st-scope-name">{s.name}</div>
+                <div className="st-scope-plain">{s.plain[voice]}</div>
                 <div className="st-scope-val">
                   <CountUp value={d.byScope[s.n] || 0} decimals={2} duration={1.2} delay={i * 0.15} /> t
                 </div>
@@ -387,13 +420,33 @@ export function WorstMonth({ d, voice }) {
 // ---------------------------------------------------------------------------
 // 7 · Benchmarks
 // ---------------------------------------------------------------------------
+// A comparison as a big tile: under 100% reads as a percentage, over reads
+// as a multiplier, so "57%" and "5.1×" both land at a glance.
+const ratioLabel = (total, base) => {
+  const r = total / base;
+  return r < 1 ? Math.round(r * 100) + '%' : (Math.round(r * 10) / 10).toFixed(1) + '×';
+};
+
 export function Bench({ d, voice }) {
   const max = Math.max(...d.bench.map((b) => b.t));
+  const tiles = [
+    { key: 'aus', base: d.bench[1] },
+    { key: 'global', base: d.bench[2] },
+    { key: 'budget', base: d.bench[3] },
+  ].filter((t) => t.base && t.base.t > 0);
   return (
     <section className="st-moment st-bench" id="st-bench" aria-label="Context and benchmarks">
       <motion.div className="st-center st-wide" initial="hidden" whileInView="visible" viewport={inView}>
         <motion.div className="sec-tag" data-idx="" variants={rise}>{BENCH_ST.tag}</motion.div>
-        <motion.h2 className="st-h2 display" variants={rise} custom={1}>{BENCH_ST.headline}</motion.h2>
+        <motion.h2 className="st-h2 display" variants={rise} custom={1}>{BENCH_ST.headline[voice]}</motion.h2>
+        <div className="st-bench-tiles">
+          {tiles.map((t, i) => (
+            <motion.div className="st-bench-tile" key={t.key} variants={rise} custom={1.5 + i * 0.5}>
+              <span className="st-bench-tile-v display">{ratioLabel(d.total, t.base.t)}</span>
+              <span className="st-bench-tile-l">{BENCH_ST.tiles[t.key]}</span>
+            </motion.div>
+          ))}
+        </div>
         <div className="st-bench-rows">
           {d.bench.map((b, i) => (
             <motion.div className="st-bench-row" key={b.label} variants={rise} custom={2 + i}>

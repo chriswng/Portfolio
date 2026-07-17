@@ -3,9 +3,11 @@ import { prefersReducedMotion } from '../../utils/media';
 import { CATEGORIES, categoryById } from '../data/factors';
 import { BENCHMARKS } from '../data/benchmarks';
 import { CHROME, CHAPTERS, CATEGORY_QUIPS, BENCH_ST } from '../data/storyCopy';
+import { classifyCharacter } from '../data/characters';
 import {
   Cover, YearTicker, Guess, TotalReveal, Scopes, Hotspots, WorstMonth, Bench, Needle, Outro,
 } from './moments';
+import CharacterMoment from './CharacterMoment';
 
 const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -36,7 +38,15 @@ function buildStoryData(profile, agg, macc, voice) {
       worst: agg.worstMonth && key === agg.worstMonth.month && total > 0,
     };
   });
-  const worst = agg.worstMonth && agg.worstMonth.total > 0
+  // A "worst month" is only a story when the months are real and uneven.
+  // Guided-audit profiles place entries on synthetic dates, and a flat year
+  // has no worst month worth announcing; both skip the moment.
+  const isSurvey = profile.entries.length > 0 && profile.entries.every(
+    (e) => (e.notes || '').includes('guided audit') || (e.label || '').includes('(onboarding)'),
+  );
+  const meanMonth = agg.total / Math.max(1, agg.months.length);
+  const monthsWorthTelling = !isSurvey && agg.worstMonth && agg.worstMonth.total > meanMonth * 1.35;
+  const worst = monthsWorthTelling
     ? {
       name: MONTH_NAMES[Number(agg.worstMonth.month.split('-')[1]) - 1] + ' ' + agg.worstMonth.month.split('-')[0],
       total: agg.worstMonth.total,
@@ -89,12 +99,31 @@ function ChapterRail({ active, chapters }) {
   );
 }
 
+// A persistent, obvious way forward: one tap scrolls to the next moment.
+// The scroll cue on the cover starts the journey; this keeps it going.
+function NextChapter({ active, chapters }) {
+  const ids = chapters.map((c) => c.id);
+  const i = ids.indexOf(active);
+  const next = i >= 0 && i < ids.length - 1 ? chapters[i + 1] : null;
+  if (!next) return null;
+  return (
+    <button
+      type="button"
+      className="st-next"
+      onClick={() => document.getElementById(next.id)?.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth' })}
+    >
+      {CHROME.next} <strong>{next.label}</strong> <span aria-hidden="true">↓</span>
+    </button>
+  );
+}
+
 // Act I: the reveal. A continuous scroll of full-screen moments above the
 // working dashboard. Purely presentational: it reads the same aggregates the
 // dashboard reads and never touches the store.
 export default function Story({ profile, agg, macc, voice, onStart, onSkip, onEnd, onFinish, onCopyLink, soundOn, onToggleSound }) {
   const reduced = useMemo(() => prefersReducedMotion(), []);
   const d = useMemo(() => buildStoryData(profile, agg, macc, voice), [profile, agg, macc, voice]);
+  const character = useMemo(() => classifyCharacter(agg), [agg]);
   const [guess, setGuess] = useState({ value: null, locked: false });
   const [active, setActive] = useState('st-cover');
   const [chromeOn, setChromeOn] = useState(true);
@@ -103,11 +132,14 @@ export default function Story({ profile, agg, macc, voice, onStart, onSkip, onEn
 
   // Chapters whose moments actually render for this audit.
   const chapters = useMemo(() => CHAPTERS.filter((c) => {
+    // Someone who just answered the survey watched their total build as they
+    // typed; asking them to guess it afterwards is a joke at their expense.
+    if (c.id === 'st-guess') return voice === 'example';
     if (c.id === 'st-months') return !!d.worst;
     if (c.id === 'st-needle') return d.needle.length > 0;
     if (c.id === 'st-hotspots') return d.ranked.length > 0;
     return true;
-  }), [d]);
+  }), [d, voice]);
 
   // Track the active chapter for the rail.
   useEffect(() => {
@@ -173,15 +205,17 @@ export default function Story({ profile, agg, macc, voice, onStart, onSkip, onEn
         </div>
       )}
       {chromeOn && <ChapterRail active={active} chapters={chapters} />}
+      {chromeOn && <NextChapter active={active} chapters={chapters} />}
 
       <Cover d={d} voice={voice} onStart={onStart} reduced={reduced} />
       <YearTicker d={d} voice={voice} reduced={reduced} />
-      <Guess d={d} voice={voice} guess={guess} setGuess={setGuess} />
+      {voice === 'example' && <Guess d={d} voice={voice} guess={guess} setGuess={setGuess} />}
       <TotalReveal d={d} voice={voice} guess={guess} onGuessAgain={onGuessAgain} onCopyLink={onCopyLink} reduced={reduced} />
       <Scopes d={d} voice={voice} />
       <Hotspots d={d} voice={voice} reduced={reduced} />
       <WorstMonth d={d} voice={voice} />
       <Bench d={d} voice={voice} />
+      <CharacterMoment d={d} voice={voice} character={character} />
       <Needle d={d} voice={voice} />
       <Outro d={d} voice={voice} onStart={onStart} onExplore={onExplore} onReplay={onReplay} endRef={endRef} />
     </div>
