@@ -96,6 +96,14 @@ export const LOG = {
     reset: 'Delete my audit from this browser',
     resetConfirm: 'Delete your audit from this browser? Export a backup first if you want to keep it.',
   },
+  table: {
+    head: ['Date', 'Entry', 'Category', 'Activity', 'Factor', 'Scope', 'tCO₂-e'],
+    empty: 'No entries yet. Add one below or run the guided audit.',
+  },
+  exampleNote: {
+    body: 'This log is the worked example, so it is read-only. Your own log is editable, private to your browser, and starts with one click.',
+    cta: 'Start your own audit',
+  },
 };
 
 export const ONBOARD = {
@@ -116,7 +124,7 @@ export const ONBOARD = {
     title: 'Home energy',
     sub: 'Best case: read the kWh and MJ straight off a power and gas bill. No bills handy? Start from a typical home and adjust.',
     presetLabel: 'No bills handy? Start from a typical home',
-    presetNote: 'Rough starting points for a whole household per quarter. Swap in your real bills whenever you find them.',
+    presetNote: 'Rough starting points for a whole household per quarter. Gas-heated homes in the southern states often run well above these. Swap in your real bills whenever you find them.',
     kwh: 'Electricity, kWh per quarter (whole household)',
     mj: 'Gas, MJ per quarter (0 if no gas)',
     greenpower: 'Is your electricity on GreenPower?',
@@ -140,6 +148,9 @@ export const ONBOARD = {
     sub: 'Think through a typical year: holidays, work trips, weddings. Pick a route, press add, and it joins your list below. Repeat for every trip.',
     route: 'Route',
     custom: 'Custom distance, km one way',
+    customOpt: 'Custom distance…',
+    cabins: { economy: 'Economy', premium: 'Premium', business: 'Business', first: 'First' },
+    oneWay: 'One way',
     cabin: 'Cabin',
     return: 'Return trip',
     add: 'Add this flight',
@@ -154,9 +165,9 @@ export const ONBOARD = {
     sub: 'Pick the diet that sounds most like your week. Each option shows roughly what it adds over a year.',
     diet: 'Your diet, honestly',
     dietHints: {
-      highMeat: 'Meat at most meals',
-      medMeat: 'Meat about once a day',
-      lowMeat: 'Meat a few times a week',
+      highMeat: 'Meat most meals, or big serves daily',
+      medMeat: 'A standard serve most days',
+      lowMeat: 'Small serves, a few times a week',
       pescetarian: 'Fish, but no other meat',
       vegetarian: 'No meat or fish',
       vegan: 'No animal products',
@@ -220,6 +231,13 @@ export const METHOD = {
       'The budget line is the published 1.5°C lifestyle target of 2.5 tCO₂-e per person by 2030 (1.4 by 2040, 0.7 by 2050). The gap between my pathway and that line is not a modelling problem.',
     ],
   },
+  character: {
+    title: 'How the carbon character is assigned',
+    paras: [
+      'The character shown with an audit is assigned by rule, first match wins: at or under the 2.5 t lifestyle budget it is The Custodian; at or under the 6.6 t global average, The Featherweight. Above that, an audit with freight at 35% or more of the total is The Parcel Baron; otherwise the first of flights, road, home energy or diet to reach 45% of the total names the profile, split into a lighter and a heavier variant at 15 t. Nothing dominant lands on The Heavyweight above 15 t and The Allrounder below it.',
+      'The 2.5 t and 6.6 t thresholds are the same published benchmarks used everywhere on this page. The 45% dominance share and the 15 t tier split are stated editorial cut-offs, not published science: they decide which label you get, never any number.',
+    ],
+  },
   exclusions: {
     title: 'Exclusions and limitations, named',
     items: [
@@ -230,6 +248,7 @@ export const METHOD = {
       'Public transport uses a UK rail factor as an indicative proxy pending a published NSW per-passenger-km figure.',
       'Diet factors are UK LCA means standardised per 2,000 kcal: coarse, labelled indicative, and still the right order of magnitude.',
       'Employer emissions (office, work systems) belong to my employer’s inventory, not this one. I already count the work flights I book myself.',
+      'EV kilometres are priced at grid factors on the assumption the charging is not already inside a logged electricity bill. If you charge at home on a metered bill, log the kilometres or the kilowatt hours, not both.',
     ],
   },
   versionTitle: 'Factor set',
@@ -258,6 +277,18 @@ export const MARKET = {
   verdict: 'The whitespace this page sits in: a published NGA-based basis of preparation, ongoing tracking of a person’s own activity data, and an abatement plan priced in dollars per tonne, together. Nothing else in the market combines the three. That is not a boast about the code; it is an indictment of a category that found offsets easier to sell than method.',
 };
 
+// Transient UI feedback, previously inline in components.
+export const TOASTS = {
+  entryAdded: 'Entry added and priced.',
+  nothingSelected: 'Nothing selected to add.',
+  csvAdded: '{n} estimate{s} added from the CSV.',
+  shareCopied: 'Share link copied. Summary only; the log stays here.',
+  sharePrompt: 'Copy your share link:',
+  auditDeleted: 'Audit deleted from this browser.',
+  auditLive: 'Your audit is live. It saves to this browser as you edit.',
+  backupImported: 'Backup imported.',
+};
+
 export const SHARE = {
   bannerTitle: 'You are looking at a shared snapshot',
   bannerBody: 'Someone ran their audit and shared the summary. Totals, categories and plan headline only; their log stayed in their browser.',
@@ -268,6 +299,13 @@ export const SHARE = {
 export const FOOTER = {
   name: 'Christopher Wang · 2026',
   back: 'Back to profile',
+};
+
+// Dashboard furniture previously inline in the component.
+export const DASH_UI = {
+  worstSuffix: '% of the year in one month',
+  hotPct: '% of the year',
+  benchSummary: 'How the benchmarks are set',
 };
 
 export const fmtT = (t, dp = 1) => (Math.round(t * 10 ** dp) / 10 ** dp).toFixed(dp);

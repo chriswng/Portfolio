@@ -5,7 +5,7 @@ import { CATEGORIES, categoryById } from './data/factors';
 import { classifyCharacter } from './data/characters';
 import { EmblemDots } from './story/CarbonField';
 import { BENCHMARKS, AUS_AVG, BUDGET_2030, BENCHMARK_CAVEAT } from './data/benchmarks';
-import { DASH, HOTSPOTS, fmtT } from './data/copy';
+import { DASH, HOTSPOTS, DASH_UI, fmtT } from './data/copy';
 import { DASH_EXTRA, fill } from './data/storyCopy';
 import { CountUp } from './story/CountUp';
 import { TrendChart } from './charts';
@@ -74,12 +74,14 @@ export default function Dashboard({ agg, period, compareAgg, comparePeriod, isEx
             {agg.largest && <div className="fp-kpi-n">{agg.largest.label}</div>}
           </div>
         </motion.div>
+        {total > 0 && (
         <motion.div className="fp-char-strip" {...fadeUp}>
           <EmblemDots stencil={character.stencil} hex={character.hex} size={40} />
           <span>
             <strong>{DASH_EXTRA.characterLabel}: {character.name}.</strong> {character.tagline}
           </span>
         </motion.div>
+        )}
         <p className="fp-caveat">{BENCHMARK_CAVEAT}</p>
 
         <div className="fp-scopes">
@@ -108,7 +110,7 @@ export default function Dashboard({ agg, period, compareAgg, comparePeriod, isEx
             <div className="fp-worst">
               <span className="fp-worst-tag">{DASH.worstLabel}</span>
               {monthName(agg.worstMonth.month)} · {fmtT(agg.worstMonth.total, 2)} t
-              {total > 0 ? ' · ' + Math.round((agg.worstMonth.total / total) * 100) + '% of the year in one month' : ''}
+              {total > 0 ? ' · ' + Math.round((agg.worstMonth.total / total) * 100) + DASH_UI.worstSuffix : ''}
             </div>
           )}
         </motion.div>
@@ -178,7 +180,7 @@ export default function Dashboard({ agg, period, compareAgg, comparePeriod, isEx
                 <div className="fp-hot-rank">{'0' + (i + 1)}</div>
                 <div className="fp-hot-name">{c.label}</div>
                 <div className="fp-hot-v"><CountUp value={c.t} decimals={1} duration={1} delay={i * 0.08} ticks={false} /><span> t</span></div>
-                <div className="fp-hot-pct">{total > 0 ? Math.round((c.t / total) * 100) + '% of the year' : ''}</div>
+                <div className="fp-hot-pct">{total > 0 ? Math.round((c.t / total) * 100) + DASH_UI.hotPct : ''}</div>
               </motion.div>
             ))}
           </div>
@@ -186,7 +188,7 @@ export default function Dashboard({ agg, period, compareAgg, comparePeriod, isEx
         </div>
 
         <details className="fp-bench-detail">
-          <summary>How the benchmarks are set</summary>
+          <summary>{DASH_UI.benchSummary}</summary>
           <ul>
             {BENCHMARKS.map((b) => (
               <li key={b.id}><strong>{b.label}: {b.tco2e} t.</strong> {b.basis}</li>

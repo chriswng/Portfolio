@@ -7,6 +7,8 @@
 // particles into them; the same stencils draw the static badges and share
 // cards, so the character looks identical everywhere.
 
+import { BENCHMARKS } from './benchmarks';
+
 const S = {
   shield: [
     '....#####....',
@@ -214,11 +216,17 @@ export const CHARACTERS = [
 
 export const characterById = (id) => CHARACTERS.find((c) => c.id === id) || CHARACTERS[11];
 
+const BUDGET_T = BENCHMARKS.find((b) => b.id === 'budget2030').tco2e;
+const GLOBAL_T = BENCHMARKS.find((b) => b.id === 'global').tco2e;
+
 // Classification. Shares are of the audited total; 'home' groups household
 // energy. Thresholds reference the same published benchmarks the page
 // already cites (2.5 t budget, 6.6 t global average).
 export function classifyCharacter(agg) {
   const total = agg.total || 0;
+  // Nothing logged classifies as nothing: fall to the neutral profile
+  // rather than crowning an empty audit The Custodian.
+  if (total <= 0.005) return { ...characterById('allrounder'), topShare: 0, topGroup: 'none' };
   const share = (id) => (total > 0 ? (agg.byCategory[id] || 0) / total : 0);
   const flight = share('flight');
   const road = share('road');
@@ -227,8 +235,8 @@ export function classifyCharacter(agg) {
   const home = share('electricity') + share('gas') + share('other');
 
   let id;
-  if (total <= 2.5) id = 'custodian';
-  else if (total <= 6.6) id = 'featherweight';
+  if (total <= BUDGET_T) id = 'custodian';
+  else if (total <= GLOBAL_T) id = 'featherweight';
   else if (freight >= 0.35) id = 'parcel-baron';
   else if (flight >= 0.45) id = total > 15 ? 'sky-captain' : 'itinerant';
   else if (road >= 0.45) id = total > 15 ? 'road-train' : 'commuter';
