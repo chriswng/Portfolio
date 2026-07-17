@@ -4,7 +4,8 @@ import { resolve } from 'path';
 
 // Relative base so the build works whether served from a domain root
 // (itschriswang.github.io) or a project sub-path (/portfolio/).
-// Multi-page: the main profile at / and the work-samples page at /work/.
+// Multi-page: the main profile at /, work samples at /work/, and the
+// life-footprint dashboard at /footprint/.
 export default defineConfig({
   base: './',
   plugins: [react()],
@@ -15,6 +16,7 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),
         work: resolve(__dirname, 'work/index.html'),
+        footprint: resolve(__dirname, 'footprint/index.html'),
       },
       output: {
         // Stable vendor chunks: both pages share react/framer-motion, and the

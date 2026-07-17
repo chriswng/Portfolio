@@ -1,0 +1,87 @@
+// Persistence and portability. Everything is client-side by design: the
+// visitor's audit lives in their own localStorage, never leaves the device,
+// and can be exported to a JSON file they control. The honest-privacy model
+// is the feature, not the fallback.
+
+const KEY = 'cw-footprint-v1';
+
+export function loadOwnProfile() {
+  try {
+    const raw = window.localStorage.getItem(KEY);
+    if (!raw) return null;
+    const p = JSON.parse(raw);
+    if (p && p.schema === 'cw-footprint/1' && Array.isArray(p.entries)) return p;
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+export function saveOwnProfile(profile) {
+  try {
+    window.localStorage.setItem(KEY, JSON.stringify(profile));
+    return true;
+  } catch {
+    return false; // private browsing or quota; the session still works in memory
+  }
+}
+
+export function clearOwnProfile() {
+  try { window.localStorage.removeItem(KEY); } catch { /* ignore */ }
+}
+
+// ---- Export / import -------------------------------------------------------
+
+export function exportProfile(profile) {
+  const payload = { ...profile, exported_at: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'my-life-footprint-' + payload.period.label.toLowerCase() + '.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+export function parseImported(text) {
+  const p = JSON.parse(text);
+  if (!p || p.schema !== 'cw-footprint/1') throw new Error('Not a footprint export file.');
+  if (!Array.isArray(p.entries) || !p.period || !p.settings) throw new Error('File is missing entries, period or settings.');
+  return {
+    schema: 'cw-footprint/1',
+    kind: 'own',
+    settings: p.settings,
+    period: p.period,
+    entries: p.entries,
+    plan: p.plan && Array.isArray(p.plan.enabled) ? p.plan : { enabled: [] },
+  };
+}
+
+// ---- Shareable snapshot -----------------------------------------------------
+// A summary only (totals, category split, plan headline): the raw log never
+// travels. Encoded base64url into the fragment so it is never sent to any
+// server, GitHub Pages included.
+
+export function encodeSnapshot(summary) {
+  const json = JSON.stringify(summary);
+  const b64 = btoa(unescape(encodeURIComponent(json)))
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  const url = new URL(window.location.href);
+  url.hash = 's=' + b64;
+  return url.toString();
+}
+
+export function decodeSnapshot() {
+  try {
+    const m = window.location.hash.match(/^#s=([A-Za-z0-9_-]+)/);
+    if (!m) return null;
+    const b64 = m[1].replace(/-/g, '+').replace(/_/g, '/');
+    const s = JSON.parse(decodeURIComponent(escape(atob(b64))));
+    if (typeof s.total !== 'number' || !Array.isArray(s.cats)) return null;
+    return s;
+  } catch {
+    return null;
+  }
+}
