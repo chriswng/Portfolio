@@ -20,9 +20,11 @@ function WorkNav() {
         <a href="../" className="nav-logo">./</a>
         <div className={`nav-links${menuOpen ? ' open' : ''}`} role="navigation">
           {NAV_LINKS.map((l) => {
-            const href = l.external ? './' : '../' + l.href;
+            // Self-link stays './'; every other target (anchors on the main
+            // page, sibling sub-pages) is reached via the parent directory.
             const active = l.href === 'work/';
-            return <a key={l.label} href={href} className={active ? 'active' : undefined}>{l.label}</a>;
+            const href = active ? './' : '../' + l.href;
+            return <a key={l.label} href={href} className={active ? 'active' : undefined} aria-current={active ? 'true' : undefined}>{l.label}</a>;
           })}
         </div>
         <button
