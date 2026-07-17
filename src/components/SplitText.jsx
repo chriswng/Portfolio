@@ -4,12 +4,14 @@ import { motion } from 'framer-motion';
 // from y:80 to y:0 on viewport entry, staggered by 0.015s, on an organic
 // spring curve (stiffness 80, damping 14). Words are kept together so wrapping
 // stays clean; whitespace between words is preserved.
+// Rise kept short and the spring firm so near-opaque glyphs never transit
+// through the paragraph below (they used to fall from 80px at damping 14).
 const charVariants = {
-  hidden: { y: 80, opacity: 0 },
+  hidden: { y: 34, opacity: 0 },
   visible: {
     y: 0,
     opacity: 1,
-    transition: { type: 'spring', stiffness: 80, damping: 14 },
+    transition: { type: 'spring', stiffness: 110, damping: 16 },
   },
 };
 

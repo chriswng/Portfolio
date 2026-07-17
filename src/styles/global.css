@@ -79,7 +79,10 @@ img { max-width:100%; }
 /* Consistent brand focus ring for keyboard users across all interactive
    elements that don't set their own. */
 a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
+  /* Two-layer ring: the dark inner ring carries 3:1 on light surfaces, the
+     matcha outline carries it on dark ones. */
   outline:2px solid var(--matcha); outline-offset:2px; border-radius:1px;
+  box-shadow:0 0 0 2px rgba(31,42,30,0.85);
 }
 
 /* Helpers for components that previously used inline styles */

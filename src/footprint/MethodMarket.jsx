@@ -55,6 +55,10 @@ export function Method() {
             {METHOD.plan.paras.map((p, i) => <p key={i}>{p}</p>)}
             <p className="fp-note">Grid trajectory in the pathway: scope 2 factor declining {Math.round((1 - GRID_DECLINE.ratePerYear) * 100)}% a year to a floor, {GRID_DECLINE.source}</p>
           </div>
+          <div className="fp-method-block fp-method-wide">
+            <h3>{METHOD.character.title}</h3>
+            {METHOD.character.paras.map((p, i) => <p key={i}>{p}</p>)}
+          </div>
         </div>
 
         <div className="fp-method-block fp-method-wide">
