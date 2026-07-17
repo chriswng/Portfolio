@@ -1,13 +1,20 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import { MotionConfig } from 'framer-motion';
 import { Grain, ScrollProgress, SkipLink } from '../components/Chrome';
 import SplitText from '../components/SplitText';
 import { NAV_LINKS } from '../data/content';
 import { buildSeedProfile } from './data/seedProfile';
 import { INTRO, MODE, SHARE, FOOTER, fmtT } from './data/copy';
+import { DASH_EXTRA } from './data/storyCopy';
 import { categoryById } from './data/factors';
-import { BUDGET_2030 } from './data/benchmarks';
 import { aggregate, priceEntry, projectPathway, maccData, newId } from './lib/engine';
-import { loadOwnProfile, saveOwnProfile, clearOwnProfile, exportProfile, encodeSnapshot, decodeSnapshot } from './lib/store';
+import {
+  loadOwnProfile, saveOwnProfile, clearOwnProfile, exportProfile,
+  encodeSnapshot, decodeSnapshot, storySeen, markStorySeen,
+} from './lib/store';
+import { audio } from './lib/audio';
+import { prefersReducedMotion } from '../utils/media';
+import Story from './story/Story';
 import Dashboard from './Dashboard';
 import Plan from './Plan';
 import Log from './Log';
@@ -20,7 +27,7 @@ function FootprintNav() {
     <nav className="nav" aria-label="Primary">
       <div className="nav-inner canvas">
         <a href="../" className="nav-logo">./</a>
-        <div className={`nav-links${menuOpen ? ' open' : ''}`} role="navigation">
+        <div className={`nav-links${menuOpen ? ' open' : ''}`}>
           {NAV_LINKS.map((l) => {
             const self = l.href === 'footprint/';
             const href = self ? './' : '../' + l.href;
@@ -52,13 +59,21 @@ export default function FootprintApp() {
   const [onboarding, setOnboarding] = useState(false);
   const [toast, setToast] = useState('');
   const [snapshot, setSnapshot] = useState(() => decodeSnapshot());
+  // The reveal story opens for first-time visitors; shared-snapshot links and
+  // returning visitors land straight on the dashboard.
+  const [storyOpen, setStoryOpen] = useState(() => !decodeSnapshot() && !storySeen());
+  const [soundOn, setSoundOn] = useState(false);
 
   const isExample = !(mode === 'mine' && own);
   const profile = isExample ? { ...seed, plan: { ...seed.plan, enabled: seedPlanEnabled } } : own;
+  const voice = isExample ? 'example' : 'own';
 
   const agg = useMemo(() => aggregate(profile), [profile]);
   const macc = useMemo(() => maccData(profile, agg), [profile, agg]);
   const pathway = useMemo(() => projectPathway(profile, agg), [profile, agg]);
+  // The audit not currently on screen, aggregated for the comparison overlay.
+  const compareAgg = useMemo(() => (own ? aggregate(isExample ? own : seed) : null), [own, isExample, seed]);
+  const comparePeriod = own ? (isExample ? own.period : seed.period) : null;
 
   const updateOwn = (fn) => {
     setOwn((p) => {
@@ -124,13 +139,48 @@ export default function FootprintApp() {
     flash('Audit deleted from this browser.');
   };
   const onStart = () => setOnboarding(true);
-  const onOnboardDone = (built) => {
+  // The audit persists the moment it is built (the done pane says so), not
+  // only when a closing button is pressed; Escape can no longer discard it.
+  const onOnboardBuilt = useCallback((built) => {
     saveOwnProfile(built);
     setOwn(built);
     setMode('mine');
+  }, []);
+  const onOnboardDone = (built, { watch } = {}) => {
+    onOnboardBuilt(built);
     setOnboarding(false);
-    flash('Your audit is live. It saves to this browser as you edit.');
-    document.getElementById('fp-dash')?.scrollIntoView({ behavior: 'smooth' });
+    if (watch) {
+      setStoryOpen(true);
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    } else {
+      flash('Your audit is live. It saves to this browser as you edit.');
+      markStorySeen();
+      setStoryOpen(false);
+      window.setTimeout(() => document.getElementById('fp-dash')?.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth' }), 60);
+    }
+  };
+
+  const toggleSound = () => setSoundOn(audio.toggle());
+  const landOnDashboard = () => {
+    window.setTimeout(() => document.getElementById('fp-dash')?.scrollIntoView({ behavior: 'auto' }), 50);
+  };
+  const onStorySkip = () => {
+    markStorySeen();
+    setStoryOpen(false);
+    if (soundOn) { audio.disable(); setSoundOn(false); }
+    landOnDashboard();
+  };
+  // "Explore the full audit" from the outro: the show ends, the house lights
+  // come up on the dashboard itself.
+  const onStoryFinish = () => {
+    markStorySeen();
+    setStoryOpen(false);
+    landOnDashboard();
+  };
+  const onStoryEnd = useCallback(() => { markStorySeen(); }, []);
+  const onReplay = () => {
+    setStoryOpen(true);
+    window.scrollTo({ top: 0, behavior: 'auto' });
   };
 
   const dismissSnapshot = () => {
@@ -139,10 +189,28 @@ export default function FootprintApp() {
   };
 
   return (
-    <>
+    <MotionConfig reducedMotion="user">
       <SkipLink />
       <Grain />
       <ScrollProgress />
+
+      {storyOpen && (
+        <Story
+          key={voice}
+          profile={profile}
+          agg={agg}
+          macc={macc}
+          voice={voice}
+          onStart={onStart}
+          onSkip={onStorySkip}
+          onEnd={onStoryEnd}
+          onFinish={onStoryFinish}
+          onCopyLink={onShare}
+          soundOn={soundOn}
+          onToggleSound={toggleSound}
+        />
+      )}
+
       <FootprintNav />
 
       <main id="main-content">
@@ -170,24 +238,27 @@ export default function FootprintApp() {
           </section>
         )}
 
-        <section id="fp-intro">
-          <div className="bloom-wrap" aria-hidden="true"><div className="bloom bloom-a" /><div className="bloom bloom-b" /><div className="bloom bloom-c" /></div>
-          <div className="canvas" style={{ position: 'relative', zIndex: 1 }}>
-            <div className="sec-tag" data-idx="00 / ">{INTRO.tag}</div>
-            <h1 className="fp-h1 display">
-              <SplitText text={INTRO.h1a} /> <SplitText text={INTRO.h1b} accentIndex={1} />
-            </h1>
-            {INTRO.paras.map((p, i) => <p className="fp-intro-p" key={i}>{p}</p>)}
-            <div className="fp-chips" role="list">
-              {INTRO.chips.map((c) => <span className="fp-chip" role="listitem" key={c}>{c}</span>)}
+        {!storyOpen && (
+          <section id="fp-intro">
+            <div className="bloom-wrap" aria-hidden="true"><div className="bloom bloom-a" /><div className="bloom bloom-b" /><div className="bloom bloom-c" /></div>
+            <div className="canvas" style={{ position: 'relative', zIndex: 1 }}>
+              <div className="sec-tag" data-idx="00 / ">{INTRO.tag}</div>
+              <h1 className="fp-h1 display">
+                <SplitText text={INTRO.h1a} /> <SplitText text={INTRO.h1b} accentIndex={1} />
+              </h1>
+              {INTRO.paras.map((p, i) => <p className="fp-intro-p" key={i}>{p}</p>)}
+              <div className="fp-chips" role="list">
+                {INTRO.chips.map((c) => <span className="fp-chip" role="listitem" key={c}>{c}</span>)}
+              </div>
+              <div className="fp-ctas">
+                <button type="button" className="btn btn-primary fp-btn" onClick={onStart}>{INTRO.ctaStart} →</button>
+                <a className="btn btn-secondary" href="#fp-dash">{INTRO.ctaExample}</a>
+                <button type="button" className="fp-replay" onClick={onReplay}>▶ {DASH_EXTRA.replayChip}</button>
+              </div>
+              <span className="fp-disc">{INTRO.disc}</span>
             </div>
-            <div className="fp-ctas">
-              <button type="button" className="btn btn-primary fp-btn" onClick={onStart}>{INTRO.ctaStart} →</button>
-              <a className="btn btn-secondary" href="#fp-dash">{INTRO.ctaExample}</a>
-            </div>
-            <span className="fp-disc">{INTRO.disc}</span>
-          </div>
-        </section>
+          </section>
+        )}
 
         <div className="fp-modebar" role="status">
           <div className="canvas fp-modebar-inner">
@@ -202,7 +273,7 @@ export default function FootprintApp() {
           </div>
         </div>
 
-        <Dashboard agg={agg} period={profile.period} />
+        <Dashboard agg={agg} period={profile.period} compareAgg={compareAgg} comparePeriod={comparePeriod} isExample={isExample} />
         <Plan macc={macc} pathway={pathway} plan={profile.plan} onToggle={onToggle} />
         <Log
           profile={profile} isExample={isExample}
@@ -213,8 +284,9 @@ export default function FootprintApp() {
         <Market />
       </main>
 
-      {onboarding && <Onboarding onDone={onOnboardDone} onCancel={() => setOnboarding(false)} />}
-      {toast && <div className="fp-toast" role="status">{toast}</div>}
+      {onboarding && <Onboarding onDone={onOnboardDone} onBuilt={onOnboardBuilt} onCancel={() => setOnboarding(false)} />}
+      {/* Mounted permanently so assistive tech announces text arriving in it. */}
+      <div className={'fp-toast' + (toast ? ' show' : '')} role="status">{toast}</div>
 
       <footer className="fp-footer">
         <div className="canvas fp-footer-inner">
@@ -223,6 +295,6 @@ export default function FootprintApp() {
           <a href="../" className="fp-footer-back">← {FOOTER.back}</a>
         </div>
       </footer>
-    </>
+    </MotionConfig>
   );
 }
