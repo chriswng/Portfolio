@@ -1,8 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { animate, AnimatePresence, motion } from 'framer-motion';
 import { ELECTRICITY, FLIGHT_ROUTES, ROAD_FUELS, DIET_TYPES } from './data/factors';
 import { CONVERSIONS } from './data/vendorMap';
-import { ONBOARD } from './data/copy';
-import { priceEntry } from './lib/engine';
+import { ONBOARD, fmtT } from './data/copy';
+import { OB, fill } from './data/storyCopy';
+import { priceEntry, aggregate } from './lib/engine';
+import { audio } from './lib/audio';
+import { prefersReducedMotion } from '../utils/media';
 
 // Last 12 complete months, ending last day of the previous month.
 function lastTwelveMonths() {
@@ -107,18 +111,139 @@ const DEFAULTS = {
   parcelsMonth: 2, intlOrdersMonth: 0, flights: [],
 };
 
+// ---------------------------------------------------------------------------
+// Live pricing: each input shows its own annual tonnes as you drag, priced by
+// the same engine that prices the audit itself. Nothing here is a second
+// model; it is priceEntry with the visitor's current settings.
+// ---------------------------------------------------------------------------
+const settingsOf = (a) => ({
+  name: '', state: a.state, householdSize: a.householdSize, dwelling: a.dwelling,
+  dietType: a.dietType, fuelType: a.fuelType, greenpowerPct: a.greenpowerPct,
+});
+
+function liveT(a, draft) {
+  try {
+    return priceEntry({ date: '2026-01-01', label: '', ...draft }, settingsOf(a)).tco2e;
+  } catch { return 0; }
+}
+
+const LIVE = {
+  electricity: (a) => liveT(a, { category: 'electricity', meta: { kwh: a.kwhQuarter * 4, wholeHousehold: true } }),
+  gas: (a) => liveT(a, { category: 'gas', meta: { mj: a.mjQuarter * 4, wholeHousehold: true } }),
+  car: (a) => liveT(a, { category: 'road', meta: { mode: 'car', fuel: a.fuelType, km: Math.round(a.carKmWeek * 52) } }),
+  rideshare: (a) => liveT(a, { category: 'road', meta: { mode: 'rideshare', km: Math.round((a.rideshareWeek * 52) / CONVERSIONS.ridesharePerKm.value) } }),
+  pt: (a) => liveT(a, { category: 'road', meta: { mode: 'pt', km: Math.round((a.ptWeek * 52) / CONVERSIONS.ptPerKm.value) } }),
+  flight: (a, fl) => {
+    const route = FLIGHT_ROUTES.find((r) => r.id === fl.route);
+    return liveT(a, {
+      category: 'flight',
+      meta: { km: route ? route.km : fl.km, band: route ? route.band : undefined, international: route ? undefined : fl.km > 1500, cabin: fl.cabin, return: fl.ret },
+    });
+  },
+  parcels: (a) => liveT(a, { category: 'freight', meta: { parcels: Math.round(a.parcelsMonth * 12) } }),
+  intl: (a) => liveT(a, { category: 'freight', meta: { mode: 'air', tonneKm: Math.round(a.intlOrdersMonth * 12 * 0.003 * 8000) } }),
+  diet: (a, dietType) => liveT(a, { category: 'diet', meta: { dietType, days: 365 } }),
+};
+
+const approx = (t) => fill(OB.approx, { t: fmtT(t) });
+
+// A number that eases to its new value instead of snapping.
+function LiveNumber({ value, decimals = 1 }) {
+  const ref = useRef(null);
+  const prev = useRef(value);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return undefined;
+    if (prefersReducedMotion()) { el.textContent = value.toFixed(decimals); prev.current = value; return undefined; }
+    const controls = animate(prev.current, value, {
+      duration: 0.45, ease: [0.25, 1, 0.5, 1],
+      onUpdate: (v) => { el.textContent = v.toFixed(decimals); },
+    });
+    prev.current = value;
+    return () => controls.stop();
+  }, [value, decimals]);
+  return <span ref={ref} aria-hidden="true">{value.toFixed(decimals)}</span>;
+}
+
+// ---- Input primitives ------------------------------------------------------
+
+function Chips({ label, options, value, onChange, note }) {
+  return (
+    <div className="ob-field" role="group" aria-label={label}>
+      <span className="ob-label">{label}</span>
+      <div className="ob-chips">
+        {options.map((o) => (
+          <button
+            key={o.value} type="button"
+            className={'ob-chip' + (value === o.value ? ' on' : '')}
+            aria-pressed={value === o.value}
+            onClick={() => onChange(o.value)}
+          >
+            {o.label}
+            {o.note && <em>{o.note}</em>}
+          </button>
+        ))}
+      </div>
+      {note && <span className="ob-note">{note}</span>}
+    </div>
+  );
+}
+
+function Stepper({ label, value, onChange, min = 0, max = 99, step = 1, live }) {
+  const clamp = (v) => Math.min(max, Math.max(min, v));
+  return (
+    <div className="ob-field">
+      <span className="ob-label">{label}</span>
+      <div className="ob-stepper">
+        <button type="button" aria-label={'Decrease ' + label} onClick={() => onChange(clamp(value - step))}>−</button>
+        <input
+          type="number" min={min} max={max} step={step} value={value}
+          aria-label={label}
+          onChange={(e) => onChange(clamp(Number(e.target.value) || 0))}
+        />
+        <button type="button" aria-label={'Increase ' + label} onClick={() => onChange(clamp(value + step))}>+</button>
+        {live != null && <span className="ob-live">{live}</span>}
+      </div>
+    </div>
+  );
+}
+
+function SliderField({ label, value, onChange, min, max, step, unit, live }) {
+  return (
+    <div className="ob-field">
+      <div className="ob-slider-head">
+        <span className="ob-label">{label}</span>
+        <span className="ob-value">{value.toLocaleString()}<em> {unit}</em></span>
+      </div>
+      <input
+        type="range" className="ob-range"
+        min={min} max={max} step={step} value={value}
+        aria-label={label}
+        onChange={(e) => onChange(Number(e.target.value))}
+      />
+      {live != null && <span className="ob-live">{live}</span>}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// The guided audit, staged full-screen. Same five questions and the same
+// profile builder as before; the difference is that every answer prices
+// itself the moment it lands, and the running total recalculates in view.
+// ---------------------------------------------------------------------------
 export default function Onboarding({ onDone, onCancel }) {
   const [step, setStep] = useState(0);
   const [a, setA] = useState(DEFAULTS);
   const [fl, setFl] = useState({ route: 'SYD-MEL', km: 700, cabin: 'economy', ret: true });
-  const dialogRef = useRef(null);
+  const [reaction, setReaction] = useState('');
+  const headRef = useRef(null);
   const set = (k, v) => setA((s) => ({ ...s, [k]: v }));
   const num = (v) => (v === '' || isNaN(Number(v)) ? 0 : Number(v));
 
-  useEffect(() => {
-    const el = dialogRef.current;
-    if (el) el.querySelector('select, input, button').focus();
-  }, [step]);
+  const runningTotal = useMemo(() => aggregate(buildProfileFromOnboarding(a)).total, [a]);
+  const doneProfile = useMemo(() => (step === 5 ? buildProfileFromOnboarding(a) : null), [step, a]);
+
+  useEffect(() => { headRef.current?.focus(); }, [step]);
 
   useEffect(() => {
     const onKey = (e) => { if (e.key === 'Escape') onCancel(); };
@@ -127,68 +252,78 @@ export default function Onboarding({ onDone, onCancel }) {
     return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = ''; };
   }, [onCancel]);
 
+  useEffect(() => { if (step === 5) audio.chime(); }, [step]);
+
   const addFlight = () => {
     const route = FLIGHT_ROUTES.find((r) => r.id === fl.route);
-    setA((s) => ({ ...s, flights: [...s.flights, { ...fl, km: route ? route.km : num(fl.km) }] }));
+    const entry = { ...fl, km: route ? route.km : num(fl.km) };
+    const t = LIVE.flight(a, entry);
+    const next = { ...a, flights: [...a.flights, entry] };
+    setA(next);
+    // Micro-reaction: rank this flight among every line logged so far.
+    const entries = buildProfileFromOnboarding(next).entries.sort((x, y) => y.tco2e - x.tco2e);
+    const rank = entries.findIndex((e) => Math.abs(e.tco2e - t) < 0.0005) + 1;
+    audio.tick(0.8);
+    setReaction(rank === 1
+      ? fill(OB.flightTop, { t: fmtT(t) })
+      : fill(OB.flightAdded[Math.min(next.flights.length - 1, OB.flightAdded.length - 1)], { t: fmtT(t), rank: Math.max(rank, 2) }));
   };
+
+  const dietOptions = Object.entries(DIET_TYPES).map(([k, v]) => ({
+    value: k, label: v.label.split(' (')[0], note: fill(OB.approx, { t: fmtT(LIVE.diet(a, k)) }),
+  }));
 
   const steps = [
     <div key="you">
-      <h3>{ONBOARD.you.title}</h3>
+      <h3 ref={headRef} tabIndex={-1}>{ONBOARD.you.title}</h3>
       <p>{ONBOARD.you.sub}</p>
-      <label className="fp-field"><span>{ONBOARD.you.state}</span>
-        <select value={a.state} onChange={(e) => set('state', e.target.value)}>
-          {Object.entries(ELECTRICITY).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
-        </select>
-      </label>
-      <label className="fp-field"><span>{ONBOARD.you.household}</span>
-        <input type="number" min="1" max="10" value={a.householdSize} onChange={(e) => set('householdSize', Math.max(1, num(e.target.value)))} />
-      </label>
-      <p className="fp-note">{ONBOARD.you.householdNote}</p>
-      <label className="fp-field"><span>{ONBOARD.you.dwelling}</span>
-        <select value={a.dwelling} onChange={(e) => set('dwelling', e.target.value)}>
-          <option value="house">{ONBOARD.you.dwellingHouse}</option>
-          <option value="apartment">{ONBOARD.you.dwellingApartment}</option>
-        </select>
-      </label>
+      <Chips
+        label={ONBOARD.you.state}
+        options={Object.entries(ELECTRICITY).map(([k, v]) => ({ value: k, label: v.label }))}
+        value={a.state} onChange={(v) => set('state', v)}
+      />
+      <Stepper label={ONBOARD.you.household} value={a.householdSize} min={1} max={10} onChange={(v) => set('householdSize', v)} />
+      <p className="ob-note">{ONBOARD.you.householdNote}</p>
+      <Chips
+        label={ONBOARD.you.dwelling}
+        options={[
+          { value: 'house', label: ONBOARD.you.dwellingHouse },
+          { value: 'apartment', label: ONBOARD.you.dwellingApartment },
+        ]}
+        value={a.dwelling} onChange={(v) => set('dwelling', v)}
+      />
     </div>,
     <div key="energy">
-      <h3>{ONBOARD.energy.title}</h3>
+      <h3 ref={headRef} tabIndex={-1}>{ONBOARD.energy.title}</h3>
       <p>{ONBOARD.energy.sub}</p>
-      <label className="fp-field"><span>{ONBOARD.energy.kwh}</span>
-        <input type="number" min="0" value={a.kwhQuarter} onChange={(e) => set('kwhQuarter', num(e.target.value))} />
-      </label>
-      <label className="fp-field"><span>{ONBOARD.energy.mj}</span>
-        <input type="number" min="0" value={a.mjQuarter} onChange={(e) => set('mjQuarter', num(e.target.value))} />
-      </label>
-      <label className="fp-field"><span>{ONBOARD.energy.greenpower}</span>
-        <input type="number" min="0" max="100" value={a.greenpowerPct} onChange={(e) => set('greenpowerPct', Math.min(100, num(e.target.value)))} />
-      </label>
+      <SliderField label={ONBOARD.energy.kwh} value={a.kwhQuarter} min={0} max={4000} step={10} unit="kWh"
+        onChange={(v) => set('kwhQuarter', v)} live={approx(LIVE.electricity(a))} />
+      <SliderField label={ONBOARD.energy.mj} value={a.mjQuarter} min={0} max={20000} step={50} unit="MJ"
+        onChange={(v) => set('mjQuarter', v)} live={approx(LIVE.gas(a))} />
+      <SliderField label={ONBOARD.energy.greenpower} value={a.greenpowerPct} min={0} max={100} step={5} unit="%"
+        onChange={(v) => set('greenpowerPct', v)} />
     </div>,
     <div key="travel">
-      <h3>{ONBOARD.travel.title}</h3>
+      <h3 ref={headRef} tabIndex={-1}>{ONBOARD.travel.title}</h3>
       <p>{ONBOARD.travel.sub}</p>
-      <label className="fp-field"><span>{ONBOARD.travel.car}</span>
-        <input type="number" min="0" value={a.carKmWeek} onChange={(e) => set('carKmWeek', num(e.target.value))} />
-      </label>
+      <SliderField label={ONBOARD.travel.car} value={a.carKmWeek} min={0} max={600} step={5} unit="km / wk"
+        onChange={(v) => set('carKmWeek', v)} live={a.carKmWeek > 0 ? approx(LIVE.car(a)) : null} />
       {a.carKmWeek > 0 && (
-        <label className="fp-field"><span>{ONBOARD.travel.fuelType}</span>
-          <select value={a.fuelType} onChange={(e) => set('fuelType', e.target.value)}>
-            {Object.entries(ROAD_FUELS).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
-          </select>
-        </label>
+        <Chips
+          label={ONBOARD.travel.fuelType}
+          options={Object.entries(ROAD_FUELS).map(([k, v]) => ({ value: k, label: v.label }))}
+          value={a.fuelType} onChange={(v) => set('fuelType', v)}
+        />
       )}
-      <label className="fp-field"><span>{ONBOARD.travel.rideshare}</span>
-        <input type="number" min="0" value={a.rideshareWeek} onChange={(e) => set('rideshareWeek', num(e.target.value))} />
-      </label>
-      <label className="fp-field"><span>{ONBOARD.travel.pt}</span>
-        <input type="number" min="0" value={a.ptWeek} onChange={(e) => set('ptWeek', num(e.target.value))} />
-      </label>
+      <SliderField label={ONBOARD.travel.rideshare} value={a.rideshareWeek} min={0} max={200} step={5} unit="$ / wk"
+        onChange={(v) => set('rideshareWeek', v)} live={a.rideshareWeek > 0 ? approx(LIVE.rideshare(a)) : null} />
+      <SliderField label={ONBOARD.travel.pt} value={a.ptWeek} min={0} max={120} step={5} unit="$ / wk"
+        onChange={(v) => set('ptWeek', v)} live={a.ptWeek > 0 ? approx(LIVE.pt(a)) : null} />
     </div>,
     <div key="flights">
-      <h3>{ONBOARD.flights.title}</h3>
+      <h3 ref={headRef} tabIndex={-1}>{ONBOARD.flights.title}</h3>
       <p>{ONBOARD.flights.sub}</p>
-      <div className="fp-form-row">
+      <div className="ob-flight-form">
         <label className="fp-field"><span>{ONBOARD.flights.route}</span>
           <select value={fl.route} onChange={(e) => setFl((s) => ({ ...s, route: e.target.value }))}>
             {FLIGHT_ROUTES.map((r) => <option key={r.id} value={r.id}>{r.label}</option>)}
@@ -200,72 +335,109 @@ export default function Onboarding({ onDone, onCancel }) {
             <input type="number" min="50" value={fl.km} onChange={(e) => setFl((s) => ({ ...s, km: num(e.target.value) }))} />
           </label>
         )}
-        <label className="fp-field"><span>{ONBOARD.flights.cabin}</span>
-          <select value={fl.cabin} onChange={(e) => setFl((s) => ({ ...s, cabin: e.target.value }))}>
-            <option value="economy">Economy</option><option value="premium">Premium</option>
-            <option value="business">Business</option><option value="first">First</option>
-          </select>
-        </label>
-        <label className="fp-field"><span>{ONBOARD.flights.return}</span>
-          <input type="checkbox" checked={fl.ret} onChange={(e) => setFl((s) => ({ ...s, ret: e.target.checked }))} />
-        </label>
+        <Chips
+          label={ONBOARD.flights.cabin}
+          options={[
+            { value: 'economy', label: 'Economy' }, { value: 'premium', label: 'Premium' },
+            { value: 'business', label: 'Business' }, { value: 'first', label: 'First' },
+          ]}
+          value={fl.cabin} onChange={(v) => setFl((s) => ({ ...s, cabin: v }))}
+        />
+        <Chips
+          label={ONBOARD.flights.return}
+          options={[{ value: true, label: 'Return' }, { value: false, label: 'One way' }]}
+          value={fl.ret} onChange={(v) => setFl((s) => ({ ...s, ret: v }))}
+        />
+        <button type="button" className="btn btn-primary fp-btn" onClick={addFlight}>
+          {ONBOARD.flights.add} · {approx(LIVE.flight(a, { ...fl, km: fl.route === 'custom' ? num(fl.km) : fl.km }))}
+        </button>
       </div>
-      <button type="button" className="fp-linkbtn" onClick={addFlight}>{ONBOARD.flights.add} +</button>
+      {reaction && <p className="ob-reaction" role="status">{reaction}</p>}
       <ul className="fp-ob-flights">
         {a.flights.map((f, i) => (
           <li key={i}>
-            {(FLIGHT_ROUTES.find((r) => r.id === f.route) || { label: f.km + ' km' }).label}{f.ret ? ' return' : ''} · {f.cabin}
+            {(FLIGHT_ROUTES.find((r) => r.id === f.route) || { label: f.km + ' km' }).label}{f.ret ? ' return' : ''} · {f.cabin} · <strong>{fmtT(LIVE.flight(a, f), 2)} t</strong>
             <button type="button" aria-label="Remove flight" onClick={() => setA((s) => ({ ...s, flights: s.flights.filter((_, j) => j !== i) }))}>×</button>
           </li>
         ))}
-        {!a.flights.length && <li className="fp-ob-none">{ONBOARD.flights.none}</li>}
+        {!a.flights.length && <li className="ob-none">{ONBOARD.flights.none}</li>}
       </ul>
     </div>,
     <div key="food">
-      <h3>{ONBOARD.food.title}</h3>
+      <h3 ref={headRef} tabIndex={-1}>{ONBOARD.food.title}</h3>
       <p>{ONBOARD.food.sub}</p>
-      <label className="fp-field"><span>{ONBOARD.food.diet}</span>
-        <select value={a.dietType} onChange={(e) => set('dietType', e.target.value)}>
-          {Object.entries(DIET_TYPES).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
-        </select>
-      </label>
-      <label className="fp-field"><span>{ONBOARD.food.parcels}</span>
-        <input type="number" min="0" value={a.parcelsMonth} onChange={(e) => set('parcelsMonth', num(e.target.value))} />
-      </label>
-      <label className="fp-field"><span>{ONBOARD.food.intlOrders}</span>
-        <input type="number" min="0" value={a.intlOrdersMonth} onChange={(e) => set('intlOrdersMonth', num(e.target.value))} />
-      </label>
+      <Chips label={ONBOARD.food.diet} options={dietOptions} value={a.dietType} onChange={(v) => set('dietType', v)} />
+      <Stepper label={ONBOARD.food.parcels} value={a.parcelsMonth} min={0} max={60}
+        onChange={(v) => set('parcelsMonth', v)} live={a.parcelsMonth > 0 ? approx(LIVE.parcels(a)) : null} />
+      <Stepper label={ONBOARD.food.intlOrders} value={a.intlOrdersMonth} min={0} max={30}
+        onChange={(v) => set('intlOrdersMonth', v)} live={a.intlOrdersMonth > 0 ? approx(LIVE.intl(a)) : null} />
+    </div>,
+    <div key="done" className="ob-done">
+      <h3 ref={headRef} tabIndex={-1}>{OB.done.title}</h3>
+      <div className="ob-done-num display" aria-label={fmtT(runningTotal) + ' tonnes per year'}>
+        <LiveNumber value={runningTotal} /> <span>t / yr</span>
+      </div>
+      <p>{OB.done.sub}</p>
+      <div className="ob-done-ctas">
+        <button type="button" className="btn btn-primary fp-btn" onClick={() => onDone(doneProfile, { watch: true })}>{OB.done.watch} →</button>
+        <button type="button" className="fp-linkbtn" onClick={() => onDone(doneProfile, { watch: false })}>{OB.done.skip}</button>
+      </div>
     </div>,
   ];
 
+  const stepMotion = prefersReducedMotion()
+    ? {}
+    : {
+      initial: { opacity: 0, x: 26 },
+      animate: { opacity: 1, x: 0 },
+      exit: { opacity: 0, x: -26 },
+      transition: { duration: 0.28, ease: [0.25, 1, 0.5, 1] },
+    };
+
   return (
-    <div className="fp-modal-scrim" onClick={(e) => { if (e.target === e.currentTarget) onCancel(); }}>
-      <div className="fp-modal" role="dialog" aria-modal="true" aria-label={ONBOARD.title} ref={dialogRef}>
-        <div className="fp-modal-head">
-          <div>
-            <div className="fp-modal-title">{ONBOARD.title}</div>
-            <div className="fp-modal-steps">
-              {ONBOARD.steps.map((s, i) => (
-                <span key={s} className={'fp-modal-step' + (i === step ? ' on' : i < step ? ' done' : '')}>{s}</span>
-              ))}
+    <div className="ob-scrim" role="dialog" aria-modal="true" aria-label={OB.title}>
+      <div className="ob-head canvas">
+        <div className="ob-head-left">
+          <span className="ob-title">{OB.title}</span>
+          <span className="ob-progress" aria-hidden="true">
+            {OB.stepLabels.map((s, i) => (
+              <span key={s} className={'ob-seg' + (i === step ? ' on' : i < step ? ' done' : '')} title={s} />
+            ))}
+          </span>
+        </div>
+        <button type="button" className="ob-close" aria-label="Close" onClick={onCancel}>×</button>
+      </div>
+
+      <div className="ob-body canvas">
+        {step === 0 && <p className="ob-intro">{OB.intro}</p>}
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div key={step} {...stepMotion} className="ob-pane">
+            {steps[step]}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {step < 5 && (
+        <div className="ob-foot">
+          <div className="canvas ob-foot-inner">
+            <div className="ob-total" aria-live="polite">
+              <span className="ob-total-l">{OB.soFar}</span>
+              <span className="ob-total-v">
+                <LiveNumber value={runningTotal} /><em> {OB.perYear}</em>
+              </span>
+              <span className="ob-total-note">{OB.liveNote}</span>
+            </div>
+            <div className="ob-foot-btns">
+              <button type="button" className="fp-linkbtn" onClick={() => (step === 0 ? onCancel() : setStep(step - 1))}>
+                {step === 0 ? ONBOARD.cancel : ONBOARD.back}
+              </button>
+              <button type="button" className="btn btn-primary fp-btn" onClick={() => setStep(step + 1)}>
+                {step === 4 ? ONBOARD.finish : ONBOARD.next} →
+              </button>
             </div>
           </div>
-          <button type="button" className="fp-del" aria-label="Close" onClick={onCancel}>×</button>
         </div>
-        <p className="fp-modal-intro">{ONBOARD.intro}</p>
-        <div className="fp-modal-body">{steps[step]}</div>
-        <div className="fp-modal-foot">
-          <button type="button" className="fp-linkbtn" onClick={() => (step === 0 ? onCancel() : setStep(step - 1))}>
-            {step === 0 ? ONBOARD.cancel : ONBOARD.back}
-          </button>
-          <button
-            type="button" className="btn btn-primary fp-btn"
-            onClick={() => (step === steps.length - 1 ? onDone(buildProfileFromOnboarding(a)) : setStep(step + 1))}
-          >
-            {step === steps.length - 1 ? ONBOARD.finish : ONBOARD.next} →
-          </button>
-        </div>
-      </div>
+      )}
     </div>
   );
 }
