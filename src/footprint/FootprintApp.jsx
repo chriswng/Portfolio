@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import { MotionConfig } from 'framer-motion';
 import { Grain, ScrollProgress, SkipLink } from '../components/Chrome';
 import SplitText from '../components/SplitText';
 import { NAV_LINKS } from '../data/content';
@@ -26,7 +27,7 @@ function FootprintNav() {
     <nav className="nav" aria-label="Primary">
       <div className="nav-inner canvas">
         <a href="../" className="nav-logo">./</a>
-        <div className={`nav-links${menuOpen ? ' open' : ''}`} role="navigation">
+        <div className={`nav-links${menuOpen ? ' open' : ''}`}>
           {NAV_LINKS.map((l) => {
             const self = l.href === 'footprint/';
             const href = self ? './' : '../' + l.href;
@@ -138,10 +139,15 @@ export default function FootprintApp() {
     flash('Audit deleted from this browser.');
   };
   const onStart = () => setOnboarding(true);
-  const onOnboardDone = (built, { watch } = {}) => {
+  // The audit persists the moment it is built (the done pane says so), not
+  // only when a closing button is pressed; Escape can no longer discard it.
+  const onOnboardBuilt = useCallback((built) => {
     saveOwnProfile(built);
     setOwn(built);
     setMode('mine');
+  }, []);
+  const onOnboardDone = (built, { watch } = {}) => {
+    onOnboardBuilt(built);
     setOnboarding(false);
     if (watch) {
       setStoryOpen(true);
@@ -155,13 +161,23 @@ export default function FootprintApp() {
   };
 
   const toggleSound = () => setSoundOn(audio.toggle());
+  const landOnDashboard = () => {
+    window.setTimeout(() => document.getElementById('fp-dash')?.scrollIntoView({ behavior: 'auto' }), 50);
+  };
   const onStorySkip = () => {
     markStorySeen();
     setStoryOpen(false);
     if (soundOn) { audio.disable(); setSoundOn(false); }
-    window.scrollTo({ top: 0, behavior: 'auto' });
+    landOnDashboard();
   };
-  const onStoryEnd = () => { markStorySeen(); };
+  // "Explore the full audit" from the outro: the show ends, the house lights
+  // come up on the dashboard itself.
+  const onStoryFinish = () => {
+    markStorySeen();
+    setStoryOpen(false);
+    landOnDashboard();
+  };
+  const onStoryEnd = useCallback(() => { markStorySeen(); }, []);
   const onReplay = () => {
     setStoryOpen(true);
     window.scrollTo({ top: 0, behavior: 'auto' });
@@ -173,7 +189,7 @@ export default function FootprintApp() {
   };
 
   return (
-    <>
+    <MotionConfig reducedMotion="user">
       <SkipLink />
       <Grain />
       <ScrollProgress />
@@ -188,6 +204,7 @@ export default function FootprintApp() {
           onStart={onStart}
           onSkip={onStorySkip}
           onEnd={onStoryEnd}
+          onFinish={onStoryFinish}
           onCopyLink={onShare}
           soundOn={soundOn}
           onToggleSound={toggleSound}
@@ -267,8 +284,9 @@ export default function FootprintApp() {
         <Market />
       </main>
 
-      {onboarding && <Onboarding onDone={onOnboardDone} onCancel={() => setOnboarding(false)} />}
-      {toast && <div className="fp-toast" role="status">{toast}</div>}
+      {onboarding && <Onboarding onDone={onOnboardDone} onBuilt={onOnboardBuilt} onCancel={() => setOnboarding(false)} />}
+      {/* Mounted permanently so assistive tech announces text arriving in it. */}
+      <div className={'fp-toast' + (toast ? ' show' : '')} role="status">{toast}</div>
 
       <footer className="fp-footer">
         <div className="canvas fp-footer-inner">
@@ -277,6 +295,6 @@ export default function FootprintApp() {
           <a href="../" className="fp-footer-back">← {FOOTER.back}</a>
         </div>
       </footer>
-    </>
+    </MotionConfig>
   );
 }

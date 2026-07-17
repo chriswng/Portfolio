@@ -52,10 +52,10 @@ export const YEAR = {
 
 export const GUESS = {
   tag: '02 · Call it',
-  headline: { example: 'Before the reveal: call it.', own: 'You saw the pieces. Call it.' },
+  headline: { example: 'Before the reveal: call it.', own: 'You saw the pieces. Call it.' },
   sub: {
-    example: 'A year of me, in tonnes of CO2-e. Flights included. What does one human add up to?',
-    own: 'Your whole year, in tonnes of CO2-e, before the spreadsheet tells you. Trust your gut.',
+    example: 'A year of me, in tonnes of CO₂-e. Flights included. What does one human add up to?',
+    own: 'Your whole year, in tonnes of CO₂-e, before the spreadsheet tells you. Trust your gut.',
   },
   unit: 'tCO₂-e',
   lockIn: 'Lock it in',
@@ -126,7 +126,7 @@ export const SCOPES = {
 export const HOTSPOTS_ST = {
   tag: '05 · Hotspots',
   rankWord: 'Hotspot',
-  headline: { example: 'Where my tonnes actually are.', own: 'Where your tonnes actually are.' },
+  headline: { example: 'Where my tonnes actually are.', own: 'Where your tonnes actually are.' },
   ofYear: 'of the year',
   punch: {
     example: 'The top wedge is the plan. Everything else is housekeeping.',
@@ -173,7 +173,7 @@ export const BENCH_ST = {
 
 export const NEEDLE = {
   tag: '08 · The needle',
-  headline: 'What would actually move it.',
+  headline: 'What would actually move it.',
   sub: {
     example: 'Each action priced against my audited numbers, not a national average. Ranked by tonnes, not by vibes.',
     own: 'Each action priced against your audited numbers, not a national average. Ranked by tonnes, not by vibes.',
@@ -220,6 +220,8 @@ export const OB = {
   intro: 'Five short steps. Rough numbers now, real bills later. Everything stays in this browser.',
   liveNote: 'priced live on published factors',
   soFar: 'Your year so far',
+  soFarSr: 'About {t} tonnes per year so far.',
+  stepOf: 'Step {n} of {total}',
   perYear: 't / yr',
   flightAdded: [
     'That one is {t} t on its own.',
@@ -242,10 +244,19 @@ export const DASH_EXTRA = {
   compare: {
     vsExample: "Overlay Chris's FY2026",
     vsOwn: 'Overlay your audit',
-    off: 'Comparison off',
     note: 'Same boundary, same factors, different life. Diamonds mark the overlaid audit.',
+    overlaid: 'Overlaid: {label}, {t} t total.',
   },
   replayChip: 'Replay the reveal',
+};
+
+// Strings drawn onto the canvas share cards.
+export const CARD_TEXT = {
+  tonnes: 'TONNES CO₂-E · ',
+  ofYear: '% OF THE YEAR',
+  guessLabel: 'THE GUESS',
+  auditLabel: 'THE AUDIT',
+  benchNote: 'National figures carry a wider boundary than this audit.',
 };
 
 // Small helpers shared by story components.

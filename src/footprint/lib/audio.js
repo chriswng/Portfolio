@@ -73,6 +73,8 @@ class FootprintAudio {
     this.on = false;
     this.master.gain.cancelScheduledValues(this.ctx.currentTime);
     this.master.gain.setTargetAtTime(0, this.ctx.currentTime, 0.25);
+    // Once the ramp is inaudible, stop the clock entirely; enable() resumes.
+    window.setTimeout(() => { if (!this.on && this.ctx) this.ctx.suspend(); }, 900);
   }
 
   toggle() {

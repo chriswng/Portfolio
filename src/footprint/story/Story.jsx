@@ -70,10 +70,10 @@ function buildStoryData(profile, agg, macc, voice) {
   };
 }
 
-function ChapterRail({ active }) {
+function ChapterRail({ active, chapters }) {
   return (
     <nav className="st-rail" aria-label={CHROME.progressLabel}>
-      {CHAPTERS.map((c) => (
+      {chapters.map((c) => (
         <button
           key={c.id}
           type="button"
@@ -92,13 +92,22 @@ function ChapterRail({ active }) {
 // Act I: the reveal. A continuous scroll of full-screen moments above the
 // working dashboard. Purely presentational: it reads the same aggregates the
 // dashboard reads and never touches the store.
-export default function Story({ profile, agg, macc, voice, onStart, onSkip, onEnd, onCopyLink, soundOn, onToggleSound }) {
+export default function Story({ profile, agg, macc, voice, onStart, onSkip, onEnd, onFinish, onCopyLink, soundOn, onToggleSound }) {
   const reduced = useMemo(() => prefersReducedMotion(), []);
   const d = useMemo(() => buildStoryData(profile, agg, macc, voice), [profile, agg, macc, voice]);
   const [guess, setGuess] = useState({ value: null, locked: false });
   const [active, setActive] = useState('st-cover');
+  const [chromeOn, setChromeOn] = useState(true);
   const rootRef = useRef(null);
   const endRef = useRef(null);
+
+  // Chapters whose moments actually render for this audit.
+  const chapters = useMemo(() => CHAPTERS.filter((c) => {
+    if (c.id === 'st-months') return !!d.worst;
+    if (c.id === 'st-needle') return d.needle.length > 0;
+    if (c.id === 'st-hotspots') return d.ranked.length > 0;
+    return true;
+  }), [d]);
 
   // Track the active chapter for the rail.
   useEffect(() => {
@@ -122,6 +131,18 @@ export default function Story({ profile, agg, macc, voice, onStart, onSkip, onEn
     return () => obs.disconnect();
   }, [onEnd]);
 
+  // The story chrome belongs to the story: once the visitor scrolls past it
+  // into the dashboard, the skip button, sound pill and rail step aside.
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el || !('IntersectionObserver' in window)) return undefined;
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((e) => setChromeOn(e.isIntersecting));
+    });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   const onGuessAgain = () => {
     setGuess((g) => ({ ...g, locked: false }));
     document.getElementById('st-guess')?.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
@@ -130,30 +151,28 @@ export default function Story({ profile, agg, macc, voice, onStart, onSkip, onEn
     setGuess({ value: null, locked: false });
     window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
   };
-  const onExplore = () => {
-    onEnd();
-    document.getElementById('fp-dash')?.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
-  };
+  const onExplore = () => { onFinish(); };
 
   return (
     <div className="st-root" ref={rootRef}>
-      <div className="st-chrome">
-        <a href="../" className="st-home" aria-label="Back to the profile">{CHROME.home}</a>
-        <div className="st-chrome-right">
-          <button
-            type="button"
-            className={'st-sound' + (soundOn ? ' on' : '')}
-            aria-pressed={soundOn}
-            aria-label={CHROME.sound.label}
-            onClick={onToggleSound}
-          >
-            <span className="st-sound-bars" aria-hidden="true"><i /><i /><i /></span>
-            {soundOn ? CHROME.sound.on : CHROME.sound.off}
-          </button>
-          <button type="button" className="st-skip" onClick={onSkip}>{CHROME.skip} ↓</button>
+      {chromeOn && (
+        <div className="st-chrome">
+          <a href="../" className="st-home" aria-label="Back to the profile">{CHROME.home}</a>
+          <div className="st-chrome-right">
+            <button
+              type="button"
+              className={'st-sound' + (soundOn ? ' on' : '')}
+              aria-pressed={soundOn}
+              onClick={onToggleSound}
+            >
+              <span className="st-sound-bars" aria-hidden="true"><i /><i /><i /></span>
+              {soundOn ? CHROME.sound.on : CHROME.sound.off}
+            </button>
+            <button type="button" className="st-skip" onClick={onSkip}>{CHROME.skip} ↓</button>
+          </div>
         </div>
-      </div>
-      <ChapterRail active={active} />
+      )}
+      {chromeOn && <ChapterRail active={active} chapters={chapters} />}
 
       <Cover d={d} voice={voice} onStart={onStart} reduced={reduced} />
       <YearTicker d={d} voice={voice} reduced={reduced} />

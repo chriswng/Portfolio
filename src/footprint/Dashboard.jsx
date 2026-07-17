@@ -4,7 +4,7 @@ import SplitText from '../components/SplitText';
 import { CATEGORIES, categoryById } from './data/factors';
 import { BENCHMARKS, AUS_AVG, BUDGET_2030, BENCHMARK_CAVEAT } from './data/benchmarks';
 import { DASH, HOTSPOTS, fmtT } from './data/copy';
-import { DASH_EXTRA } from './data/storyCopy';
+import { DASH_EXTRA, fill } from './data/storyCopy';
 import { CountUp } from './story/CountUp';
 import { TrendChart } from './charts';
 
@@ -30,7 +30,15 @@ export default function Dashboard({ agg, period, compareAgg, comparePeriod, isEx
   const flightsDominate = ranked.length && ranked[0].id === 'flight' && ranked[0].t / (total || 1) > 0.4;
 
   const compare = compareOn && compareAgg ? compareAgg : null;
-  // Common scale when the overlay is on, so the two audits read honestly.
+  // With the overlay on, include categories only the other audit has, and
+  // share one scale so the two audits read honestly.
+  const rows = compare
+    ? [
+      ...ranked,
+      ...CATEGORIES.filter((c) => !(agg.byCategory[c.id] > 0) && (compare.byCategory[c.id] || 0) > 0)
+        .map((c) => ({ ...c, t: 0 })),
+    ]
+    : ranked;
   const maxCat = Math.max(
     ranked.length ? ranked[0].t : 1,
     compare ? Math.max(...Object.values(compare.byCategory), 0) : 0,
@@ -109,12 +117,12 @@ export default function Dashboard({ agg, period, compareAgg, comparePeriod, isEx
                 aria-pressed={compareOn}
                 onClick={() => setCompareOn((v) => !v)}
               >
-                {compareOn ? DASH_EXTRA.compare.off : compareLabel}
+                {compareLabel}
               </button>
             )}
           </div>
           <div className="fp-cats">
-            {ranked.map((c, i) => {
+            {rows.map((c, i) => {
               const other = compare ? compare.byCategory[c.id] || 0 : null;
               return (
                 <div className="fp-cat-row" key={c.id}>
@@ -130,7 +138,7 @@ export default function Dashboard({ agg, period, compareAgg, comparePeriod, isEx
                     {other != null && (
                       <span
                         className="fp-cat-diamond"
-                        style={{ left: `calc(${Math.min(100, (other / maxCat) * 100)}% - 5px)`, borderColor: c.hex }}
+                        style={{ left: `max(0px, calc(${Math.min(100, (other / maxCat) * 100)}% - 5px))`, borderColor: c.hex }}
                         title={(comparePeriod ? comparePeriod.label + ': ' : '') + fmtT(other, 2) + ' t'}
                         aria-label={(comparePeriod ? comparePeriod.label + ': ' : '') + fmtT(other, 2) + ' t'}
                         role="img"
@@ -143,7 +151,12 @@ export default function Dashboard({ agg, period, compareAgg, comparePeriod, isEx
               );
             })}
           </div>
-          {compare && <p className="fp-note">{DASH_EXTRA.compare.note} {comparePeriod ? 'Overlaid: ' + comparePeriod.label + ', ' + fmtT(compare.total) + ' t total.' : ''}</p>}
+          {compare && (
+            <p className="fp-note">
+              {DASH_EXTRA.compare.note}{' '}
+              {comparePeriod ? fill(DASH_EXTRA.compare.overlaid, { label: comparePeriod.label, t: fmtT(compare.total) }) : ''}
+            </p>
+          )}
         </motion.div>
 
         <div className="fp-hotspot-block" id="fp-hotspots">

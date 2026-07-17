@@ -238,7 +238,8 @@
 .ob-stepper button:active{ transform:scale(0.92); }
 .ob-stepper input{ font-family:var(--disp); font-weight:700; font-size:1.3rem; color:var(--slate); background:transparent; border:none; border-bottom:2px solid var(--rule-dk); width:76px; text-align:center; padding:0.25rem 0; -moz-appearance:textfield; }
 .ob-stepper input::-webkit-outer-spin-button, .ob-stepper input::-webkit-inner-spin-button{ -webkit-appearance:none; }
-.ob-stepper input:focus{ outline:none; border-color:var(--matcha); }
+.ob-stepper input:focus{ border-color:var(--matcha); }
+.ob-stepper input:focus-visible{ outline:2px solid var(--matcha); outline-offset:3px; }
 
 .ob-slider-head{ display:flex; justify-content:space-between; align-items:baseline; gap:1rem; }
 .ob-value{ font-family:var(--disp); font-weight:700; font-size:1.25rem; color:var(--slate); font-variant-numeric:tabular-nums; white-space:nowrap; }
@@ -254,6 +255,8 @@
 
 .ob-flight-form{ display:flex; flex-direction:column; gap:0.9rem; margin-bottom:1rem; }
 .ob-reaction{ font-size:0.92rem; font-weight:600; color:var(--slate); background:rgba(181,196,43,0.12); border-left:3px solid var(--matcha); padding:0.7rem 1rem; margin:0.9rem 0; max-width:480px; }
+/* Mounted before it has content so the live region announces reliably. */
+.ob-reaction:empty{ padding:0; border:none; margin:0; background:none; }
 .ob-none{ color:var(--mid); font-family:var(--mono); font-size:11px; }
 
 .ob-foot{ border-top:1px solid var(--rule-dk); background:var(--white); flex-shrink:0; }
@@ -262,12 +265,12 @@
 .ob-total-l{ font-family:var(--mono); font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--mid); font-weight:600; }
 .ob-total-v{ font-family:var(--disp); font-weight:700; font-size:1.5rem; color:var(--slate); line-height:1.05; font-variant-numeric:tabular-nums; }
 .ob-total-v em{ font-style:normal; font-size:0.55em; color:var(--mid); font-weight:600; }
-.ob-total-note{ font-family:var(--mono); font-size:8.5px; letter-spacing:0.06em; color:var(--subtle); }
+.ob-total-note{ font-family:var(--mono); font-size:9.5px; letter-spacing:0.06em; color:var(--mid); }
 .ob-foot-btns{ display:flex; gap:0.6rem; align-items:center; }
 
 .ob-done{ text-align:left; }
-.ob-done-num{ font-size:clamp(3.4rem,10vw,6rem); font-weight:700; color:var(--slate); line-height:1; margin:1rem 0; font-variant-numeric:tabular-nums; }
-.ob-done-num span{ font-size:0.3em; color:var(--mid); font-weight:600; }
+.ob-done-num{ font-size:clamp(3.4rem,10vw,6rem); font-weight:700; color:var(--slate); line-height:1; letter-spacing:-0.02em; margin:1.2rem 0; font-variant-numeric:tabular-nums; }
+.ob-done-unit{ font-size:0.3em; color:#75821D; font-weight:600; letter-spacing:0; }
 .ob-done-ctas{ display:flex; gap:0.9rem; align-items:center; flex-wrap:wrap; margin-top:1.6rem; }
 
 .fp-ob-flights{ list-style:none; margin-top:0.9rem; display:flex; flex-direction:column; gap:0.35rem; }
@@ -296,7 +299,9 @@
 .fp-snap-card{ background:var(--bg); border:1px solid var(--rule-dk); padding:1.4rem 1.5rem; }
 .fp-snap-kpis{ display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--rule-dk); border:1px solid var(--rule-dk); margin-bottom:1rem; }
 @media(min-width:760px){ .fp-snap-kpis{ grid-template-columns:repeat(3,1fr); } }
-.fp-toast{ position:fixed; bottom:1.2rem; left:50%; transform:translateX(-50%); z-index:90; background:var(--slate); color:#F1F5EC; font-family:var(--mono); font-size:11px; letter-spacing:0.04em; padding:0.7rem 1.1rem; border-left:3px solid var(--matcha); box-shadow:0 8px 30px rgba(15,23,42,0.35); max-width:92vw; }
+/* Permanently mounted for assistive tech; visible only while it has text. */
+.fp-toast{ position:fixed; bottom:1.2rem; left:50%; transform:translateX(-50%) translateY(8px); z-index:90; background:var(--slate); color:#F1F5EC; font-family:var(--mono); font-size:11px; letter-spacing:0.04em; padding:0.7rem 1.1rem; border-left:3px solid var(--matcha); box-shadow:0 8px 30px rgba(15,23,42,0.35); max-width:92vw; opacity:0; pointer-events:none; transition:opacity 0.25s var(--ease), transform 0.25s var(--ease); }
+.fp-toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
 
 /* ---- Footer ---- */
 .fp-footer{ border-top:1px solid var(--rule-dk); background:var(--bg); padding:1.6rem 0; }

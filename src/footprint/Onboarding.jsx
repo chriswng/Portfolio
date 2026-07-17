@@ -145,7 +145,8 @@ const LIVE = {
   diet: (a, dietType) => liveT(a, { category: 'diet', meta: { dietType, days: 365 } }),
 };
 
-const approx = (t) => fill(OB.approx, { t: fmtT(t) });
+// Small but non-zero inputs read "< 0.1" rather than a dismissive "0.0".
+const approx = (t) => fill(OB.approx, { t: t > 0 && t < 0.05 ? '< 0.1' : fmtT(t) });
 
 // A number that eases to its new value instead of snapping.
 function LiveNumber({ value, decimals = 1 }) {
@@ -231,7 +232,7 @@ function SliderField({ label, value, onChange, min, max, step, unit, live }) {
 // profile builder as before; the difference is that every answer prices
 // itself the moment it lands, and the running total recalculates in view.
 // ---------------------------------------------------------------------------
-export default function Onboarding({ onDone, onCancel }) {
+export default function Onboarding({ onDone, onBuilt, onCancel }) {
   const [step, setStep] = useState(0);
   const [a, setA] = useState(DEFAULTS);
   const [fl, setFl] = useState({ route: 'SYD-MEL', km: 700, cabin: 'economy', ret: true });
@@ -243,16 +244,40 @@ export default function Onboarding({ onDone, onCancel }) {
   const runningTotal = useMemo(() => aggregate(buildProfileFromOnboarding(a)).total, [a]);
   const doneProfile = useMemo(() => (step === 5 ? buildProfileFromOnboarding(a) : null), [step, a]);
 
-  useEffect(() => { headRef.current?.focus(); }, [step]);
+  // The done pane says the audit is saved, so save it as the pane appears;
+  // closing with Escape or the cross after that point loses nothing.
+  useEffect(() => { if (doneProfile) onBuilt(doneProfile); }, [doneProfile, onBuilt]);
+
+  // Focus the incoming step's heading after the pane transition settles.
+  useEffect(() => {
+    const id = window.setTimeout(() => headRef.current?.focus(), prefersReducedMotion() ? 0 : 320);
+    return () => window.clearTimeout(id);
+  }, [step]);
 
   useEffect(() => {
     const onKey = (e) => { if (e.key === 'Escape') onCancel(); };
     window.addEventListener('keydown', onKey);
     document.body.style.overflow = 'hidden';
-    return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = ''; };
+    // The overlay is modal: everything behind it goes inert so keyboard and
+    // screen-reader focus cannot wander into the covered page.
+    const behind = document.querySelectorAll('nav.nav, #main-content, footer.fp-footer, .st-root');
+    behind.forEach((el) => el.setAttribute('inert', ''));
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+      behind.forEach((el) => el.removeAttribute('inert'));
+    };
   }, [onCancel]);
 
   useEffect(() => { if (step === 5) audio.chime(); }, [step]);
+
+  // Debounced copy of the running total for the polite live region, so
+  // dragging a slider announces one settled value, not sixty per second.
+  const [announcedTotal, setAnnouncedTotal] = useState(() => fmtT(runningTotal));
+  useEffect(() => {
+    const id = window.setTimeout(() => setAnnouncedTotal(fmtT(runningTotal)), 600);
+    return () => window.clearTimeout(id);
+  }, [runningTotal]);
 
   const addFlight = () => {
     const route = FLIGHT_ROUTES.find((r) => r.id === fl.route);
@@ -296,9 +321,9 @@ export default function Onboarding({ onDone, onCancel }) {
     <div key="energy">
       <h3 ref={headRef} tabIndex={-1}>{ONBOARD.energy.title}</h3>
       <p>{ONBOARD.energy.sub}</p>
-      <SliderField label={ONBOARD.energy.kwh} value={a.kwhQuarter} min={0} max={4000} step={10} unit="kWh"
+      <SliderField label={ONBOARD.energy.kwh} value={a.kwhQuarter} min={0} max={6000} step={10} unit="kWh"
         onChange={(v) => set('kwhQuarter', v)} live={approx(LIVE.electricity(a))} />
-      <SliderField label={ONBOARD.energy.mj} value={a.mjQuarter} min={0} max={20000} step={50} unit="MJ"
+      <SliderField label={ONBOARD.energy.mj} value={a.mjQuarter} min={0} max={30000} step={50} unit="MJ"
         onChange={(v) => set('mjQuarter', v)} live={approx(LIVE.gas(a))} />
       <SliderField label={ONBOARD.energy.greenpower} value={a.greenpowerPct} min={0} max={100} step={5} unit="%"
         onChange={(v) => set('greenpowerPct', v)} />
@@ -306,7 +331,7 @@ export default function Onboarding({ onDone, onCancel }) {
     <div key="travel">
       <h3 ref={headRef} tabIndex={-1}>{ONBOARD.travel.title}</h3>
       <p>{ONBOARD.travel.sub}</p>
-      <SliderField label={ONBOARD.travel.car} value={a.carKmWeek} min={0} max={600} step={5} unit="km / wk"
+      <SliderField label={ONBOARD.travel.car} value={a.carKmWeek} min={0} max={1000} step={5} unit="km / wk"
         onChange={(v) => set('carKmWeek', v)} live={a.carKmWeek > 0 ? approx(LIVE.car(a)) : null} />
       {a.carKmWeek > 0 && (
         <Chips
@@ -315,9 +340,9 @@ export default function Onboarding({ onDone, onCancel }) {
           value={a.fuelType} onChange={(v) => set('fuelType', v)}
         />
       )}
-      <SliderField label={ONBOARD.travel.rideshare} value={a.rideshareWeek} min={0} max={200} step={5} unit="$ / wk"
+      <SliderField label={ONBOARD.travel.rideshare} value={a.rideshareWeek} min={0} max={400} step={5} unit="$ / wk"
         onChange={(v) => set('rideshareWeek', v)} live={a.rideshareWeek > 0 ? approx(LIVE.rideshare(a)) : null} />
-      <SliderField label={ONBOARD.travel.pt} value={a.ptWeek} min={0} max={120} step={5} unit="$ / wk"
+      <SliderField label={ONBOARD.travel.pt} value={a.ptWeek} min={0} max={250} step={5} unit="$ / wk"
         onChange={(v) => set('ptWeek', v)} live={a.ptWeek > 0 ? approx(LIVE.pt(a)) : null} />
     </div>,
     <div key="flights">
@@ -352,14 +377,17 @@ export default function Onboarding({ onDone, onCancel }) {
           {ONBOARD.flights.add} · {approx(LIVE.flight(a, { ...fl, km: fl.route === 'custom' ? num(fl.km) : fl.km }))}
         </button>
       </div>
-      {reaction && <p className="ob-reaction" role="status">{reaction}</p>}
+      <p className="ob-reaction" role="status">{reaction}</p>
       <ul className="fp-ob-flights">
-        {a.flights.map((f, i) => (
-          <li key={i}>
-            {(FLIGHT_ROUTES.find((r) => r.id === f.route) || { label: f.km + ' km' }).label}{f.ret ? ' return' : ''} · {f.cabin} · <strong>{fmtT(LIVE.flight(a, f), 2)} t</strong>
-            <button type="button" aria-label="Remove flight" onClick={() => setA((s) => ({ ...s, flights: s.flights.filter((_, j) => j !== i) }))}>×</button>
-          </li>
-        ))}
+        {a.flights.map((f, i) => {
+          const routeLabel = (FLIGHT_ROUTES.find((r) => r.id === f.route) || { label: f.km + ' km' }).label;
+          return (
+            <li key={i}>
+              {routeLabel}{f.ret ? ' return' : ''} · {f.cabin} · <strong>{fmtT(LIVE.flight(a, f), 2)} t</strong>
+              <button type="button" aria-label={'Remove ' + routeLabel} onClick={() => setA((s) => ({ ...s, flights: s.flights.filter((_, j) => j !== i) }))}>×</button>
+            </li>
+          );
+        })}
         {!a.flights.length && <li className="ob-none">{ONBOARD.flights.none}</li>}
       </ul>
     </div>,
@@ -367,15 +395,16 @@ export default function Onboarding({ onDone, onCancel }) {
       <h3 ref={headRef} tabIndex={-1}>{ONBOARD.food.title}</h3>
       <p>{ONBOARD.food.sub}</p>
       <Chips label={ONBOARD.food.diet} options={dietOptions} value={a.dietType} onChange={(v) => set('dietType', v)} />
-      <Stepper label={ONBOARD.food.parcels} value={a.parcelsMonth} min={0} max={60}
+      <Stepper label={ONBOARD.food.parcels} value={a.parcelsMonth} min={0} max={200}
         onChange={(v) => set('parcelsMonth', v)} live={a.parcelsMonth > 0 ? approx(LIVE.parcels(a)) : null} />
-      <Stepper label={ONBOARD.food.intlOrders} value={a.intlOrdersMonth} min={0} max={30}
+      <Stepper label={ONBOARD.food.intlOrders} value={a.intlOrdersMonth} min={0} max={100}
         onChange={(v) => set('intlOrdersMonth', v)} live={a.intlOrdersMonth > 0 ? approx(LIVE.intl(a)) : null} />
     </div>,
     <div key="done" className="ob-done">
       <h3 ref={headRef} tabIndex={-1}>{OB.done.title}</h3>
-      <div className="ob-done-num display" aria-label={fmtT(runningTotal) + ' tonnes per year'}>
-        <LiveNumber value={runningTotal} /> <span>t / yr</span>
+      <div className="ob-done-num display">
+        <span className="sr-only">{fmtT(runningTotal) + ' tonnes per year'}</span>
+        <LiveNumber value={runningTotal} /> <span className="ob-done-unit" aria-hidden="true">t / yr</span>
       </div>
       <p>{OB.done.sub}</p>
       <div className="ob-done-ctas">
@@ -404,6 +433,9 @@ export default function Onboarding({ onDone, onCancel }) {
               <span key={s} className={'ob-seg' + (i === step ? ' on' : i < step ? ' done' : '')} title={s} />
             ))}
           </span>
+          <span className="sr-only" role="status">
+            {step === 5 ? OB.done.title : fill(OB.stepOf, { n: step + 1, total: OB.stepLabels.length }) + ': ' + OB.stepLabels[step]}
+          </span>
         </div>
         <button type="button" className="ob-close" aria-label="Close" onClick={onCancel}>×</button>
       </div>
@@ -420,11 +452,12 @@ export default function Onboarding({ onDone, onCancel }) {
       {step < 5 && (
         <div className="ob-foot">
           <div className="canvas ob-foot-inner">
-            <div className="ob-total" aria-live="polite">
+            <div className="ob-total">
               <span className="ob-total-l">{OB.soFar}</span>
-              <span className="ob-total-v">
+              <span className="ob-total-v" aria-hidden="true">
                 <LiveNumber value={runningTotal} /><em> {OB.perYear}</em>
               </span>
+              <span className="sr-only" aria-live="polite">{fill(OB.soFarSr, { t: announcedTotal })}</span>
               <span className="ob-total-note">{OB.liveNote}</span>
             </div>
             <div className="ob-foot-btns">
