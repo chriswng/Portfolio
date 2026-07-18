@@ -9,152 +9,180 @@
 //
 // 3 x 2 x 2 = 12. The cell names the character; the dominant wedge flavours
 // the reading but never changes it. An audit at or under the 2.5 t lifestyle
-// budget also carries The Custodian mark, whatever its cell.
+// budget also unlocks The Pacifist Run, whatever its cell.
 //
-// Emblems are coarse dot stencils ('#' cells). The WebGL field morphs its
-// particles into them; the same stencils draw the static badges and share
-// cards, so the character looks identical everywhere.
+// The names are pop-culture shapes of consumption, chosen so each column of
+// the matrix reads as an escalating triplet: Rerun -> Season Ticket -> Grind
+// (one thing, steadily), Side Quest -> Festival Season -> Crossover Event
+// (everything, in bursts), Slice of Life -> Playlist -> Completionist
+// (everything, steadily), with Speedrun / Cheat Day / World Tour up the
+// one-thing-in-bursts column.
+//
+// Emblems are abstract dot stencils ('#' cells), one geometric idea per
+// character rather than a literal icon: the double chevron is speed, the
+// open loop is repetition, the seventh mark is the blowout, the full grid
+// is 100%. The WebGL field morphs its particles into them; the same
+// stencils draw the static badges and share cards, so the character looks
+// identical everywhere.
 
 import { BENCHMARKS } from './benchmarks';
 
 const S = {
-  shield: [
+  // Speedrun: a double chevron, pure forward motion.
+  chevrons: [
+    '#.....#......',
+    '##.....##....',
+    '.##.....##...',
+    '..##.....##..',
+    '...##.....##.',
+    '..##.....##..',
+    '.##.....##...',
+    '##.....##....',
+    '#.....#......',
+  ],
+  // Rerun: an open loop, thickening where it comes back around.
+  loop: [
     '....#####....',
-    '..#########..',
-    '.###########.',
-    '.###########.',
-    '.###########.',
-    '..#########..',
-    '...#######...',
-    '....#####....',
-    '.....###.....',
-    '......#......',
-  ],
-  feather: [
-    '..........##.',
-    '.........###.',
-    '.......#####.',
-    '......#####..',
-    '.....#####...',
-    '...#####.....',
-    '..#####......',
-    '.####........',
-    '.##..........',
-    '.#...........',
-  ],
-  comet: [
-    '...........##',
-    '..........##.',
-    '........###..',
-    '.......###...',
-    '.....###.....',
-    '....##.......',
-    '.####........',
-    '######.......',
-    '######.......',
-    '.####........',
-  ],
-  parcel: [
-    '.####...####.',
-    '.####...####.',
-    '.####...####.',
-    '#############',
-    '#############',
-    '.####...####.',
-    '.####...####.',
-    '.####...####.',
-  ],
-  jet: [
-    '......#......',
-    '.....###.....',
-    '.....###.....',
-    '#############',
-    '#############',
-    '.....###.....',
-    '.....###.....',
-    '....#####....',
-  ],
-  dart: [
-    '##...........',
-    '#####........',
-    '########.....',
-    '############.',
-    '########.....',
-    '#####........',
-    '##...........',
-  ],
-  truck: [
-    '########.....',
-    '########.....',
-    '#############',
-    '#############',
-    '#############',
-    '.##.......##.',
-    '.##.......##.',
-  ],
-  wheel: [
-    '....#####....',
-    '..##..#..##..',
-    '.#....#....#.',
-    '.#..#####..#.',
-    '.#....#....#.',
-    '..##..#..##..',
-    '....#####....',
-  ],
-  flame: [
-    '......#......',
-    '.....##......',
+    '..##.....##..',
+    '.#.........#.',
+    '#...........#',
+    '#...........#',
+    '#...........#',
+    '.#.........#.',
+    '..##.....###.',
     '....###......',
-    '...#####.....',
-    '..#######....',
-    '..########...',
-    '.#########...',
-    '.#########...',
-    '..#######....',
-    '...#####.....',
   ],
-  house: [
+  // Side Quest: a dotted trail that wanders off the direct route.
+  meander: [
+    '.........####',
+    '.......##....',
     '......#......',
-    '....#####....',
-    '..#########..',
-    '.###########.',
-    '.###########.',
-    '.###########.',
-    '.####...####.',
-    '.####...####.',
-  ],
-  fork: [
-    '..#..#..#..',
-    '..#..#..#..',
-    '..#..#..#..',
-    '..#..#..#..',
-    '...#####...',
-    '.....#.....',
-    '.....#.....',
-    '.....#.....',
-    '.....#.....',
-  ],
-  mountain: [
     '......#......',
+    '.......##....',
+    '.........##..',
+    '..........#..',
+    '.........##..',
+    '......###....',
+    '...###.......',
+    '.##..........',
+    '##...........',
+  ],
+  // Slice of Life: a sparse, even field; everything present, nothing loud.
+  field: [
+    '#...#...#...#',
+    '.............',
+    '..#...#...#..',
+    '.............',
+    '#...#...#...#',
+    '.............',
+    '..#...#...#..',
+    '.............',
+    '#...#...#...#',
+  ],
+  // Cheat Day: six small marks of discipline, then the seventh.
+  seventh: [
+    '#.#.#.#.#.#..',
+    '.............',
+    '.............',
+    '.......####..',
+    '......######.',
+    '......######.',
+    '......######.',
+    '.......####..',
+  ],
+  // Season Ticket: the same bar, over and over, with a perforation line.
+  turnstile: [
+    '#..#..#..#..#',
+    '#..#..#..#..#',
+    '#..#..#..#..#',
+    '.............',
+    '#..#..#..#..#',
+    '#..#..#..#..#',
+    '#..#..#..#..#',
+  ],
+  // Festival Season: a radial flare; everything, at once, from one point.
+  flare: [
+    '......#......',
+    '..#...#...#..',
+    '...#..#..#...',
+    '....#.#.#....',
     '.....###.....',
-    '....#####....',
-    '...#######...',
     '..#########..',
-    '.###########.',
+    '.....###.....',
+    '....#.#.#....',
+    '...#..#..#...',
+    '..#...#...#..',
+    '......#......',
+  ],
+  // Playlist: offset bars of near-equal length; a tracklist on shuffle.
+  shuffle: [
+    '#########....',
+    '.............',
+    '....#########',
+    '.............',
+    '##########...',
+    '.............',
+    '...##########',
+    '.............',
+    '#######......',
+  ],
+  // World Tour: a globe crossed by dotted routes.
+  orbit: [
+    '....#####....',
+    '..##.....##..',
+    '.#.........#.',
+    '#..#..#..#..#',
+    '#...........#',
+    '#..#..#..#..#',
+    '.#.........#.',
+    '..##.....##..',
+    '....#####....',
+  ],
+  // The Grind: full bars laid down like strata, layer after layer.
+  strata: [
+    '#############',
+    '.............',
+    '#############',
+    '.............',
+    '#############',
+    '.............',
+    '#############',
+    '.............',
     '#############',
   ],
-  burst: [
+  // Crossover Event: every line converging on a single point.
+  converge: [
     '#.....#.....#',
     '.#....#....#.',
     '..#...#...#..',
     '...#..#..#...',
     '....#.#.#....',
     '.....###.....',
-    '....#.#.#....',
-    '...#..#..#...',
-    '..#...#...#..',
-    '.#....#....#.',
+    '.....###.....',
+    '......#......',
+  ],
+  // Completionist: the whole grid, every box filled.
+  grid: [
+    '##.##.##.##',
+    '##.##.##.##',
+    '...........',
+    '##.##.##.##',
+    '##.##.##.##',
+    '...........',
+    '##.##.##.##',
+    '##.##.##.##',
+  ],
+  // Pacifist Run: a small core held inside the boundary.
+  core: [
+    '....#####....',
+    '..##.....##..',
+    '.#.........#.',
     '#.....#.....#',
+    '#....###....#',
+    '#.....#.....#',
+    '.#.........#.',
+    '..##.....##..',
+    '....#####....',
   ],
 };
 
@@ -169,12 +197,13 @@ export const HEAVY_T = 16;
 export const SPECIALIST_SHARE = 0.4;
 export const SPIKE_MULTIPLE = 2;
 
-// The Custodian: not a cell but a mark, carried by any audit at or under
-// the 2.5 t lifestyle budget on top of whatever character it classifies as.
-export const CUSTODIAN = {
-  id: 'custodian', name: 'The Custodian', hex: '#75821D', stencil: S.shield,
-  tagline: 'Inside the 2.5 t lifestyle budget.',
-  line: 'Under the 2030 lifestyle budget, which almost nobody is. The models call this the destination; this audit already moved in.',
+// The Pacifist Run: not a cell but an unlock, carried by any audit at or
+// under the 2.5 t lifestyle budget on top of whatever character it
+// classifies as.
+export const BADGE = {
+  id: 'pacifist-run', name: 'The Pacifist Run', hex: '#75821D', stencil: S.core,
+  tagline: 'Finished the year, harmed almost nothing.',
+  line: 'Inside the 2.5 t lifestyle budget, which almost nobody is. The rarest ending in the game; the models call it the destination.',
 };
 
 // The roster, one character per cell, ordered for the 3 x 4 matrix:
@@ -182,76 +211,76 @@ export const CUSTODIAN = {
 // (specialist-spiky, specialist-steady, generalist-spiky, generalist-steady).
 export const CHARACTERS = [
   {
-    id: 'spark', name: 'The Spark', hex: '#B5C42B', stencil: S.burst,
+    id: 'speedrun', name: 'The Speedrun', hex: '#B5C42B', stencil: S.chevrons,
     weight: 'feather', shape: 'specialist', rhythm: 'spiky',
-    tagline: 'A light year with one bright moment.',
-    line: 'Under the global average, and most of it happened in one go. One wedge, one month; the rest of the year barely registers.',
+    tagline: 'A tiny total, done in one burst.',
+    line: 'Under the global average with almost nothing on the clock, and most of it happened in one go. One category, one big day, credits.',
   },
   {
-    id: 'hearthkeeper', name: 'The Hearthkeeper', hex: '#75821D', stencil: S.house,
+    id: 'rerun', name: 'The Rerun', hex: '#75821D', stencil: S.loop,
     weight: 'feather', shape: 'specialist', rhythm: 'steady',
-    tagline: 'One quiet habit, well in hand.',
-    line: 'A light total carried by a single steady wedge, metered along all year. Domestic, consistent, small.',
+    tagline: 'The same quiet episode, all year.',
+    line: 'One small habit on loop. Nothing new ever airs, which is exactly why the total stays small.',
   },
   {
-    id: 'comet', name: 'The Comet', hex: '#0891B2', stencil: S.comet,
+    id: 'side-quest', name: 'The Side Quest', hex: '#0891B2', stencil: S.meander,
     weight: 'feather', shape: 'generalist', rhythm: 'spiky',
-    tagline: 'Mostly quiet sky, one visible streak.',
-    line: 'A light, varied year that flared once and settled back down. The streak is the story; the rest is background.',
+    tagline: 'Wandering everywhere, low stakes.',
+    line: 'A light year spent drifting across the categories, with one detour that briefly became the main plot. Still nowhere near the main storyline.',
   },
   {
-    id: 'featherweight', name: 'The Featherweight', hex: '#B5C42B', stencil: S.feather,
+    id: 'slice-of-life', name: 'The Slice of Life', hex: '#B5C42B', stencil: S.field,
     weight: 'feather', shape: 'generalist', rhythm: 'steady',
-    tagline: 'Light, even, nothing to confess.',
-    line: 'Below the global average without ceremony. A bit of everything, spread thin, all year.',
+    tagline: 'Everyday, gentle, honestly counted.',
+    line: 'The genre where nothing dramatic happens. A bit of everything, spread thin, observed closely and added up anyway.',
   },
   {
-    id: 'itinerant', name: 'The Itinerant', hex: '#635BFF', stencil: S.dart,
+    id: 'cheat-day', name: 'The Cheat Day', hex: '#8A4FBE', stencil: S.seventh,
     weight: 'middle', shape: 'specialist', rhythm: 'spiky',
-    tagline: 'Frugal on the ground, undone in bursts.',
-    line: 'A tidy, careful life with a handful of sharp exits. One wedge does the damage, and it does it in single days.',
+    tagline: 'Disciplined all week, undone in a day.',
+    line: 'A careful, tidy ledger with a handful of days that ignored it completely. The everyday barely registers; the exceptions are the inventory.',
   },
   {
-    id: 'regular', name: 'The Regular', hex: '#8A4FBE', stencil: S.fork,
+    id: 'season-ticket', name: 'The Season Ticket', hex: '#B56A00', stencil: S.turnstile,
     weight: 'middle', shape: 'specialist', rhythm: 'steady',
-    tagline: 'The same order, every week of the year.',
-    line: 'One wedge on repeat: the commute, the meter, the menu. Nothing dramatic ever happens, which is exactly how the total gets built.',
+    tagline: 'The same seat, every single week.',
+    line: 'One wedge on subscription: the commute, the meter, the standing order. The total is built by attendance, never by events.',
   },
   {
-    id: 'high-season', name: 'The High Season', hex: '#C7274A', stencil: S.flame,
+    id: 'festival-season', name: 'The Festival Season', hex: '#C7274A', stencil: S.flare,
     weight: 'middle', shape: 'generalist', rhythm: 'spiky',
-    tagline: 'An ordinary mix with a hot stretch.',
-    line: 'Spread across the categories until one month, when everything happened at once. The year has a season, and the season has a bill.',
+    tagline: 'Everything happened in one loud stretch.',
+    line: 'An ordinary spread of a year that concentrated into one hot window. The year has a season, and the season has a bill.',
   },
   {
-    id: 'allrounder', name: 'The Allrounder', hex: '#6E7469', stencil: S.wheel,
+    id: 'playlist', name: 'The Playlist', hex: '#6E7469', stencil: S.shuffle,
     weight: 'middle', shape: 'generalist', rhythm: 'steady',
-    tagline: 'A bit of everything, at an even hum.',
-    line: 'No single villain and no quiet patch either. The most common shape there is, which is rather the point.',
+    tagline: 'A bit of everything, on shuffle.',
+    line: 'Evenly sampled across every category, no track dominating. The most common shape there is, which is rather the point.',
   },
   {
-    id: 'sky-captain', name: 'The Sky Captain', hex: '#635BFF', stencil: S.jet,
+    id: 'world-tour', name: 'The World Tour', hex: '#635BFF', stencil: S.orbit,
     weight: 'heavy', shape: 'specialist', rhythm: 'spiky',
-    tagline: 'The big days do the emitting.',
-    line: 'A serious total, one dominant wedge, delivered in single days. The everyday barely registers; the events are the inventory.',
+    tagline: 'One act, huge, lived in departures.',
+    line: 'A serious total from a single dominant mode, delivered as an event calendar. The quiet weeks barely register; the dates are the inventory.',
   },
   {
-    id: 'road-train', name: 'The Road Train', hex: '#B56A00', stencil: S.truck,
+    id: 'grind', name: 'The Grind', hex: '#B56A00', stencil: S.strata,
     weight: 'heavy', shape: 'specialist', rhythm: 'steady',
-    tagline: 'One heavy wedge, hauled all year.',
-    line: 'A big total built the slow way: the same dominant wedge, week after week. Nothing spiked. It never needed to.',
+    tagline: 'One loop, enormous hours.',
+    line: 'A big total built the slow way: the same dominant wedge, week after week. Nothing ever spiked. It never needed to.',
   },
   {
-    id: 'big-year', name: 'The Big Year', hex: '#C7274A', stencil: S.parcel,
+    id: 'crossover-event', name: 'The Crossover Event', hex: '#C7274A', stencil: S.converge,
     weight: 'heavy', shape: 'generalist', rhythm: 'spiky',
-    tagline: 'Everything, everywhere, then a crescendo.',
-    line: 'Heavy across the board with a blowout stretch on top. Diversified, eventful, large.',
+    tagline: 'Every storyline converged at once.',
+    line: 'Heavy across the board, then the stretch where everything showed up in the same frame. Diversified, eventful, large.',
   },
   {
-    id: 'heavyweight', name: 'The Heavyweight', hex: '#475569', stencil: S.mountain,
+    id: 'completionist', name: 'The Completionist', hex: '#475569', stencil: S.grid,
     weight: 'heavy', shape: 'generalist', rhythm: 'steady',
-    tagline: 'No single villain, just volume.',
-    line: 'Every category pulls its weight, steadily, which is exactly the problem. A plan with one line will not do it.',
+    tagline: 'One hundred percent, in every category.',
+    line: 'Every wedge maxed, steadily, all year. The one achievement nobody should chase. A plan with one line will not do it.',
   },
 ];
 
@@ -298,8 +327,8 @@ export function classifyCharacter(agg) {
   // meters zeroed rather than crowning an empty audit.
   if (total <= 0.005) {
     return {
-      ...characterById('allrounder'),
-      topShare: 0, topGroup: 'none', custodian: false,
+      ...characterById('playlist'),
+      topShare: 0, topGroup: 'none', badge: false,
       flavour: '', hint: WEDGE_HINT.none,
       axes: {
         weight: { level: 'feather', total: 0 },
@@ -333,7 +362,7 @@ export function classifyCharacter(agg) {
     ...cellFor(weight, shape, rhythm),
     topShare: Math.round(topShare * 100),
     topGroup,
-    custodian: total <= BUDGET_T,
+    badge: total <= BUDGET_T,
     flavour: WEDGE_FLAVOUR[topGroup] || WEDGE_FLAVOUR.none,
     hint: WEDGE_HINT[topGroup] || WEDGE_HINT.none,
     axes: {

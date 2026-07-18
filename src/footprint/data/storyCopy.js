@@ -277,8 +277,8 @@ export const CHARACTER_ST = {
   },
   metersAria: 'Three meters: weight {weight}, shape {shape}, rhythm {rhythm}.',
   badge: {
-    kicker: 'Also carrying the mark of',
-    note: 'Inside the 2.5 t lifestyle budget. Almost nobody is.',
+    kicker: 'Achievement unlocked',
+    note: 'Inside the 2.5 t lifestyle budget. The rarest ending in the game.',
   },
   topEntry: 'Biggest single line: {label}, {t} t on its own.',
   matrixTitle: 'The whole taxonomy',
