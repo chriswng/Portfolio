@@ -5,7 +5,8 @@
 // falls back to a straight download.
 
 import { SHARE_ST, CARD_TEXT, NEEDLE } from '../data/storyCopy';
-import { drawEmblemDots } from './emblem';
+import { CUSTODIAN } from '../data/characters';
+import { drawEmblemDots, lighten } from './emblem';
 
 const W = 1080;
 const H = 1350;
@@ -147,21 +148,38 @@ function wrapText(ctx, text, x, y, maxW, lineH) {
 
 const PAINTERS = {
   character(ctx, d) {
-    drawEmblemDots(ctx, d.stencil, { x: 84, y: 300, size: 430, color: d.hex });
+    drawEmblemDots(ctx, d.stencil, { x: 84, y: 280, size: 380, color: d.hex });
     ctx.fillStyle = INK;
-    ctx.font = `700 250px ${DISP}`;
-    ctx.fillText(d.total, 560, 480);
+    ctx.font = `700 230px ${DISP}`;
+    ctx.fillText(d.total, 520, 450);
     ctx.fillStyle = MID;
     ctx.font = `500 28px ${MONO}`;
-    ctx.fillText(CARD_TEXT.tonnes + d.fy.toUpperCase(), 560, 540);
+    ctx.fillText(CARD_TEXT.tonnes + d.fy.toUpperCase(), 524, 510);
+    if (d.badge) {
+      drawEmblemDots(ctx, CUSTODIAN.stencil, { x: 524, y: 556, size: 64, color: lighten(CUSTODIAN.hex, 0.3) });
+      ctx.fillStyle = MID;
+      ctx.font = `500 26px ${MONO}`;
+      ctx.fillText(CUSTODIAN.name.toUpperCase(), 608, 598);
+    }
     ctx.fillStyle = INK;
-    fitText(ctx, d.name, 78, 900, W - 156, 700, DISP, 100);
+    fitText(ctx, d.name, 78, 820, W - 156, 700, DISP, 96);
     ctx.fillStyle = d.hex;
     ctx.font = `600 40px ${DISP}`;
-    ctx.fillText(d.tagline, 80, 968);
-    ctx.fillStyle = MID;
-    ctx.font = `400 33px ${SANS}`;
-    wrapText(ctx, d.line, 84, 1050, W - 168, 48);
+    ctx.fillText(d.tagline, 80, 884);
+    // The three-axis read-out that produced the verdict.
+    (d.axes || []).forEach((a, i) => {
+      const y = 966 + i * 84;
+      ctx.fillStyle = MID;
+      ctx.font = `500 26px ${MONO}`;
+      ctx.fillText(a.label.toUpperCase(), 84, y);
+      ctx.fillStyle = 'rgba(244,246,238,0.12)';
+      roundedBar(ctx, 300, y - 24, 440, 30, 5);
+      ctx.fillStyle = d.hex;
+      roundedBar(ctx, 300, y - 24, Math.max(14, a.frac * 440), 30, 5);
+      ctx.fillStyle = INK;
+      ctx.font = `600 30px ${SANS}`;
+      ctx.fillText(a.level, 776, y + 1);
+    });
   },
   total(ctx, d) {
     bigNumber(ctx, d.total, 't', 560);
@@ -295,13 +313,22 @@ export async function drawLinkedInCard(d) {
     ctx.font = `500 24px ${MONO}`;
     ctx.fillText(d.mix, 434, 528);
   }
+  if (d.badge) {
+    drawEmblemDots(ctx, CUSTODIAN.stencil, { x: LW - 72 - 64, y: 420, size: 64, color: lighten(CUSTODIAN.hex, 0.3) });
+    ctx.fillStyle = MID;
+    ctx.font = `500 20px ${MONO}`;
+    ctx.textAlign = 'right';
+    ctx.fillText(CUSTODIAN.name.toUpperCase(), LW - 72, 516);
+    ctx.textAlign = 'left';
+  }
 
   ctx.beginPath(); ctx.moveTo(72, 556); ctx.lineTo(LW - 72, 556); ctx.stroke();
+  // 18px keeps the method line and the site URL clear of each other at 1200 wide.
   ctx.fillStyle = MID;
-  ctx.font = `400 21px ${SANS}`;
+  ctx.font = `400 18px ${SANS}`;
   ctx.fillText(SHARE_ST.method, 72, 596);
   ctx.fillStyle = MATCHA;
-  ctx.font = `500 21px ${MONO}`;
+  ctx.font = `500 18px ${MONO}`;
   ctx.textAlign = 'right';
   ctx.fillText(SHARE_ST.site, LW - 72, 596);
   ctx.textAlign = 'left';
