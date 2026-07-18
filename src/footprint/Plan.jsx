@@ -6,6 +6,7 @@ import { PLAN, fmtT } from './data/copy';
 import { fill } from './data/storyCopy';
 import { prefersReducedMotion } from '../utils/media';
 import { MaccChart, PathwayChart } from './charts';
+import Icon from './Icons';
 
 const money = (v) => (v < 0 ? '-$' + Math.abs(v).toLocaleString() : '$' + v.toLocaleString());
 
@@ -76,7 +77,7 @@ export default function Plan({ macc, pathway, plan, onToggle }) {
   return (
     <section id="fp-plan">
       <div className="canvas">
-        <div className="sec-tag" data-idx="02 / ">The plan</div>
+        <div className="sec-tag" data-idx="02 / "><Icon name="target" size={16} />The plan</div>
         <h2 className="display fp-h2"><SplitText text={PLAN.title[0]} /> <SplitText text={PLAN.title[1]} accentIndex={0} /></h2>
         <p className="fp-sub">{PLAN.sub}</p>
 

@@ -9,6 +9,7 @@ import { DASH, DASH_UI, fmtT } from './data/copy';
 import { DASH_EXTRA, CHARACTER_ST, fill } from './data/storyCopy';
 import { CountUp } from './story/CountUp';
 import { TrendChart } from './charts';
+import Icon from './Icons';
 
 const monthName = (key) => {
   const [y, m] = key.split('-');
@@ -51,7 +52,7 @@ export default function Dashboard({ agg, period, compareAgg, comparePeriod, isEx
   return (
     <section id="fp-dash">
       <div className="canvas">
-        <div className="sec-tag" data-idx="01 / ">The audit · {period.label}</div>
+        <div className="sec-tag" data-idx="01 / "><Icon name="chart" size={16} />The audit · {period.label}</div>
         <h2 className="display fp-h2"><SplitText text={DASH.title[0]} /> <SplitText text={DASH.title[1]} accentIndex={0} /></h2>
         <p className="fp-sub">{DASH.sub}</p>
 

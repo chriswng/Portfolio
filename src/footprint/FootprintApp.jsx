@@ -21,6 +21,7 @@ import Plan from './Plan';
 import Log from './Log';
 import Onboarding from './Onboarding';
 import { FootprintNav, FootprintFooter } from './Nav';
+import Icon from './Icons';
 
 // Local date, never toISOString: UTC lands on yesterday in Australian zones.
 const todayIso = () => {
@@ -39,7 +40,7 @@ function MethodLink() {
   return (
     <section id="fp-methodlink">
       <div className="canvas">
-        <div className="sec-tag" data-idx="04 / ">Basis of preparation</div>
+        <div className="sec-tag" data-idx="04 / "><Icon name="book" size={16} />Basis of preparation</div>
         <h2 className="display fp-h2"><SplitText text={METHOD_LINK.title[0]} /> <SplitText text={METHOD_LINK.title[1]} accentIndex={1} /></h2>
         <p className="fp-sub">{METHOD_LINK.body}</p>
         <div className="fp-ctrl-row">
@@ -336,7 +337,7 @@ export default function FootprintApp() {
           <section id="fp-intro">
             <div className="bloom-wrap" aria-hidden="true"><div className="bloom bloom-a" /><div className="bloom bloom-b" /><div className="bloom bloom-c" /></div>
             <div className="canvas" style={{ position: 'relative', zIndex: 1 }}>
-              <div className="sec-tag" data-idx="00 / ">{INTRO.tag}</div>
+              <div className="sec-tag" data-idx="00 / "><Icon name="leaf" size={16} />{INTRO.tag}</div>
               <h1 className="fp-h1 display">
                 <SplitText text={INTRO.h1a} /> <SplitText text={INTRO.h1b} accentIndex={1} />
               </h1>

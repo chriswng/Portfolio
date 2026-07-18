@@ -4,6 +4,7 @@ import { CATEGORIES, categoryById, FLIGHT_ROUTES, ROAD_FUELS, DIET_TYPES, QUALIT
 import { LOG, ONBOARD, PACK, fmtT } from './data/copy';
 import { analyseCsv, buildEntriesFromImport, templateCsv } from './lib/importCsv';
 import { exportProfile, parseImported } from './lib/store';
+import Icon from './Icons';
 
 // Local date: toISOString gives yesterday before ~10am in Australian zones.
 const todayIso = () => {
@@ -340,7 +341,7 @@ export default function Log({ profile, isExample, archived, onAdd, onAddEntries,
   return (
     <section id="fp-log">
       <div className="canvas">
-        <div className="sec-tag" data-idx="03 / ">The log</div>
+        <div className="sec-tag" data-idx="03 / "><Icon name="list" size={16} />The log</div>
         <h2 className="display fp-h2"><SplitText text={LOG.title[0]} /> <SplitText text={LOG.title[1]} accentIndex={1} /></h2>
         <p className="fp-sub">{LOG.sub}</p>
 
