@@ -106,25 +106,36 @@ export default function Dashboard({ agg, period, compareAgg, comparePeriod, isEx
           })}
         </div>
 
+        {/* An audit made entirely of evenly spread estimates has no month
+            story: every bar would be the same twelfth. The chart only draws
+            once real dates shape the months, and says why otherwise. */}
         <motion.div className="fp-card" {...fadeUp}>
           <div className="fp-card-head">{DASH.trendTitle}</div>
-          <div className="fp-card-sub">{DASH.trendSub}</div>
-          <TrendChart agg={agg} />
-          <div className="fp-legend" aria-hidden="true">
-            {cats.map((c) => (
-              <span className="fp-leg-item" key={c.id}><span className="fp-leg-dot" style={{ background: c.hex }} />{c.label}</span>
-            ))}
-          </div>
-          {/* A worst month is only worth flagging when it genuinely spikes;
-              an evenly spread audit (all guided-audit estimates) has no
-              worst month, just twelfths. Same threshold the story uses. */}
-          {agg.worstMonth && agg.worstMonth.total > (total / Math.max(1, agg.months.length)) * 1.35 && (
-            <div className="fp-worst">
-              <span className="fp-worst-tag">{DASH.worstLabel}</span>
-              {monthName(agg.worstMonth.month)} · {fmtT(agg.worstMonth.total, 2)} t
-              {total > 0 ? ' · ' + Math.round((agg.worstMonth.total / total) * 100) + DASH_UI.worstSuffix : ''}
-            </div>
-          )}
+          {(() => {
+            const meanMonth = total / Math.max(1, agg.months.length);
+            const flat = !agg.worstMonth || agg.worstMonth.total <= meanMonth * 1.08;
+            if (total > 0 && flat) return <p className="fp-empty">{DASH.trendEmpty}</p>;
+            return (
+              <>
+                <div className="fp-card-sub">{DASH.trendSub}</div>
+                <TrendChart agg={agg} />
+                <div className="fp-legend" aria-hidden="true">
+                  {cats.map((c) => (
+                    <span className="fp-leg-item" key={c.id}><span className="fp-leg-dot" style={{ background: c.hex }} />{c.label}</span>
+                  ))}
+                </div>
+                {/* A worst month is only worth flagging when it genuinely
+                    spikes. Same threshold the story uses. */}
+                {agg.worstMonth && agg.worstMonth.total > meanMonth * 1.35 && (
+                  <div className="fp-worst">
+                    <span className="fp-worst-tag">{DASH.worstLabel}</span>
+                    {monthName(agg.worstMonth.month)} · {fmtT(agg.worstMonth.total, 2)} t
+                    {total > 0 ? ' · ' + Math.round((agg.worstMonth.total / total) * 100) + DASH_UI.worstSuffix : ''}
+                  </div>
+                )}
+              </>
+            );
+          })()}
         </motion.div>
 
         <motion.div className="fp-card" {...fadeUp}>

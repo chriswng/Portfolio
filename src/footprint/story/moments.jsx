@@ -304,7 +304,7 @@ export function Scopes({ d, voice }) {
       <motion.div className="st-center st-wide" initial="hidden" whileInView="visible" viewport={inView}>
         <motion.div className="sec-tag" data-idx="" variants={rise}>{SCOPES.tag}</motion.div>
         <motion.h2 className="st-h2 display" variants={rise} custom={1}>{SCOPES.headline}</motion.h2>
-        <motion.p className="st-line" variants={rise} custom={1.5}>{SCOPES.gloss}</motion.p>
+        <motion.p className="st-line" variants={rise} custom={1.5}>{SCOPES.gloss[voice]}</motion.p>
         <div className="st-scope-rows">
           {SCOPES.items.map((s, i) => (
             <motion.div className="st-scope-row" key={s.n} variants={rise} custom={2 + i}>
