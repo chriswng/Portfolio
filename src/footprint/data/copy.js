@@ -143,10 +143,14 @@ export const ONBOARD = {
     occupancyNote: 'We split car emissions across everyone in the car, the same way we split the home bills. Two people halves your share.',
     rideshare: 'Rideshare spend per week, $',
     pt: 'Public transport spend per week, $',
-    // {cap} filled with the state cap in the component.
-    ptCapNote: 'In {state}, {label} is ${cap} a week, so we will not count more than that unless you say so. Spending past the cap does not buy more travel.',
+    // Filled in the component. Exact = NSW's published weekly cap; approx =
+    // a derived ceiling for networks that cap by the day, by the trip, or not
+    // at all right now. {asOf} dates the approximate figures.
+    ptCapNoteExact: 'In {state}, {label} applies, so we will not count more than ${cap} a week unless you override it. Spending past the cap does not buy more travel.',
+    ptCapNoteApprox: 'In {state}, fares are capped ({label}), so we will not count more than about ${cap} a week unless you override it. A rough ceiling, current as at {asOf}.',
     ptOverride: 'Count my full spend anyway',
     ptCapApplied: 'Counting up to ${cap} a week',
+    ptCapAppliedApprox: 'Counting up to about ${cap} a week',
   },
   flights: {
     title: 'Your flights, one trip at a time',
