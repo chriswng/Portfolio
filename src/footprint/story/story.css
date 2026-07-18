@@ -99,7 +99,7 @@
 .st-total .st-ghost, .st-cover .st-ghost { -webkit-text-stroke: 1px rgba(244, 246, 238, 0.07); }
 .st-ghost-unit { font-size: clamp(7rem, 26vw, 22rem); }
 
-/* ---- Chrome: skip, sound, home ---- */
+/* ---- Chrome: skip, home ---- */
 .st-chrome {
   position: fixed;
   top: 0; left: 0; right: 0;
@@ -119,7 +119,7 @@
   transition: opacity 0.25s;
 }
 .st-home:hover { opacity: 0.7; }
-.st-skip, .st-sound {
+.st-skip {
   font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
   font-weight: 600; color: var(--st-dark-ink); background: rgba(23, 28, 19, 0.82);
   backdrop-filter: blur(8px); border: 1px solid rgba(244, 246, 238, 0.14);
@@ -127,14 +127,7 @@
   display: inline-flex; align-items: center; gap: 0.45rem; white-space: nowrap;
   transition: border-color 0.25s var(--ease), color 0.25s var(--ease);
 }
-.st-skip:hover, .st-sound:hover { border-color: var(--matcha); color: var(--matcha); }
-.st-sound.on { color: var(--matcha); border-color: rgba(181, 196, 43, 0.6); }
-.st-sound-bars { display: inline-flex; align-items: flex-end; gap: 2px; height: 10px; }
-.st-sound-bars i { width: 2px; height: 4px; background: currentColor; border-radius: 1px; }
-.st-sound.on .st-sound-bars i { animation: st-eq 1.1s ease-in-out infinite; }
-.st-sound.on .st-sound-bars i:nth-child(2) { animation-delay: 0.2s; height: 9px; }
-.st-sound.on .st-sound-bars i:nth-child(3) { animation-delay: 0.4s; height: 6px; }
-@keyframes st-eq { 0%, 100% { transform: scaleY(0.5); } 50% { transform: scaleY(1); } }
+.st-skip:hover { border-color: var(--matcha); color: var(--matcha); }
 
 /* ---- Chapter rail ---- */
 .st-rail {
@@ -382,7 +375,6 @@
 @media (prefers-reduced-motion: reduce) {
   .st-cue-line { animation: none; }
   .st-cover-eyebrow-dot { animation: none; }
-  .st-sound.on .st-sound-bars i { animation: none; }
   .st-ticker-row { flex-wrap: wrap; white-space: normal; padding: 0 5vw; justify-content: center; }
   .st-year, .st-total, .st-hot { min-height: 100svh; }
 }

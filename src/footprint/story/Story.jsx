@@ -156,7 +156,7 @@ function NextChapter({ active, chapters }) {
 // Act I: the reveal. A continuous scroll of full-screen moments above the
 // working dashboard. Purely presentational: it reads the same aggregates the
 // dashboard reads and never touches the store.
-export default function Story({ profile, agg, macc, voice, onStart, onSkip, onAssessor, onEnd, onFinish, onPlan, onCopyLink, soundOn, onToggleSound, onAutoMute }) {
+export default function Story({ profile, agg, macc, voice, onStart, onSkip, onAssessor, onEnd, onFinish, onPlan, onCopyLink }) {
   const reduced = useMemo(() => prefersReducedMotion(), []);
   const d = useMemo(() => buildStoryData(profile, agg, macc, voice), [profile, agg, macc, voice]);
   const character = useMemo(() => classifyCharacter(agg), [agg]);
@@ -202,21 +202,16 @@ export default function Story({ profile, agg, macc, voice, onStart, onSkip, onAs
   }, [onEnd]);
 
   // The story chrome belongs to the story: once the visitor scrolls past it
-  // into the dashboard, the skip button, sound pill and rail step aside.
-  // The sound toggle is the only way to stop the audio, so leaving the
-  // story also mutes it rather than orphaning a playing sound (WCAG 1.4.2).
+  // into the dashboard, the skip button and rail step aside.
   useEffect(() => {
     const el = rootRef.current;
     if (!el || !('IntersectionObserver' in window)) return undefined;
     const obs = new IntersectionObserver((entries) => {
-      entries.forEach((e) => {
-        setChromeOn(e.isIntersecting);
-        if (!e.isIntersecting) onAutoMute();
-      });
+      entries.forEach((e) => { setChromeOn(e.isIntersecting); });
     });
     obs.observe(el);
     return () => obs.disconnect();
-  }, [onAutoMute]);
+  }, []);
 
   const onGuessAgain = () => {
     setGuess((g) => ({ ...g, locked: false }));
@@ -234,15 +229,6 @@ export default function Story({ profile, agg, macc, voice, onStart, onSkip, onAs
         <div className="st-chrome">
           <a href="../" className="st-home" aria-label="Back to the profile">{CHROME.home}</a>
           <div className="st-chrome-right">
-            <button
-              type="button"
-              className={'st-sound' + (soundOn ? ' on' : '')}
-              aria-pressed={soundOn}
-              onClick={onToggleSound}
-            >
-              <span className="st-sound-bars" aria-hidden="true"><i /><i /><i /></span>
-              {soundOn ? CHROME.sound.on : CHROME.sound.off}
-            </button>
             <button type="button" className="st-skip" onClick={onSkip}>{CHROME.skip} ↓</button>
           </div>
         </div>
