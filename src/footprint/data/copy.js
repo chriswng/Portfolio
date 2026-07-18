@@ -8,8 +8,8 @@ export const META = {
 
 export const INTRO = {
   tag: 'Life Footprint Dashboard',
-  h1a: 'Scope 1, 2 and 3',
-  h1b: 'of me',
+  h1a: 'A year of me,',
+  h1b: 'in carbon',
   paras: [
     'I build GHG inventories and decarbonisation pathways for large organisations. This page points the same discipline at my own life, and it is a tool, not a confession booth: run your own audit and you get the same hotspot analysis, abatement cost curve and pathway model, sized for one human, with your data never leaving this browser.',
   ],
@@ -112,12 +112,13 @@ export const DASH = {
     largest: 'largest single entry',
   },
   scopes: [
-    { n: '1', title: 'Scope 1 of me', body: 'Fuel burned on my behalf at home: the gas under the hot water and the cooktop. Direct emissions, my name on them. No car this year, so no petrol line.' },
-    { n: '2', title: 'Scope 2 of me', body: 'Purchased electricity for a small flat that runs on surprisingly little. Location-based on the state grid factor; GreenPower would move it market-based.' },
-    { n: '3', title: 'Scope 3 of me', body: 'Everything I cause but do not combust: flights, trains, rideshare, freight, food, and the fuel supply chains. As in every inventory I have built, this is where the tonnes hide.' },
+    { n: '1', title: 'What I burn · scope 1', body: 'Fuel burned on my behalf at home: the gas under the hot water and the cooktop. Direct emissions, my name on them. No car this year, so no petrol line.' },
+    { n: '2', title: 'The power I buy · scope 2', body: 'Purchased electricity for a small flat that runs on surprisingly little. Location-based on the state grid factor; GreenPower would move it market-based.' },
+    { n: '3', title: 'Everything done for me · scope 3', body: 'Everything I cause but do not combust: flights, trains, rideshare, freight, food, and the fuel supply chains. As in every inventory I have built, this is where the tonnes hide.' },
   ],
   trendTitle: 'The year, month by month',
   trendSub: 'tCO₂-e per month, stacked by category. Bills are spread across the months they cover; dated point events land where they happened; undated estimates spread evenly.',
+  trendEmpty: 'No month story yet: every line in this audit is a typical-year estimate spread evenly, so the months would all read the same. Give a flight its month in the guided audit, or log an entry with a real date, and this chart starts talking.',
   worstLabel: 'worst month',
   catTitle: 'Where the year went',
   catSub: 'Annual tCO₂-e by category, share of total. The top two wedges decide whether any plan works; the rest is housekeeping.',
@@ -223,6 +224,9 @@ export const ONBOARD = {
   flights: {
     title: 'Your flights, one trip at a time',
     sub: 'Think through a typical year: holidays, work trips, weddings. Pick a route, press add, and it joins your list below. Repeat for every trip.',
+    when: 'When was it?',
+    whenAny: 'Sometime in the year',
+    whenNote: 'Optional. A trip with a month makes your month-by-month chart and worst-month reveal real; left open, it spreads evenly across the year.',
     route: 'Route',
     custom: 'Custom distance, km one way',
     customOpt: 'Custom distance…',
@@ -285,6 +289,7 @@ export const METHOD = {
     title: 'Reporting period and recalculation',
     paras: [
       'The reporting period is the Australian financial year. The audited year here is FY2026 (July 2025 to June 2026). Entries snapshot their factor at logging time and record which factor set priced them; a factor refresh (the NGA Factors update each August) applies to new entries, and any restatement of a prior year is done explicitly, not silently.',
+      'Month placement is honest about what is known. Dated entries land in their month, bills spread across the months they cover, and undated typical-year estimates from the guided audit spread evenly across the year rather than being assigned invented dates. Monthly views, the worst-month reveal and the rhythm axis of the character only speak when real dates give them something to say.',
       'Years now roll over. Closing a year archives it exactly as it stands, entries and pinned factors included, and opens the next twelve months against the factor set in force. A closed year is never re-priced by a refresh. Restating one is deliberate by construction: export your data, correct the closed year in the file, re-import it, and record why. The restatement rule is the organisational one, sized down: material errors are corrected and said out loud; factor updates apply forward, not backward.',
       'One honest gap: we moved apartments in late July 2025, so the first weeks of the year have no home energy data. The audit carries the gap rather than inventing a number for it.',
     ],

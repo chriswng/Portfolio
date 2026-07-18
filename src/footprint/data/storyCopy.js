@@ -17,7 +17,7 @@ export const CHAPTERS = [
   { id: 'st-year', label: 'The year' },
   { id: 'st-guess', label: 'The guess' },
   { id: 'st-total', label: 'The number' },
-  { id: 'st-scopes', label: 'Three scopes' },
+  { id: 'st-scopes', label: 'Three sources' },
   { id: 'st-hotspots', label: 'Hotspots' },
   { id: 'st-months', label: 'Worst month' },
   { id: 'st-bench', label: 'Context' },
@@ -28,8 +28,8 @@ export const CHAPTERS = [
 
 export const COVER = {
   tag: 'Life Footprint',
-  h1a: 'Scope 1, 2 and 3',
-  h1b: 'of me',
+  h1a: 'A year of me,',
+  h1b: 'in carbon',
   sub: {
     example:
       'I measure carbon for big organisations. This is the same maths pointed at my own life: a year of flights, bills, parcels and dinners, honestly added up.',
@@ -93,13 +93,16 @@ export const TOTAL = {
 };
 
 export const SCOPES = {
-  tag: '04 · Three scopes',
-  headline: 'One life, three buckets',
-  gloss: 'Carbon accountants call the buckets scopes. In plain words: what you burn, the power you buy, and everything made or moved for you.',
+  tag: '04 · The three sources',
+  headline: 'Three ways a life makes carbon',
+  gloss: {
+    example: 'What I burn myself, the power I buy, and everything made or moved for me. The trade files these as scopes 1, 2 and 3; this audit is scope 1, 2 and 3 of me.',
+    own: 'What you burn yourself, the power you buy, and everything made or moved for you. The trade files these as scopes 1, 2 and 3; the pattern matters more than the names.',
+  },
   items: [
     {
       n: '1',
-      name: 'Scope 1',
+      name: 'Scope 1, in the trade',
       plain: { example: 'What I burn', own: 'What you burn' },
       line: {
         example: 'The gas under my hot water and cooktop. Fuel burned at home, in my name.',
@@ -108,7 +111,7 @@ export const SCOPES = {
     },
     {
       n: '2',
-      name: 'Scope 2',
+      name: 'Scope 2, in the trade',
       plain: { example: 'The power I buy', own: 'The power you buy' },
       line: {
         example: 'Electricity for a small flat that runs on surprisingly little.',
@@ -117,8 +120,8 @@ export const SCOPES = {
     },
     {
       n: '3',
-      name: 'Scope 3',
-      plain: { example: 'Everything else', own: 'Everything else' },
+      name: 'Scope 3, in the trade',
+      plain: { example: 'Everything done for me', own: 'Everything done for you' },
       line: {
         example: 'Flights, trains, deliveries, food. Made or moved for me by someone else.',
         own: 'Flights, transport, deliveries, food. Made or moved for you by someone else.',
@@ -126,8 +129,8 @@ export const SCOPES = {
     },
   ],
   punch: {
-    example: 'of my year is bucket three. Same as every company I have ever audited.',
-    own: 'of your year is bucket three. Same as almost everyone.',
+    example: 'of my year is things made or moved for me by someone else. Same as every company I have ever audited.',
+    own: 'of your year is things made or moved for you. Same as almost everyone.',
   },
 };
 
