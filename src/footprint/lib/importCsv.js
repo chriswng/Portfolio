@@ -119,6 +119,7 @@ export function buildEntriesFromImport(analysis, include, settings) {
   if (include.fuel && analysis.groups.fuel.count > 0) {
     const litres = analysis.groups.fuel.total / c.petrolPerLitre.value;
     entries.push(priceEntry({
+      quality: 'estimated',
       category: 'road', date: endDate, period_months: 12,
       label: 'Petrol (from bank import, ' + analysis.groups.fuel.count + ' fills)',
       // Litres of pump fuel cannot belong to an EV: fall back to petrol
@@ -135,6 +136,7 @@ export function buildEntriesFromImport(analysis, include, settings) {
   if (include.rideshare && analysis.groups.rideshare.count > 0) {
     const km = analysis.groups.rideshare.total / c.ridesharePerKm.value;
     entries.push(priceEntry({
+      quality: 'estimated',
       category: 'road', date: endDate, period_months: 12,
       label: 'Rideshare and taxis (from bank import, ' + analysis.groups.rideshare.count + ' trips)',
       meta: { mode: 'rideshare', km: Math.round(km) },
@@ -144,6 +146,7 @@ export function buildEntriesFromImport(analysis, include, settings) {
   if (include.pt && analysis.groups.pt.count > 0) {
     const km = analysis.groups.pt.total / c.ptPerKm.value;
     entries.push(priceEntry({
+      quality: 'estimated',
       category: 'road', date: endDate, period_months: 12,
       label: 'Public transport (from bank import)',
       meta: { mode: 'pt', km: Math.round(km) },
@@ -154,6 +157,7 @@ export function buildEntriesFromImport(analysis, include, settings) {
     const domestic = analysis.groups.parcels.count - analysis.groups.parcels.intlCount;
     if (domestic > 0) {
       entries.push(priceEntry({
+      quality: 'estimated',
         category: 'freight', date: endDate, period_months: 12,
         label: 'Parcels (from bank import, ' + domestic + ' orders)',
         meta: { parcels: domestic },
@@ -163,6 +167,7 @@ export function buildEntriesFromImport(analysis, include, settings) {
     if (analysis.groups.parcels.intlCount > 0) {
       const tonneKm = analysis.groups.parcels.intlCount * 0.003 * 8000;
       entries.push(priceEntry({
+      quality: 'estimated',
         category: 'freight', date: endDate, period_months: 12,
         label: 'Overseas orders, air express (from bank import, ' + analysis.groups.parcels.intlCount + ' orders)',
         meta: { mode: 'air', tonneKm: Math.round(tonneKm) },

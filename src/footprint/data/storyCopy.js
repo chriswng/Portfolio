@@ -38,6 +38,7 @@ export const COVER = {
   },
   start: 'Start your own audit',
   startNote: 'Ten minutes, your bills, no account.',
+  assessor: 'Here to assess the work, not run one? The 45-second version',
   scrollCue: 'Scroll to dive in',
 };
 
