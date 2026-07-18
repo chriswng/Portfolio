@@ -10,7 +10,6 @@ export const NAV_LINKS = [
   { href: 'footprint/', label: 'Footprint', external: true },
   { href: 'fashion/', label: 'Sevenfold', external: true },
   { href: '#experience', label: 'Experience' },
-  { href: '#contact', label: 'Contact' },
 ];
 
 export const HERO = {
@@ -157,31 +156,33 @@ export const EXPERIENCE = [
   },
 ];
 
+// Rendered with the same entry layout as EXPERIENCE so education reads as a
+// peer of the employment history, not an isolated card. org/dept/roles mirror
+// the shape of an EXPERIENCE entry; bullets carry a bold lead-in label.
 export const EDUCATION = {
   mark: 'UNSW', clr: 'unsw',
-  inst: 'University of New South Wales',
-  deg: 'Bachelor of Engineering (Civil Engineering with Architecture), Honours Class 1',
-  cells: [
-    { l: 'Honours', b: ['First Class', ' · Dean’s Honours List'] },
-    { l: 'Thesis · graded 92/100', b: ['Vertical Greenery Systems and the Indoor Setting', ''] },
-    { l: 'Leadership', b: ['President, CEVSOC 2021', ' · Arc Club of the Year · executive team of 56, 2,000-member society'] },
-    { l: 'Capstone', b: ['Sustainable infrastructure masterplanning', ' · Green Star, NABERS, Envision'] },
+  org: 'University of New South Wales',
+  dept: 'Bachelor of Engineering (Civil with Architecture)',
+  roles: [{ title: 'Honours Class 1', date: '2016 - 2021' }],
+  bullets: [
+    { lead: 'Honours', text: 'First Class, Dean’s Honours List.' },
+    { lead: 'Thesis · 92/100', text: 'Vertical Greenery Systems and the Indoor Setting.' },
+    { lead: 'Leadership', text: 'President, CEVSOC 2021 · Arc Club of the Year · executive team of 56, 2,000-member society.' },
+    { lead: 'Capstone', text: 'Sustainable infrastructure masterplanning · Green Star, NABERS, Envision.' },
   ],
 };
 
-export const CONTACT = {
-  line: 'open to senior advisory and lead sustainability roles.',
-  loc: 'Melbourne, Victoria · Flexible on arrangement',
-  linkedin: 'https://linkedin.com/in/itschriswang',
-};
-
+// The footer is the site's single closing statement. The old standalone
+// Contact section folded in here: the availability line, the location, and one
+// primary LinkedIn action. There is deliberately no second LinkedIn CTA.
 export const FOOTER = {
   wordmark: 'Christopher Wang',
-  // A real, useful call to action — not an invented newsletter. Chris is open
-  // to roles, so the prominent footer block points at getting in touch.
   availability: 'Open to senior advisory and lead sustainability roles.',
-  ctaLabel: 'Get in touch',
+  // Merged from the former Contact section.
+  location: 'Melbourne, Australia · flexible on arrangement',
+  ctaLabel: 'Connect on LinkedIn',
   ctaHref: 'https://linkedin.com/in/itschriswang',
+  ctaHandle: 'linkedin.com/in/itschriswang',
   rights: 'All rights reserved © 2026 · Christopher Wang',
   tagline: 'Sustainability advisor · Melbourne, Australia',
   // Link columns. hrefs beginning with '#' or a sub-path are prefixed with the
@@ -203,13 +204,6 @@ export const FOOTER = {
         { label: 'Work Samples', href: 'work/' },
         { label: 'Carbon Footprint', href: 'footprint/' },
         { label: 'Sevenfold', href: 'fashion/' },
-      ],
-    },
-    {
-      head: 'Connect',
-      links: [
-        { label: 'LinkedIn', href: 'https://linkedin.com/in/itschriswang', external: true },
-        { label: 'Contact', href: '#contact' },
       ],
     },
   ],
