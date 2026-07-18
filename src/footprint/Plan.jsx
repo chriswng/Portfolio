@@ -112,10 +112,10 @@ export default function Plan({ macc, pathway, plan, onToggle }) {
               <span className="fp-leg-item"><span className="fp-leg-line dash" style={{ color: '#C7274A' }} />{PLAN.budgetLabel}</span>
             </div>
             <p className="fp-takeaway">
-              This plan lands FY{horizonYear} at <em>{fmtT(landing)} t</em>, against {fmtT(bauLanding)} t with frozen habits.
+              By FY{horizonYear} your plan lands at <em>{fmtT(landing)} t</em>, next to {fmtT(bauLanding)} t if nothing changes.
               At 2030 it reads {fmtT(at2030)} t, {gap > 0
-                ? <>still <em>{fmtT(gap)} t over</em> the 1.5°C budget. The distance is not a rounding error; it is a decision.</>
-                : <>which is <em>inside the 1.5°C budget</em>. Publish the method and take the bow.</>}
+                ? <>still <em>{fmtT(gap)} t over</em> the 2.5 t target. The distance is not a rounding error; it is a decision.</>
+                : <>which is <em>inside the 2.5 t target</em>. Publish the method and take the bow.</>}
             </p>
           </div>
 

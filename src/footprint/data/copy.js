@@ -134,10 +134,10 @@ export const PLAN = {
   maccSub: 'Dollars per tonne against tonnes abated per year. Bar width is the annual reduction; bars below the line pay you. Each bar is the action alone at current factors; the pathway resolves overlaps.',
   maccNote: 'Options greyed out among the cards are not applicable to this audit: no car means no EV bar, and a rented apartment makes solar and appliance swaps landlord problems. The method says so rather than pretending.',
   scenarioTitle: 'The pathway',
-  scenarioSub: 'Grid decarbonisation runs in the background on published projections, actions phase in by effort, and interactions resolve in sequence so shared kilowatt hours are never counted twice.',
-  budgetLabel: '1.5°C lifestyle budget · 2.5 t by 2030',
-  bauLabel: 'Frozen habits (audited year repeats)',
-  planLabel: 'With the plan',
+  scenarioSub: 'Two lines to read. The lower one is where your plan takes you; the upper dashed one is where you stay if nothing changes. Until you switch an action on the two sit on top of each other, because a plan with nothing in it is just today, repeated. The grid keeps cleaning up in the background either way, actions phase in by how hard they are, and overlaps resolve in order so a shared kilowatt hour is never counted twice.',
+  budgetLabel: 'The 2030 target · 2.5 t a person',
+  bauLabel: 'If nothing changes',
+  planLabel: 'With your plan',
   tableTitle: 'Build the plan',
   tableSub: 'Toggle an action and the impact readout and pathway rebuild in place. Every card states its reduction, cost basis and effort; effort is honest: low is a phone call, high is a changed life.',
   toggleOn: 'In the plan',
@@ -149,10 +149,10 @@ export const PLAN = {
   next: 'More options',
   impact: {
     label: 'Your plan so far',
-    none: 'Nothing enabled yet. Add an action and watch this line move.',
-    line: '{n} action{s} on · {at2030} t at 2030 against {bau2030} t with frozen habits · down {pct}%',
-    over: '{gap} t over the 2.5 t budget',
-    within: 'inside the 2.5 t budget',
+    none: 'Nothing switched on yet. Add an action and watch the plan line pull away from the "if nothing changes" line.',
+    line: '{n} action{s} on. By 2030 you land at {at2030} t, down {pct}% from the {bau2030} t you reach if nothing changes',
+    over: '{gap} t over the 2.5 t target',
+    within: 'inside the 2.5 t target',
   },
 };
 
@@ -178,6 +178,7 @@ export const LOG = {
     head: ['Date', 'Entry', 'Category', 'Activity', 'Factor', 'Scope', 'tCO₂-e'],
     empty: 'No entries yet. Add one below or run the guided audit.',
   },
+  editHint: 'Your log is live. Tap any activity number, or the Edit button, to change it in place. Every chart above re-prices the moment you save.',
   exampleNote: {
     body: 'This log is the worked example, so it is read-only. Your own log is editable, private to your browser, and starts with one click.',
     cta: 'Start your own audit',
@@ -206,8 +207,8 @@ export const ONBOARD = {
     kwh: 'Electricity, kWh per quarter (whole household)',
     mj: 'Gas, MJ per quarter (0 if no gas)',
     greenpower: 'Is your electricity on GreenPower?',
-    greenpowerNote: 'GreenPower is an optional 100% renewable add-on some electricity plans include. If you have never heard of it, you are almost certainly not on it: pick No.',
-    gpNo: 'No / not sure',
+    greenpowerNote: 'GreenPower is an optional 100% renewable add-on some electricity plans include. If you have never heard of it, you are almost certainly not on it, so choose the first option.',
+    gpNo: 'No, or not sure',
     gpHalf: 'Partly (50%)',
     gpFull: 'Yes, 100%',
   },
@@ -371,6 +372,7 @@ export const METHOD_LINK = {
 // Transient UI feedback, previously inline in components.
 export const TOASTS = {
   entryAdded: 'Entry added and priced.',
+  entryUpdated: 'Entry updated and re-priced.',
   nothingSelected: 'Nothing selected to add.',
   csvAdded: '{n} estimate{s} added from the CSV.',
   shareCopied: 'Share link copied. Summary only; the log stays here.',
