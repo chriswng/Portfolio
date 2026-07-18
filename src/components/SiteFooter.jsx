@@ -20,18 +20,21 @@ function resolve(href, base) {
 
 export default function SiteFooter({ base = '' }) {
   return (
-    <footer className="site-footer">
+    <footer className="site-footer" id="contact">
       <div className="footer-card">
         <div className="footer-wordmark">{FOOTER.wordmark}</div>
 
+        {/* The single primary call to action. Availability + location fold in
+            from the former Contact section; one LinkedIn button, nothing else. */}
         <div className="footer-cta">
-          <span className="footer-cta-line">{FOOTER.availability}</span>
+          <div className="footer-cta-copy">
+            <span className="footer-cta-line">{FOOTER.availability}</span>
+            <span className="footer-cta-loc">{FOOTER.location}</span>
+          </div>
           <a className="footer-cta-btn" href={FOOTER.ctaHref} target="_blank" rel="noopener noreferrer">
             <LinkedInIcon />{FOOTER.ctaLabel}<span aria-hidden="true">&nbsp;→</span>
           </a>
         </div>
-
-        <div className="footer-legal">{FOOTER.rights}</div>
 
         <nav className="footer-cols" aria-label="Footer">
           {FOOTER.columns.map((col) => (
@@ -55,10 +58,7 @@ export default function SiteFooter({ base = '' }) {
 
         <div className="footer-baseline">
           <a href={base || '#about'} className="footer-mark">./</a>
-          <span className="footer-tagline">{FOOTER.tagline}</span>
-          <a className="footer-pill" href={FOOTER.ctaHref} target="_blank" rel="noopener noreferrer" aria-label="Christopher Wang on LinkedIn">
-            <LinkedInIcon />itschriswang
-          </a>
+          <span className="footer-legal">{FOOTER.rights}</span>
         </div>
       </div>
     </footer>

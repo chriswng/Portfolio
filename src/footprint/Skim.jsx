@@ -4,7 +4,7 @@
 // a visitor running their own audit has a different job to be done.
 
 import SplitText from '../components/SplitText';
-import { CONTACT } from '../data/content';
+import { FOOTER } from '../data/content';
 import { FACTOR_SET } from './data/factors';
 import { METHOD, SKIM, fmtT } from './data/copy';
 import { AUS_AVG } from './data/benchmarks';
@@ -63,7 +63,7 @@ export default function Skim({ agg, macc }) {
         <div className="fp-skim-contact">
           <p>{SKIM.contact}</p>
           <div className="fp-ctrl-row">
-            <a className="btn btn-primary fp-btn" href={CONTACT.linkedin} target="_blank" rel="noopener noreferrer">{SKIM.contactCta} ↗</a>
+            <a className="btn btn-primary fp-btn" href={FOOTER.ctaHref} target="_blank" rel="noopener noreferrer">{SKIM.contactCta} ↗</a>
             <a className="fp-linkbtn" href="../#contact">{SKIM.contactProfile} →</a>
           </div>
         </div>

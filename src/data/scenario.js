@@ -1,21 +1,45 @@
 // Decarbonisation scenario model — ported verbatim from the original site so
 // every figure the chart and KPIs produce is byte-for-byte identical.
 
+// Operating profiles. Property leads (default); infrastructure is the low-
+// emphasis composite. Scales are illustrative but anchored to publicly listed
+// peers — property landlords (Charter Hall, Stockland), a services operator
+// midway between listed integrated-services peers, and apparel disclosures
+// (Nike FY24, Hermès, LVMH) for textile. No profile tracks a single employer.
+//
+// `curve` selects the abatement decay set (F or F_TEXTILE); `levers` selects
+// the label/source set in LEVER_LABELS. SH splits Scope 1&2 (or, for textile,
+// the value-chain footprint) across the four lever buckets and sums to 1.
 export const SECTOR_PROFILES = {
-  infrastructure: {
-    label: 'Infrastructure', FY20: 347000, FY25: 277000, FY26: 271000,
-    SH: { s2: 0.112, lv: 0.224, hv: 0.273, plant: 0.391 },
-    desc: 'Infrastructure: heavy plant, diesel fleet, and mechanical processes drive the Scope 1 footprint. Grid decarbonisation delivers Scope 2 reduction.',
-  },
   property: {
-    label: 'Commercial Property', FY20: 210000, FY25: 168000, FY26: 157000,
-    SH: { s2: 0.580, lv: 0.150, hv: 0.010, plant: 0.260 },
-    desc: 'Commercial property: grid electricity dominates Scope 2. Building systems and plant electrification are the primary reduction levers.',
+    label: 'Commercial Property', FY20: 123000, FY25: 98000, FY26: 92000,
+    SH: { s2: 0.62, lv: 0.10, hv: 0.04, plant: 0.24 },
+    curve: 'base', levers: 'property',
+    desc: 'Commercial office landlord: base-building grid electricity is the bulk of Scope 2. Renewable procurement decarbonises it fastest, all-electric retrofit removes on-site gas, and HVAC tuning plus green leases reach the tenant-influenced load.',
   },
-  government: {
-    label: 'Government Operations', FY20: 185000, FY25: 148000, FY26: 142000,
-    SH: { s2: 0.420, lv: 0.340, hv: 0.080, plant: 0.160 },
-    desc: 'Government: office electricity (Scope 2) and light vehicle fleet (Scope 1) are primary sources. Procurement emissions drive Scope 3.',
+  retail: {
+    label: 'Retail · Shopping Centres', FY20: 105000, FY25: 84000, FY26: 79000,
+    SH: { s2: 0.58, lv: 0.12, hv: 0.06, plant: 0.24 },
+    curve: 'base', levers: 'retail',
+    desc: 'Shopping-centre owner: common-area electricity dominates Scope 2 and refrigeration is the stubborn Scope 1 source. Renewable procurement and a low-GWP refrigerant transition are the big levers; retailer engagement reaches sub-metered tenant load.',
+  },
+  logistics: {
+    label: 'Logistics & Industrial', FY20: 65000, FY25: 52000, FY26: 48000,
+    SH: { s2: 0.56, lv: 0.12, hv: 0.12, plant: 0.20 },
+    curve: 'base', levers: 'logistics',
+    desc: 'Logistics and industrial estates: warehouse electricity with large rooftop-solar and PPA potential, so Scope 2 falls fast. Materials-handling electrification and efficiency close most of the rest; yard and heavy-equipment transition is the slower tail.',
+  },
+  textile: {
+    label: 'Textile Retail', FY20: 42000, FY25: 35000, FY26: 34000,
+    SH: { s2: 0.08, lv: 0.40, hv: 0.10, plant: 0.42 },
+    curve: 'textile', levers: 'textile',
+    desc: 'Textile retail: purchased goods dominate. Raw-material production and Tier-2 wet processing are roughly four-fifths of a value-chain footprint that is ~95% Scope 3. Own-operations renewables cut Scope 2 quickly; materials substitution ramps steadily; supplier decarbonisation (coal phase-out in dyeing and finishing) carries the largest, back-loaded prize; freight mode shift trims logistics.',
+  },
+  infrastructure: {
+    label: 'Infrastructure Services', FY20: 198000, FY25: 158000, FY26: 152000,
+    SH: { s2: 0.12, lv: 0.24, hv: 0.30, plant: 0.34 },
+    curve: 'base', levers: 'infrastructure',
+    desc: 'Integrated infrastructure services: a diesel fleet and mobile plant drive Scope 1, with grid electricity a minor share. Fleet transition and plant electrification are the primary levers; grid decarbonisation supports Scope 2. Illustrative composite scaled between listed sector peers, not modelled on any single operator.',
   },
 };
 
@@ -71,35 +95,62 @@ export const F_TEXTILE = (() => {
   };
 })();
 
-export const TEXTILE_PROFILE = {
-  FY20: 42000, FY25: 35000, FY26: 35000,
-  SH: { s2: 0.08, lv: 0.18, hv: 0.42, plant: 0.32 },
-  desc: 'Boutique textile retail: air freight logistics and raw material sourcing (virgin polyester vs bio-synthetics) dominate the Scope 3 footprint. Renewable energy procurement addresses Scope 2.',
-};
-
+// Per-sector lever labels + sources. Every sector's `grid` slot is a grid /
+// renewable-electricity lever (grid decarbonisation applies to all electricity-
+// consuming sectors, textile included); the other three slots differ by sector
+// so no two profiles share the same decarbonisation story. The curve each slot
+// drives is fixed by the engine, so labels are chosen to match each curve's
+// real-world timing (fast grid, steady mid, slow/late, linear electrification).
 export const LEVER_LABELS = {
-  industrial: {
+  property: {
+    grid: { name: 'Renewable Electricity Procurement', src: 'PPA + GreenPower · market-based Scope 2' },
+    lv: { name: 'HVAC & Plant Efficiency', src: 'NABERS-rated base-building tuning' },
+    hv: { name: 'Green Leases & Tenant Engagement', src: 'Better Buildings Partnership green-lease pathway' },
+    plant: { name: 'All-Electric Retrofit', src: 'Gas heating & hot-water electrification' },
+    cbar: { grid: 'Renewable Electricity', lv: 'HVAC Efficiency', hv: 'Green Leases', plant: 'All-Electric Retrofit' },
+    sub: 'Adjust the levers to see how a commercial office portfolio reaches net-zero Scope 1 and 2. Assumptions draw on the DCCEEW 2025 grid emission-factor trajectory, NABERS base-building performance, and published property-sector electrification pathways.',
+  },
+  retail: {
+    grid: { name: 'Renewable Electricity Procurement', src: 'PPA + GreenPower · market-based Scope 2' },
+    lv: { name: 'Refrigeration & HVAC Efficiency', src: 'Common-area plant optimisation' },
+    hv: { name: 'Retailer & Tenant Engagement', src: 'Green-lease + sub-metering pathway' },
+    plant: { name: 'Low-GWP Refrigerant Transition', src: 'HFC phase-down · Kigali / Montreal Protocol' },
+    cbar: { grid: 'Renewable Electricity', lv: 'Refrigeration Efficiency', hv: 'Tenant Engagement', plant: 'Refrigerant Transition' },
+    sub: 'Model how a shopping-centre portfolio decarbonises. Common-area electricity follows the DCCEEW grid trajectory and renewable procurement; refrigeration efficiency and a low-GWP refrigerant transition track the HFC phase-down; tenant engagement reaches sub-metered retail load.',
+  },
+  logistics: {
+    grid: { name: 'On-site Solar & Renewable PPA', src: 'Rooftop PV + PPA · market-based Scope 2' },
+    lv: { name: 'Warehouse Energy Efficiency', src: 'LED, cold-chain and BMS optimisation' },
+    hv: { name: 'Yard & Heavy Equipment Transition', src: 'CSIRO Net Zero Pathways · technology-constrained' },
+    plant: { name: 'Materials-Handling Electrification', src: 'Forklift + MHE fleet electrification' },
+    cbar: { grid: 'On-site Solar & PPA', lv: 'Energy Efficiency', hv: 'Heavy Equipment', plant: 'MHE Electrification' },
+    sub: 'Explore a logistics and industrial estate pathway. Warehouse roofs carry large solar and PPA potential, so Scope 2 falls fast; materials-handling electrification and efficiency follow; yard and heavy-equipment transition is technology-constrained and lands later.',
+  },
+  infrastructure: {
     grid: { name: 'Grid Decarbonisation', src: 'DCCEEW 2025 Table 42 NEM trajectory' },
     lv: { name: 'LV Fleet Transition', src: 'NVES Act 2024 · 1-yr adoption lag' },
-    hv: { name: 'HV Fleet Transition', src: 'CSIRO Net Zero Pathways 2023 · 1-yr lag' },
+    hv: { name: 'HV Fleet & Mobile Plant', src: 'CSIRO Net Zero Pathways 2023 · 1-yr lag' },
     plant: { name: 'Plant Electrification', src: 'Industry plant electrification analysis' },
-    cbar: { grid: 'Grid (Scope 2)', lv: 'LV Fleet', hv: 'HV Fleet', plant: 'Plant Electrification' },
-    sub: 'Adjust the controls below to explore how different abatement strategies shift a Scope 1 and 2 emissions trajectory. Lever assumptions are drawn from DCCEEW 2025 grid emission factor tables, the NVES Act 2024 (LV fleet), CSIRO Net Zero Pathways (HV fleet), and published plant electrification analysis, the same sources used in production pathway models.',
+    cbar: { grid: 'Grid (Scope 2)', lv: 'LV Fleet', hv: 'HV Fleet & Plant', plant: 'Plant Electrification' },
+    sub: 'A services operator with a diesel fleet and mobile plant. Lever assumptions draw on the DCCEEW 2025 grid emission-factor tables, the NVES Act 2024 (light vehicles), CSIRO Net Zero Pathways (heavy fleet), and published plant-electrification analysis. Illustrative composite, not any single operator.',
   },
   textile: {
-    grid: { name: 'Renewable Energy Procurement', src: 'RE100 trajectory · market-based instrument adoption' },
-    lv: { name: 'Enzyme Dyeing Process Adoption', src: 'Textile Exchange · low-impact wet processing pathway' },
-    hv: { name: 'Air-to-Ocean Freight Modal Shift', src: 'Clean Cargo WG · container shipping decarbonisation' },
-    plant: { name: 'Biosynthetics Material Substitution', src: 'Textile Exchange Preferred Fiber Report · closed-loop pathway' },
-    cbar: { grid: 'Renewable Energy', lv: 'Enzyme Dyeing', hv: 'Freight Modal Shift', plant: 'Biosynthetics' },
-    sub: 'Explore how a boutique apparel brand can reduce Scope 3 emissions through freight mode shift (air → ocean), material substitution (virgin polyester → closed-loop bio-synthetics), low-impact dyeing processes, and renewable energy procurement. Multipliers scaled to illustrative boutique retail footprint.',
+    grid: { name: 'Renewable Electricity (own operations)', src: 'RE100 · Nike 96%, Hermès 98% market-based' },
+    lv: { name: 'Preferred Materials Substitution', src: 'Recycled / organic / bio fibre · Textile Exchange' },
+    hv: { name: 'Freight Mode Shift (Air → Ocean)', src: 'Clean Cargo · logistics decarbonisation' },
+    plant: { name: 'Supplier Decarbonisation (Tier-2)', src: 'Coal phase-out in dyeing · SBTi supplier pathway' },
+    cbar: { grid: 'Own-ops Renewables', lv: 'Materials Substitution', hv: 'Freight Mode Shift', plant: 'Supplier (Tier-2)' },
+    sub: 'Explore how a textile retailer cuts a value-chain footprint that is ~95% Scope 3. Own-operations renewables saturate early; preferred-materials substitution ramps steadily; supplier (Tier-2) decarbonisation and coal phase-out in wet processing carry the largest, back-loaded reduction; freight mode shift trims logistics. Anchored to Nike FY24, Hermès and LVMH disclosures.',
   },
 };
 
+// Property leads (default). All profiles get identical selector treatment;
+// infrastructure sits among the property peers rather than dangling last.
 export const SECTOR_OPTIONS = [
-  { value: 'infrastructure', label: 'Infrastructure' },
   { value: 'property', label: 'Commercial Property' },
-  { value: 'government', label: 'Government' },
+  { value: 'retail', label: 'Retail · Shopping Centres' },
+  { value: 'logistics', label: 'Logistics & Industrial' },
+  { value: 'infrastructure', label: 'Infrastructure Services' },
   { value: 'textile', label: 'Textile Retail' },
 ];
 
@@ -109,22 +160,14 @@ export const chartLabels = (() => {
   return a;
 })();
 
-// Resolve the active sector profile (FY20/FY25/SH/HIST) and display mode.
+// Resolve the active sector profile (FY20/FY25/SH/HIST), its abatement curve
+// set ('base' | 'textile') and its lever-label key.
 export function resolveSector(sectorKey) {
-  if (sectorKey === 'textile') {
-    const scale = TEXTILE_PROFILE.FY25 / 277000;
-    return {
-      mode: 'textile',
-      FY20: TEXTILE_PROFILE.FY20, FY25: TEXTILE_PROFILE.FY25, FY26: TEXTILE_PROFILE.FY26,
-      SH: TEXTILE_PROFILE.SH,
-      HIST: HIST_BASE.map((h) => Math.round(h * scale)),
-      desc: TEXTILE_PROFILE.desc,
-    };
-  }
-  const prof = SECTOR_PROFILES[sectorKey];
+  const prof = SECTOR_PROFILES[sectorKey] || SECTOR_PROFILES.property;
   const scale = prof.FY25 / 277000;
   return {
-    mode: 'industrial',
+    mode: prof.curve,
+    levers: prof.levers,
     FY20: prof.FY20, FY25: prof.FY25, FY26: prof.FY26,
     SH: prof.SH,
     HIST: HIST_BASE.map((h) => Math.round(h * scale)),
@@ -136,7 +179,7 @@ export function resolveSector(sectorKey) {
 // KPI values, the dynamic takeaway, and per-lever FY30 contribution bars.
 export function runModel(scn) {
   const { grid: gk, lv: lk, hv: hk, plant: pk, rev: rk } = scn;
-  const { mode, FY20, FY25, SH, HIST } = resolveSector(scn.sector);
+  const { mode, levers, FY20, FY25, SH, HIST } = resolveSector(scn.sector);
   const FT = mode === 'textile' ? F_TEXTILE : F;
   const currentYear = new Date().getFullYear();
 
@@ -193,11 +236,11 @@ export function runModel(scn) {
     : Math.abs(Math.round(pct)) + '% above the FY20 baseline';
   const verdict = pct >= 50
     ? 'ahead of a 1.5°C-aligned interim cut of ~50%.'
-    : 'short of a 1.5°C-aligned interim cut of ~50% — the gap is the conversation.';
+    : 'short of a 1.5°C-aligned interim cut of ~50%, and the gap is the conversation.';
   const takeaway = {
     head: 'These levers land FY30 at ',
     value: Math.round(net30 / 1000) + 'k tCO₂-e',
-    tail: ' — ' + rel + ', avoiding ' + avoided + 'k t against business-as-usual, ' + verdict,
+    tail: ', ' + rel + ', avoiding ' + avoided + 'k t against business-as-usual, ' + verdict,
     note: 'Headline recalculates from your lever settings · FY30 interim target year · illustrative figures',
   };
 
@@ -211,7 +254,7 @@ export function runModel(scn) {
   const bar = (s) => ({ width: Math.max(0, s / maxSv * 100), label: s > 0 ? Math.round(s / 1000) + 'k t' : '0' });
 
   return {
-    mode,
+    mode, leverKey: levers,
     series: { net, gridLayer, lvLayer, hvLayer, plantLayer, bau, actuals },
     kpiNet, kpiPct,
     kpiBase: Math.round(FY20 / 1000) + 'k t',

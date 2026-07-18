@@ -26,29 +26,34 @@ const tileReveal = {
 };
 
 export default function Baseline() {
-  const [sector, setSector] = useState('infrastructure');
+  const [sector, setSector] = useState('property');
   const d = BASELINE_SECTORS[sector];
 
   return (
     <div>
-      <div className="bl-banner">
-        <div className="bl-claim">{d.claim}</div>
-        <div className="bl-meta">{d.meta}</div>
-      </div>
-      <div className="baseline-ctrl">
-        <span className="baseline-ctrl-lbl">Organisation type</span>
-        <div className="baseline-seg" role="group" aria-label="Organisation type">
-          {SECTORS.map((k) => (
-            <button key={k} type="button" className={sector === k ? 'on' : ''} onClick={() => setSector(k)}>
-              {BASELINE_SECTORS[k].label}
-            </button>
-          ))}
+      {/* One connected tool: profile selector, headline claim, and the scope
+          split read as a single card — the same stepped language as the home
+          decarb model, no floating divider between the selector and the split. */}
+      <div className="baseline-tool">
+        <div className="baseline-ctrl">
+          <span className="baseline-ctrl-lbl">Operating profile</span>
+          <div className="baseline-seg" role="group" aria-label="Operating profile">
+            {SECTORS.map((k) => (
+              <button key={k} type="button" className={sector === k ? 'on' : ''} onClick={() => setSector(k)}>
+                {BASELINE_SECTORS[k].label}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
-      <div className="scope-grid">
-        <div className="scope-cell"><div className="scope-tag">Scope 1: Direct</div><div className="scope-pct">{d.s1}</div><div className="scope-body">{d.s1b}</div></div>
-        <div className="scope-cell"><div className="scope-tag">Scope 2: Electricity</div><div className="scope-pct">{d.s2}</div><div className="scope-body">{d.s2b}</div></div>
-        <div className="scope-cell"><div className="scope-tag">Scope 3: Value chain</div><div className="scope-pct">{d.s3}</div><div className="scope-body">{d.s3b}</div></div>
+        <div className="bl-banner">
+          <div className="bl-claim">{d.claim}</div>
+          <div className="bl-meta">{d.meta}</div>
+        </div>
+        <div className="scope-grid">
+          <div className="scope-cell"><div className="scope-tag">Scope 1: Direct</div><div className="scope-pct">{d.s1}</div><div className="scope-body">{d.s1b}</div></div>
+          <div className="scope-cell"><div className="scope-tag">Scope 2: Electricity</div><div className="scope-pct">{d.s2}</div><div className="scope-body">{d.s2b}</div></div>
+          <div className="scope-cell"><div className="scope-tag">Scope 3: Value chain</div><div className="scope-pct">{d.s3}</div><div className="scope-body">{d.s3b}</div></div>
+        </div>
       </div>
       <div className="sankey-band">
         <div className="sankey-band-inner">
