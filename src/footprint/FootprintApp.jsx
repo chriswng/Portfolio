@@ -131,6 +131,18 @@ export default function FootprintApp() {
     flash(fill(TOASTS.csvAdded, { n: entries.length, s: entries.length > 1 ? 's' : '' }));
   };
   const onDelete = (id) => updateOwn((p) => ({ ...p, entries: p.entries.filter((e) => e.id !== id) }));
+  // Edit a logged entry in place: merge the patch, re-price on the profile's
+  // current settings (so a corrected number flows straight into every chart),
+  // and keep the entry's id and position in the log.
+  const onUpdate = (id, patch) => {
+    updateOwn((p) => ({
+      ...p,
+      entries: p.entries.map((e) => (e.id === id
+        ? priceEntry({ ...e, ...patch, meta: { ...e.meta, ...(patch.meta || {}) }, id: e.id }, p.settings)
+        : e)),
+    }));
+    flash(TOASTS.entryUpdated);
+  };
 
   const onExport = () => { exportProfile(own); };
   const onImportFile = (imported) => {
@@ -409,7 +421,7 @@ export default function FootprintApp() {
         {!archived && <Plan macc={macc} pathway={pathway} plan={profile.plan} onToggle={onToggle} />}
         <Log
           profile={profile} isExample={isExample} archived={archived}
-          onAdd={onAdd} onAddEntries={onAddEntries} onDelete={onDelete}
+          onAdd={onAdd} onAddEntries={onAddEntries} onDelete={onDelete} onUpdate={onUpdate}
           onExport={onExport} onImportFile={onImportFile} onShare={onShare} onReset={onReset} onStart={onStart}
           onPack={onPack}
         />

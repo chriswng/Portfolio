@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import CarbonField, { EmblemDots } from './CarbonField';
 import { MomentShare } from './moments';
@@ -8,7 +7,6 @@ import {
   CHARACTERS, BADGE, WEIGHT_ROWS, TEMPERAMENT_COLS,
   GLOBAL_T, HEAVY_T, SPECIALIST_SHARE, SPIKE_MULTIPLE,
 } from '../data/characters';
-import { shareLinkedIn } from '../lib/shareCard';
 import { lighten } from '../lib/emblem';
 
 const rise = {
@@ -59,37 +57,6 @@ function AxisMeter({ axisKey, level, frac, reading, ticks, accent, i }) {
         <span className="st-axis-reading">{reading}</span>
       </div>
     </motion.div>
-  );
-}
-
-function LinkedInShare({ d, voice, character, verdict }) {
-  const [state, setState] = useState('idle');
-  const click = async () => {
-    if (state === 'busy') return;
-    setState('busy');
-    try {
-      const ok = await shareLinkedIn({
-        title: SHARE_ST.cards.character[voice],
-        fy: d.fy,
-        name: character.name,
-        tagline: character.tagline,
-        stencil: character.stencil,
-        hex: lighten(character.hex, 0.2),
-        total: fmtT(d.total),
-        mix: verdict,
-        badge: character.badge,
-      }, 'life-footprint-linkedin-' + character.id + '.png');
-      setState(ok ? 'done' : 'idle');
-    } catch { setState('idle'); return; }
-    window.setTimeout(() => setState('idle'), 2600);
-  };
-  return (
-    <>
-      <button type="button" className="st-share" onClick={click}>
-        <span aria-hidden="true">⤓</span> {state === 'done' ? SHARE_ST.copied : SHARE_ST.linkedin}
-      </button>
-      <span className="sr-only" role="status">{state === 'done' ? SHARE_ST.copied : ''}</span>
-    </>
   );
 }
 
@@ -177,21 +144,35 @@ export default function CharacterMoment({ d, voice, character }) {
               </div>
             )}
             <div className="st-share-row">
-              <LinkedInShare d={d} voice={voice} character={character} verdict={verdict} />
-              <MomentShare kind="character" fy={d.fy} data={{
-                title: SHARE_ST.cards.character[voice],
-                name: character.name,
-                tagline: character.tagline,
-                stencil: character.stencil,
-                hex: lighten(character.hex, 0.2),
-                total: fmtT(d.total),
-                badge: character.badge,
-                axes: meters.map((m) => ({
-                  label: CHARACTER_ST.axes[m.axisKey].label,
-                  level: CHARACTER_ST.axes[m.axisKey].levels[m.level],
-                  frac: m.frac,
-                })),
-              }} />
+              <MomentShare
+                kind="character"
+                fy={d.fy}
+                data={{
+                  title: SHARE_ST.cards.character[voice],
+                  name: character.name,
+                  tagline: character.tagline,
+                  stencil: character.stencil,
+                  hex: lighten(character.hex, 0.2),
+                  total: fmtT(d.total),
+                  badge: character.badge,
+                  axes: meters.map((m) => ({
+                    label: CHARACTER_ST.axes[m.axisKey].label,
+                    level: CHARACTER_ST.axes[m.axisKey].levels[m.level],
+                    frac: m.frac,
+                  })),
+                }}
+                linkedIn={{
+                  title: SHARE_ST.cards.character[voice],
+                  fy: d.fy,
+                  name: character.name,
+                  tagline: character.tagline,
+                  stencil: character.stencil,
+                  hex: lighten(character.hex, 0.2),
+                  total: fmtT(d.total),
+                  mix: verdict,
+                  badge: character.badge,
+                }}
+              />
             </div>
           </div>
         </motion.div>
@@ -212,15 +193,20 @@ export default function CharacterMoment({ d, voice, character }) {
               ))}
               {WEIGHT_ROWS.map((w) => [
                 <span className="st-matrix-rowlab" key={w}>{CHARACTER_ST.matrixRows[w]}</span>,
-                ...TEMPERAMENT_COLS.map((t) => {
+                ...TEMPERAMENT_COLS.map((t, ci) => {
                   const c = CHARACTERS.find(
                     (x) => x.weight === w && x.shape === t.shape && x.rhythm === t.rhythm,
                   );
                   const you = c.id === character.id;
+                  const col = CHARACTER_ST.matrixCols[ci];
                   return (
                     <span className={'st-char-cell' + (you ? ' you' : '')} key={c.id}>
                       <EmblemDots stencil={c.stencil} hex={you ? accent : lighten(c.hex, 0.2)} size={40} />
                       <span className="st-char-cell-name">{c.name}</span>
+                      {/* The column meaning, carried into each cell so the
+                          stacked mobile layout keeps it after the header row
+                          is hidden. */}
+                      <span className="st-char-cell-temp" aria-hidden="true">{col[0]}, {col[1]}</span>
                       {you && <span className="st-char-you">{CHARACTER_ST.yoursFlag}</span>}
                     </span>
                   );

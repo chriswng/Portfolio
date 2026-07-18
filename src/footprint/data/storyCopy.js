@@ -10,6 +10,7 @@ export const CHROME = {
   home: './',
   progressLabel: 'Story progress',
   next: 'Next:',
+  keepScrolling: 'Keep scrolling',
 };
 
 export const CHAPTERS = [
@@ -28,6 +29,7 @@ export const CHAPTERS = [
 
 export const COVER = {
   tag: 'Life Footprint',
+  eyebrow: 'An interactive reveal',
   h1a: 'A year of me,',
   h1b: 'in carbon',
   sub: {
@@ -36,10 +38,13 @@ export const COVER = {
     own:
       'Your year, measured in carbon: flights, power, food, deliveries. It stays in this browser and nowhere else.',
   },
+  // Sets the expectation the home page never does: this is a scroll-through,
+  // not another landing page. Every dot behind the words is ten kilograms.
+  meta: '{n} chapters · scroll or tap through · every dot is 10 kg of carbon',
   start: 'Start your own audit',
   startNote: 'Ten minutes, your bills, no account.',
   assessor: 'Here to assess the work, not run one? The 45-second version',
-  scrollCue: 'Scroll to dive in',
+  scrollCue: 'Scroll to begin',
 };
 
 export const YEAR = {
@@ -225,12 +230,36 @@ export const OUTRO = {
 };
 
 export const SHARE_ST = {
-  button: 'Save this card',
+  button: 'Share this card',
   copied: 'Card saved.',
   copyLink: 'Copy link',
   linkCopied: 'Link copied.',
   shareAria: 'Share this moment',
   linkedin: 'LinkedIn banner (PNG)',
+  // The share sheet: pick a size, preview it, then share or save.
+  sheet: {
+    title: 'Share this',
+    sub: 'Preview it, then send it straight to a story, a post or LinkedIn. Nothing leaves your device until you choose to share.',
+    previewAlt: 'Preview of the share image',
+    rendering: 'Drawing your card…',
+    share: 'Share',
+    shareHint: 'Opens your phone’s share sheet: Instagram Story, LinkedIn, Messages.',
+    save: 'Save image',
+    saveHint: 'Saves the PNG, ready to post yourself.',
+    saved: 'Saved to your device.',
+    shared: 'Shared.',
+    close: 'Close',
+    formats: {
+      story: 'Instagram story',
+      post: 'Square post',
+      linkedin: 'LinkedIn',
+    },
+    formatNote: {
+      story: '9:16 · Instagram or TikTok stories',
+      post: '4:5 · Instagram, Facebook or a message',
+      linkedin: 'Landscape banner sized for the LinkedIn feed',
+    },
+  },
   // Card footers and titles by moment.
   site: 'itschriswang.github.io/Portfolio/footprint',
   method: 'Home energy, travel, freight and diet · published factors, no offsets',
