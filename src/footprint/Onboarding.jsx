@@ -5,7 +5,6 @@ import { CONVERSIONS } from './data/vendorMap';
 import { ONBOARD, ENERGY_PRESETS, fmtT } from './data/copy';
 import { OB, fill } from './data/storyCopy';
 import { priceEntry, aggregate } from './lib/engine';
-import { audio } from './lib/audio';
 import Icon from './Icons';
 import { prefersReducedMotion } from '../utils/media';
 
@@ -335,8 +334,6 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
     };
   }, [onCancel]);
 
-  useEffect(() => { if (step === 5) audio.chime(); }, [step]);
-
   // Debounced copy of the running total for the polite live region, so
   // dragging a slider announces one settled value, not sixty per second.
   const [announcedTotal, setAnnouncedTotal] = useState(() => fmtT(runningTotal));
@@ -359,7 +356,6 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
     const built = buildProfileFromOnboarding(next).entries;
     const newEntry = built.filter((e) => e.category === 'flight')[next.flights.length - 1];
     const rank = [...built].sort((x, y) => y.tco2e - x.tco2e).indexOf(newEntry) + 1;
-    audio.tick(0.8);
     setReaction((rank === 1
       ? fill(OB.flightTop, { t: fmtT(t) })
       : fill(OB.flightAdded[Math.min(next.flights.length - 1, OB.flightAdded.length - 1)], { t: fmtT(t), rank: Math.max(rank, 2) }))
