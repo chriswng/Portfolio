@@ -306,7 +306,7 @@ export const WEDGE_FLAVOUR = {
 export const WEDGE_HINT = {
   flight: 'One fewer long-haul return moves more than everything else combined.',
   road: 'Occupancy, mode shift, then an EV, in that order of effort.',
-  home: 'Electrify the lot. GreenPower is a phone call; solar is a ladder.',
+  home: 'Electrify the lot, then put solar over the new load. A ladder, not paperwork.',
   diet: 'Fewer of the expensive plates. Nobody is taking your dinner.',
   freight: 'Sea shipping cuts the freight line by about ninety percent.',
   none: 'The top two wedges still decide whether the plan works.',

@@ -1,11 +1,16 @@
+// The basis of preparation, on its own page (/footprint/method/). Rendered
+// from the live factor set the calculator prices from, so the tables can
+// never drift from the maths. Any change to the engine, factors, abatement
+// options or pathway model must land here in the same change (see CLAUDE.md).
+
 import SplitText from '../components/SplitText';
 import {
-  FACTOR_SET, ELECTRICITY, ELECTRICITY_SOURCE, GAS, GAS_SOURCE, gasS3,
+  FACTOR_SET, ELECTRICITY, ELECTRICITY_SOURCE, GAS, GAS_SOURCE,
   ROAD_FUELS, ROAD_MODES, ROAD_SOURCE, FLIGHT_FACTORS, FLIGHT_SOURCE, FLIGHT_RF_MULTIPLIER,
   FREIGHT_MODES, FREIGHT_SOURCE, DIET_TYPES, DIET_SOURCE, FOOD_PER_KG, GRID_DECLINE,
   QUALITY_TIERS, QUALITY_SOURCE,
 } from './data/factors';
-import { METHOD, MARKET, fmtT } from './data/copy';
+import { METHOD, fmtT } from './data/copy';
 import { fill } from './data/storyCopy';
 
 function FTable({ caption, head, rows, source }) {
@@ -27,18 +32,20 @@ function FTable({ caption, head, rows, source }) {
 
 const n3 = (v) => Number(v).toFixed(v < 0.01 ? 4 : 3);
 
-export function Method({ agg }) {
-  // Radiative forcing sensitivity, computed from the audit on screen: both
-  // bases are published; the page states what the other one would say.
+export default function Method({ agg, periodLabel }) {
+  // Radiative forcing sensitivity, computed from the audit the visitor left
+  // behind on the dashboard: both bases are published; the page states what
+  // the other one would say.
   const flightsT = agg ? agg.byCategory.flight || 0 : 0;
   const noRfFlights = flightsT / FLIGHT_RF_MULTIPLIER;
   const noRfTotal = agg ? agg.total - flightsT + noRfFlights : 0;
   return (
     <section id="fp-method">
       <div className="canvas">
-        <div className="sec-tag" data-idx="05 / ">Basis of preparation</div>
-        <h2 className="display fp-h2"><SplitText text={METHOD.title[0]} /> <SplitText text={METHOD.title[1]} accentIndex={1} /></h2>
+        <div className="sec-tag" data-idx="./ ">{METHOD.tag}</div>
+        <h1 className="display fp-h2"><SplitText text={METHOD.title[0]} /> <SplitText text={METHOD.title[1]} accentIndex={1} /></h1>
         <p className="fp-sub">{METHOD.sub}</p>
+        <p className="fp-note">← <a href="../">{METHOD.backToDash}</a></p>
 
         <div className="fp-method-grid">
           <div className="fp-method-block">
@@ -64,6 +71,7 @@ export function Method({ agg }) {
           <div className="fp-method-block">
             <h3>{METHOD.sensitivity.title}</h3>
             <p>{agg ? fill(METHOD.sensitivity.para, { flights: fmtT(noRfFlights), total: fmtT(noRfTotal) }) : METHOD.sensitivity.para}</p>
+            {periodLabel && <p className="fp-note">{fill(METHOD.sensitivityBasis, { label: periodLabel })}</p>}
           </div>
           <div className="fp-method-block fp-method-wide">
             <h3>{METHOD.plan.title}</h3>
@@ -160,31 +168,6 @@ export function Method({ agg }) {
           </ul>
           <p className="fp-note">{METHOD.versionTitle}: {FACTOR_SET.id} · updated {FACTOR_SET.updated} · {FACTOR_SET.note}</p>
         </div>
-      </div>
-    </section>
-  );
-}
-
-export function Market() {
-  return (
-    <section id="fp-market">
-      <div className="canvas">
-        <div className="sec-tag" data-idx="06 / ">Why this exists</div>
-        <h2 className="display fp-h2"><SplitText text={MARKET.title[0]} /> <SplitText text={MARKET.title[1]} accentIndex={1} /></h2>
-        {MARKET.paras.map((p, i) => <p className="fp-sub" key={i}>{p}</p>)}
-        <div className="fp-scroll-x">
-          <table className="fp-table fp-market-table">
-            <thead><tr>{MARKET.tableHead.map((h) => <th key={h}>{h}</th>)}</tr></thead>
-            <tbody>
-              {MARKET.rows.map((r, i) => (
-                <tr key={i} className={i === MARKET.rows.length - 1 ? 'fp-market-self' : undefined}>
-                  {r.map((c, j) => <td key={j}>{c}</td>)}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <p className="fp-callout">{MARKET.verdict}</p>
       </div>
     </section>
   );

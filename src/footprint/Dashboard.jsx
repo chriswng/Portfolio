@@ -5,7 +5,7 @@ import { CATEGORIES, categoryById } from './data/factors';
 import { classifyCharacter, BADGE } from './data/characters';
 import { EmblemDots } from './story/CarbonField';
 import { BENCHMARKS, AUS_AVG, BUDGET_2030, BENCHMARK_CAVEAT } from './data/benchmarks';
-import { DASH, HOTSPOTS, DASH_UI, fmtT } from './data/copy';
+import { DASH, DASH_UI, fmtT } from './data/copy';
 import { DASH_EXTRA, CHARACTER_ST, fill } from './data/storyCopy';
 import { CountUp } from './story/CountUp';
 import { TrendChart } from './charts';
@@ -115,7 +115,10 @@ export default function Dashboard({ agg, period, compareAgg, comparePeriod, isEx
               <span className="fp-leg-item" key={c.id}><span className="fp-leg-dot" style={{ background: c.hex }} />{c.label}</span>
             ))}
           </div>
-          {agg.worstMonth && agg.worstMonth.total > 0 && (
+          {/* A worst month is only worth flagging when it genuinely spikes;
+              an evenly spread audit (all guided-audit estimates) has no
+              worst month, just twelfths. Same threshold the story uses. */}
+          {agg.worstMonth && agg.worstMonth.total > (total / Math.max(1, agg.months.length)) * 1.35 && (
             <div className="fp-worst">
               <span className="fp-worst-tag">{DASH.worstLabel}</span>
               {monthName(agg.worstMonth.month)} · {fmtT(agg.worstMonth.total, 2)} t
@@ -177,24 +180,10 @@ export default function Dashboard({ agg, period, compareAgg, comparePeriod, isEx
               {comparePeriod ? fill(DASH_EXTRA.compare.overlaid, { label: comparePeriod.label, t: fmtT(compare.total) }) : ''}
             </p>
           )}
+          {ranked.length > 0 && (
+            <p className="fp-callout fp-callout-card">{flightsDominate ? DASH.flightCallout : DASH.genericCallout}</p>
+          )}
         </motion.div>
-
-        <div className="fp-hotspot-block" id="fp-hotspots">
-          <div className="sec-tag" data-idx="02 / ">Hotspots</div>
-          <h2 className="display fp-h2"><SplitText text={HOTSPOTS.title[0]} /> <SplitText text={HOTSPOTS.title[1]} accentIndex={1} /></h2>
-          <p className="fp-sub">{HOTSPOTS.sub}</p>
-          <div className="fp-hotcards">
-            {ranked.slice(0, 3).map((c, i) => (
-              <motion.div className="fp-hotcard" key={c.id} style={{ '--hc': c.hex }} {...fadeUp} transition={{ ...fadeUp.transition, delay: i * 0.08 }}>
-                <div className="fp-hot-rank">{'0' + (i + 1)}</div>
-                <div className="fp-hot-name">{c.label}</div>
-                <div className="fp-hot-v"><CountUp value={c.t} decimals={1} duration={1} delay={i * 0.08} ticks={false} /><span> t</span></div>
-                <div className="fp-hot-pct">{total > 0 ? Math.round((c.t / total) * 100) + DASH_UI.hotPct : ''}</div>
-              </motion.div>
-            ))}
-          </div>
-          <p className="fp-callout">{flightsDominate ? HOTSPOTS.flightCallout : HOTSPOTS.genericCallout}</p>
-        </div>
 
         <details className="fp-bench-detail">
           <summary>{DASH_UI.benchSummary}</summary>
