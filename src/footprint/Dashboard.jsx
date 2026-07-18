@@ -59,18 +59,18 @@ export default function Dashboard({ agg, period, compareAgg, comparePeriod, isEx
         <motion.div className="fp-kpis" {...fadeUp}>
           <div className="fp-kpi live">
             <div className="fp-kpi-l">{period.label} {DASH.kpis.total}</div>
-            <div className="fp-kpi-v"><CountUp value={total} decimals={1} duration={0.9} ticks={false} /><span> tCO₂-e</span></div>
+            <div className="fp-kpi-v"><CountUp value={total} decimals={1} duration={0.9} /><span> tCO₂-e</span></div>
             {agg.uncertainty && agg.uncertainty.band > 0.005 && (
               <div className="fp-kpi-n">{fill(DASH.kpis.range, { low: fmtT(agg.uncertainty.low), high: fmtT(agg.uncertainty.high) })}</div>
             )}
           </div>
           <div className="fp-kpi">
             <div className="fp-kpi-l">{DASH.kpis.aus}</div>
-            <div className="fp-kpi-v"><CountUp value={Math.round((total / AUS_AVG.tco2e) * 100)} decimals={0} duration={0.9} ticks={false} /><span>%</span></div>
+            <div className="fp-kpi-v"><CountUp value={Math.round((total / AUS_AVG.tco2e) * 100)} decimals={0} duration={0.9} /><span>%</span></div>
           </div>
           <div className="fp-kpi">
             <div className="fp-kpi-l">{DASH.kpis.budget}</div>
-            <div className="fp-kpi-v"><CountUp value={total / BUDGET_2030.tco2e} decimals={1} duration={0.9} ticks={false} /><span>×</span></div>
+            <div className="fp-kpi-v"><CountUp value={total / BUDGET_2030.tco2e} decimals={1} duration={0.9} /><span>×</span></div>
           </div>
           <div className="fp-kpi">
             <div className="fp-kpi-l">{DASH.kpis.largest}</div>

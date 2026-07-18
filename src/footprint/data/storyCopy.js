@@ -5,7 +5,6 @@
 
 export const CHROME = {
   skip: 'Skip to the dashboard',
-  sound: { on: 'Sound on', off: 'Sound off', label: 'Ambient sound' },
   replay: 'Replay the reveal',
   home: './',
   progressLabel: 'Story progress',

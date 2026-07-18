@@ -6,7 +6,6 @@ import CarbonField from './CarbonField';
 import { CountUp, ScrubNumber } from './CountUp';
 import { fmtT } from '../data/copy';
 import ShareSheet from './ShareSheet';
-import { audio } from '../lib/audio';
 import {
   CHROME, COVER, YEAR, GUESS, GUESS_VERDICTS, GUESS_RESULT, TOTAL, SCOPES, HOTSPOTS_ST,
   MONTHS_ST, BENCH_ST, NEEDLE, OUTRO, SHARE_ST, fill,
@@ -168,7 +167,6 @@ export function YearTicker({ d, voice, reduced }) {
 export function Guess({ d, voice, guess, setGuess, goTo }) {
   const slide = (v) => setGuess({ ...guess, value: v });
   const lock = () => {
-    audio.chime();
     // Accepting the default without touching the slider still counts.
     setGuess({ value: guess.value ?? 10, locked: true });
     goTo('st-total');
