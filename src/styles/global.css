@@ -531,24 +531,15 @@ section { position:relative; }
   max-width:11ch;
 }
 
-.footer-signup{ display:flex; flex-direction:column; gap:0.7rem; max-width:640px; }
-.footer-signup-lbl{ font-family:var(--mono); font-size:12px; letter-spacing:0.16em; text-transform:uppercase; font-weight:600; color:var(--forest); }
-.footer-field{ display:flex; gap:0.6rem; background:var(--white); border-radius:var(--r-pill); padding:0.4rem 0.4rem 0.4rem 0.4rem; box-shadow:0 8px 24px rgba(33,48,15,0.12); flex-wrap:wrap; }
-.footer-input{ flex:1 1 200px; min-width:0; border:none; background:transparent; font-family:var(--sans); font-size:1rem; color:var(--slate); padding:0.7rem 0.9rem; }
-.footer-input::placeholder{ color:var(--subtle); }
-.footer-input:focus-visible{ outline:2px solid var(--forest); outline-offset:2px; border-radius:var(--r-pill); }
-.footer-subscribe{
-  flex:0 0 auto; font-family:var(--sans); font-weight:600; font-size:0.9rem; letter-spacing:-0.01em;
-  border:none; cursor:pointer; background:var(--lime); color:var(--forest); border-radius:var(--r-pill);
-  padding:0.7rem 1.4rem; transition:background 0.25s var(--ease),transform 0.2s var(--ease);
+.footer-cta{ display:flex; align-items:center; gap:1.2rem 1.6rem; flex-wrap:wrap; max-width:680px; }
+.footer-cta-line{ font-family:var(--disp); font-weight:600; font-size:clamp(1.15rem,2.4vw,1.6rem); letter-spacing:-0.02em; line-height:1.2; color:var(--forest); max-width:20ch; }
+.footer-cta-btn{
+  flex:0 0 auto; display:inline-flex; align-items:center; font-family:var(--sans); font-weight:600; font-size:0.9rem;
+  letter-spacing:-0.01em; text-decoration:none; cursor:pointer; background:var(--forest); color:var(--lime-bright);
+  border-radius:var(--r-pill); padding:0.8rem 1.6rem; box-shadow:0 8px 24px rgba(33,48,15,0.16);
+  transition:background 0.25s var(--ease),transform 0.2s var(--ease);
 }
-.footer-subscribe:hover{ background:var(--lime-bright); transform:translateY(-1px); }
-.footer-signup-note{ font-family:var(--mono); font-size:11px; letter-spacing:0.02em; line-height:1.6; color:var(--forest-2); max-width:52ch; }
-@media(max-width:520px){
-  .footer-field{ flex-direction:column; align-items:stretch; border-radius:var(--r-lg); }
-  .footer-input{ flex:1 1 auto; }
-  .footer-subscribe{ width:100%; padding:0.8rem 1.4rem; }
-}
+.footer-cta-btn:hover{ background:var(--forest-2); transform:translateY(-1px); }
 
 .footer-legal{ font-family:var(--mono); font-size:11px; letter-spacing:0.05em; color:var(--forest-2); margin-top:clamp(1.6rem,3.5vw,2.2rem); }
 

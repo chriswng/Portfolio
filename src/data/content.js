@@ -177,11 +177,11 @@ export const CONTACT = {
 
 export const FOOTER = {
   wordmark: 'Christopher Wang',
-  signupLabel: 'Stay in the loop on the work',
-  signupNote: 'Occasional notes on emissions data, disclosure and decarbonisation. No spam, unsubscribe any time.',
-  placeholder: 'Your email address',
-  subscribe: 'Subscribe',
-  email: 'cywang2910@gmail.com',
+  // A real, useful call to action — not an invented newsletter. Chris is open
+  // to roles, so the prominent footer block points at getting in touch.
+  availability: 'Open to senior advisory and lead sustainability roles.',
+  ctaLabel: 'Get in touch',
+  ctaHref: 'https://linkedin.com/in/itschriswang',
   rights: 'All rights reserved © 2026 · Christopher Wang',
   tagline: 'Sustainability advisor · Melbourne, Australia',
   // Link columns. hrefs beginning with '#' or a sub-path are prefixed with the
@@ -209,7 +209,6 @@ export const FOOTER = {
       head: 'Connect',
       links: [
         { label: 'LinkedIn', href: 'https://linkedin.com/in/itschriswang', external: true },
-        { label: 'Email', href: 'mailto:cywang2910@gmail.com', external: true },
         { label: 'Contact', href: '#contact' },
       ],
     },
