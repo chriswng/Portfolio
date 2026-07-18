@@ -234,8 +234,8 @@ export const METHOD = {
   character: {
     title: 'How the carbon character is assigned',
     paras: [
-      'The character shown with an audit is assigned by rule, first match wins: at or under the 2.5 t lifestyle budget it is The Custodian; at or under the 6.6 t global average, The Featherweight. Above that, an audit with freight at 35% or more of the total is The Parcel Baron; otherwise the first of flights, road, home energy or diet to reach 45% of the total names the profile, split into a lighter and a heavier variant at 15 t. Nothing dominant lands on The Heavyweight above 15 t and The Allrounder below it.',
-      'The 2.5 t and 6.6 t thresholds are the same published benchmarks used everywhere on this page. The 45% dominance share and the 15 t tier split are stated editorial cut-offs, not published science: they decide which label you get, never any number.',
+      'Three measurements, read straight off the audit, place every year in one of twelve cells. Weight: at or under the 6.6 t global average is featherweight, over 16 t is heavyweight, between the two is middleweight. Shape: a year with 40% or more of its total in one wedge (flights, road, home energy, diet or freight) is a specialist; otherwise a generalist. Rhythm: a year whose worst month carries at least twice the average month is spiky; otherwise steady. The cell names the character; the biggest wedge flavours the reading but never changes it.',
+      'An audit at or under the 2.5 t lifestyle budget also carries The Custodian mark, whatever its cell. The 2.5 t and 6.6 t lines are the same published benchmarks used everywhere on this page, and 16 t sits on the EDGAR-basis Australian inventory including the land sink. The 40% share and the 2× spike are stated editorial cut-offs, not published science: they decide which label you get, never any number.',
     ],
   },
   exclusions: {
