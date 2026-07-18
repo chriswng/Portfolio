@@ -186,10 +186,3 @@
 .sstep-body{ font-size:0.88rem; font-weight:400; color:#475569; line-height:1.8; max-width:480px; }
 .sstep-src{ font-family:var(--mono); font-size:10px; color:#75821D; letter-spacing:0.05em; margin-top:0.9rem; font-weight:600; }
 
-/* ---- Work footer ---- */
-.work-footer{ border-top:1px solid var(--rule-dk); background:var(--bg); padding:1.6rem 0; }
-.work-footer-inner{ display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
-.work-footer .footer-home{ color:var(--matcha); font-family:var(--mono); font-size:0.9rem; text-decoration:none; opacity:0.8; text-shadow:none; }
-.work-footer .footer-name{ font-family:var(--mono); font-size:10px; letter-spacing:0.06em; color:var(--mid); text-shadow:none; }
-.work-footer .footer-links a{ font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--mid); text-decoration:none; font-weight:600; }
-.work-footer .footer-links a:hover{ color:var(--matcha); }
