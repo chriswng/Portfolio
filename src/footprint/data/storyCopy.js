@@ -328,29 +328,28 @@ export const CHARACTER_ST = {
 };
 
 export const OB = {
-  title: 'Your audit',
-  intro: 'Five short steps. Rough numbers now, real bills later. Everything stays in this browser.',
-  liveNote: 'priced live on published factors',
-  soFar: 'Your year so far',
-  soFarSr: 'About {t} tonnes per year so far.',
+  title: 'Your year',
+  intro: 'Five short steps. Rough answers now, real bills whenever you like. Everything stays in this browser, and we keep the final total for the reveal.',
+  // Neutral, spoiler-free footer line. The running total is deliberately not
+  // shown: seeing it here would spoil the guess and the reveal that follow.
+  keepForReveal: 'We add it all up at the reveal, not here',
   stepOf: 'Step {n} of {total}',
-  perYear: 't / yr',
-  perTonne: 'a tonne',
-  flightAdded: [
-    'That one is {t} t on its own.',
-    '{t} t. Now your #{rank} line.',
-    'Another {t} t. The itineraries add up.',
-  ],
-  flightTop: '{t} t. That flight just became your #1 hotspot.',
+  // Gentle per-step confirmations, no tonnes: progress, never a total.
+  progress: {
+    you: 'Basics set',
+    energy: 'Home energy added',
+    travel: 'Getting-around added',
+    flights: { none: 'No flights yet', some: '{n} flight{s} added' },
+    food: 'Food and parcels added',
+  },
   stepLabels: ['You', 'Home energy', 'Getting around', 'Flights', 'Food & parcels'],
   done: {
-    title: 'Your audit is live',
-    sub: 'Saved to this browser, priced on the same factors as everything else on this page. The reveal tells you the rest: where it lands, what shape it takes, what would move it.',
+    title: 'That is everything',
+    sub: 'Your year is saved to this browser. Now the fun part: your reveal walks you through what it all adds up to, where it lands, and what would actually move it.',
+    ready: 'Five sections, done. Nothing left to fill in.',
     watch: 'Watch your reveal',
     skip: 'Straight to the dashboard',
   },
-  approx: '≈ {t} t/yr',
-  approxEach: '≈ {t} t each',
 };
 
 export const DASH_EXTRA = {
