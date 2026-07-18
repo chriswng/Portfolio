@@ -231,6 +231,33 @@ export function groupFamily(parentName) {
   return BRANDS.filter((b) => b.parent === parentName || b.group === parentName);
 }
 
+// Every parent, with the brands it owns on file. The group lens is built on
+// this: ownership concentration is one of the least-understood facts in
+// fashion, and the whole "read the parent, not the brand" thesis lives here.
+export const GROUPS = (() => {
+  const map = new Map();
+  for (const b of BRANDS) {
+    if (!map.has(b.parent)) map.set(b.parent, []);
+    map.get(b.parent).push(b);
+  }
+  return [...map.entries()]
+    .map(([parent, brands]) => {
+      const scored = brands.filter((b) => b.fti != null);
+      const avg = scored.length
+        ? Math.round(scored.reduce((n, b) => n + b.fti, 0) / scored.length)
+        : null;
+      return { parent, brands, count: brands.length, scored, avg };
+    })
+    .sort((a, b) => b.count - a.count || a.parent.localeCompare(b.parent));
+})();
+
+// Parents that own more than one brand on file, for the directory group view.
+export const MULTI_GROUPS = GROUPS.filter((g) => g.count > 1);
+
+export function segmentCount(id) {
+  return BRANDS.filter((b) => b.segment === id).length;
+}
+
 // The signal fields shown, in display order, with their human labels.
 export const SIGNAL_FIELDS = [
   { id: 'transparency', label: 'Transparency Index', help: 'Fashion Revolution FTI 2023 disclosure score.' },
@@ -262,6 +289,8 @@ export const COPY = {
     examplesLabel: 'Popular lookups',
     examples: ['Nike', 'Zara', 'Uniqlo', 'Gucci', 'The North Face', 'Kmart Australia'],
     countTemplate: '{n} brands and companies tracked',
+    kbdHint: 'Press / to search from anywhere',
+    recentLabel: 'Recently viewed',
   },
 
   lookup: {
@@ -276,30 +305,38 @@ export const COPY = {
     parentLabel: 'Parent company',
     segmentLabel: 'Segment',
     hqLabel: 'Headquarters',
-    familyLabel: 'Also owned by this group',
+    familyLabel: 'Sister brands in this group',
+    familyHint: 'The same owner reports for all of these. Tap to switch.',
     reportLabel: 'Sustainability report',
     reportMissing: 'No public report page on file',
     compareAdd: 'Add to compare',
-    compareRemove: 'Remove from compare',
+    compareRemove: 'In compare',
+    shareLabel: 'Copy link',
+    shareDone: 'Link copied',
     researchTag: 'Needs research',
   },
 
   compare: {
     idx: '02',
     title: 'Compare',
-    sub: 'Two or three, tag to tag',
-    lede: 'Line brands up side by side to see how their disclosure differs. Add up to three from any lookup or from the directory.',
-    empty: 'Add brands from the lookup above to compare them here.',
+    sub: 'Two or three, signal by signal',
+    lede: 'Line brands up in one table to see exactly where their disclosure differs. Add up to three from any lookup or from the directory.',
+    empty: 'Add brands from the lookup above, or from the directory, to compare them here.',
     clear: 'Clear all',
+    brandCol: 'Signal',
   },
 
   directory: {
     idx: '03',
     title: 'The directory',
-    sub: 'Every brand on file',
-    lede: 'The full universe of tracked companies. Filter by segment, sort by what matters to you, then tap any tag to pull it into the lookup.',
+    sub: 'Every brand, and every owner',
+    lede: 'The full universe of tracked companies. Filter by segment, narrow by hand, sort by what matters, then tap any tag to pull it into the lookup. Switch to Groups to see who owns whom.',
     filterAll: 'All segments',
-    auOnly: 'Australian brands',
+    auOnly: 'Australian',
+    filterPlaceholder: 'Filter by name…',
+    viewBrands: 'Brands',
+    viewGroups: 'Groups',
+    scored: 'Scored only',
     sort: {
       name: 'A to Z',
       fti: 'Transparency score',
@@ -308,6 +345,9 @@ export const COPY = {
     },
     sortLabel: 'Sort',
     resultTemplate: '{n} shown',
+    groupsLede: 'Ten owners hold most of the brands on this page. This is the fact the label never tells you. Tap a brand to open it.',
+    groupBrandsTemplate: '{n} brands on file',
+    groupAvgLabel: 'Mean FTI of scored brands',
   },
 
   signals: {
@@ -355,6 +395,15 @@ export const COPY = {
     made: 'Built by Christopher Wang in Melbourne.',
     top: 'Back to the top',
   },
+
+  // Section rail: label + target id, in scroll order.
+  rail: [
+    { label: 'Lookup', id: 'lookup' },
+    { label: 'Compare', id: 'compare' },
+    { label: 'Directory', id: 'directory' },
+    { label: 'Signals', id: 'signals' },
+    { label: 'Backlog', id: 'backlog' },
+  ],
 };
 
 // ---------------------------------------------------------------------------

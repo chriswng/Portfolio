@@ -7,16 +7,20 @@
 // The one quantified signal is the Fashion Transparency Index 2023 score; the
 // rest is honestly marked "Needs research" until a source is confirmed.
 //
-// Structure: Hero (search) -> Lookup -> Compare -> Directory -> What the
-// signals mean -> Research backlog -> Footer.
+// Structure: Hero (search) -> Lookup -> Compare -> Directory (brands +
+// corporate groups) -> What the signals mean -> Research backlog -> Footer.
+// State (selected brand + compare set) is deep-linked into the URL hash, so
+// any lookup is shareable and the back button works.
 // ============================================================================
 import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import {
   BRANDS, BRAND_BY_ID, SEGMENTS, SIGNAL_FIELDS, STATUS, COPY, SOURCES,
-  ftiBand, groupFamily,
+  MULTI_GROUPS, segmentCount, ftiBand, groupFamily,
 } from './data';
+import { prefersReducedMotion } from '../utils/media';
 
 const MAX_COMPARE = 3;
+const RECENT_KEY = 'ow-recent-v1';
 
 // --------------------------------------------------------------------- search
 // Forgiving matcher: lowercase, partial, alias and parent-company aware.
@@ -43,7 +47,6 @@ function searchBrands(query, limit = 8) {
     else if (parent.includes(q) || group.includes(q)) score = 35;
     else if (normalise(b.knownFor).includes(q)) score = 20;
     if (score > 0) {
-      // recognition nudges ties so household names surface first
       score += b.recognition === 'high' ? 4 : 0;
       scored.push({ b, score });
     }
@@ -52,7 +55,6 @@ function searchBrands(query, limit = 8) {
   return scored.slice(0, limit).map((s) => s.b);
 }
 
-// Highlight the matched run inside a brand name for the autocomplete.
 function Highlight({ text, query }) {
   const trimmed = (query || '').trim();
   if (!trimmed) return text;
@@ -68,7 +70,28 @@ function Highlight({ text, query }) {
   );
 }
 
-// ------------------------------------------------------------------- pills
+// ------------------------------------------------------------- hash routing
+function readHash() {
+  let h = '';
+  try { h = decodeURIComponent(window.location.hash.replace(/^#/, '')); } catch { h = window.location.hash.replace(/^#/, ''); }
+  if (!h || h === 'top') return { brand: null, compare: [] };
+  const map = {};
+  for (const kv of h.split('&')) { const [k, v] = kv.split('='); map[k] = v; }
+  const brandRaw = map.brand || (!h.includes('=') ? h : null);
+  const brand = brandRaw && BRAND_BY_ID[brandRaw] ? brandRaw : null;
+  const compare = (map.compare || '')
+    .split(',').filter((id) => BRAND_BY_ID[id]).slice(0, MAX_COMPARE);
+  return { brand, compare };
+}
+
+function buildHash({ brand, compare }) {
+  const parts = [];
+  if (brand) parts.push('brand=' + brand);
+  if (compare && compare.length) parts.push('compare=' + compare.join(','));
+  return parts.length ? '#' + parts.join('&') : '#top';
+}
+
+// -------------------------------------------------------------------- pills
 const STATUS_CLASS = {
   disclosed: 'disclosed', partial: 'partial', parent: 'parent',
   notFound: 'notFound', research: 'research',
@@ -84,6 +107,12 @@ const SearchIcon = () => (
     <circle cx="11" cy="11" r="7" /><line x1="16.5" y1="16.5" x2="21" y2="21" />
   </svg>
 );
+
+// Small helper for an FTI value shown as text.
+function ftiText(brand) {
+  if (brand.fti != null) return `${brand.fti} / 100`;
+  return brand.ftiScope === 'outside' ? 'Not assessed' : 'Needs research';
+}
 
 // =========================================================================
 // Chrome
@@ -121,6 +150,35 @@ function ScrollProgress() {
   return <div className="ow-progress" ref={ref} style={{ width: '100%', transform: 'scaleX(0)' }} aria-hidden="true" />;
 }
 
+// Fixed section rail with active tracking. Hidden on narrow screens (CSS).
+function SectionRail() {
+  const [active, setActive] = useState(COPY.rail[0].id);
+  useEffect(() => {
+    const secs = COPY.rail.map((r) => document.getElementById(r.id)).filter(Boolean);
+    if (!secs.length || typeof IntersectionObserver === 'undefined') return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        const vis = entries.filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (vis) setActive(vis.target.id);
+      },
+      { rootMargin: '-45% 0px -45% 0px', threshold: [0, 0.5, 1] },
+    );
+    secs.forEach((s) => io.observe(s));
+    return () => io.disconnect();
+  }, []);
+  return (
+    <nav className="ow-rail" aria-label="Sections">
+      {COPY.rail.map((r) => (
+        <a key={r.id} href={`#${r.id}`} className={active === r.id ? 'on' : ''}>
+          <span className="dot" aria-hidden="true" />
+          <span className="lbl">{r.label}</span>
+        </a>
+      ))}
+    </nav>
+  );
+}
+
 function SecHead({ c }) {
   return (
     <div className="ow-sechead">
@@ -132,7 +190,7 @@ function SecHead({ c }) {
 }
 
 // =========================================================================
-// Hero + search
+// Search field (used in hero and lookup)
 // =========================================================================
 function SearchField({ onSelect, id = 'ow-search-input', label }) {
   const [q, setQ] = useState('');
@@ -148,23 +206,15 @@ function SearchField({ onSelect, id = 'ow-search-input', label }) {
     return () => document.removeEventListener('mousedown', onDoc);
   }, []);
 
-  const choose = (b) => {
-    if (!b) return;
-    onSelect(b.id);
-    setQ('');
-    setOpen(false);
-  };
-
-  const submit = () => {
-    if (results.length) choose(results[Math.min(active, results.length - 1)]);
-  };
+  const choose = (b) => { if (!b) return; onSelect(b.id); setQ(''); setOpen(false); };
+  const submit = () => { if (results.length) choose(results[Math.min(active, results.length - 1)]); };
 
   const onKey = (e) => {
     if (!open && results.length && e.key === 'ArrowDown') { setOpen(true); return; }
     if (e.key === 'ArrowDown') { e.preventDefault(); setActive((a) => Math.min(a + 1, results.length - 1)); }
     else if (e.key === 'ArrowUp') { e.preventDefault(); setActive((a) => Math.max(a - 1, 0)); }
     else if (e.key === 'Enter') { e.preventDefault(); submit(); }
-    else if (e.key === 'Escape') { setOpen(false); }
+    else if (e.key === 'Escape') { setOpen(false); e.currentTarget.blur(); }
   };
 
   return (
@@ -213,6 +263,9 @@ function SearchField({ onSelect, id = 'ow-search-input', label }) {
   );
 }
 
+// =========================================================================
+// Hero
+// =========================================================================
 function SwingTagStack() {
   const tags = [
     { cls: 's1', name: 'Uniqlo', parent: 'Fast Retailing', rows: [['Parent', 'Fast Retailing'], ['Segment', 'Basics'], ['FTI 2023', 'Needs research']] },
@@ -235,7 +288,7 @@ function SwingTagStack() {
   );
 }
 
-function Hero({ onSelect }) {
+function Hero({ onSelect, recent }) {
   return (
     <section className="ow-hero" id="top">
       <div className="ow-wrap ow-hero-grid">
@@ -248,12 +301,22 @@ function Hero({ onSelect }) {
             <span className="lbl">{COPY.hero.examplesLabel}</span>
             {COPY.hero.examples.map((name) => {
               const b = searchBrands(name, 1)[0];
-              return (
-                <button key={name} className="ow-chip" onClick={() => b && onSelect(b.id)}>{name}</button>
-              );
+              return <button key={name} className="ow-chip" onClick={() => b && onSelect(b.id)}>{name}</button>;
             })}
           </div>
-          <p className="ow-hero-count">{COPY.hero.countTemplate.replace('{n}', BRANDS.length)}</p>
+          {recent.length > 0 && (
+            <div className="ow-examples">
+              <span className="lbl">{COPY.hero.recentLabel}</span>
+              {recent.map((id) => {
+                const b = BRAND_BY_ID[id];
+                return b ? <button key={id} className="ow-chip" onClick={() => onSelect(id)}>{b.name}</button> : null;
+              })}
+            </div>
+          )}
+          <p className="ow-hero-count">
+            {COPY.hero.countTemplate.replace('{n}', BRANDS.length)}
+            <span className="kbd"> · {COPY.hero.kbdHint}</span>
+          </p>
         </div>
         <SwingTagStack />
       </div>
@@ -290,14 +353,23 @@ function TransparencyRow({ brand }) {
   );
 }
 
-function BrandCard({ brand, inCompare, onToggleCompare }) {
+function BrandCard({ brand, inCompare, onToggleCompare, onSelect, onOpenGroup }) {
   const family = groupFamily(brand.parent).filter((b) => b.id !== brand.id);
+  const [copied, setCopied] = useState(false);
+
+  const copyLink = async () => {
+    const url = `${window.location.origin}${window.location.pathname}#brand=${brand.id}`;
+    try {
+      if (navigator.clipboard) await navigator.clipboard.writeText(url);
+      else { const t = document.createElement('textarea'); t.value = url; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); }
+      setCopied(true); setTimeout(() => setCopied(false), 1800);
+    } catch { /* clipboard blocked; no-op */ }
+  };
+
   return (
     <article className="ow-card">
       <div className="ow-card-head">
-        <div className="ow-card-tagcode">
-          {brand.segmentLabel} · {brand.au ? 'Australian relevant' : brand.country}
-        </div>
+        <div className="ow-card-tagcode">{brand.segmentLabel} · {brand.au ? 'Australian relevant' : brand.country}</div>
         <h3 className="ow-card-name">{brand.name}</h3>
         <div className="ow-card-knownfor">{brand.knownFor}</div>
       </div>
@@ -305,7 +377,11 @@ function BrandCard({ brand, inCompare, onToggleCompare }) {
       <div className="ow-card-facts">
         <div className="ow-fact">
           <span className="k">{COPY.lookup.parentLabel}</span>
-          <span className="v">{brand.parent}</span>
+          <span className="v">
+            <button className="ow-parentlink" onClick={() => onOpenGroup(brand.parent)} title="See the group">
+              {brand.parent}{family.length > 0 && <span className="ct"> ({family.length + 1})</span>}
+            </button>
+          </span>
         </div>
         <div className="ow-fact">
           <span className="k">{COPY.lookup.segmentLabel}</span>
@@ -318,9 +394,7 @@ function BrandCard({ brand, inCompare, onToggleCompare }) {
       </div>
 
       <div className="ow-signals">
-        <div className="ow-signals-h">
-          <span className="t">Disclosure signals</span>
-        </div>
+        <div className="ow-signals-h"><span className="t">Disclosure signals</span></div>
         <TransparencyRow brand={brand} />
         <div className="ow-signal-list">
           {SIGNAL_FIELDS.filter((f) => f.id !== 'transparency').map((f) => (
@@ -335,33 +409,39 @@ function BrandCard({ brand, inCompare, onToggleCompare }) {
         </div>
       </div>
 
+      {family.length > 0 && (
+        <div className="ow-family">
+          <div className="ow-family-h">{COPY.lookup.familyLabel} <span>· {COPY.lookup.familyHint}</span></div>
+          <div className="ow-family-chips">
+            {family.map((b) => (
+              <button key={b.id} className="ow-familychip" onClick={() => onSelect(b.id)}>
+                {b.name}
+                <span className="s">{b.fti != null ? b.fti : (b.ftiScope === 'outside' ? 'n/a' : 'TBC')}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="ow-card-actions">
         {brand.reportUrl ? (
-          <a className="ow-btn" href={brand.reportUrl} target="_blank" rel="noopener noreferrer">
-            {COPY.lookup.reportLabel} ↗
-          </a>
+          <a className="ow-btn" href={brand.reportUrl} target="_blank" rel="noopener noreferrer">{COPY.lookup.reportLabel} ↗</a>
         ) : (
-          <span className="ow-btn" aria-disabled="true" style={{ opacity: 0.5, cursor: 'default' }}>
-            {COPY.lookup.reportMissing}
-          </span>
+          <span className="ow-btn" aria-disabled="true" style={{ opacity: 0.5, cursor: 'default' }}>{COPY.lookup.reportMissing}</span>
         )}
         <button className={`ow-btn ${inCompare ? 'on' : ''}`} onClick={() => onToggleCompare(brand.id)}>
-          {inCompare ? COPY.lookup.compareRemove : COPY.lookup.compareAdd}
+          {inCompare ? `✓ ${COPY.lookup.compareRemove}` : COPY.lookup.compareAdd}
         </button>
-        {family.length > 0 && (
-          <span className="ow-btn" style={{ cursor: 'default', borderStyle: 'dashed' }}>
-            {COPY.lookup.familyLabel}: {family.map((b) => b.name).join(', ')}
-          </span>
-        )}
+        <button className="ow-btn" onClick={copyLink}>{copied ? `✓ ${COPY.lookup.shareDone}` : COPY.lookup.shareLabel}</button>
       </div>
     </article>
   );
 }
 
-function LookupSection({ selected, compareIds, onSelect, onToggleCompare, forwardRef }) {
+function LookupSection({ selected, compareIds, onSelect, onToggleCompare, onOpenGroup, forwardRef }) {
   const brand = selected ? BRAND_BY_ID[selected] : null;
   return (
-    <section className="ow-section" id="lookup" ref={forwardRef}>
+    <section className="ow-section ow-reveal" id="lookup" ref={forwardRef}>
       <div className="ow-wrap">
         <SecHead c={COPY.lookup} />
         <p className="ow-lede">{COPY.lookup.lede}</p>
@@ -372,6 +452,8 @@ function LookupSection({ selected, compareIds, onSelect, onToggleCompare, forwar
             brand={brand}
             inCompare={compareIds.includes(brand.id)}
             onToggleCompare={onToggleCompare}
+            onSelect={onSelect}
+            onOpenGroup={onOpenGroup}
           />
         ) : (
           <div className="ow-empty">
@@ -385,34 +467,21 @@ function LookupSection({ selected, compareIds, onSelect, onToggleCompare, forwar
 }
 
 // =========================================================================
-// Compare
+// Compare — an aligned table, signal by signal
 // =========================================================================
-function MiniCard({ brand, onRemove }) {
-  const ftiText = brand.fti != null
-    ? `${brand.fti} / 100`
-    : (brand.ftiScope === 'outside' ? 'Not assessed' : 'Needs research');
-  const rows = [
-    ['Parent', brand.parent],
-    ['Segment', brand.segmentLabel],
-    ['HQ', brand.country],
-    ['FTI 2023', ftiText],
-  ];
-  return (
-    <div className="ow-mini">
-      <button className="x" onClick={() => onRemove(brand.id)} aria-label={`Remove ${brand.name} from compare`}>✕</button>
-      <h4>{brand.name}</h4>
-      <div className="mp">{brand.knownFor}</div>
-      {rows.map(([k, v]) => (
-        <div className="ow-mini-row" key={k}><span className="k">{k}</span><span>{v}</span></div>
-      ))}
-    </div>
-  );
-}
-
-function CompareSection({ compareIds, onRemove, onClear }) {
+function CompareSection({ compareIds, onRemove, onClear, onSelect }) {
   const brands = compareIds.map((id) => BRAND_BY_ID[id]).filter(Boolean);
+  const rows = [
+    { k: COPY.lookup.parentLabel, cell: (b) => b.parent },
+    { k: COPY.lookup.segmentLabel, cell: (b) => b.segmentLabel },
+    { k: COPY.lookup.hqLabel, cell: (b) => b.country },
+    { k: 'Transparency Index', fti: true },
+    ...SIGNAL_FIELDS.filter((f) => f.id !== 'transparency').map((f) => ({ k: f.label, signal: f.id })),
+  ];
+  const cols = `minmax(120px, 1fr) repeat(${brands.length}, minmax(0, 1.3fr))`;
+
   return (
-    <section className="ow-section" id="compare">
+    <section className="ow-section ow-reveal" id="compare">
       <div className="ow-wrap">
         <SecHead c={COPY.compare} />
         <p className="ow-lede">{COPY.compare.lede}</p>
@@ -420,8 +489,38 @@ function CompareSection({ compareIds, onRemove, onClear }) {
           <div className="ow-empty"><p>{COPY.compare.empty}</p></div>
         ) : (
           <>
-            <div className="ow-compare-row">
-              {brands.map((b) => <MiniCard key={b.id} brand={b} onRemove={onRemove} />)}
+            <div className="ow-ctable-scroll">
+              <div className="ow-ctable" style={{ gridTemplateColumns: cols }}>
+                <div className="ow-ct-corner">{COPY.compare.brandCol}</div>
+                {brands.map((b) => (
+                  <div className="ow-ct-head" key={b.id}>
+                    <button className="ow-ct-name" onClick={() => onSelect(b.id)} title="Open in lookup">{b.name}</button>
+                    <button className="ow-ct-x" onClick={() => onRemove(b.id)} aria-label={`Remove ${b.name}`}>✕</button>
+                    <span className="ow-ct-sub">{b.knownFor}</span>
+                  </div>
+                ))}
+                {rows.map((r) => (
+                  <div className="ow-ct-row" key={r.k} style={{ display: 'contents' }}>
+                    <div className="ow-ct-rk">{r.k}</div>
+                    {brands.map((b) => (
+                      <div className="ow-ct-cell" key={b.id + r.k}>
+                        {r.fti ? (
+                          b.fti != null ? (
+                            <div className="ow-ct-fti">
+                              <span className="n">{b.fti}<small>/100</small></span>
+                              <span className="bar"><i style={{ width: `${b.fti}%` }} /></span>
+                            </div>
+                          ) : <StatusPill status={b.ftiScope === 'outside' ? 'notFound' : 'research'} />
+                        ) : r.signal ? (
+                          <StatusPill status={b.signals[r.signal] || 'research'} />
+                        ) : (
+                          <span className="ow-ct-txt">{r.cell(b)}</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
             </div>
             <div style={{ marginTop: '1.4rem' }}>
               <button className="ow-btn" onClick={onClear}>{COPY.compare.clear}</button>
@@ -434,7 +533,7 @@ function CompareSection({ compareIds, onRemove, onClear }) {
 }
 
 // =========================================================================
-// Directory
+// Directory — brands view + corporate groups view
 // =========================================================================
 function DirTag({ brand, onSelect }) {
   return (
@@ -451,63 +550,126 @@ function DirTag({ brand, onSelect }) {
   );
 }
 
-function Directory({ onSelect }) {
+function GroupCard({ group, focus, onSelect, cardRef }) {
+  return (
+    <div className={`ow-group ${focus ? 'focus' : ''}`} ref={cardRef}>
+      <div className="ow-group-head">
+        <div>
+          <h3>{group.parent}</h3>
+          <span className="ct">{COPY.directory.groupBrandsTemplate.replace('{n}', group.count)}</span>
+        </div>
+        {group.avg != null && (
+          <div className="ow-group-avg">
+            <span className="n">{group.avg}</span>
+            <span className="l">{COPY.directory.groupAvgLabel}</span>
+          </div>
+        )}
+      </div>
+      <div className="ow-group-brands">
+        {group.brands.map((b) => (
+          <button key={b.id} className="ow-groupchip" onClick={() => onSelect(b.id)}>
+            <span className="bn">{b.name}</span>
+            <span className={`bs ${b.fti != null ? '' : 'na'}`}>{b.fti != null ? b.fti : (b.ftiScope === 'outside' ? 'n/a' : 'TBC')}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function Directory({ onSelect, view, setView, focusGroup }) {
   const [seg, setSeg] = useState('all');
   const [auOnly, setAuOnly] = useState(false);
+  const [scoredOnly, setScoredOnly] = useState(false);
+  const [text, setText] = useState('');
   const [sort, setSort] = useState('name');
+  const focusRef = useRef(null);
 
   const list = useMemo(() => {
     let out = BRANDS.slice();
     if (seg !== 'all') out = out.filter((b) => b.segment === seg);
     if (auOnly) out = out.filter((b) => b.au);
+    if (scoredOnly) out = out.filter((b) => b.fti != null);
+    const q = normalise(text);
+    if (q) out = out.filter((b) => normalise(b.name).includes(q) || normalise(b.parent).includes(q) || b.aliases.some((a) => normalise(a).includes(q)));
     out.sort((a, b) => {
-      if (sort === 'fti') {
-        const av = a.fti == null ? -1 : a.fti;
-        const bv = b.fti == null ? -1 : b.fti;
-        return bv - av || a.name.localeCompare(b.name);
-      }
-      if (sort === 'recognition') {
-        const r = (x) => (x.recognition === 'high' ? 0 : 1);
-        return r(a) - r(b) || a.name.localeCompare(b.name);
-      }
-      if (sort === 'segment') {
-        return a.segmentLabel.localeCompare(b.segmentLabel) || a.name.localeCompare(b.name);
-      }
+      if (sort === 'fti') { const av = a.fti == null ? -1 : a.fti; const bv = b.fti == null ? -1 : b.fti; return bv - av || a.name.localeCompare(b.name); }
+      if (sort === 'recognition') { const r = (x) => (x.recognition === 'high' ? 0 : 1); return r(a) - r(b) || a.name.localeCompare(b.name); }
+      if (sort === 'segment') return a.segmentLabel.localeCompare(b.segmentLabel) || a.name.localeCompare(b.name);
       return a.name.localeCompare(b.name);
     });
     return out;
-  }, [seg, auOnly, sort]);
+  }, [seg, auOnly, scoredOnly, text, sort]);
+
+  useEffect(() => {
+    if (view === 'groups' && focusGroup && focusRef.current) {
+      focusRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [view, focusGroup]);
+
+  const standalone = BRANDS.length - MULTI_GROUPS.reduce((n, g) => n + g.count, 0);
 
   return (
-    <section className="ow-section" id="directory">
+    <section className="ow-section ow-reveal" id="directory">
       <div className="ow-wrap">
         <SecHead c={COPY.directory} />
-        <p className="ow-lede">{COPY.directory.lede}</p>
+        <p className="ow-lede">{view === 'groups' ? COPY.directory.groupsLede : COPY.directory.lede}</p>
 
-        <div className="ow-toolbar">
-          <div className="ow-filters">
-            <button className="ow-chip" aria-pressed={seg === 'all'} onClick={() => setSeg('all')}>{COPY.directory.filterAll}</button>
-            {SEGMENTS.map((s) => (
-              <button key={s.id} className="ow-chip" aria-pressed={seg === s.id} onClick={() => setSeg(s.id)}>{s.label}</button>
-            ))}
-            <button className="ow-chip" aria-pressed={auOnly} onClick={() => setAuOnly((v) => !v)}>{COPY.directory.auOnly}</button>
-          </div>
-          <div className="ow-sortwrap">
-            <label htmlFor="ow-sort">{COPY.directory.sortLabel}</label>
-            <select id="ow-sort" className="ow-select" value={sort} onChange={(e) => setSort(e.target.value)}>
-              <option value="name">{COPY.directory.sort.name}</option>
-              <option value="fti">{COPY.directory.sort.fti}</option>
-              <option value="recognition">{COPY.directory.sort.recognition}</option>
-              <option value="segment">{COPY.directory.sort.segment}</option>
-            </select>
-          </div>
+        <div className="ow-viewtoggle" role="tablist" aria-label="Directory view">
+          <button role="tab" aria-selected={view === 'brands'} className={view === 'brands' ? 'on' : ''} onClick={() => setView('brands')}>{COPY.directory.viewBrands}</button>
+          <button role="tab" aria-selected={view === 'groups'} className={view === 'groups' ? 'on' : ''} onClick={() => setView('groups')}>{COPY.directory.viewGroups}</button>
         </div>
 
-        <p className="ow-count">{COPY.directory.resultTemplate.replace('{n}', list.length)}</p>
+        {view === 'brands' ? (
+          <>
+            <div className="ow-toolbar">
+              <div className="ow-dirsearch">
+                <SearchIcon />
+                <input value={text} onChange={(e) => setText(e.target.value)} placeholder={COPY.directory.filterPlaceholder} aria-label="Filter directory by name" />
+              </div>
+              <div className="ow-sortwrap">
+                <label htmlFor="ow-sort">{COPY.directory.sortLabel}</label>
+                <select id="ow-sort" className="ow-select" value={sort} onChange={(e) => setSort(e.target.value)}>
+                  <option value="name">{COPY.directory.sort.name}</option>
+                  <option value="fti">{COPY.directory.sort.fti}</option>
+                  <option value="recognition">{COPY.directory.sort.recognition}</option>
+                  <option value="segment">{COPY.directory.sort.segment}</option>
+                </select>
+              </div>
+            </div>
 
-        <div className="ow-dir-grid">
-          {list.map((b) => <DirTag key={b.id} brand={b} onSelect={onSelect} />)}
-        </div>
+            <div className="ow-filters">
+              <button className="ow-chip" aria-pressed={seg === 'all'} onClick={() => setSeg('all')}>{COPY.directory.filterAll}</button>
+              {SEGMENTS.map((s) => (
+                <button key={s.id} className="ow-chip" aria-pressed={seg === s.id} onClick={() => setSeg(s.id)}>
+                  {s.label} <b>{segmentCount(s.id)}</b>
+                </button>
+              ))}
+              <button className="ow-chip alt" aria-pressed={auOnly} onClick={() => setAuOnly((v) => !v)}>{COPY.directory.auOnly}</button>
+              <button className="ow-chip alt" aria-pressed={scoredOnly} onClick={() => setScoredOnly((v) => !v)}>{COPY.directory.scored}</button>
+            </div>
+
+            <p className="ow-count">{COPY.directory.resultTemplate.replace('{n}', list.length)}</p>
+            {list.length === 0
+              ? <div className="ow-empty"><p>No brands match those filters.</p></div>
+              : <div className="ow-dir-grid">{list.map((b) => <DirTag key={b.id} brand={b} onSelect={onSelect} />)}</div>}
+          </>
+        ) : (
+          <>
+            <div className="ow-groups">
+              {MULTI_GROUPS.map((g) => (
+                <GroupCard
+                  key={g.parent}
+                  group={g}
+                  focus={focusGroup === g.parent}
+                  onSelect={onSelect}
+                  cardRef={focusGroup === g.parent ? focusRef : null}
+                />
+              ))}
+            </div>
+            <p className="ow-count">Plus {standalone} standalone labels that own no other brand on file.</p>
+          </>
+        )}
       </div>
     </section>
   );
@@ -518,7 +680,7 @@ function Directory({ onSelect }) {
 // =========================================================================
 function SignalsExplainer() {
   return (
-    <section className="ow-section" id="signals">
+    <section className="ow-section ow-reveal" id="signals">
       <div className="ow-wrap">
         <SecHead c={COPY.signals} />
         <p className="ow-lede">{COPY.signals.lede}</p>
@@ -550,7 +712,7 @@ function Backlog() {
     { n: BRANDS.length, l: 'brands and companies on file with verified ownership' },
   ];
   return (
-    <section className="ow-section" id="backlog">
+    <section className="ow-section ow-reveal" id="backlog">
       <div className="ow-wrap">
         <SecHead c={COPY.backlog} />
         <p className="ow-lede">{COPY.backlog.lede}</p>
@@ -564,9 +726,7 @@ function Backlog() {
         </div>
         <div className="ow-file">
           <p>{COPY.backlog.fileNote}</p>
-          <a className="path" href={COPY.backlog.fileHref} target="_blank" rel="noopener noreferrer">
-            {COPY.backlog.filePath} ↗
-          </a>
+          <a className="path" href={COPY.backlog.fileHref} target="_blank" rel="noopener noreferrer">{COPY.backlog.filePath} ↗</a>
           <p>{COPY.backlog.howTo}</p>
         </div>
       </div>
@@ -606,14 +766,70 @@ function Footer() {
 // Shell
 // =========================================================================
 export default function FashionApp() {
-  const [selected, setSelected] = useState(null);
-  const [compareIds, setCompareIds] = useState([]);
+  const initial = typeof window !== 'undefined' ? readHash() : { brand: null, compare: [] };
+  const [selected, setSelected] = useState(initial.brand);
+  const [compareIds, setCompareIds] = useState(initial.compare);
+  const [dirView, setDirView] = useState('brands');
+  const [focusGroup, setFocusGroup] = useState(null);
+  const [recent, setRecent] = useState([]);
   const lookupRef = useRef(null);
+  const heroSearchRef = useRef(null);
+  const writingHash = useRef(false);
 
-  const select = useCallback((id) => {
+  // Load recently-viewed from storage once.
+  useEffect(() => {
+    try {
+      const raw = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]');
+      setRecent(raw.filter((id) => BRAND_BY_ID[id]).slice(0, 6));
+    } catch { /* ignore */ }
+  }, []);
+
+  const pushRecent = useCallback((id) => {
+    setRecent((prev) => {
+      const next = [id, ...prev.filter((x) => x !== id)].slice(0, 6);
+      try { localStorage.setItem(RECENT_KEY, JSON.stringify(next)); } catch { /* ignore */ }
+      return next;
+    });
+  }, []);
+
+  // Keep the URL hash in sync with state (shareable + back button).
+  useEffect(() => {
+    const target = buildHash({ brand: selected, compare: compareIds });
+    if (buildHash(readHash()) !== target) {
+      writingHash.current = true;
+      window.history.replaceState(null, '', target);
+    }
+  }, [selected, compareIds]);
+
+  // React to back/forward and shared-link navigation.
+  useEffect(() => {
+    const onHash = () => {
+      if (writingHash.current) { writingHash.current = false; return; }
+      const { brand, compare } = readHash();
+      setSelected(brand);
+      setCompareIds(compare);
+    };
+    window.addEventListener('hashchange', onHash);
+    window.addEventListener('popstate', onHash);
+    return () => { window.removeEventListener('hashchange', onHash); window.removeEventListener('popstate', onHash); };
+  }, []);
+
+  const select = useCallback((id, opts = {}) => {
     setSelected(id);
+    if (id) pushRecent(id);
+    if (opts.scroll !== false) {
+      requestAnimationFrame(() => {
+        if (lookupRef.current) lookupRef.current.scrollIntoView({ behavior: opts.instant ? 'auto' : 'smooth', block: 'start' });
+      });
+    }
+  }, [pushRecent]);
+
+  const openGroup = useCallback((parent) => {
+    setDirView('groups');
+    setFocusGroup(parent);
     requestAnimationFrame(() => {
-      if (lookupRef.current) lookupRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const el = document.getElementById('directory');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   }, []);
 
@@ -624,9 +840,46 @@ export default function FashionApp() {
       return [...prev, id];
     });
   }, []);
-
   const removeCompare = useCallback((id) => setCompareIds((p) => p.filter((x) => x !== id)), []);
   const clearCompare = useCallback(() => setCompareIds([]), []);
+
+  // On first load with a shared brand link, jump to it without a smooth crawl.
+  useEffect(() => {
+    if (initial.brand) requestAnimationFrame(() => {
+      if (lookupRef.current) lookupRef.current.scrollIntoView({ behavior: 'auto', block: 'start' });
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // "/" focuses the search from anywhere.
+  useEffect(() => {
+    const onKey = (e) => {
+      const t = e.target;
+      const typing = t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable);
+      if (typing) return;
+      if (e.key === '/' || ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k')) {
+        e.preventDefault();
+        const el = document.getElementById('ow-hero-search') || document.getElementById('ow-lookup-search');
+        if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.focus({ preventScroll: true }); }
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
+  // Scroll reveals for sections (skipped under reduced motion).
+  useEffect(() => {
+    const nodes = Array.from(document.querySelectorAll('.ow-reveal'));
+    if (prefersReducedMotion() || typeof IntersectionObserver === 'undefined') {
+      nodes.forEach((n) => n.classList.add('in'));
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.08 });
+    nodes.forEach((n) => io.observe(n));
+    return () => io.disconnect();
+  }, []);
 
   return (
     <>
@@ -634,17 +887,19 @@ export default function FashionApp() {
       <div className="ow-grain" aria-hidden="true" />
       <ScrollProgress />
       <TopBar />
-      <main className="ow-main">
-        <Hero onSelect={select} />
+      <SectionRail />
+      <main className="ow-main" ref={heroSearchRef}>
+        <Hero onSelect={select} recent={recent} />
         <LookupSection
           selected={selected}
           compareIds={compareIds}
           onSelect={select}
           onToggleCompare={toggleCompare}
+          onOpenGroup={openGroup}
           forwardRef={lookupRef}
         />
-        <CompareSection compareIds={compareIds} onRemove={removeCompare} onClear={clearCompare} />
-        <Directory onSelect={select} />
+        <CompareSection compareIds={compareIds} onRemove={removeCompare} onClear={clearCompare} onSelect={select} />
+        <Directory onSelect={select} view={dirView} setView={setDirView} focusGroup={focusGroup} />
         <SignalsExplainer />
         <Backlog />
       </main>

@@ -346,7 +346,7 @@ input { font: inherit; color: inherit; }
 
 /* ------------------------------------------------------------- directory -- */
 .ow-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1rem; margin-bottom: 1.8rem; }
-.ow-filters { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.ow-filters { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.3rem; }
 .ow-sortwrap { margin-left: auto; display: flex; align-items: center; gap: 0.5rem; }
 .ow-sortwrap label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); }
 .ow-select {
@@ -408,6 +408,94 @@ input { font: inherit; color: inherit; }
 
 /* small helpers */
 .ow-rule { height: 1px; background: var(--line); margin: 2.5rem 0; }
+
+/* ---------------------------------------------------------- section rail -- */
+.ow-rail {
+  position: fixed; right: clamp(0.8rem, 2vw, 1.6rem); top: 50%; transform: translateY(-50%);
+  z-index: calc(var(--z-chrome) - 5); display: flex; flex-direction: column; gap: 0.25rem;
+}
+@media (max-width: 1120px) { .ow-rail { display: none; } }
+.ow-rail a { display: flex; align-items: center; justify-content: flex-end; gap: 0.6rem; padding: 0.35rem 0; }
+.ow-rail .dot { width: 8px; height: 8px; border: 1px solid var(--faint); border-radius: 50%; transition: all 0.2s var(--ease); flex: none; }
+.ow-rail .lbl { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); opacity: 0; transform: translateX(6px); transition: all 0.2s var(--ease); }
+.ow-rail a:hover .lbl { opacity: 1; transform: none; }
+.ow-rail a.on .dot { background: var(--indigo); border-color: var(--indigo); transform: scale(1.25); }
+.ow-rail a.on .lbl { opacity: 1; transform: none; color: var(--indigo); }
+
+/* --------------------------------------------------------- scroll reveal -- */
+.ow-reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s var(--ease), transform 0.7s var(--ease); }
+.ow-reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .ow-reveal { opacity: 1 !important; transform: none !important; transition: none; } }
+
+/* hero kbd hint */
+.ow-hero-count .kbd { color: var(--faint); }
+
+/* directory chip count + alt chips */
+.ow-chip b { font-weight: 500; color: var(--faint); font-size: 0.9em; }
+.ow-chip[aria-pressed='true'] b { color: var(--paper); }
+.ow-chip.alt { border-style: dashed; }
+
+/* directory view toggle */
+.ow-viewtoggle { display: inline-flex; border: 1.5px solid var(--ink); margin-bottom: 1.6rem; }
+.ow-viewtoggle button { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.55rem 1.1rem; border-right: 1.5px solid var(--ink); transition: background 0.15s; }
+.ow-viewtoggle button:last-child { border-right: 0; }
+.ow-viewtoggle button.on { background: var(--ink); color: var(--calico); }
+
+/* directory inline filter */
+.ow-dirsearch { display: flex; align-items: center; gap: 0.55rem; border: 1.5px solid var(--ink); background: var(--paper-2); padding: 0.35rem 0.8rem; min-width: 220px; }
+.ow-dirsearch svg { color: var(--faint); flex: none; }
+.ow-dirsearch input { flex: 1; min-width: 0; border: 0; background: none; outline: none; padding: 0.35rem 0; font-size: 0.95rem; }
+
+/* ------------------------------------------------------ sister brands ----- */
+.ow-family { padding: 0 1.5rem 0.3rem; }
+.ow-family-h { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 0.7rem; }
+.ow-family-h span { color: var(--faint); text-transform: none; letter-spacing: 0.02em; font-style: normal; }
+.ow-family-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.ow-familychip { display: inline-flex; align-items: center; gap: 0.5rem; border: 1px solid var(--line); background: var(--paper); padding: 0.4rem 0.4rem 0.4rem 0.7rem; font-size: 0.92rem; font-weight: 500; transition: all 0.15s var(--ease); }
+.ow-familychip:hover { border-color: var(--ink); transform: translateY(-1px); }
+.ow-familychip .s { font-family: var(--mono); font-size: 10px; background: var(--calico-2); border: 1px solid var(--line); padding: 0.1rem 0.35rem; color: var(--ink-soft); }
+
+/* parent link in the card facts */
+.ow-parentlink { font: inherit; font-weight: 600; text-align: left; border-bottom: 1.5px solid var(--indigo); color: inherit; transition: color 0.15s; }
+.ow-parentlink:hover { color: var(--indigo); }
+.ow-parentlink .ct { font-family: var(--mono); font-size: 0.75em; color: var(--faint); font-weight: 400; }
+
+/* -------------------------------------------------------- compare table --- */
+.ow-ctable-scroll { overflow-x: auto; border: 1.5px solid var(--ink); box-shadow: 6px 6px 0 var(--ink); background: var(--paper-2); }
+.ow-ctable { display: grid; min-width: 480px; }
+.ow-ct-corner { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); padding: 1rem 1rem 0.8rem; border-bottom: 1.5px solid var(--ink); display: flex; align-items: flex-end; }
+.ow-ct-head { position: relative; padding: 1rem 1rem 0.8rem; border-bottom: 1.5px solid var(--ink); border-left: 1px solid var(--line); }
+.ow-ct-name { font-weight: 800; font-size: 1.15rem; letter-spacing: -0.01em; text-align: left; display: block; padding-right: 1.1rem; line-height: 1.05; }
+.ow-ct-name:hover { color: var(--indigo); }
+.ow-ct-x { position: absolute; top: 0.7rem; right: 0.7rem; font-family: var(--mono); font-size: 12px; color: var(--faint); line-height: 1; }
+.ow-ct-x:hover { color: var(--madder); }
+.ow-ct-sub { font-family: var(--serif); font-style: italic; font-size: 0.85rem; color: var(--faint); display: block; margin-top: 0.3rem; }
+.ow-ct-rk { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); padding: 0.85rem 1rem; border-bottom: 1px solid var(--line-soft); background: var(--calico-2); display: flex; align-items: center; }
+.ow-ct-cell { padding: 0.85rem 1rem; border-bottom: 1px solid var(--line-soft); border-left: 1px solid var(--line); display: flex; align-items: center; font-size: 0.92rem; }
+.ow-ctable > .ow-ct-row:last-child .ow-ct-cell, .ow-ctable > .ow-ct-row:last-child .ow-ct-rk { border-bottom: 0; }
+.ow-ct-txt { font-weight: 500; }
+.ow-ct-fti { display: flex; flex-direction: column; gap: 0.35rem; width: 100%; }
+.ow-ct-fti .n { font-family: var(--mono); font-weight: 500; font-size: 1.1rem; }
+.ow-ct-fti .n small { color: var(--faint); font-size: 0.7em; }
+.ow-ct-fti .bar { height: 5px; background: var(--calico-2); border: 1px solid var(--line); position: relative; overflow: hidden; }
+.ow-ct-fti .bar i { position: absolute; inset: 0 auto 0 0; background: var(--indigo); }
+
+/* ---------------------------------------------------------- group cards --- */
+.ow-groups { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.1rem; }
+.ow-group { border: 1.5px solid var(--ink); background: var(--paper-2); padding: 1.2rem 1.3rem 1.3rem; transition: box-shadow 0.25s var(--ease); }
+.ow-group.focus { box-shadow: 6px 6px 0 var(--indigo); border-color: var(--indigo); }
+.ow-group-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; padding-bottom: 0.9rem; margin-bottom: 0.9rem; border-bottom: 1px solid var(--line); }
+.ow-group-head h3 { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.01em; line-height: 1.05; }
+.ow-group-head .ct { font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); }
+.ow-group-avg { text-align: right; flex: none; }
+.ow-group-avg .n { font-family: var(--mono); font-weight: 500; font-size: 1.5rem; line-height: 1; color: var(--indigo); display: block; }
+.ow-group-avg .l { font-size: 9px; font-family: var(--mono); letter-spacing: 0.05em; text-transform: uppercase; color: var(--faint); }
+.ow-group-brands { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+.ow-groupchip { display: inline-flex; align-items: center; gap: 0.45rem; border: 1px solid var(--line); background: var(--paper); padding: 0.35rem 0.35rem 0.35rem 0.65rem; font-size: 0.9rem; font-weight: 500; transition: all 0.14s var(--ease); }
+.ow-groupchip:hover { border-color: var(--ink); transform: translateY(-1px); }
+.ow-groupchip .bs { font-family: var(--mono); font-size: 10px; background: var(--indigo); color: var(--paper); padding: 0.1rem 0.35rem; }
+.ow-groupchip .bs.na { background: var(--calico-2); color: var(--faint); border: 1px solid var(--line); }
+
 @media (prefers-reduced-motion: reduce) {
-  .ow-swing, .ow-tag, .ow-search-box, .ow-card { transition: none !important; animation: none !important; }
+  .ow-swing, .ow-tag, .ow-search-box, .ow-card, .ow-group, .ow-familychip, .ow-groupchip { transition: none !important; animation: none !important; }
 }

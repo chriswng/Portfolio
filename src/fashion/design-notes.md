@@ -62,3 +62,23 @@ calico ground, vat indigo accent, madder for section indices.
   disabled under `prefers-reduced-motion`.
 - Skip link first, labelled inputs, `aria` roles on the combobox/listbox,
   decorative visuals `aria-hidden`.
+
+## Product depth
+
+- **Deep-linked state.** The selected brand and the compare set live in the URL
+  hash (`#brand=gucci&compare=zara,h-m`), so any lookup is shareable and the
+  back button works. A brand card has a copy-link button.
+- **Corporate group lens.** The parent name on every card is a link, and the
+  directory has a Groups view: LVMH, Kering, Inditex, VF and the rest shown as
+  cards listing the brands they own with each brand's score and a mean. This is
+  the "read the parent, not the brand" thesis made explorable.
+- **Sister brands.** A card lists the other labels under the same owner as
+  chips with their scores, so you can hop across a portfolio.
+- **Compare table.** Up to three brands aligned in one table, row by row
+  (parent, segment, HQ, FTI bar, then each disclosure signal).
+- **Directory tools.** Free-text filter, segment chips with live counts,
+  Australian and Scored-only toggles, four sort orders.
+- **Wayfinding and polish.** A fixed section rail tracks the active section;
+  `/` (or Cmd/Ctrl+K) focuses search from anywhere; recently viewed brands
+  persist in localStorage; sections reveal on scroll, disabled under
+  reduced motion.
