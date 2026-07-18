@@ -279,6 +279,22 @@
 .ob-pane h3{ font-family:var(--disp); font-size:clamp(1.5rem,3.5vw,2.1rem); font-weight:700; color:var(--slate); letter-spacing:-0.03em; margin-bottom:0.5rem; outline:none; }
 .ob-pane > div > p{ font-size:0.85rem; color:#475569; line-height:1.7; margin-bottom:1.6rem; max-width:520px; }
 
+/* ---- Hand-drawn icons ---- */
+/* One visual language across the page: round line art with a single matcha
+   accent shape. Stroke inherits its context colour; the accent is painted
+   from the brand token, so every glyph re-tints from one place. */
+.fpi{ display:inline-block; vertical-align:middle; flex-shrink:0; }
+.fpi-fill{ fill:var(--matcha); }
+
+/* A step heading wears its category glyph in a soft matcha badge. */
+.ob-stephead{ display:flex; align-items:center; gap:0.75rem; margin-bottom:0.5rem; }
+.ob-stephead h3{ margin-bottom:0; }
+.ob-stephead-i{ display:inline-flex; align-items:center; justify-content:center; width:46px; height:46px; flex-shrink:0; border-radius:50%; background:rgba(181,196,43,0.16); border:1px solid rgba(181,196,43,0.42); color:var(--slate); box-shadow:0 1px 3px rgba(15,23,42,0.06); }
+
+/* Small glyph tucked before a field label, drawn in the label's own ink. */
+.ob-label-i{ vertical-align:-0.28em; margin-right:0.42rem; }
+.ob-flight-i{ color:var(--mid); }
+
 .ob-field{ margin-bottom:1.5rem; }
 .ob-label{ display:block; font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:oklch(0.48 0.022 118); font-weight:600; margin-bottom:0.55rem; }
 .ob-note{ display:block; font-family:var(--mono); font-size:10px; color:var(--mid); line-height:1.6; margin:0.5rem 0 1.2rem; max-width:520px; }

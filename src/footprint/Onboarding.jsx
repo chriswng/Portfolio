@@ -6,6 +6,7 @@ import { ONBOARD, ENERGY_PRESETS, fmtT } from './data/copy';
 import { OB, fill } from './data/storyCopy';
 import { priceEntry, aggregate } from './lib/engine';
 import { audio } from './lib/audio';
+import Icon from './Icons';
 import { prefersReducedMotion } from '../utils/media';
 
 // Local-date formatter. toISOString converts to UTC, which in Australian
@@ -193,10 +194,10 @@ function LiveNumber({ value, decimals = 1 }) {
 
 // ---- Input primitives ------------------------------------------------------
 
-function Chips({ label, options, value, onChange, note }) {
+function Chips({ label, options, value, onChange, note, icon }) {
   return (
     <div className="ob-field" role="group" aria-label={label}>
-      <span className="ob-label">{label}</span>
+      <span className="ob-label">{icon && <Icon name={icon} size={15} className="ob-label-i" />}{label}</span>
       <div className="ob-chips">
         {options.map((o) => (
           <button
@@ -215,11 +216,11 @@ function Chips({ label, options, value, onChange, note }) {
   );
 }
 
-function Stepper({ label, value, onChange, min = 0, max = 99, step = 1, live }) {
+function Stepper({ label, value, onChange, min = 0, max = 99, step = 1, live, icon }) {
   const clamp = (v) => Math.min(max, Math.max(min, v));
   return (
     <div className="ob-field">
-      <span className="ob-label">{label}</span>
+      <span className="ob-label">{icon && <Icon name={icon} size={15} className="ob-label-i" />}{label}</span>
       <div className="ob-stepper">
         <button type="button" aria-label={'Decrease ' + label} onClick={() => onChange(clamp(value - step))}>−</button>
         <input
@@ -239,7 +240,7 @@ function Stepper({ label, value, onChange, min = 0, max = 99, step = 1, live }) 
 // Slide it, or type it. The number beside the label is a real input, so a
 // visitor who knows their exact bill can enter it instead of hunting for the
 // right slider position. The two stay in sync; typing clamps to the range.
-function SliderField({ label, value, onChange, min, max, step, unit, live }) {
+function SliderField({ label, value, onChange, min, max, step, unit, live, icon }) {
   const [text, setText] = useState(String(value));
   // Reflect slider drags (and any external change) back into the input.
   useEffect(() => { setText(String(value)); }, [value]);
@@ -257,7 +258,7 @@ function SliderField({ label, value, onChange, min, max, step, unit, live }) {
   return (
     <div className="ob-field">
       <div className="ob-slider-head">
-        <span className="ob-label">{label}</span>
+        <span className="ob-label">{icon && <Icon name={icon} size={15} className="ob-label-i" />}{label}</span>
         <span className="ob-value">
           <input
             type="number" className="ob-value-input" inputMode="decimal"
@@ -373,16 +374,21 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
 
   const steps = [
     <div key="you">
-      <h3 ref={headRef} tabIndex={-1}>{ONBOARD.you.title}</h3>
+      <div className="ob-stephead">
+        <span className="ob-stephead-i" aria-hidden="true"><Icon name="house" size={26} /></span>
+        <h3 ref={headRef} tabIndex={-1}>{ONBOARD.you.title}</h3>
+      </div>
       <p>{ONBOARD.you.sub}</p>
       <Chips
+        icon="pin"
         label={ONBOARD.you.state}
         options={Object.entries(ELECTRICITY).map(([k, v]) => ({ value: k, label: v.label }))}
         value={a.state} onChange={(v) => set('state', v)}
       />
-      <Stepper label={ONBOARD.you.household} value={a.householdSize} min={1} max={10} onChange={(v) => set('householdSize', v)} />
+      <Stepper icon="people" label={ONBOARD.you.household} value={a.householdSize} min={1} max={10} onChange={(v) => set('householdSize', v)} />
       <p className="ob-note">{ONBOARD.you.householdNote}</p>
       <Chips
+        icon="building"
         label={ONBOARD.you.dwelling}
         options={[
           { value: 'house', label: ONBOARD.you.dwellingHouse },
@@ -392,9 +398,13 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
       />
     </div>,
     <div key="energy">
-      <h3 ref={headRef} tabIndex={-1}>{ONBOARD.energy.title}</h3>
+      <div className="ob-stephead">
+        <span className="ob-stephead-i" aria-hidden="true"><Icon name="bolt" size={26} /></span>
+        <h3 ref={headRef} tabIndex={-1}>{ONBOARD.energy.title}</h3>
+      </div>
       <p>{ONBOARD.energy.sub}</p>
       <Chips
+        icon="house"
         label={ONBOARD.energy.presetLabel}
         options={ENERGY_PRESETS.map((pr) => ({ value: pr.id, label: pr.label }))}
         value={(ENERGY_PRESETS.find((pr) => pr.kwh === a.kwhQuarter && pr.mj === a.mjQuarter) || {}).id}
@@ -404,11 +414,12 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         }}
         note={ONBOARD.energy.presetNote}
       />
-      <SliderField label={ONBOARD.energy.kwh} value={a.kwhQuarter} min={0} max={6000} step={10} unit="kWh"
+      <SliderField icon="bolt" label={ONBOARD.energy.kwh} value={a.kwhQuarter} min={0} max={6000} step={10} unit="kWh"
         onChange={(v) => set('kwhQuarter', v)} live={approx(LIVE.electricity(a))} />
-      <SliderField label={ONBOARD.energy.mj} value={a.mjQuarter} min={0} max={30000} step={50} unit="MJ"
+      <SliderField icon="flame" label={ONBOARD.energy.mj} value={a.mjQuarter} min={0} max={30000} step={50} unit="MJ"
         onChange={(v) => set('mjQuarter', v)} live={approx(LIVE.gas(a))} />
       <Chips
+        icon="leaf"
         label={ONBOARD.energy.greenpower}
         options={[
           { value: 'no', label: ONBOARD.energy.gpNo },
@@ -422,32 +433,39 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
       />
     </div>,
     <div key="travel">
-      <h3 ref={headRef} tabIndex={-1}>{ONBOARD.travel.title}</h3>
+      <div className="ob-stephead">
+        <span className="ob-stephead-i" aria-hidden="true"><Icon name="car" size={26} /></span>
+        <h3 ref={headRef} tabIndex={-1}>{ONBOARD.travel.title}</h3>
+      </div>
       <p>{ONBOARD.travel.sub}</p>
-      <SliderField label={ONBOARD.travel.car} value={a.carKmWeek} min={0} max={1000} step={5} unit="km / wk"
+      <SliderField icon="car" label={ONBOARD.travel.car} value={a.carKmWeek} min={0} max={1000} step={5} unit="km / wk"
         onChange={(v) => set('carKmWeek', v)} live={a.carKmWeek > 0 ? approx(LIVE.car(a)) : null} />
       {a.carKmWeek > 0 && (
         <>
           <Chips
+            icon="fuel"
             label={ONBOARD.travel.fuelType}
             options={Object.entries(ROAD_FUELS).map(([k, v]) => ({ value: k, label: v.label }))}
             value={a.fuelType} onChange={(v) => set('fuelType', v)}
           />
-          <Stepper label={ONBOARD.travel.occupancy} value={a.carOccupancy} min={1} max={7}
+          <Stepper icon="people" label={ONBOARD.travel.occupancy} value={a.carOccupancy} min={1} max={7}
             onChange={(v) => set('carOccupancy', v)} live={approx(LIVE.car(a))} />
           <p className="ob-note">{ONBOARD.travel.occupancyNote}</p>
         </>
       )}
-      <SliderField label={ONBOARD.travel.rideshare} value={a.rideshareWeek} min={0} max={400} step={5} unit="$ / wk"
+      <SliderField icon="phone" label={ONBOARD.travel.rideshare} value={a.rideshareWeek} min={0} max={400} step={5} unit="$ / wk"
         onChange={(v) => set('rideshareWeek', v)} live={a.rideshareWeek > 0 ? approx(LIVE.rideshare(a)) : null} />
-      <SliderField label={ONBOARD.travel.pt} value={a.ptWeek} min={0} max={250} step={5} unit="$ / wk"
+      <SliderField icon="bus" label={ONBOARD.travel.pt} value={a.ptWeek} min={0} max={250} step={5} unit="$ / wk"
         onChange={(v) => set('ptWeek', v)} live={a.ptWeek > 0 ? approx(LIVE.pt(a)) : null} />
     </div>,
     <div key="flights">
-      <h3 ref={headRef} tabIndex={-1}>{ONBOARD.flights.title}</h3>
+      <div className="ob-stephead">
+        <span className="ob-stephead-i" aria-hidden="true"><Icon name="plane" size={26} /></span>
+        <h3 ref={headRef} tabIndex={-1}>{ONBOARD.flights.title}</h3>
+      </div>
       <p>{ONBOARD.flights.sub}</p>
       <div className="ob-flight-form">
-        <label className="fp-field"><span>{ONBOARD.flights.route}</span>
+        <label className="fp-field"><span><Icon name="plane" size={15} className="ob-label-i" />{ONBOARD.flights.route}</span>
           <select value={fl.route} onChange={(e) => setFl((s) => ({ ...s, route: e.target.value }))}>
             {FLIGHT_ROUTES.map((r) => <option key={r.id} value={r.id}>{r.label}</option>)}
             <option value="custom">{ONBOARD.flights.customOpt}</option>
@@ -468,7 +486,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
           options={[{ value: true, label: ONBOARD.flights.return }, { value: false, label: ONBOARD.flights.oneWay }]}
           value={fl.ret} onChange={(v) => setFl((s) => ({ ...s, ret: v }))}
         />
-        <label className="fp-field"><span>{ONBOARD.flights.when}</span>
+        <label className="fp-field"><span><Icon name="clock" size={15} className="ob-label-i" />{ONBOARD.flights.when}</span>
           <select value={fl.month} onChange={(e) => setFl((s) => ({ ...s, month: e.target.value }))}>
             <option value="">{ONBOARD.flights.whenAny}</option>
             {monthOptions.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
@@ -495,6 +513,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
             const when = f.month ? (monthOptions.find((m) => m.value === f.month) || {}).label : null;
             return (
               <li key={i} className="ob-flight-item">
+                <Icon name="plane" size={16} className="ob-flight-i" />
                 <span className="ob-flight-name">{routeLabel}{f.ret ? ' return' : ''}</span>
                 <span className="ob-flight-meta">{f.cabin}{when ? ' · ' + when : ''} · <strong>{fmtT(LIVE.flight(a, f), 2)} t</strong></span>
                 <button
@@ -511,19 +530,25 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
       </div>
     </div>,
     <div key="food">
-      <h3 ref={headRef} tabIndex={-1}>{ONBOARD.food.title}</h3>
+      <div className="ob-stephead">
+        <span className="ob-stephead-i" aria-hidden="true"><Icon name="bowl" size={26} /></span>
+        <h3 ref={headRef} tabIndex={-1}>{ONBOARD.food.title}</h3>
+      </div>
       <p>{ONBOARD.food.sub}</p>
-      <Chips label={ONBOARD.food.diet} options={dietOptions} value={a.dietType} onChange={(v) => set('dietType', v)} />
-      <Stepper label={ONBOARD.food.parcels} value={a.parcelsMonth} min={0} max={200}
+      <Chips icon="fork" label={ONBOARD.food.diet} options={dietOptions} value={a.dietType} onChange={(v) => set('dietType', v)} />
+      <Stepper icon="box" label={ONBOARD.food.parcels} value={a.parcelsMonth} min={0} max={200}
         onChange={(v) => set('parcelsMonth', v)} live={a.parcelsMonth > 0 ? approx(LIVE.parcels(a)) : null} />
-      <Stepper label={ONBOARD.food.intlOrders} value={a.intlOrdersMonth} min={0} max={100}
+      <Stepper icon="globe" label={ONBOARD.food.intlOrders} value={a.intlOrdersMonth} min={0} max={100}
         onChange={(v) => set('intlOrdersMonth', v)} live={a.intlOrdersMonth > 0 ? approx(LIVE.intl(a)) : null} />
     </div>,
     <div key="done" className="ob-done">
       {/* Deliberately spoiler-free: the character, hotspots and context all
           belong to the reveal below, so the done pane holds only the number
           the visitor watched build. */}
-      <h3 ref={headRef} tabIndex={-1}>{OB.done.title}</h3>
+      <div className="ob-stephead">
+        <span className="ob-stephead-i" aria-hidden="true"><Icon name="spark" size={26} /></span>
+        <h3 ref={headRef} tabIndex={-1}>{OB.done.title}</h3>
+      </div>
       <div className="ob-done-num display">
         <span className="sr-only">{fmtT(runningTotal) + ' tonnes per year'}</span>
         <LiveNumber value={runningTotal} /> <span className="ob-done-unit" aria-hidden="true">t / yr</span>
