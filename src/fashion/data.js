@@ -422,7 +422,7 @@ export const COPY = {
     headlineA: 'One garment.',
     headlineB: 'Seven lenses.',
     stand: 'Build a single item of clothing, then follow it everywhere it goes: the field, the dye vat, the container ship, your wardrobe, and whatever comes after. Every figure is an indicative estimate from published life cycle studies, and every one of them moves when you pull on it.',
-    cue: 'Give the garment a push. Then scroll.',
+    cue: 'Grab the cloth and pull. Push the garment. Then scroll.',
     srGarment: 'A garment hangs in the centre of the screen. It follows you through the whole page.',
   },
 
