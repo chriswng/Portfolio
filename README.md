@@ -9,7 +9,7 @@ rebuilt as a React + Framer Motion single-page application with Vite.
 - **Framer Motion** — scroll/velocity parallax, character-split staggered
   headers, magnetic CTAs, spring-physics drawers
 - **Chart.js** — interactive decarbonisation scenario model
-- Hand-written canvas renderers (contour field, warming stripes)
+- Hand-written canvas renderer (contour field)
 
 Colour and type tokens are unchanged from the original site (Space Grotesk /
 Inter / JetBrains Mono; matcha / indigo / berry / amber / slate palette).
@@ -26,7 +26,7 @@ npm run preview  # preview the production build
 ## Structure
 
 - `src/components/` — section components + shared chrome (nav, grain, scroll progress, skip link)
-- `src/data/` — content, scenario model, warming-stripes data
+- `src/data/` — content (incl. footer links), scenario model
 - `src/hooks/` — magnetic interaction
 - `src/utils/` — shared helpers (`media.js`: reduced-motion / hover guards)
 - `work/` + `src/work/` — the standalone work-samples page (served at `/work/`)

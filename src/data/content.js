@@ -174,3 +174,43 @@ export const CONTACT = {
   loc: 'Melbourne, Victoria · Flexible on arrangement',
   linkedin: 'https://linkedin.com/in/itschriswang',
 };
+
+export const FOOTER = {
+  wordmark: 'Christopher Wang',
+  // A real, useful call to action — not an invented newsletter. Chris is open
+  // to roles, so the prominent footer block points at getting in touch.
+  availability: 'Open to senior advisory and lead sustainability roles.',
+  ctaLabel: 'Get in touch',
+  ctaHref: 'https://linkedin.com/in/itschriswang',
+  rights: 'All rights reserved © 2026 · Christopher Wang',
+  tagline: 'Sustainability advisor · Melbourne, Australia',
+  // Link columns. hrefs beginning with '#' or a sub-path are prefixed with the
+  // page base at render time so the footer works from the root and /work/.
+  columns: [
+    {
+      head: 'Profile',
+      links: [
+        { label: 'About', href: '#about' },
+        { label: 'Capabilities', href: '#bio' },
+        { label: 'My Practice', href: '#principles' },
+        { label: 'Experience', href: '#experience' },
+      ],
+    },
+    {
+      head: 'Work',
+      links: [
+        { label: 'Decarb Model', href: '#scenario' },
+        { label: 'Work Samples', href: 'work/' },
+        { label: 'Life Footprint', href: 'footprint/' },
+        { label: 'Sevenfold', href: 'fashion/' },
+      ],
+    },
+    {
+      head: 'Connect',
+      links: [
+        { label: 'LinkedIn', href: 'https://linkedin.com/in/itschriswang', external: true },
+        { label: 'Contact', href: '#contact' },
+      ],
+    },
+  ],
+};

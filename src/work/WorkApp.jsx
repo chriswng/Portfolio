@@ -10,6 +10,7 @@ import {
 } from './workData';
 import Baseline from './Baseline';
 import CaseStudy from './CaseStudy';
+import SiteFooter from '../components/SiteFooter';
 
 function WorkNav() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -170,7 +171,7 @@ export default function WorkApp() {
       <ScrollProgress />
       <WorkNav />
 
-      <main id="main-content">
+      <main id="main-content" className="page-work">
       <section id="work-intro">
         <div className="bloom-wrap" aria-hidden="true"><div className="bloom bloom-a" /><div className="bloom bloom-b" /><div className="bloom bloom-c" /></div>
         <div className="canvas" style={{ position: 'relative', zIndex: 1 }}>
@@ -222,15 +223,7 @@ export default function WorkApp() {
       </section>
       </main>
 
-      <footer className="work-footer">
-        <div className="canvas work-footer-inner">
-          <a href="../" className="footer-home">./</a>
-          <span className="footer-name">Christopher Wang · 2026</span>
-          <div className="footer-links">
-            <a href="https://linkedin.com/in/itschriswang" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter base="../" />
     </>
   );
 }
