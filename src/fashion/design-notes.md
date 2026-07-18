@@ -82,3 +82,32 @@ calico ground, vat indigo accent, madder for section indices.
   `/` (or Cmd/Ctrl+K) focuses search from anywhere; recently viewed brands
   persist in localStorage; sections reveal on scroll, disabled under
   reduced motion.
+
+## Making it useful in the hand (v3)
+
+Informed by a look at the wider tool landscape (Good On You, Baptist World Aid's
+Ethical Fashion Guide, Fashion Revolution, and the ACCC's greenwashing
+guidance):
+
+- **Dig deeper.** Every brand card links out to independent second opinions and
+  the primary sources: the brand's own report, its Good On You rating
+  (`directory.goodonyou.eco/brand/<slug>`), Baptist World Aid's Australian
+  ethical-fashion score, and the Fashion Transparency Index. Openweave is a
+  launchpad; it links, it never restates another service's rating as its own.
+  Note: Baptist World Aid moved from A-F letters to a score out of 100 in 2022,
+  so we link to the guide rather than assert a grade.
+- **Before you buy.** A practical, per-brand checklist built only from what is
+  on file (ownership, the FTI score, general guidance). No invented metrics: it
+  tells you what to check, not what to conclude. This is the "what to research
+  before buying" job, made concrete.
+- **Claim check.** A greenwashing utility grounded in the ACCC's eight
+  principles (aligned with the EU, UK and US equivalents). Paste any marketing
+  claim and it flags the vague and absolute terms regulators single out and the
+  qualifier each demands. It reads only what you paste and judges no real brand.
+- **Form.** An at-a-glance stat band under the hero, and a dark editorial
+  spotlight band that states the ownership-concentration fact in one line, for
+  pacing and contrast against the calico ground.
+
+All additions hold the honesty rules: no invented metrics, no fictional brands,
+link out rather than overclaim, and static-site-safe (every integration is a
+link or a baked dataset, never a runtime API call).

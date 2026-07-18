@@ -16,6 +16,7 @@ import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import {
   BRANDS, BRAND_BY_ID, SEGMENTS, SIGNAL_FIELDS, STATUS, COPY, SOURCES,
   MULTI_GROUPS, segmentCount, ftiBand, groupFamily,
+  digLinks, analyseClaim, SPECIMEN_CLAIMS, ACCC_PRINCIPLES, CLAIM_VERDICTS,
 } from './data';
 import { prefersReducedMotion } from '../utils/media';
 
@@ -112,6 +113,28 @@ const SearchIcon = () => (
 function ftiText(brand) {
   if (brand.fti != null) return `${brand.fti} / 100`;
   return brand.ftiScope === 'outside' ? 'Not assessed' : 'Needs research';
+}
+
+// A practical, honest "before you buy" read, built only from what is on file.
+// No invented metrics: it uses ownership, the FTI score and general guidance.
+function beforeYouBuy(brand, family) {
+  const items = [];
+  items.push(family.length
+    ? `Owned by ${brand.parent}, which runs ${family.length} other label${family.length > 1 ? 's' : ''} on this page. Its group targets can differ from what the brand says.`
+    : `Owned by ${brand.parent}. Read the parent's reporting, not just the brand's marketing.`);
+  if (brand.fti != null) {
+    const band = (brand.ftiBand || ftiBand(brand.fti));
+    items.push(`Its transparency score is ${brand.fti}/100 (${band ? band.label.toLowerCase() : 'disclosure'}). Publishing a lot is not the same as low impact.`);
+  } else if (brand.ftiScope === 'outside') {
+    items.push('Not assessed by the Fashion Transparency Index, so there is no disclosure score to lean on. Treat unqualified claims with extra care.');
+  } else {
+    items.push('No verified transparency score yet. Open its latest report yourself and note the date on it.');
+  }
+  items.push('Look for a dated climate target, and whether it reports Scope 3, the supply-chain emissions where most of fashion’s footprint sits.');
+  items.push('See if it publishes a supplier factory list. A brand that will not name its factories is choosing what you can check.');
+  items.push('Get a second opinion in Dig deeper below: Good On You for a consumer rating, Baptist World Aid for an Australian read.');
+  items.push('The lowest-impact option is usually the one you already own, bought secondhand, or repaired.');
+  return items;
 }
 
 // =========================================================================
@@ -423,6 +446,27 @@ function BrandCard({ brand, inCompare, onToggleCompare, onSelect, onOpenGroup })
         </div>
       )}
 
+      <div className="ow-buy">
+        <div className="ow-buy-h">{COPY.lookup.checklistLabel} <span>· {COPY.lookup.checklistHint}</span></div>
+        <ol className="ow-buy-list">
+          {beforeYouBuy(brand, family).map((line, i) => (
+            <li key={i}><span className="n">{String(i + 1).padStart(2, '0')}</span>{line}</li>
+          ))}
+        </ol>
+      </div>
+
+      <div className="ow-dig">
+        <div className="ow-dig-h">{COPY.lookup.digLabel} <span>· {COPY.lookup.digHint}</span></div>
+        <div className="ow-dig-links">
+          {digLinks(brand).map((l) => (
+            <a key={l.label} className="ow-diglink" href={l.url} target="_blank" rel="noopener noreferrer">
+              <span className="dl-name">{l.label} ↗</span>
+              <span className="dl-note">{l.note}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+
       <div className="ow-card-actions">
         {brand.reportUrl ? (
           <a className="ow-btn" href={brand.reportUrl} target="_blank" rel="noopener noreferrer">{COPY.lookup.reportLabel} ↗</a>
@@ -676,6 +720,132 @@ function Directory({ onSelect, view, setView, focusGroup }) {
 }
 
 // =========================================================================
+// Stat band (form: at-a-glance editorial figures under the hero)
+// =========================================================================
+function StatBand() {
+  const values = {
+    brands: BRANDS.length,
+    groups: MULTI_GROUPS.length,
+    scored: BRANDS.filter((b) => b.fti != null).length,
+    segments: SEGMENTS.length,
+  };
+  return (
+    <div className="ow-statband" aria-hidden="false">
+      <div className="ow-wrap ow-statband-inner">
+        {COPY.stats.map((s) => (
+          <div className="ow-statcell" key={s.from}>
+            <span className="n">{values[s.from]}</span>
+            <span className="k">{s.k}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// =========================================================================
+// Spotlight (form: a dark editorial band for pacing and emphasis)
+// =========================================================================
+function Spotlight() {
+  return (
+    <aside className="ow-spotlight ow-dark" aria-label="Editorial note">
+      <div className="ow-wrap">
+        <p className="ow-spotlight-line">
+          <b>{COPY.spotlight.stat}</b> {COPY.spotlight.line}
+        </p>
+        <p className="ow-spotlight-sub">{COPY.spotlight.sub}</p>
+      </div>
+    </aside>
+  );
+}
+
+// =========================================================================
+// Claim check (greenwashing utility, grounded in ACCC guidance)
+// =========================================================================
+function FlagList({ title, items, noteKey }) {
+  if (!items.length) return null;
+  return (
+    <div className="ow-flag-group">
+      <div className="ow-flag-h">{title} <span>· {items.length}</span></div>
+      {items.map((f, i) => (
+        <div className="ow-flag" key={f.term + i}>
+          <span className="ow-flag-word">“{f.word}”</span>
+          <span className="ow-flag-note">{f[noteKey] || f.note}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ClaimCheck() {
+  const [text, setText] = useState('');
+  const [submitted, setSubmitted] = useState('');
+  const result = useMemo(() => analyseClaim(submitted), [submitted]);
+
+  const run = () => setSubmitted(text);
+  const tryOne = (c) => { setText(c); setSubmitted(c); };
+  const verdictClass = result ? { sound: 'ok', vague: 'warn', risk: 'bad' }[result.verdict.id] : '';
+
+  return (
+    <section className="ow-section ow-reveal" id="claim">
+      <div className="ow-wrap">
+        <SecHead c={COPY.claim} />
+        <p className="ow-lede">{COPY.claim.lede}</p>
+
+        <div className="ow-claim-grid">
+          <div className="ow-claim-input">
+            <textarea
+              className="ow-claim-ta"
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              placeholder={COPY.claim.placeholder}
+              rows={3}
+              aria-label="Marketing claim to check"
+              onKeyDown={(e) => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) run(); }}
+            />
+            <div className="ow-claim-controls">
+              <button className="ow-btn solid" onClick={run}>{COPY.claim.run}</button>
+              <div className="ow-claim-try">
+                <span className="lbl">{COPY.claim.tryLabel}</span>
+                {SPECIMEN_CLAIMS.map((c, i) => (
+                  <button key={i} className="ow-chip" onClick={() => tryOne(c)} title={c}>{c.length > 34 ? c.slice(0, 32) + '…' : c}</button>
+                ))}
+              </div>
+            </div>
+
+            {result ? (
+              <div className={`ow-claim-result ${verdictClass}`}>
+                <div className="ow-verdict">
+                  <span className="stamp">{result.verdict.label}</span>
+                  <span className="line">{result.verdict.line}</span>
+                </div>
+                <FlagList title={COPY.claim.flaggedAbsolute} items={result.absolute} noteKey="note" />
+                <FlagList title={COPY.claim.flaggedVague} items={result.vague} noteKey="note" />
+                <FlagList title={COPY.claim.flaggedQualifier} items={result.qualifier} noteKey="note" />
+                <div className="ow-evidence">{COPY.claim.evidenceLabel}: <b>{result.evidence}</b></div>
+              </div>
+            ) : (
+              <div className="ow-claim-result empty"><p>{COPY.claim.emptyResult}</p></div>
+            )}
+            <p className="ow-claim-disclaimer">{COPY.claim.disclaimer}</p>
+          </div>
+
+          <aside className="ow-principles">
+            <h3>{COPY.claim.principlesLabel}</h3>
+            <ol className="ow-principles-list">
+              {ACCC_PRINCIPLES.map((p, i) => (
+                <li key={i}><span className="pn">{String(i + 1).padStart(2, '0')}</span>{p}</li>
+              ))}
+            </ol>
+            <p className="ow-principles-note">{COPY.claim.principlesNote}</p>
+          </aside>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// =========================================================================
 // What the signals mean
 // =========================================================================
 function SignalsExplainer() {
@@ -890,6 +1060,7 @@ export default function FashionApp() {
       <SectionRail />
       <main className="ow-main" ref={heroSearchRef}>
         <Hero onSelect={select} recent={recent} />
+        <StatBand />
         <LookupSection
           selected={selected}
           compareIds={compareIds}
@@ -900,6 +1071,8 @@ export default function FashionApp() {
         />
         <CompareSection compareIds={compareIds} onRemove={removeCompare} onClear={clearCompare} onSelect={select} />
         <Directory onSelect={select} view={dirView} setView={setDirView} focusGroup={focusGroup} />
+        <Spotlight />
+        <ClaimCheck />
         <SignalsExplainer />
         <Backlog />
       </main>
