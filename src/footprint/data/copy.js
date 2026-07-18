@@ -99,21 +99,24 @@ export const ONBOARD = {
   steps: ['You', 'Home energy', 'Getting around', 'Flights', 'Food & parcels'],
   you: {
     title: 'About you',
-    sub: 'Where you live sets your electricity factors, and adults at home split the bills.',
+    sub: 'Where you live sets your power mix, and we split shared home energy across the people who live there.',
     state: 'Where do you live?',
-    household: 'How many adults live at your place? (including you)',
-    householdNote: 'Power and gas get split evenly between the adults at home. Two adults means half of each bill counts as yours.',
+    household: 'How many adults share your home? (counting you)',
+    householdNote: 'We split shared home energy across the adults at home, so you are only counted for your share. Two adults means half of each bill is yours.',
     dwelling: 'Your place',
     dwellingHouse: 'House I own or could put solar on',
     dwellingApartment: 'Apartment or rental',
   },
   energy: {
     title: 'Home energy',
-    sub: 'Best case: read the kWh and MJ straight off a power and gas bill. No bills handy? Start from a typical home and adjust.',
-    presetLabel: 'No bills handy? Start from a typical home',
-    presetNote: 'Rough starting points for a whole household per quarter. Gas-heated homes in the southern states often run well above these. Swap in your real bills whenever you find them.',
-    kwh: 'Electricity, kWh per quarter (whole household)',
+    sub: 'Best case: read the kWh and MJ straight off a power and gas bill. No bills nearby? Start with a typical home and nudge it.',
+    presetLabel: 'No bills nearby? Start with a typical home',
+    presetNote: 'Rough starting points, sized to your household: each adult adds their share, so a busier home reads higher. The figures below are the whole-home total per quarter for the number of adults you set. Gas-heated homes down south often run well above these. Swap in your real bills whenever you find them.',
+    kwh: 'Electricity, kWh per quarter (whole home)',
     mj: 'Gas, MJ per quarter (0 if no gas)',
+    // {n}/{s} filled with the household size in the component.
+    splitNote: 'These are whole-home figures. We count your share: split evenly across the {n} adult{s} at home. Change the number of adults back on the first step.',
+    splitNoteSolo: 'These are whole-home figures. With one adult at home, the whole bill is yours.',
     greenpower: 'Is your electricity on GreenPower?',
     greenpowerNote: 'GreenPower is an optional 100% renewable add-on some electricity plans include. If you have never heard of it, you are almost certainly not on it, so choose No or Not sure.',
     gpNo: 'No',
@@ -123,37 +126,52 @@ export const ONBOARD = {
   },
   travel: {
     title: 'Getting around',
-    sub: 'Rough weekly figures are fine; the log can take real numbers later.',
+    sub: 'Rough weekly figures are fine; you can put real numbers in later.',
     car: 'Car kilometres per week (0 if car-free)',
     fuelType: 'Car fuel',
-    occupancy: 'People in the car, on average (including you)',
-    occupancyNote: 'Car emissions are split per person in the car, the same way the household bills are split. Two people halves your share.',
+    occupancy: 'People in the car, on average (counting you)',
+    occupancyNote: 'We split car emissions across everyone in the car, the same way we split the home bills. Two people halves your share.',
     rideshare: 'Rideshare spend per week, $',
     pt: 'Public transport spend per week, $',
+    // {cap} filled with the state cap in the component.
+    ptCapNote: 'In {state}, {label} is ${cap} a week, so we will not count more than that unless you say so. Spending past the cap does not buy more travel.',
+    ptOverride: 'Count my full spend anyway',
+    ptCapApplied: 'Counting up to ${cap} a week',
   },
   flights: {
     title: 'Your flights, one trip at a time',
-    sub: 'Think through a typical year: holidays, work trips, weddings. Pick a route, press add, and it joins your list below. Repeat for every trip.',
-    when: 'When was it?',
+    sub: 'Think through a typical year: holidays, work trips, weddings. Add a card for each trip, pick where it went, and edit any of them whenever you like.',
+    from: 'From',
+    to: 'To',
+    pickTo: 'Choose a destination',
+    pickFrom: 'Choose a starting city',
+    when: 'When',
     whenAny: 'Sometime in the year',
-    whenNote: 'Optional. A trip with a month makes your month-by-month chart and worst-month reveal real; left open, it spreads evenly across the year.',
-    route: 'Route',
-    custom: 'Custom distance, km one way',
-    customOpt: 'Custom distance…',
+    whenNote: 'Optional. Give a trip its month and your month-by-month chart and worst-month reveal come alive; leave it open and it spreads evenly across the year.',
     cabins: { economy: 'Economy', premium: 'Premium', business: 'Business', first: 'First' },
+    // Retained for the activity log's simple quick-add route picker.
+    customOpt: 'Custom distance…',
     oneWay: 'One way',
+    roundTrip: 'Return',
     cabin: 'Cabin',
-    return: 'Return trip',
-    add: 'Add this flight',
-    added: 'Added. Add your next trip, or press Next.',
-    listTitle: 'Your flights',
-    subtotal: 'Flights so far',
+    trip: 'Trip',
+    passengers: 'Seats you paid for',
+    passengersNote: 'Usually just you. Bump it up only if you are counting seats you booked for others.',
+    add: 'Add a flight',
+    addAnother: 'Add another flight',
     remove: 'Remove',
-    none: 'No flights in the list yet. If you flew this year, add each trip above.',
+    tripLabel: 'Flight {n}',
+    listTitle: 'Your flights',
+    none: 'No flights yet. Flew somewhere this year? Add a card for each trip.',
+    // Distance is shown (not carbon) so the estimate feels transparent.
+    dist: '≈ {km} km each way',
+    sameCities: 'Pick two different cities.',
+    sourceSummary: 'How this is estimated',
+    sourceBody: 'Flight emissions are estimated from the route distance and published UK Government (DESNZ) emissions factors, with an uplift for the extra warming of burning fuel at altitude. It is an estimate, not an airline-specific figure.',
   },
   food: {
     title: 'Food and parcels',
-    sub: 'Pick the diet that sounds most like your week. Each option shows roughly what it adds over a year.',
+    sub: 'Pick the diet that sounds most like your week. Rough is fine.',
     diet: 'Your diet, honestly',
     dietHints: {
       highMeat: 'Meat most meals, or big serves daily',
@@ -172,14 +190,19 @@ export const ONBOARD = {
   cancel: 'Cancel',
 };
 
-// Typical-household starting points for the energy step, whole household per
-// quarter. Deliberately coarse: they exist so someone without a bill in reach
-// can still finish, and the note tells them to swap in real numbers later.
+// Typical-home starting points for the energy step, expressed PER ADULT per
+// quarter. The whole-home figure the engine prices from is kwhPerAdult times
+// the number of adults at home, so a busier home reads higher rather than
+// splitting one fixed number ever thinner. At the default two adults these
+// reproduce the long-standing whole-home defaults (e.g. an apartment at 1,100
+// kWh); the per-capita share stays realistic as the household grows.
+// Deliberately coarse: they exist so someone without a bill in reach can still
+// finish, and the note tells them to swap in real numbers later.
 export const ENERGY_PRESETS = [
-  { id: 'aptSmall', label: 'Small apartment', kwh: 700, mj: 0 },
-  { id: 'apt', label: 'Apartment', kwh: 1100, mj: 2500 },
-  { id: 'house', label: 'House', kwh: 1600, mj: 5500 },
-  { id: 'houseLarge', label: 'Large house', kwh: 2300, mj: 9000 },
+  { id: 'aptSmall', label: 'Small apartment', kwhPerAdult: 350, mjPerAdult: 0 },
+  { id: 'apt', label: 'Apartment', kwhPerAdult: 550, mjPerAdult: 1250 },
+  { id: 'house', label: 'House', kwhPerAdult: 800, mjPerAdult: 2750 },
+  { id: 'houseLarge', label: 'Large house', kwhPerAdult: 1150, mjPerAdult: 4500 },
 ];
 
 export const METHOD = {
@@ -212,7 +235,7 @@ export const METHOD = {
     title: 'How results are calculated',
     paras: [
       'Each item is activity times a factor: kilowatt-hours times the grid factor, litres times the fuel factor, passenger-kilometres times the flight factor, and so on. Flights include the extra warming effect of burning fuel at altitude, which reasonable calculators treat differently, so this one reads a little higher than a CO₂-only figure.',
-      'Where a real bill or itinerary is not to hand, the calculator estimates: it turns spend into litres, kilometres or parcels at stated rates, or extends a metered daily average over an unbilled period. Estimates are labelled, and replacing one with a real number tightens the range shown next to the total. Green power, where you have it, lowers your purchased-electricity figure; no offsets are subtracted anywhere.',
+      'Where a real bill or itinerary is not to hand, the calculator estimates: it turns spend into litres, kilometres or parcels at stated rates, or extends a metered daily average over an unbilled period. Public-transport spend is capped at the state weekly fare cap first (in NSW, the $50 Opal cap), because spending past the cap buys no extra travel. Estimates are labelled, and replacing one with a real number tightens the range shown next to the total. Green power, where you have it, lowers your purchased-electricity figure; no offsets are subtracted anywhere.',
     ],
   },
   interpret: {
