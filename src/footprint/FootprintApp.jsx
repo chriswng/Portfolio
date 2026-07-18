@@ -12,7 +12,6 @@ import {
   encodeSnapshot, decodeSnapshot, storySeen, markStorySeen,
 } from './lib/store';
 import { downloadAuditPack } from './lib/auditPack';
-import { audio } from './lib/audio';
 import { prefersReducedMotion } from '../utils/media';
 import Story from './story/Story';
 import Skim from './Skim';
@@ -63,7 +62,6 @@ export default function FootprintApp() {
   // The reveal story opens for first-time visitors; shared-snapshot links and
   // returning visitors land straight on the dashboard.
   const [storyOpen, setStoryOpen] = useState(() => !decodeSnapshot() && !storySeen());
-  const [soundOn, setSoundOn] = useState(false);
   // Which closed year is on screen; null means the open year.
   const [pastIdx, setPastIdx] = useState(null);
 
@@ -216,18 +214,12 @@ export default function FootprintApp() {
     }
   };
 
-  const toggleSound = () => setSoundOn(audio.toggle());
-  const muteAudio = useCallback(() => {
-    if (audio.on) audio.disable();
-    setSoundOn(false);
-  }, []);
   const landOnDashboard = () => {
     window.setTimeout(() => document.getElementById('fp-dash')?.scrollIntoView({ behavior: 'auto' }), 50);
   };
   const onStorySkip = () => {
     markStorySeen();
     setStoryOpen(false);
-    muteAudio();
     landOnDashboard();
   };
   // "Open the full plan" from the needle moment: the story has made its
@@ -236,7 +228,6 @@ export default function FootprintApp() {
   const onStoryPlan = () => {
     markStorySeen();
     setStoryOpen(false);
-    muteAudio();
     window.setTimeout(() => {
       const el = document.getElementById('fp-plan');
       if (!el) return;
@@ -251,7 +242,6 @@ export default function FootprintApp() {
   const onAssessor = () => {
     markStorySeen();
     setStoryOpen(false);
-    muteAudio();
     window.setTimeout(() => {
       const el = document.getElementById('fp-skim');
       if (!el) return;
@@ -265,7 +255,6 @@ export default function FootprintApp() {
   const onStoryFinish = () => {
     markStorySeen();
     setStoryOpen(false);
-    muteAudio();
     landOnDashboard();
   };
   const onStoryEnd = useCallback(() => { markStorySeen(); }, []);
@@ -302,9 +291,6 @@ export default function FootprintApp() {
           onFinish={onStoryFinish}
           onPlan={onStoryPlan}
           onCopyLink={onShare}
-          soundOn={soundOn}
-          onToggleSound={toggleSound}
-          onAutoMute={muteAudio}
         />
       )}
 
