@@ -99,17 +99,29 @@ export default function Experience() {
             </div>
           ))}
 
-          <div className="edu-block" ref={(el) => (entryRefs.current[EXPERIENCE.length] = el)}>
-            <div className="edu-inst">{EDUCATION.inst}</div>
-            <div className="edu-deg">{EDUCATION.deg}</div>
-            <div className="edu-grid">
-              {EDUCATION.cells.map((c, i) => (
-                <div className="edu-cell" key={i}>
-                  <div className="edu-cell-l">{c.l}</div>
-                  <div className="edu-cell-b"><strong>{c.b[0]}</strong>{c.b[1]}</div>
-                </div>
-              ))}
+          {/* Education uses the same entry layout as the roles above so it reads
+              as part of the same timeline, not an isolated card. */}
+          <div className="exp-entry exp-entry-edu" ref={(el) => (entryRefs.current[EXPERIENCE.length] = el)}>
+            <div className="exp-hd">
+              <div>
+                <div className="exp-eyebrow">Education</div>
+                <div className="exp-org-name">{EDUCATION.org}</div>
+                <div className="exp-dept">{EDUCATION.dept}</div>
+              </div>
+              <div className="exp-meta">
+                {EDUCATION.roles.map((r, i) => (
+                  <div className="exp-meta-row" key={i}>
+                    <span className="exp-role-title">{r.title}</span>
+                    <span className="exp-date">{r.date}</span>
+                  </div>
+                ))}
+              </div>
             </div>
+            <ul className="exp-bullets">
+              {EDUCATION.bullets.map((b, i) => (
+                <li key={i} className="has-mark"><strong className="exp-bullet-lead">{b.lead}</strong>{b.text}</li>
+              ))}
+            </ul>
           </div>
 
           {/* Nodes, one per entry + education, positioned in layout effect. */}
