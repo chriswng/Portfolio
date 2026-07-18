@@ -530,7 +530,11 @@ section { position:relative; }
 .site-footer{ background:var(--bg); padding:0 var(--gut) clamp(1.5rem,4vw,3rem); }
 .footer-card{
   position:relative; background:linear-gradient(150deg,var(--lime-bright) 0%,var(--lime) 42%,var(--sage) 100%);
-  --pad-x:clamp(1.5rem,4vw,3rem); --notch-w:360px;
+  --pad-x:clamp(1.5rem,4vw,3rem);
+  /* Tab width = the left-aligned wordmark plus equal padding either side, so the
+     notch step sits one padding past "Christopher" (≈573px at the capped size)
+     — the word's left and right gaps match. */
+  --tab-w:calc(2 * var(--pad-x) + 573px);
   border-radius:var(--r-2xl); padding:clamp(1.9rem,5vw,3.4rem) var(--pad-x) clamp(1.6rem,3.5vw,2.4rem);
   color:var(--forest);
   /* Folder tab: a genuine cut (XOR mask), not a painted-over rectangle. The
@@ -543,9 +547,14 @@ section { position:relative; }
      follow the un-notched border box and leak around the cut; the reference
      card is flat anyway. The notch shrinks on narrow screens so the tab stays a
      tab, and mobile gets top padding so the wordmark clears the notch band. */
-  --notch:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='400'%20height='106'%3E%3Cpath%20d='M68,0L400,0L400,62A28,28,0,0,1,372,90L54,90A16,16,0,0,0,38,106L38,28A28,28,0,0,1,66,0Z'%20fill='%23000'/%3E%3C/svg%3E");
-  -webkit-mask:linear-gradient(#000 0 0) 0 0/100% 100% no-repeat, var(--notch) top right/auto no-repeat;
-  mask:linear-gradient(#000 0 0) 0 0/100% 100% no-repeat, var(--notch) top right/auto no-repeat;
+  /* Left-anchored notch: the shaped left side (tab corner + concave step) sits
+     at the tab width; the flat top extends right, off the card, so the cut
+     always reaches the fluid right edge. The card's rounded body-TR is picked
+     up separately by border-radius below. */
+  --notch:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='1600'%20height='106'%3E%3Cpath%20d='M66,0L1600,0L1600,90L54,90A16,16,0,0,0,38,106L38,28A28,28,0,0,1,66,0Z'%20fill='%23000'/%3E%3C/svg%3E");
+  --corner:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='30'%20height='30'%3E%3Cpath%20d='M2,0L30,0L30,28A28,28,0,0,0,2,0Z'%20fill='%23000'/%3E%3C/svg%3E");
+  -webkit-mask:linear-gradient(#000 0 0) 0 0/100% 100% no-repeat, var(--notch) calc(var(--tab-w) - 38px) 0/auto no-repeat, var(--corner) 100% 90px/auto no-repeat;
+  mask:linear-gradient(#000 0 0) 0 0/100% 100% no-repeat, var(--notch) calc(var(--tab-w) - 38px) 0/auto no-repeat, var(--corner) 100% 90px/auto no-repeat;
   -webkit-mask-composite:xor;
   mask-composite:exclude;
 }
@@ -553,21 +562,14 @@ section { position:relative; }
   .footer-card{
     padding-top:4.6rem;
     --notch:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='160'%20height='70'%3E%3Cpath%20d='M48,0L160,0L160,36A18,18,0,0,1,142,54L40,54A10,10,0,0,0,30,64L30,18A18,18,0,0,1,48,0Z'%20fill='%23000'/%3E%3C/svg%3E");
+    -webkit-mask:linear-gradient(#000 0 0) 0 0/100% 100% no-repeat, var(--notch) top right/auto no-repeat;
+    mask:linear-gradient(#000 0 0) 0 0/100% 100% no-repeat, var(--notch) top right/auto no-repeat;
   }
 }
 .footer-wordmark{
   font-family:var(--disp); font-weight:700; letter-spacing:-0.05em; line-height:0.86;
   font-size:clamp(2.8rem,11vw,7rem); color:var(--forest); margin-bottom:clamp(1.4rem,3.5vw,2.2rem);
-  /* Centre the wordmark within the tab (the lime area left of the notch): the
-     block spans from the card's left edge to the notch step, then the text is
-     centred, so "Christopher" has equal space either side of it. */
-  width:calc(100% + 2 * var(--pad-x) - var(--notch-w));
-  margin-left:calc(-1 * var(--pad-x));
-  text-align:center;
-}
-/* On mobile the tab is narrower than the word, so keep it left-aligned. */
-@media(max-width:600px){
-  .footer-wordmark{ width:auto; margin-left:0; text-align:left; max-width:11ch; }
+  max-width:11ch;
 }
 
 .footer-cta{ display:flex; align-items:center; gap:1.2rem 1.6rem; flex-wrap:wrap; max-width:680px; }
