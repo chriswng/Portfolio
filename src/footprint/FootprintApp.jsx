@@ -4,22 +4,35 @@ import { Grain, ScrollProgress, SkipLink } from '../components/Chrome';
 import SplitText from '../components/SplitText';
 import { NAV_LINKS } from '../data/content';
 import { buildSeedProfile } from './data/seedProfile';
-import { INTRO, MODE, SHARE, FOOTER, LOG, TOASTS, fmtT } from './data/copy';
+import { INTRO, MODE, SHARE, FOOTER, LOG, TOASTS, YEARS, fmtT } from './data/copy';
 import { DASH_EXTRA, fill } from './data/storyCopy';
 import { categoryById } from './data/factors';
-import { aggregate, priceEntry, projectPathway, maccData, newId } from './lib/engine';
+import { aggregate, priceEntry, projectPathway, maccData, newId, rolloverProfile } from './lib/engine';
 import {
   loadOwnProfile, saveOwnProfile, clearOwnProfile, exportProfile,
   encodeSnapshot, decodeSnapshot, storySeen, markStorySeen,
 } from './lib/store';
+import { downloadAuditPack } from './lib/auditPack';
 import { audio } from './lib/audio';
 import { prefersReducedMotion } from '../utils/media';
 import Story from './story/Story';
+import Skim from './Skim';
 import Dashboard from './Dashboard';
 import Plan from './Plan';
 import Log from './Log';
 import Onboarding from './Onboarding';
 import { Method, Market } from './MethodMarket';
+
+// Local date, never toISOString: UTC lands on yesterday in Australian zones.
+const todayIso = () => {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+};
+
+const monthsOld = (iso) => {
+  const t = todayIso();
+  return (Number(t.slice(0, 4)) - Number(iso.slice(0, 4))) * 12 + (Number(t.slice(5, 7)) - Number(iso.slice(5, 7)));
+};
 
 function FootprintNav() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -63,17 +76,42 @@ export default function FootprintApp() {
   // returning visitors land straight on the dashboard.
   const [storyOpen, setStoryOpen] = useState(() => !decodeSnapshot() && !storySeen());
   const [soundOn, setSoundOn] = useState(false);
+  // Which closed year is on screen; null means the open year.
+  const [pastIdx, setPastIdx] = useState(null);
 
   const isExample = !(mode === 'mine' && own);
-  const profile = isExample ? { ...seed, plan: { ...seed.plan, enabled: seedPlanEnabled } } : own;
+  const pastYear = !isExample && pastIdx != null ? (own.pastYears || [])[pastIdx] : null;
+  const archived = !!pastYear;
+  const profile = isExample
+    ? { ...seed, plan: { ...seed.plan, enabled: seedPlanEnabled } }
+    : archived
+      ? {
+        ...own,
+        settings: pastYear.settingsAtClose || own.settings,
+        period: { label: pastYear.label, start: pastYear.start, end: pastYear.end },
+        entries: pastYear.entries,
+        plan: pastYear.plan || { enabled: [] },
+      }
+      : own;
   const voice = isExample ? 'example' : 'own';
+  // The open year is due to close once today passes its end date.
+  const rolloverDue = !isExample && !archived && todayIso() > own.period.end;
+  const newestEntry = !isExample && !archived && own.entries.length
+    ? own.entries.reduce((a, e) => (e.date > a ? e.date : a), own.entries[0].date)
+    : null;
+  const staleMonths = newestEntry && !rolloverDue ? monthsOld(newestEntry) : 0;
 
   const agg = useMemo(() => aggregate(profile), [profile]);
   const macc = useMemo(() => maccData(profile, agg), [profile, agg]);
   const pathway = useMemo(() => projectPathway(profile, agg), [profile, agg]);
   // The audit not currently on screen, aggregated for the comparison overlay.
-  const compareAgg = useMemo(() => (own ? aggregate(isExample ? own : seed) : null), [own, isExample, seed]);
-  const comparePeriod = own ? (isExample ? own.period : seed.period) : null;
+  // A closed year compares against the open one (year over year); the open
+  // year compares against the worked example, and vice versa.
+  const compareAgg = useMemo(() => {
+    if (archived) return aggregate(own);
+    return own ? aggregate(isExample ? own : seed) : null;
+  }, [own, isExample, seed, archived]);
+  const comparePeriod = archived ? own.period : (own ? (isExample ? own.period : seed.period) : null);
 
   const updateOwn = (fn) => {
     setOwn((p) => {
@@ -112,6 +150,9 @@ export default function FootprintApp() {
     saveOwnProfile(imported);
     setOwn(imported);
     setMode('mine');
+    // The imported file may hold a different set of closed years than the
+    // one on screen; never leave the view pointing at a stale index.
+    setPastIdx(null);
   };
   const onShare = async () => {
     const cats = Object.entries(agg.byCategory)
@@ -136,15 +177,30 @@ export default function FootprintApp() {
     clearOwnProfile();
     setOwn(null);
     setMode('example');
+    setPastIdx(null);
     flash(TOASTS.auditDeleted);
   };
   const onStart = () => setOnboarding(true);
+  const onRollover = () => {
+    const next = rolloverProfile(own, todayIso());
+    saveOwnProfile(next);
+    setOwn(next);
+    setPastIdx(null);
+    flash(fill(YEARS.rolledToast, { label: own.period.label, next: next.period.label }));
+  };
+  const onPack = () => downloadAuditPack(profile, agg);
   // The audit persists the moment it is built (the done pane says so), not
   // only when a closing button is pressed; Escape can no longer discard it.
+  // Rebuilding on top of an existing audit keeps the closed years: starting
+  // over is allowed, deleting history by accident is not.
   const onOnboardBuilt = useCallback((built) => {
-    saveOwnProfile(built);
-    setOwn(built);
+    setOwn((prev) => {
+      const merged = { ...built, pastYears: prev && prev.pastYears ? prev.pastYears : [] };
+      saveOwnProfile(merged);
+      return merged;
+    });
     setMode('mine');
+    setPastIdx(null);
   }, []);
   const onOnboardDone = (built, { watch } = {}) => {
     onOnboardBuilt(built);
@@ -173,6 +229,21 @@ export default function FootprintApp() {
     setStoryOpen(false);
     muteAudio();
     landOnDashboard();
+  };
+  // The assessor's exit: straight from the story cover to the 45-second
+  // lane. Focus moves with the scroll so a keyboard user's next Tab
+  // continues from the lane instead of the top of the page.
+  const onAssessor = () => {
+    markStorySeen();
+    setStoryOpen(false);
+    muteAudio();
+    window.setTimeout(() => {
+      const el = document.getElementById('fp-skim');
+      if (!el) return;
+      el.scrollIntoView({ behavior: 'auto' });
+      el.setAttribute('tabindex', '-1');
+      el.focus({ preventScroll: true });
+    }, 50);
   };
   // "Explore the full audit" from the outro: the show ends, the house lights
   // come up on the dashboard itself.
@@ -211,6 +282,7 @@ export default function FootprintApp() {
           voice={voice}
           onStart={onStart}
           onSkip={onStorySkip}
+          onAssessor={onAssessor}
           onEnd={onStoryEnd}
           onFinish={onStoryFinish}
           onCopyLink={onShare}
@@ -234,10 +306,8 @@ export default function FootprintApp() {
                   {snapshot.cats.map(([label, t]) => (
                     <div className="fp-kpi" key={label}><div className="fp-kpi-l">{label}</div><div className="fp-kpi-v">{fmtT(t)}<span> t</span></div></div>
                   ))}
-                  {typeof snapshot.at2030 === 'number' && snapshot.at2030 > 0 && (
-                    <div className="fp-kpi"><div className="fp-kpi-l">planned 2030</div><div className="fp-kpi-v">{fmtT(snapshot.at2030)}<span> t</span></div></div>
-                  )}
                 </div>
+                <p className="fp-note">{SHARE.provenance} <a href="#fp-method">{SHARE.provenanceCta}</a></p>
                 <div className="fp-ctrl-row">
                   <button type="button" className="btn btn-primary fp-btn" onClick={() => { dismissSnapshot(); setOnboarding(true); }}>{SHARE.cta} →</button>
                   <button type="button" className="fp-linkbtn" onClick={dismissSnapshot}>{SHARE.dismiss}</button>
@@ -271,25 +341,76 @@ export default function FootprintApp() {
 
         <div className="fp-modebar">
           <div className="canvas fp-modebar-inner">
-            <span role="status">{isExample ? MODE.example : MODE.mine}</span>
-            <span className="fp-modebar-btns">
-              {own && (
-                <button type="button" className={'fp-mode-btn' + (!isExample ? ' on' : '')} onClick={() => setMode('mine')}>{MODE.switchToMine}</button>
+            <span role="status">
+              {isExample ? MODE.example : archived ? MODE.archived : MODE.mine}
+              {!isExample && !archived && own.period.note && (
+                <span className="fp-fresh"> {fill(YEARS.gapNote, { note: own.period.note })}</span>
               )}
-              <button type="button" className={'fp-mode-btn' + (isExample ? ' on' : '')} onClick={() => setMode('example')}>{MODE.switchToExample}</button>
+              {!isExample && !archived && staleMonths >= 3 && (
+                <span className="fp-fresh"> {fill(MODE.freshness, { months: staleMonths })}</span>
+              )}
+            </span>
+            <span className="fp-modebar-btns">
+              {/* The switcher earns its place only once there are two audits
+                  to switch between; a control that does nothing serves nobody. */}
+              {own && (
+                <>
+                  <button type="button" className={'fp-mode-btn' + (!isExample ? ' on' : '')} onClick={() => setMode('mine')}>{MODE.switchToMine}</button>
+                  <button type="button" className={'fp-mode-btn' + (isExample ? ' on' : '')} onClick={() => { setMode('example'); setPastIdx(null); }}>{MODE.switchToExample}</button>
+                </>
+              )}
+              {own && !isExample && (own.pastYears || []).length > 0 && (
+                <label className="fp-yearpick">
+                  <span className="sr-only">{YEARS.switcherAria}</span>
+                  <select
+                    value={pastIdx == null ? 'current' : String(pastIdx)}
+                    onChange={(e) => setPastIdx(e.target.value === 'current' ? null : Number(e.target.value))}
+                  >
+                    <option value="current">{own.period.label}</option>
+                    {own.pastYears.map((y, i) => (
+                      <option key={y.label + i} value={i}>{y.label}</option>
+                    ))}
+                  </select>
+                </label>
+              )}
               {!own && <button type="button" className="fp-mode-btn cta" onClick={onStart}>{MODE.startCta}</button>}
             </span>
           </div>
         </div>
 
+        {rolloverDue && (
+          <section className="fp-rollover" aria-label="Close the year">
+            <div className="canvas">
+              <div className="fp-roll-card">
+                <div className="fp-card-head">{fill(YEARS.rollTitle, { label: own.period.label })}</div>
+                <p className="fp-card-sub">{fill(YEARS.rollBody, { end: own.period.end })}</p>
+                <button type="button" className="btn btn-primary fp-btn" onClick={onRollover}>
+                  {fill(YEARS.rollCta, { label: own.period.label })} →
+                </button>
+              </div>
+            </div>
+          </section>
+        )}
+        {archived && (
+          <div className="fp-archivebar">
+            <div className="canvas">
+              <span>{fill(YEARS.archiveNote, { closedAt: pastYear.closedAt || '', factorSet: pastYear.factorSetAtClose || '' })}</span>
+              {profile.period.note && <span> {fill(YEARS.gapNote, { note: profile.period.note })}</span>}
+            </div>
+          </div>
+        )}
+
+        {isExample && <Skim agg={agg} macc={macc} />}
+
         <Dashboard agg={agg} period={profile.period} compareAgg={compareAgg} comparePeriod={comparePeriod} isExample={isExample} />
-        <Plan macc={macc} pathway={pathway} plan={profile.plan} onToggle={onToggle} />
+        {!archived && <Plan macc={macc} pathway={pathway} plan={profile.plan} onToggle={onToggle} />}
         <Log
-          profile={profile} isExample={isExample}
+          profile={profile} isExample={isExample} archived={archived}
           onAdd={onAdd} onAddEntries={onAddEntries} onDelete={onDelete}
           onExport={onExport} onImportFile={onImportFile} onShare={onShare} onReset={onReset} onStart={onStart}
+          onPack={onPack}
         />
-        <Method />
+        <Method agg={agg} />
         <Market />
       </main>
 

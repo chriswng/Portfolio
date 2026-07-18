@@ -5,13 +5,25 @@
 
 const KEY = 'cw-footprint-v1';
 
+// Schema history: cw-footprint/1 was single-year; /2 adds pastYears (closed
+// reporting periods, archived verbatim). Old saves migrate on read; nothing
+// in a v1 profile is rewritten.
+const migrate = (p) => {
+  if (!p || !Array.isArray(p.entries)) return null;
+  if (p.schema === 'cw-footprint/2') {
+    return Array.isArray(p.pastYears) ? p : { ...p, pastYears: [] };
+  }
+  if (p.schema === 'cw-footprint/1') {
+    return { ...p, schema: 'cw-footprint/2', pastYears: [] };
+  }
+  return null;
+};
+
 export function loadOwnProfile() {
   try {
     const raw = window.localStorage.getItem(KEY);
     if (!raw) return null;
-    const p = JSON.parse(raw);
-    if (p && p.schema === 'cw-footprint/1' && Array.isArray(p.entries)) return p;
-    return null;
+    return migrate(JSON.parse(raw));
   } catch {
     return null;
   }
@@ -62,15 +74,18 @@ export function exportProfile(profile) {
 
 export function parseImported(text) {
   const p = JSON.parse(text);
-  if (!p || p.schema !== 'cw-footprint/1') throw new Error('Not a footprint export file.');
+  if (!p || (p.schema !== 'cw-footprint/1' && p.schema !== 'cw-footprint/2')) throw new Error('Not a footprint export file.');
   if (!Array.isArray(p.entries) || !p.period || !p.settings) throw new Error('File is missing entries, period or settings.');
   return {
-    schema: 'cw-footprint/1',
+    schema: 'cw-footprint/2',
     kind: 'own',
     settings: p.settings,
     period: p.period,
     entries: p.entries,
     plan: p.plan && Array.isArray(p.plan.enabled) ? p.plan : { enabled: [] },
+    pastYears: Array.isArray(p.pastYears)
+      ? p.pastYears.filter((y) => y && y.label && y.start && y.end && Array.isArray(y.entries))
+      : [],
   };
 }
 

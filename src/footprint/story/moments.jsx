@@ -54,7 +54,7 @@ export function MomentShare({ kind, data, fy }) {
 // ---------------------------------------------------------------------------
 // 0 · Cover
 // ---------------------------------------------------------------------------
-export function Cover({ d, voice, onStart, reduced }) {
+export function Cover({ d, voice, onStart, onAssessor, reduced }) {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
   const ghostY = useTransform(scrollYProgress, [0, 1], ['0%', reduced ? '0%' : '34%']);
@@ -89,6 +89,9 @@ export function Cover({ d, voice, onStart, reduced }) {
             <button type="button" className="btn btn-primary fp-btn" onClick={onStart}>{COVER.start} →</button>
             <span className="st-cover-note">{COVER.startNote}</span>
           </div>
+        )}
+        {voice === 'example' && onAssessor && (
+          <button type="button" className="st-assessor" onClick={onAssessor}>{COVER.assessor} ↓</button>
         )}
       </motion.div>
       <div className="st-cue" aria-hidden="true">
