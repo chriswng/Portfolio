@@ -1,8 +1,7 @@
 import { motion } from 'framer-motion';
 import CarbonField, { EmblemDots } from './CarbonField';
-import { MomentShare } from './moments';
 import { fmtT } from '../data/copy';
-import { CHARACTER_ST, SHARE_ST, fill } from '../data/storyCopy';
+import { CHARACTER_ST, fill } from '../data/storyCopy';
 import {
   CHARACTERS, BADGE, WEIGHT_ROWS, TEMPERAMENT_COLS,
   GLOBAL_T, HEAVY_T, SPECIALIST_SHARE, SPIKE_MULTIPLE,
@@ -103,7 +102,9 @@ export default function CharacterMoment({ d, voice, character }) {
     <section className="st-moment st-character" id="st-character" aria-label="Your carbon character">
       <motion.div className="st-center st-wide" initial="hidden" whileInView="visible" viewport={inView}>
         <motion.div className="sec-tag" data-idx="" variants={rise}>{CHARACTER_ST.tag}</motion.div>
-        <motion.h2 className="st-h2 display" variants={rise} custom={1}>{CHARACTER_ST.headline}</motion.h2>
+        <motion.h2 className="st-h2 display" variants={rise} custom={1}>
+          {fill(voice === 'example' ? CHARACTER_ST.headline : CHARACTER_ST.headlineOwn, { name: character.name })}
+        </motion.h2>
         <motion.p className="st-line" variants={rise} custom={2}>{CHARACTER_ST.sub[voice]}</motion.p>
 
         <div className="st-axes" role="img" aria-label={metersAria}>
@@ -143,37 +144,6 @@ export default function CharacterMoment({ d, voice, character }) {
                 </span>
               </div>
             )}
-            <div className="st-share-row">
-              <MomentShare
-                kind="character"
-                fy={d.fy}
-                data={{
-                  title: SHARE_ST.cards.character[voice],
-                  name: character.name,
-                  tagline: character.tagline,
-                  stencil: character.stencil,
-                  hex: lighten(character.hex, 0.2),
-                  total: fmtT(d.total),
-                  badge: character.badge,
-                  axes: meters.map((m) => ({
-                    label: CHARACTER_ST.axes[m.axisKey].label,
-                    level: CHARACTER_ST.axes[m.axisKey].levels[m.level],
-                    frac: m.frac,
-                  })),
-                }}
-                linkedIn={{
-                  title: SHARE_ST.cards.character[voice],
-                  fy: d.fy,
-                  name: character.name,
-                  tagline: character.tagline,
-                  stencil: character.stencil,
-                  hex: lighten(character.hex, 0.2),
-                  total: fmtT(d.total),
-                  mix: verdict,
-                  badge: character.badge,
-                }}
-              />
-            </div>
           </div>
         </motion.div>
 

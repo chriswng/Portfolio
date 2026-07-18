@@ -50,6 +50,8 @@
 /* ---- KPIs ---- */
 .fp-kpis{ display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--rule-dk); border:1px solid var(--rule-dk); margin-bottom:0.75rem; }
 @media(min-width:760px){ .fp-kpis{ grid-template-columns:repeat(4,1fr); } }
+.fp-kpis-2{ grid-template-columns:repeat(2,1fr); max-width:560px; }
+@media(min-width:760px){ .fp-kpis-2{ grid-template-columns:repeat(2,1fr); } }
 .fp-kpi{ background:var(--white); padding:1.1rem 1.25rem; transition:background 0.3s var(--ease); }
 .fp-kpi:hover{ background:oklch(0.975 0.008 118); }
 .fp-kpi.live{ background:rgba(181,196,43,0.10); }
@@ -124,7 +126,15 @@
 @media (max-width:620px){ .fp-macc-tip{ font-size:11.5px; line-height:1.6; } }
 
 /* ---- The planner: option carousel + sticky impact readout ---- */
-.fp-planner{ position:relative; }
+/* Options and the pathway chart sit side by side on wide screens so the chart
+   stays in view while you pick changes; the impact readout spans the width. */
+.fp-planner{ position:relative; display:grid; gap:1.25rem; }
+@media (min-width:980px){
+  .fp-planner{ grid-template-columns:minmax(0,1fr) minmax(0,1fr); align-items:start; }
+  .fp-planner-cards{ grid-column:1; margin-bottom:0; }
+  .fp-scenario{ grid-column:2; position:sticky; top:84px; margin-bottom:0; }
+  .fp-impact{ grid-column:1 / -1; }
+}
 .fp-action-dot{ width:9px; height:9px; border-radius:2px; background:var(--ac); flex-shrink:0; }
 .fp-toggle{ font-family:var(--mono); font-size:9.5px; letter-spacing:0.08em; text-transform:uppercase; font-weight:700; border:1px solid var(--rule-dk); background:var(--bg); color:var(--mid); padding:0.3rem 0.65rem; cursor:pointer; transition:all 0.2s var(--ease); white-space:nowrap; }
 .fp-toggle.on{ background:var(--matcha); border-color:var(--matcha); color:var(--slate); }
@@ -338,24 +348,30 @@
 .ob-range:focus-visible{ outline:2px solid var(--matcha); outline-offset:2px; }
 .ob-live{ display:inline-block; font-family:var(--mono); font-size:10.5px; font-weight:700; color:#75821D; background:rgba(181,196,43,0.14); border:1px solid rgba(181,196,43,0.4); padding:0.25rem 0.6rem; border-radius:999px; margin-top:0.4rem; font-variant-numeric:tabular-nums; }
 
-.ob-flight-form{ display:flex; flex-direction:column; gap:0.9rem; margin-bottom:1rem; }
-.ob-reaction{ font-size:0.92rem; font-weight:600; color:var(--slate); background:rgba(181,196,43,0.12); border-left:3px solid var(--matcha); padding:0.7rem 1rem; margin:0.9rem 0; max-width:480px; }
-/* Mounted before it has content so the live region announces reliably. */
-.ob-reaction:empty{ padding:0; border:none; margin:0; background:none; }
-.ob-none{ color:var(--mid); font-family:var(--mono); font-size:11px; }
+.ob-none{ color:var(--mid); font-family:var(--mono); font-size:11px; margin:0.6rem 0; }
+
+/* Household split reminder on the energy step: plain words, no carbon. */
+.ob-splitnote{ display:flex; align-items:flex-start; gap:0.1rem; font-size:0.82rem; color:#475569; line-height:1.6; background:rgba(181,196,43,0.1); border-left:3px solid var(--matcha); padding:0.7rem 0.95rem; margin:0.4rem 0 1.6rem; max-width:520px; }
+.ob-splitnote .ob-label-i{ color:#75821D; margin-top:0.15rem; }
+
+/* Public-transport fare cap: note plus optional override. */
+.ob-ptcap{ margin:-0.6rem 0 1.5rem; }
+.ob-ptcap-note{ display:flex; align-items:flex-start; gap:0.1rem; margin:0.4rem 0 0.6rem; max-width:520px; }
+.ob-ptcap-note .ob-label-i{ color:#75821D; margin-top:0.1rem; }
+.ob-ptcap-row{ display:flex; align-items:center; gap:0.7rem; flex-wrap:wrap; }
+.ob-ptcap-applied{ font-family:var(--mono); font-size:10px; color:#75821D; font-weight:700; }
 
 .ob-foot{ border-top:1px solid var(--rule-dk); background:var(--white); flex-shrink:0; }
 .ob-foot-inner{ display:flex; justify-content:space-between; align-items:center; gap:1rem; padding-top:0.8rem; padding-bottom:0.8rem; flex-wrap:wrap; }
-.ob-total{ display:flex; flex-direction:column; gap:0.1rem; }
-.ob-total-l{ font-family:var(--mono); font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--mid); font-weight:600; }
-.ob-total-v{ font-family:var(--disp); font-weight:700; font-size:1.5rem; color:var(--slate); line-height:1.05; font-variant-numeric:tabular-nums; }
-.ob-total-v em{ font-style:normal; font-size:0.55em; color:var(--mid); font-weight:600; }
-.ob-total-note{ font-family:var(--mono); font-size:9.5px; letter-spacing:0.06em; color:var(--mid); }
+/* Spoiler-free progress: what this step captured, never a running total. */
+.ob-foot-status{ display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; }
+.ob-foot-tick{ display:inline-flex; align-items:center; justify-content:center; color:#75821D; }
+.ob-foot-status-t{ font-family:var(--sans); font-size:0.9rem; font-weight:700; color:var(--slate); }
+.ob-foot-note{ font-family:var(--mono); font-size:9.5px; letter-spacing:0.05em; color:var(--mid); border-left:1px solid var(--rule-dk); padding-left:0.5rem; }
 .ob-foot-btns{ display:flex; gap:0.6rem; align-items:center; }
 
 .ob-done{ text-align:left; }
-.ob-done-num{ font-size:clamp(3.4rem,10vw,6rem); font-weight:700; color:var(--slate); line-height:1; letter-spacing:-0.02em; margin:1.2rem 0; font-variant-numeric:tabular-nums; }
-.ob-done-unit{ font-size:0.3em; color:#75821D; font-weight:600; letter-spacing:0; }
+.ob-done-ready{ display:inline-flex; align-items:center; gap:0.15rem; font-family:var(--sans); font-weight:700; font-size:1.05rem; color:var(--slate); background:rgba(181,196,43,0.14); border:1px solid rgba(181,196,43,0.4); padding:0.55rem 0.9rem; border-radius:999px; margin:1rem 0 1.2rem; }
 .ob-done-ctas{ display:flex; gap:0.9rem; align-items:center; flex-wrap:wrap; margin-top:1.6rem; }
 
 /* ---- Method ---- */
@@ -398,18 +414,47 @@
   .ob-chip:hover{ transform:none; }
 }
 
-/* ---- Guided audit: flight list ---- */
-.ob-flight-list{ margin-top:1.2rem; border-top:1px solid var(--rule-lt); padding-top:1rem; }
-.ob-flight-list-head{ display:flex; justify-content:space-between; align-items:baseline; gap:1rem; flex-wrap:wrap; }
-.ob-flight-subtotal{ font-family:var(--mono); font-size:11px; color:var(--mid); }
-.ob-flight-subtotal strong{ color:var(--slate); }
-.ob-flights{ list-style:none; display:flex; flex-direction:column; gap:0.5rem; margin-top:0.6rem; padding:0; }
-.ob-flight-item{ display:flex; align-items:center; gap:0.8rem; flex-wrap:wrap; background:var(--white); border:1px solid var(--rule-dk); border-left:3px solid var(--fp-flight); padding:0.65rem 0.9rem; }
-.ob-flight-name{ font-weight:600; font-size:0.85rem; color:var(--slate); flex:1; min-width:140px; }
-.ob-flight-meta{ font-family:var(--mono); font-size:11px; color:var(--mid); }
-.ob-flight-meta strong{ color:var(--slate); }
+/* ---- Guided audit: flight cards ---- */
+/* Each trip is its own editable card. Add a card, pick From and To, change any
+   of it whenever. No carbon on the card, on purpose: the reveal keeps the
+   number. The distance is shown because it makes the estimate feel honest. */
+.ob-flight-list{ display:flex; flex-direction:column; gap:0.75rem; margin-bottom:1.1rem; }
+.ob-flight-list > .ob-label{ margin-bottom:0.2rem; }
+.ob-fcard{ background:var(--white); border:1px solid var(--rule-dk); border-left:3px solid var(--fp-flight); padding:0.9rem 1rem 0.8rem; display:flex; flex-direction:column; gap:0.75rem; }
+.ob-fcard-head{ display:flex; justify-content:space-between; align-items:center; gap:1rem; }
+.ob-fcard-n{ display:inline-flex; align-items:center; gap:0.4rem; font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; font-weight:700; color:var(--slate); }
+.ob-fcard-route{ display:flex; align-items:flex-end; gap:0.6rem; flex-wrap:wrap; }
+.ob-fcard-arrow{ font-size:1.1rem; color:var(--mid); padding-bottom:0.5rem; }
+.ob-fcard-opts{ display:flex; align-items:flex-end; gap:0.9rem; flex-wrap:wrap; }
+.ob-fcard-dist{ font-family:var(--mono); font-size:10.5px; color:var(--mid); margin:0; }
+
+/* Label-over-select field used across the flight card. */
+.ob-fl-field{ display:flex; flex-direction:column; gap:0.3rem; flex:1; min-width:150px; }
+.ob-fl-field > span{ font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:oklch(0.48 0.022 118); font-weight:600; }
+.ob-fl-field select{ font-family:var(--sans); font-size:0.85rem; color:var(--slate); background:var(--bg); border:1px solid var(--rule-dk); border-radius:6px; padding:0.5rem 0.6rem; cursor:pointer; }
+.ob-fl-field select:focus-visible{ outline:2px solid var(--matcha); outline-offset:2px; }
+
+/* A two-button segmented toggle (return / one way). */
+.ob-seg2{ display:inline-flex; border:1px solid var(--rule-dk); border-radius:999px; overflow:hidden; align-self:flex-end; }
+.ob-seg2-btn{ font-family:var(--sans); font-size:0.8rem; font-weight:600; color:var(--slate); background:var(--white); border:none; padding:0.5rem 0.9rem; cursor:pointer; transition:background 0.2s var(--ease); }
+.ob-seg2-btn + .ob-seg2-btn{ border-left:1px solid var(--rule-dk); }
+.ob-seg2-btn.on{ background:var(--matcha); color:var(--slate); }
+
+.ob-field-compact{ margin-bottom:0; }
+.ob-field-compact .ob-label{ margin-bottom:0.3rem; }
+.ob-field-compact .ob-stepper button{ width:32px; height:32px; font-size:1rem; }
+.ob-field-compact .ob-stepper input{ width:48px; font-size:1.05rem; }
+
+.ob-addflight{ margin:0.2rem 0 1.2rem; }
+
 .ob-remove{ font-family:var(--mono); font-size:10px; letter-spacing:0.06em; text-transform:uppercase; font-weight:700; color:#A81F3D; background:none; border:1px solid var(--rule-dk); padding:0.35rem 0.7rem; cursor:pointer; border-radius:999px; transition:all 0.25s var(--ease); }
 .ob-remove:hover{ border-color:#C7274A; background:rgba(199,39,74,0.06); }
+
+/* "How this is estimated" disclosure: methodology on demand, not in the way. */
+.ob-disclose{ border-top:1px solid var(--rule-lt); padding-top:0.9rem; max-width:520px; }
+.ob-disclose summary{ font-family:var(--mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase; font-weight:700; color:#75821D; cursor:pointer; }
+.ob-disclose summary:focus-visible{ outline:2px solid var(--matcha); outline-offset:3px; }
+.ob-disclose p{ font-size:0.8rem; color:#475569; line-height:1.65; margin-top:0.6rem; }
 
 /* ---- Dashboard character strip ---- */
 .fp-char-strip{ display:flex; align-items:center; gap:0.9rem; background:var(--white); border:1px solid var(--rule-dk); border-top:none; padding:0.75rem 1.25rem; margin-bottom:0.75rem; }
@@ -466,3 +511,10 @@
   .fp-skim-grid{ grid-template-columns:1fr; }
   .fp-skim-contact{ flex-direction:column; align-items:flex-start; }
 }
+
+/* Redesign: compact data-controls strip (replaces the public log) */
+.fp-data-card{ background:var(--bg); border:1px solid var(--rule-dk); padding:1.4rem 1.5rem; max-width:640px; }
+.fp-import-label{ position:relative; cursor:pointer; }
+.fp-excl-group{ margin-top:1.4rem; }
+.fp-excl-group:first-of-type{ margin-top:0.6rem; }
+.fp-excl-group .fp-card-head{ margin-bottom:0.6rem; }

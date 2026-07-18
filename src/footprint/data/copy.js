@@ -3,209 +3,120 @@
 
 export const META = {
   navLabel: 'Footprint',
-  title: 'Life Footprint',
+  title: 'Your Carbon Footprint',
 };
 
 export const INTRO = {
-  tag: 'Life Footprint Dashboard',
-  h1a: 'A year of me,',
-  h1b: 'in carbon',
+  tag: 'Your Carbon Footprint',
+  h1a: 'My year of',
+  h1b: 'carbon emissions',
   paras: [
-    'I build GHG inventories and decarbonisation pathways for large organisations. This page points the same discipline at my own life, and it is a tool, not a confession booth: run your own audit and you get the same hotspot analysis, abatement cost curve and pathway model, sized for one human, with your data never leaving this browser.',
+    'I measure carbon for a living, so I pointed the same maths at my own year. This is a plain-English carbon calculator and a visual case study in one: see where a real year of flights, power, food and freight actually goes, then run your own. Your answers stay in this browser.',
   ],
-  chips: ['No account', 'No server', 'Data stays in your browser', 'Export any time'],
-  ctaStart: 'Start your own audit',
-  ctaExample: 'See the worked example',
-  disc: 'FY2026 worked example · quantities from bills, meter reads and a year of transactions · estimates labelled in the log',
+  chips: ['No account', 'No server', 'Stays in your browser', 'Export any time'],
+  ctaStart: 'Calculate your own',
+  ctaExample: 'See my worked example',
+  disc: 'FY2026 example · quantities from bills, meter reads and a year of records · estimates are labelled',
 };
 
 export const MODE = {
-  example: 'You are viewing the worked example: my FY2026 audit. Your own audit is private to this browser.',
-  mine: 'You are viewing your audit. It lives only in this browser; export a backup any time.',
-  archived: 'You are viewing a closed year, kept exactly as it ended. Restating it is deliberate: export, correct, re-import, and say why.',
-  switchToMine: 'My audit',
-  switchToExample: 'Worked example',
-  startCta: 'Start your own audit',
-  resumeNote: 'Your audit auto-saves here as you edit.',
+  example: 'You are viewing my worked example: Chris\'s FY2026 carbon emissions. Anything you calculate stays private to this browser.',
+  mine: 'You are viewing your own footprint. It lives only in this browser; export a backup any time.',
+  archived: 'You are viewing a closed year, kept exactly as it ended.',
+  switchToMine: 'My footprint',
+  switchToExample: 'The worked example',
+  startCta: 'Calculate your own',
+  resumeNote: 'Your answers auto-save here as you edit.',
   yearLabel: 'Year',
-  freshness: 'Newest entry is {months} months old. The next quarterly bill probably exists; log it and the range tightens.',
-};
-
-// The 45-second lane for people assessing the work rather than running an
-// audit: four cards that show the craft and end at the method and a
-// conversation. Values are computed live from the same aggregates as
-// everything else; only the words live here.
-export const SKIM = {
-  tag: '00 / The short version',
-  title: ['Forty-five seconds,', 'if that is all I get'],
-  lede: 'Here to assess the work rather than run an audit? This row is the tour: what got measured, how the engine works, what the fixes cost, and where the method lives. Everything links deeper.',
-  cards: [
-    {
-      id: 'number', label: 'The number', href: '#fp-dash', cta: 'See the audit',
-      line: 'One year of one life, measured like an organisation. The national average counts a wider basket than this boundary, so the percentage flatters; the method says so.',
-    },
-    {
-      id: 'engine', label: 'The engine', href: '#fp-log', cta: 'Read the log',
-      line: 'Every entry stores its activity data, factor, source, scope and data quality. The method tables render from the live factor set, so the words can never drift from the maths.',
-    },
-    {
-      id: 'plan', label: 'The plan', href: '#fp-plan', cta: 'See the curve',
-      line: 'A personal marginal abatement cost curve: each action priced against the audited year, not a national average. Offsets and green power products deliberately absent.',
-    },
-    {
-      id: 'method', label: 'The method', href: 'method/', cta: 'Read the basis',
-      line: 'A written basis of preparation with the exclusions named and the uncertainty stated, the way an assurer would want it. On its own page, next to the live factor tables.',
-    },
-  ],
-  numberUnit: 'tCO₂-e',
-  numberSub: 'of the Australian average',
-  engineUnit: 'entries',
-  engineSub: 'factor tables, cited inline',
-  planUnit: 't/yr',
-  planSub: 'biggest single lever',
-  methodSub: 'exclusions, named',
-  contact: 'This page is how I build inventories when nobody is making me. If your organisation needs the same discipline with more zeroes on it, I am open to that conversation.',
-  contactCta: 'Connect on LinkedIn',
-  contactProfile: 'The full profile',
+  freshness: 'Newest entry is {months} months old. Add your next quarterly bill and the range tightens.',
 };
 
 // Year rollover and the multi-year record.
 export const YEARS = {
   rollTitle: '{label} has ended',
-  rollBody: 'The reporting period closed on {end}. Close the year and it archives exactly as it stands, factors pinned; the new year opens empty against the factor set in force, with your diet carried over as a forecast.',
+  rollBody: 'The reporting period closed on {end}. Close the year and it is kept exactly as it stands; the new year opens empty, with your diet carried over as an estimate.',
   rollCta: 'Close {label} and open the new year',
-  rolledToast: '{label} closed and archived. Welcome to {next}.',
-  archiveNote: 'Closed {closedAt} on factor set {factorSet}. Entries and their factors are pinned as logged.',
+  rolledToast: '{label} closed. Welcome to {next}.',
+  archiveNote: 'Closed {closedAt}. Entries are kept as they were.',
   switcherAria: 'Choose which year to view',
   gapNote: 'Reporting gap: {note}',
 };
 
-// The assurance-style audit pack: one document with the method, the factors
-// and the log, built in the browser from the live data.
-export const PACK = {
-  cta: 'Download the audit pack',
-  ctaExample: 'Download this worked example as an audit pack',
-  note: 'One self-contained document: basis of preparation, factor tables, uncertainty statement, the full log. Open it anywhere; print it to PDF if an assurer wants a file.',
-  fileTitle: 'Life Footprint audit pack',
-  generated: 'Generated',
-  factorSetLabel: 'Factor set',
-  periodLabel: 'Reporting period',
-  totalLabel: 'Total',
-  rangeLabel: 'Range at stated confidence bands',
-  scopeLabel: 'By scope',
-  categoryLabel: 'By category',
-  logTitle: 'Activity log',
-  qualityLabel: 'Quality',
-  pastTitle: 'Closed years',
-  packDisclaimer: 'Prepared from the live page data at generation time. The page is the primary record; this document is a convenience copy for review.',
-};
-
 export const DASH = {
-  tag: '01 / The audit',
-  title: ['One year,', 'honestly counted'],
-  sub: 'The reporting period is the Australian financial year. Bills spread across the months they cover, dated entries land in the month they happened, and guided-audit estimates spread evenly across the year until real bills and itineraries replace them. Every line in the log carries its factor and source; the method lives on the basis of preparation page.',
+  tag: '01 / The detail',
+  title: ['The working', 'numbers'],
+  sub: 'The reveal above is the short version. This is the detail behind it: the exact totals, the year month by month, and the split by category. The reporting period is the Australian financial year (July to June).',
   kpis: {
     total: 'total',
-    range: '{low} to {high} t at the stated quality bands',
+    range: '{low} to {high} t, allowing for estimates',
     aus: 'of the Australian average',
-    budget: 'of the 2030 lifestyle budget',
-    largest: 'largest single entry',
+    budget: 'of the 1.5°C lifestyle benchmark',
+    largest: 'biggest single item',
   },
-  scopes: [
-    { n: '1', title: 'What I burn · scope 1', body: 'Fuel burned on my behalf at home: the gas under the hot water and the cooktop. Direct emissions, my name on them. No car this year, so no petrol line.' },
-    { n: '2', title: 'The power I buy · scope 2', body: 'Purchased electricity for a small flat that runs on surprisingly little. Location-based on the state grid factor; GreenPower would move it market-based.' },
-    { n: '3', title: 'Everything done for me · scope 3', body: 'Everything I cause but do not combust: flights, trains, rideshare, freight, food, and the fuel supply chains. As in every inventory I have built, this is where the tonnes hide.' },
-  ],
   trendTitle: 'The year, month by month',
-  trendSub: 'tCO₂-e per month, stacked by category. Bills are spread across the months they cover; dated point events land where they happened; undated estimates spread evenly.',
-  trendEmpty: 'No month story yet: every line in this audit is a typical-year estimate spread evenly, so the months would all read the same. Give a flight its month in the guided audit, or log an entry with a real date, and this chart starts talking.',
+  trendSub: 'tCO₂-e per month, stacked by category. Bills spread across the months they cover; dated trips land where they happened; undated estimates spread evenly.',
+  trendEmpty: 'No month-by-month story yet: every item here is a typical-year estimate spread evenly, so the months would all read the same. Add a real date to a flight or a bill and this chart starts talking.',
   worstLabel: 'worst month',
-  catTitle: 'Where the year went',
-  catSub: 'Annual tCO₂-e by category, share of total. The top two wedges decide whether any plan works; the rest is housekeeping.',
-  flightCallout: 'No car, a frugal flat, trains everywhere. And none of it matters next to the flying: the itineraries are the footprint, and the plan below has to start there or it is theatre.',
-  genericCallout: 'The top categories above are the plan. Everything else is housekeeping.',
+  catTitle: 'By category',
+  catSub: 'Annual tCO₂-e by category, and its share of the total. The biggest one or two decide most of the result.',
+  flightCallout: 'No car, a modest apartment, transit everywhere, and none of it matters next to the flying. The flights are the footprint, so any real plan has to start there.',
+  genericCallout: 'The biggest categories above are where the reductions are. Working on the largest ones does the most.',
 };
 
 export const PLAN = {
-  tag: '02 / The plan',
-  title: ['The decarbonisation', 'plan'],
-  sub: 'This is the part most footprint apps skip. Each action is priced against the audited numbers above, not a national average: an estimated annual reduction, a rough net cost or saving, an effort rating, and a stated basis. Offsets and green power products are deliberately absent: market instruments move the paperwork, not the physics, so nothing here earns a bar unless it removes real activity or real fuel.',
-  maccTitle: 'A personal marginal abatement cost curve',
-  maccSub: 'Dollars per tonne against tonnes abated per year. Bar width is the annual reduction; bars below the line pay you. Each bar is the action alone at current factors; the pathway resolves overlaps.',
-  maccNote: 'Options greyed out among the cards are not applicable to this audit: no car means no EV bar, and a rented apartment makes solar and appliance swaps landlord problems. The method says so rather than pretending.',
-  scenarioTitle: 'The pathway',
-  scenarioSub: 'Two lines to read. The lower one is where your plan takes you; the upper dashed one is where you stay if nothing changes. Until you switch an action on the two sit on top of each other, because a plan with nothing in it is just today, repeated. The grid keeps cleaning up in the background either way, actions phase in by how hard they are, and overlaps resolve in order so a shared kilowatt hour is never counted twice.',
-  budgetLabel: 'The 2030 target · 2.5 t a person',
+  tag: '02 / Cut it down',
+  title: ['The biggest practical', 'reductions'],
+  sub: 'Each change here is worked out against the real numbers above, not a national average. Pick the ones that fit your life and watch the line move toward the benchmark. Offsets and green-power products are left out on purpose: they shuffle certificates, they do not remove the emissions.',
+  scenarioTitle: 'Where it goes from here',
+  scenarioSub: 'Two lines. The lower one is where your choices take you; the upper dashed one is where you stay if nothing changes. They sit together until you switch a change on. The grid keeps getting cleaner in the background either way, and bigger changes take longer to phase in.',
+  budgetLabel: '1.5°C lifestyle benchmark · 2.5 t a person',
   bauLabel: 'If nothing changes',
-  planLabel: 'With your plan',
-  tableTitle: 'Build the plan',
-  tableSub: 'Toggle an action and the impact readout and pathway rebuild in place. Every card states its reduction, cost basis and effort; effort is honest: low is a phone call, high is a changed life.',
-  toggleOn: 'In the plan',
-  toggleOff: 'Add to plan',
-  na: 'N/A here',
-  ofYear: 'of the audited year',
-  carouselLabel: 'Abatement options',
+  planLabel: 'With your changes',
+  tableTitle: 'Pick your changes',
+  tableSub: 'Turn a change on and the chart beside it rebuilds. Each card shows what changes, roughly how much it saves a year, and how hard it is.',
+  toggleOn: 'Chosen',
+  toggleOff: 'Add this',
+  na: 'Not relevant here',
+  ofYear: 'of this year',
+  reductionLabel: 'a year',
+  whyLabel: 'Why it matters',
+  effortLabel: 'Difficulty',
+  carouselLabel: 'Reduction options',
   prev: 'Previous options',
   next: 'More options',
   impact: {
-    label: 'Your plan so far',
-    none: 'Nothing switched on yet. Add an action and watch the plan line pull away from the "if nothing changes" line.',
-    line: '{n} action{s} on. By 2030 you land at {at2030} t, down {pct}% from the {bau2030} t you reach if nothing changes',
-    over: '{gap} t over the 2.5 t target',
-    within: 'inside the 2.5 t target',
-  },
-};
-
-export const LOG = {
-  tag: '03 / The log',
-  title: ['Every entry,', 'dated and priced'],
-  sub: 'The activity log behind every chart above. Each entry stores its activity data, unit, factor, source and scope at the time it was logged. Estimates and forecasts say so in their notes.',
-  addTitle: 'Add an entry',
-  importTitle: 'Import a year from your bank CSV',
-  importSub: 'Export a CSV from your banking app (or fill the template) and drop it here. It is read in this browser and never uploaded. Dollars become activity only where that is honest: fuel to litres, fares to kilometres, orders to parcels. Flights and energy bills come back as a checklist instead, because distance and kilowatt hours beat dollars every time. Groceries and dining are counted only as a diet sanity check.',
-  templateCta: 'Download the CSV template',
-  controls: {
-    title: 'Your data, your file',
-    body: 'Your audit saves automatically to this browser as you edit. It is not sent anywhere; there is no server to send it to. Export a JSON backup before switching devices, and import it on the other side.',
-    export: 'Export my data',
-    import: 'Import a backup',
-    share: 'Copy a share link',
-    shareNote: 'The link encodes a summary only: totals, categories and the plan headline. The raw log never travels.',
-    reset: 'Delete my audit from this browser',
-    resetConfirm: 'Delete your audit from this browser? Export a backup first if you want to keep it.',
-  },
-  table: {
-    head: ['Date', 'Entry', 'Category', 'Activity', 'Factor', 'Scope', 'tCO₂-e'],
-    empty: 'No entries yet. Add one below or run the guided audit.',
-  },
-  editHint: 'Your log is live. Tap any activity number, or the Edit button, to change it in place. Every chart above re-prices the moment you save.',
-  exampleNote: {
-    body: 'This log is the worked example, so it is read-only. Your own log is editable, private to your browser, and starts with one click.',
-    cta: 'Start your own audit',
+    label: 'Your choices so far',
+    none: 'Nothing chosen yet. Add a change and watch the line pull away from "if nothing changes".',
+    line: '{n} change{s} on. By 2030 you land at {at2030} t, down {pct}% from the {bau2030} t you reach if nothing changes',
+    over: '{gap} t over the 2.5 t benchmark',
+    within: 'inside the 2.5 t benchmark',
   },
 };
 
 export const ONBOARD = {
-  title: 'Start your own audit',
+  title: 'Calculate your footprint',
   intro: 'Five quick steps. Rough answers are fine; you can put real bills in later. Everything stays in this browser.',
   steps: ['You', 'Home energy', 'Getting around', 'Flights', 'Food & parcels'],
   you: {
     title: 'About you',
-    sub: 'Where you live sets your electricity factors, and adults at home split the bills.',
+    sub: 'Where you live sets your power mix, and we split shared home energy across the people who live there.',
     state: 'Where do you live?',
-    household: 'How many adults live at your place? (including you)',
-    householdNote: 'Power and gas get split evenly between the adults at home. Two adults means half of each bill counts as yours.',
+    household: 'How many adults share your home? (counting you)',
+    householdNote: 'We split shared home energy across the adults at home, so you are only counted for your share. Two adults means half of each bill is yours.',
     dwelling: 'Your place',
     dwellingHouse: 'House I own or could put solar on',
     dwellingApartment: 'Apartment or rental',
   },
   energy: {
     title: 'Home energy',
-    sub: 'Best case: read the kWh and MJ straight off a power and gas bill. No bills handy? Start from a typical home and adjust.',
-    presetLabel: 'No bills handy? Start from a typical home',
-    presetNote: 'Rough starting points for a whole household per quarter. Gas-heated homes in the southern states often run well above these. Swap in your real bills whenever you find them.',
-    kwh: 'Electricity, kWh per quarter (whole household)',
+    sub: 'Best case: read the kWh and MJ straight off a power and gas bill. No bills nearby? Start with a typical home and nudge it.',
+    presetLabel: 'No bills nearby? Start with a typical home',
+    presetNote: 'Rough starting points, sized to your household: each adult adds their share, so a busier home reads higher. The figures below are the whole-home total per quarter for the number of adults you set. Gas-heated homes down south often run well above these. Swap in your real bills whenever you find them.',
+    kwh: 'Electricity, kWh per quarter (whole home)',
     mj: 'Gas, MJ per quarter (0 if no gas)',
+    // {n}/{s} filled with the household size in the component.
+    splitNote: 'These are whole-home figures. We count your share: split evenly across the {n} adult{s} at home. Change the number of adults back on the first step.',
+    splitNoteSolo: 'These are whole-home figures. With one adult at home, the whole bill is yours.',
     greenpower: 'Is your electricity on GreenPower?',
     greenpowerNote: 'GreenPower is an optional 100% renewable add-on some electricity plans include. If you have never heard of it, you are almost certainly not on it, so choose No or Not sure.',
     gpNo: 'No',
@@ -215,37 +126,52 @@ export const ONBOARD = {
   },
   travel: {
     title: 'Getting around',
-    sub: 'Rough weekly figures are fine; the log can take real numbers later.',
+    sub: 'Rough weekly figures are fine; you can put real numbers in later.',
     car: 'Car kilometres per week (0 if car-free)',
     fuelType: 'Car fuel',
-    occupancy: 'People in the car, on average (including you)',
-    occupancyNote: 'Car emissions are split per person in the car, the same way the household bills are split. Two people halves your share.',
+    occupancy: 'People in the car, on average (counting you)',
+    occupancyNote: 'We split car emissions across everyone in the car, the same way we split the home bills. Two people halves your share.',
     rideshare: 'Rideshare spend per week, $',
     pt: 'Public transport spend per week, $',
+    // {cap} filled with the state cap in the component.
+    ptCapNote: 'In {state}, {label} is ${cap} a week, so we will not count more than that unless you say so. Spending past the cap does not buy more travel.',
+    ptOverride: 'Count my full spend anyway',
+    ptCapApplied: 'Counting up to ${cap} a week',
   },
   flights: {
     title: 'Your flights, one trip at a time',
-    sub: 'Think through a typical year: holidays, work trips, weddings. Pick a route, press add, and it joins your list below. Repeat for every trip.',
-    when: 'When was it?',
+    sub: 'Think through a typical year: holidays, work trips, weddings. Add a card for each trip, pick where it went, and edit any of them whenever you like.',
+    from: 'From',
+    to: 'To',
+    pickTo: 'Choose a destination',
+    pickFrom: 'Choose a starting city',
+    when: 'When',
     whenAny: 'Sometime in the year',
-    whenNote: 'Optional. A trip with a month makes your month-by-month chart and worst-month reveal real; left open, it spreads evenly across the year.',
-    route: 'Route',
-    custom: 'Custom distance, km one way',
-    customOpt: 'Custom distance…',
+    whenNote: 'Optional. Give a trip its month and your month-by-month chart and worst-month reveal come alive; leave it open and it spreads evenly across the year.',
     cabins: { economy: 'Economy', premium: 'Premium', business: 'Business', first: 'First' },
+    // Retained for the activity log's simple quick-add route picker.
+    customOpt: 'Custom distance…',
     oneWay: 'One way',
+    roundTrip: 'Return',
     cabin: 'Cabin',
-    return: 'Return trip',
-    add: 'Add this flight',
-    added: 'Added. Add your next trip, or press Next.',
-    listTitle: 'Your flights',
-    subtotal: 'Flights so far',
+    trip: 'Trip',
+    passengers: 'Seats you paid for',
+    passengersNote: 'Usually just you. Bump it up only if you are counting seats you booked for others.',
+    add: 'Add a flight',
+    addAnother: 'Add another flight',
     remove: 'Remove',
-    none: 'No flights in the list yet. If you flew this year, add each trip above.',
+    tripLabel: 'Flight {n}',
+    listTitle: 'Your flights',
+    none: 'No flights yet. Flew somewhere this year? Add a card for each trip.',
+    // Distance is shown (not carbon) so the estimate feels transparent.
+    dist: '≈ {km} km each way',
+    sameCities: 'Pick two different cities.',
+    sourceSummary: 'How this is estimated',
+    sourceBody: 'Flight emissions are estimated from the route distance and published UK Government (DESNZ) emissions factors, with an uplift for the extra warming of burning fuel at altitude. It is an estimate, not an airline-specific figure.',
   },
   food: {
     title: 'Food and parcels',
-    sub: 'Pick the diet that sounds most like your week. Each option shows roughly what it adds over a year.',
+    sub: 'Pick the diet that sounds most like your week. Rough is fine.',
     diet: 'Your diet, honestly',
     dietHints: {
       highMeat: 'Meat most meals, or big serves daily',
@@ -258,138 +184,151 @@ export const ONBOARD = {
     parcels: 'Parcels delivered per month',
     intlOrders: 'Overseas orders per month (the ones that arrive by air)',
   },
-  finish: 'Build my audit',
+  finish: 'See my footprint',
   back: 'Back',
   next: 'Next',
   cancel: 'Cancel',
 };
 
-// Typical-household starting points for the energy step, whole household per
-// quarter. Deliberately coarse: they exist so someone without a bill in reach
-// can still finish, and the note tells them to swap in real numbers later.
+// Typical-home starting points for the energy step, expressed PER ADULT per
+// quarter. The whole-home figure the engine prices from is kwhPerAdult times
+// the number of adults at home, so a busier home reads higher rather than
+// splitting one fixed number ever thinner. At the default two adults these
+// reproduce the long-standing whole-home defaults (e.g. an apartment at 1,100
+// kWh); the per-capita share stays realistic as the household grows.
+// Deliberately coarse: they exist so someone without a bill in reach can still
+// finish, and the note tells them to swap in real numbers later.
 export const ENERGY_PRESETS = [
-  { id: 'aptSmall', label: 'Small apartment', kwh: 700, mj: 0 },
-  { id: 'apt', label: 'Apartment', kwh: 1100, mj: 2500 },
-  { id: 'house', label: 'House', kwh: 1600, mj: 5500 },
-  { id: 'houseLarge', label: 'Large house', kwh: 2300, mj: 9000 },
+  { id: 'aptSmall', label: 'Small apartment', kwhPerAdult: 350, mjPerAdult: 0 },
+  { id: 'apt', label: 'Apartment', kwhPerAdult: 550, mjPerAdult: 1250 },
+  { id: 'house', label: 'House', kwhPerAdult: 800, mjPerAdult: 2750 },
+  { id: 'houseLarge', label: 'Large house', kwhPerAdult: 1150, mjPerAdult: 4500 },
 ];
 
 export const METHOD = {
-  tag: 'Life Footprint / Basis of preparation',
-  title: ['The method,', 'in writing'],
-  sub: 'Every number on the Life Footprint page traces to this one. It is written the way I would write it for an external assurer, because a footprint without a basis of preparation is a vibe.',
-  backToDash: 'Back to the dashboard',
+  tag: 'Your Carbon Footprint / How it works',
+  title: ['How the', 'calculator works'],
+  sub: 'A plain explanation of what this calculator counts, where the numbers come from, and how to read the result. The tables further down are the exact factors it uses.',
+  backToDash: 'Back to the calculator',
   boundary: {
-    title: 'Boundary',
+    title: 'What it includes',
     paras: [
-      'The inventory covers the activities a person directly controls or directly purchases: household electricity and gas, personal ground travel, flights, parcel freight, and diet. Scope labels follow GHG Protocol logic translated to a person: scope 1 is fuel I combust (home gas, petrol if I owned a car), scope 2 is purchased electricity, and scope 3 is everything performed by someone else on my behalf, which is most of a modern life.',
-      'Shared household consumption (energy) is attributed per adult by equal share. I pay half the bills, I carry half the kilowatt hours. Operational control of the thermostat is contested and has not been material to the result.',
-      'Shared kilometres follow the same rule. Car entries carry an average occupancy, and the fuel is divided per occupant: a full car is a different vehicle, emissions-wise, to a solo one. Rideshare and public transport factors are already per passenger, so they need no split.',
+      'The calculator covers the things a person controls or pays for directly: home electricity and gas, personal travel on the ground, flights, parcel deliveries, and diet. It groups them the way companies do, translated to a person: Scope 1 is fuel you burn yourself (home gas, and petrol if you drive), Scope 2 is the electricity you buy, and Scope 3 is everything else your choices cause but that happens elsewhere.',
+      'Shared home energy is split evenly between the adults in the home: two adults means half of each bill counts as yours. Shared car trips are split the same way, by the average number of people in the car. Rideshare and public-transport factors are already per passenger, so they need no split.',
     ],
   },
   period: {
-    title: 'Reporting period and recalculation',
+    title: 'The reporting period',
     paras: [
-      'The reporting period is the Australian financial year. The audited year here is FY2026 (July 2025 to June 2026). Entries snapshot their factor at logging time and record which factor set priced them; a factor refresh (the NGA Factors update each August) applies to new entries, and any restatement of a prior year is done explicitly, not silently.',
-      'Month placement is honest about what is known. Dated entries land in their month, bills spread across the months they cover, and undated typical-year estimates from the guided audit spread evenly across the year rather than being assigned invented dates. Monthly views, the worst-month reveal and the rhythm axis of the character only speak when real dates give them something to say.',
-      'Years now roll over. Closing a year archives it exactly as it stands, entries and pinned factors included, and opens the next twelve months against the factor set in force. A closed year is never re-priced by a refresh. Restating one is deliberate by construction: export your data, correct the closed year in the file, re-import it, and record why. The restatement rule is the organisational one, sized down: material errors are corrected and said out loud; factor updates apply forward, not backward.',
-      'One honest gap: we moved apartments in late July 2025, so the first weeks of the year have no home energy data. The audit carries the gap rather than inventing a number for it.',
+      'The reporting period is the Australian financial year, July to June. The worked example is FY2026 (July 2025 to June 2026).',
+      'Timing is honest about what is known. Dated trips land in the month they happened, bills spread across the months they cover, and rough typical-year estimates spread evenly rather than being given made-up dates. The month-by-month chart and the worst-month reveal only appear once real dates give them something to show.',
     ],
   },
-  uncertainty: {
-    title: 'Uncertainty, stated',
+  sources: {
+    title: 'Where the numbers come from',
     paras: [
-      'Every entry carries a data quality tier, and every tier carries a band: metered or billed at ±5%, forecast at ±15%, estimated at ±30%. The bands are summed entry by entry with no correlation credit, which is the cautious end of the published error-propagation approaches: the honest worst case each way. The result is the range shown beside the total.',
-      'Two things the range is not. It is not a confidence interval in the statistical sense; the band widths are stated assumptions of this method, sized from the tier framework in the GHG Protocol uncertainty guidance rather than measured error distributions. And it never moves the central estimate: better data narrows the range, it does not flatter the number.',
-    ],
-  },
-  sensitivity: {
-    title: 'Sensitivity: radiative forcing',
-    para: 'Flights are priced with radiative forcing at the published 1.7 multiplier, which counts the non-CO₂ warming effects of burning fuel at altitude. Reasonable inventories disagree on this. Without it, the flights line would read {flights} t and the year {total} t. The with-RF basis is deliberate: leaving warming out because it is not carbon dioxide is a lawyer’s answer, not an accountant’s.',
-  },
-  sensitivityBasis: 'Computed live from {label}, the audit on the dashboard.',
-  factorsTitle: 'Emission factors in force',
-  factorsSub: 'The tables below are the live factor set the calculator prices from, not a copy of it.',
-  marketBased: {
-    title: 'Market-based instruments',
-    paras: [
-      'Grid electricity is reported location-based by default. Accredited GreenPower, where selected, nets the scope 2 generation attribute to zero for the covered share, market-based. Where the two bases differ the audit shows the market-based figure and each electricity entry names its GreenPower share beside the location-based factor table, so the other basis stays recoverable from the same line: the GHG Protocol dual-reporting rule sized for one meter. Scope 3 fuel-cycle and network losses are conservatively retained in full either way. No offsets are netted against anything, anywhere on this page.',
+      'Australian electricity, gas and road-fuel factors are from the Australian Government (DCCEEW) National Greenhouse Accounts Factors. Flights and freight use the UK Government conversion factors, published by DESNZ and still widely known as the DEFRA factors, because they are the most complete public source for aviation by distance and cabin.',
+      'Diet is an estimate, not a precise figure: it uses published per-day values by diet type, and the same direction shows up in Australian studies. Public transport uses a UK rail factor as a stand-in until a published NSW per-passenger figure is available. Every factor and its source is in the tables below.',
     ],
   },
   quality: {
-    title: 'Estimation and data quality',
+    title: 'How results are calculated',
     paras: [
-      'Entries carry one of three quality tiers, now a structured field on every line of the log: metered or billed (meter reads, bill quantities, actual itineraries), estimated (bank transactions turned into litres, kilometres or parcels at stated conversion rates, and survey answers from the guided audit), and forecast (a metered daily average extended to an unbilled period). Spend conversion is a screening tool borrowed from organisational scope 3 practice: good enough to find hotspots, not good enough to hide behind, which is why flights and energy always ask for the real quantity.',
-      'The tiers do work. Each one carries the uncertainty band described below, so replacing a survey answer with a real bill visibly tightens the range on the total.',
+      'Each item is activity times a factor: kilowatt-hours times the grid factor, litres times the fuel factor, passenger-kilometres times the flight factor, and so on. Flights include the extra warming effect of burning fuel at altitude, which reasonable calculators treat differently, so this one reads a little higher than a CO₂-only figure.',
+      'Where a real bill or itinerary is not to hand, the calculator estimates: it turns spend into litres, kilometres or parcels at stated rates, or extends a metered daily average over an unbilled period. Public-transport spend is capped at the state weekly fare cap first (in NSW, the $50 Opal cap), because spending past the cap buys no extra travel. Estimates are labelled, and replacing one with a real number tightens the range shown next to the total. Green power, where you have it, lowers your purchased-electricity figure; no offsets are subtracted anywhere.',
+    ],
+  },
+  interpret: {
+    title: 'How to read the result',
+    paras: [
+      'The total is compared against three published benchmarks: the Australian and world per-person averages, and a 1.5°C-aligned lifestyle benchmark of 2.5 t a person by 2030. The two averages are national figures that count whole economies, so they are broader than a personal footprint. The 2.5 t figure is a lifestyle benchmark of the same kind this calculator estimates.',
+      'Because this calculator leaves out the wider basket of goods and services (clothing, electronics, services), any total here understates a full consumption footprint. So the gap to the benchmark is if anything larger than it looks, not smaller.',
     ],
   },
   plan: {
-    title: 'How the plan is modelled',
+    title: 'How the reductions are modelled',
     paras: [
-      'Each abatement option is a function applied to my audited activity, so reductions are personal, not generic. The cost curve shows each option standalone at current factors. The pathway applies enabled options in a declared order (behaviour first, then electrification, then supply measures) so interactions resolve instead of double counting: an EV adds charging load before rooftop solar acts on whatever load remains. Options phase in by effort. Grid decarbonisation runs in the background in both the frozen-habits line and the plan, on a stylised trajectory from published projections, because the grid improving is not my virtue.',
-      'The plan carries only physical reductions. Offsets and green power products are excluded as abatement by construction: they are market instruments that retire certificates rather than remove activity, so they belong in market-based reporting (stated above), never on the cost curve. Audited GreenPower purchases still price the scope 2 line, because reporting what was bought is accounting, not abatement.',
-      'The budget line is the published 1.5°C lifestyle target of 2.5 tCO₂-e per person by 2030 (1.4 by 2040, 0.7 by 2050). The gap between my pathway and that line is not a modelling problem.',
+      'Each reduction is worked out against your own numbers, not a national average, so the estimate fits your year. When you choose several, the calculator applies them in a sensible order (behaviour first, then switching to electric, then rooftop solar on the load that remains) so they add up without double-counting. Bigger changes take a year or two to fully phase in.',
+      'The background grid keeps getting cleaner in both lines, because that happens whether or not you act. Offsets and green-power products are left out of the reductions on purpose: they retire certificates rather than remove the activity.',
     ],
   },
   character: {
-    title: 'How the carbon character is assigned',
+    title: 'How the "result" label is worked out',
     paras: [
-      'Three measurements, read straight off the audit, place every year in one of twelve cells. Weight: at or under the 6.6 t global average is featherweight, over 16 t is heavyweight, between the two is middleweight. Shape: a year with 40% or more of its total in one wedge (flights, road, home energy, diet or freight) is a specialist; otherwise a generalist. Rhythm: a year whose worst month carries at least twice the average month is spiky; otherwise steady. The cell names the character; the biggest wedge flavours the reading but never changes it.',
-      'An audit at or under the 2.5 t lifestyle budget also unlocks The Pacifist Run, whatever its cell. The 2.5 t and 6.6 t lines are the same published benchmarks used everywhere on this page, and 16 t sits on the EDGAR-basis Australian inventory including the land sink. The 40% share and the 2× spike are stated editorial cut-offs, not published science: they decide which label you get, never any number.',
+      'The playful result at the end is read from three things: how big the year is (small, medium or large, split at the 6.6 t world average and 16 t), how much sits in one category (40% or more in one is "focused"), and whether it came in spikes (a worst month at least twice an average month). That gives twelve labels. A year at or under the 2.5 t benchmark also earns a rare bonus label.',
+      'The 40% and 2× cut-offs are editorial choices for the labels only. They never change any number.',
     ],
   },
+  factorsTitle: 'The factors it uses',
+  factorsSub: 'These tables are the exact factors the calculator prices from.',
   exclusions: {
-    title: 'Exclusions and limitations, named',
-    items: [
-      'General purchased goods and services (clothing, electronics, entertainment, health): the largest gap in this boundary. National consumption averages put the excluded basket at several tonnes per person per year, so totals here understate a full consumption footprint and the benchmarks say so where they appear. The screening basis is chosen (US EPA supply chain factors v1.3, spend-based, clearly labelled screening); its per-category values enter at the next verification pass, because this page does not publish a factor it has not checked against the source.',
-      'Hotel nights: counted in no category yet. The source is identified (the UK Government conversion factors publish a per-night figure by country, Australia included); the values enter at the next verification pass rather than from memory. Until then the nights stay a named exclusion.',
-      'Rideshare deadheading (the car driving to me, empty): excluded, understates rideshare by roughly a third.',
-      'Tenant energy in an investment property (my personal Category 13, downstream leased assets): no activity data, excluded, noted with a straight face.',
-      'Public transport uses a UK rail factor as an indicative proxy pending a published NSW per-passenger-km figure.',
-      'Diet factors are UK LCA means standardised per 2,000 kcal: coarse, labelled indicative, and still the right order of magnitude.',
-      'Employer emissions (office, work systems) belong to my employer’s inventory, not this one. I already count the work flights I book myself.',
-      'EV kilometres are priced at grid factors on the assumption the charging is not already inside a logged electricity bill. If you charge at home on a metered bill, log the kilometres or the kilowatt hours, not both.',
-    ],
-  },
-  versionTitle: 'Factor set',
-  refresh: {
-    title: 'Factor refresh workflow, in writing',
-    paras: [
-      'Factors refresh on a written routine, not on vibes. Each August when the NGA Factors publish: re-check electricity, gas and road fuels against the new tables, bump the factor set id, and re-verify the flagged single-mirror values against the primary workbooks. Each June when the UK conversion factors publish: flights, freight, and the identified-but-unshipped hotel table. New factors price new entries only; every logged entry keeps the factor and the factor set id it was priced under, and closed years are never re-priced.',
-      'The research trail for every value, including the ones that did not make it in, lives in the repository next to the code.',
+    title: 'What it leaves out, and optional extras',
+    groups: [
+      {
+        head: 'Outside the boundary',
+        items: [
+          'Employer emissions (your office, work systems) belong to your employer\'s footprint, not your personal one. Work flights you book yourself are still counted.',
+          'Anything owned but rented to others (for example an investment property\'s energy) sits in the tenant\'s footprint.',
+        ],
+      },
+      {
+        head: 'Left out because reliable data is unlikely',
+        items: [
+          'Rideshare "deadheading" (the car driving empty to reach you): hard to know, so rideshare here is a slight underestimate.',
+          'The exact split of some shared or one-off spending, which is estimated rather than measured.',
+        ],
+      },
+      {
+        head: 'Optional extras you could add',
+        items: [
+          'Goods and services (clothing, electronics, entertainment, health) and hotel nights are the biggest things not counted by default. They can be estimated with a few extra questions if you want a fuller picture; the simple calculator leaves them out to stay quick.',
+        ],
+      },
     ],
   },
 };
 
-// Compact pointer to the basis of preparation, which lives on its own page.
+// Compact pointer to the how-it-works page, which lives on its own page.
 export const METHOD_LINK = {
-  tag: '04 / Basis of preparation',
-  title: ['The method,', 'in writing'],
-  body: 'Every number above traces to a written basis of preparation: the boundary, the factor tables in force, the uncertainty bands, and the exclusions named. It lives on its own page, rendered from the same live factor set the calculator prices from, so the words can never drift from the maths.',
-  cta: 'Read the basis of preparation',
-  factorLine: 'Factor set {id} · updated {updated}',
+  tag: '04 / How it works',
+  title: ['How the', 'calculator works'],
+  body: 'A plain explanation of what this calculator counts, where the numbers come from, and how to read the result. It lives on its own page, with the exact factor tables it prices from.',
+  cta: 'See how it works',
+  factorLine: 'Australian factors (DCCEEW) for energy and fuel; UK Government (DESNZ / DEFRA) factors for flights and freight.',
 };
 
 // Transient UI feedback, previously inline in components.
 export const TOASTS = {
-  entryAdded: 'Entry added and priced.',
-  entryUpdated: 'Entry updated and re-priced.',
-  nothingSelected: 'Nothing selected to add.',
-  csvAdded: '{n} estimate{s} added from the CSV.',
-  shareCopied: 'Share link copied. Summary only; the log stays here.',
+  shareCopied: 'Link copied. It carries a summary only; your details stay here.',
   sharePrompt: 'Copy your share link:',
-  auditDeleted: 'Audit deleted from this browser.',
-  auditLive: 'Your audit is live. It saves to this browser as you edit.',
-  backupImported: 'Backup imported.',
+  auditDeleted: 'Deleted from this browser.',
+  auditLive: 'Your footprint is ready. It saves to this browser as you edit.',
+  backupImported: 'Backup restored.',
 };
 
 export const SHARE = {
-  bannerTitle: 'You are looking at a shared snapshot',
-  bannerBody: 'Someone ran their audit and shared the summary. Totals and categories only; their log stayed in their browser.',
-  provenance: 'The numbers come from a cited-factor engine with a written method.',
-  provenanceCta: 'Read the basis of preparation',
-  cta: 'Start your own audit',
+  // {who} is a possessive ("Ada’s" or "My"); {label} is the period.
+  bannerTitle: '{who} {label} carbon emissions',
+  bannerBody: 'Someone shared their footprint summary with you. Totals and categories only; their details stayed in their browser.',
+  namePrompt: 'Add a name to the shared page? Leave blank to keep it as "My FY2026 carbon emissions".',
+  provenance: 'The numbers come from a calculator built on published factors.',
+  provenanceCta: 'See how it works',
+  cta: 'Calculate your own',
   dismiss: 'View the full page',
+};
+
+// The compact "your data" controls that replace the old activity log. No
+// per-item log is shown publicly; these just let someone move or delete their
+// own footprint.
+export const DATA_CTRL = {
+  title: 'Your data',
+  body: 'Your footprint saves to this browser as you edit. It is never sent anywhere. Export a backup before switching devices, and restore it on the other side.',
+  share: 'Copy a share link',
+  export: 'Export a backup',
+  import: 'Restore a backup',
+  importError: 'That file is not a footprint backup.',
+  reset: 'Delete from this browser',
+  resetConfirm: 'Delete your footprint from this browser? Export a backup first if you want to keep it.',
 };
 
 export const FOOTER = {
