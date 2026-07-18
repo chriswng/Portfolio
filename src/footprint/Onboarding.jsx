@@ -175,7 +175,7 @@ const DEFAULTS = {
   state: 'NSW', householdSize: 2, dwelling: 'apartment', dietType: 'medMeat', fuelType: 'petrol',
   // gpChoice is the picked chip; greenpowerPct is what the engine prices from.
   // 'no' and 'unsure' are distinct choices that both price at 0% renewable.
-  gpChoice: 'no', greenpowerPct: 0, kwhQuarter: 1000, mjQuarter: 3000, carKmWeek: 0, carOccupancy: 1,
+  gpChoice: 'no', greenpowerPct: 0, energyPreset: null, kwhQuarter: 1000, mjQuarter: 3000, carKmWeek: 0, carOccupancy: 1,
   rideshareWeek: 0, ptWeek: 0, ptCapOverride: false,
   parcelsMonth: 2, intlOrdersMonth: 0, flights: [],
 };
@@ -364,6 +364,16 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
   const headRef = useRef(null);
   const set = (k, v) => setA((s) => ({ ...s, [k]: v }));
 
+  // Changing the number of adults rescales a chosen "typical home" preset, so
+  // the whole-home estimate grows with the household instead of being split
+  // ever thinner. A hand-typed bill (no preset selected) is left untouched.
+  const setHousehold = (v) => setA((s) => {
+    const next = { ...s, householdSize: v };
+    const pr = s.energyPreset && ENERGY_PRESETS.find((x) => x.id === s.energyPreset);
+    if (pr) { next.kwhQuarter = pr.kwhPerAdult * v; next.mjQuarter = pr.mjPerAdult * v; }
+    return next;
+  });
+
   const doneProfile = useMemo(() => (step === 5 ? buildProfileFromOnboarding(a) : null), [step, a]);
 
   // The done pane says the audit is saved, so save it as the pane appears;
@@ -429,7 +439,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         options={Object.entries(ELECTRICITY).map(([k, v]) => ({ value: k, label: v.label }))}
         value={a.state} onChange={(v) => set('state', v)}
       />
-      <Stepper icon="people" label={ONBOARD.you.household} value={a.householdSize} min={1} max={10} onChange={(v) => set('householdSize', v)} />
+      <Stepper icon="people" label={ONBOARD.you.household} value={a.householdSize} min={1} max={10} onChange={setHousehold} />
       <p className="ob-note">{ONBOARD.you.householdNote}</p>
       <Chips
         icon="building"
@@ -451,17 +461,20 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         icon="house"
         label={ONBOARD.energy.presetLabel}
         options={ENERGY_PRESETS.map((pr) => ({ value: pr.id, label: pr.label }))}
-        value={(ENERGY_PRESETS.find((pr) => pr.kwh === a.kwhQuarter && pr.mj === a.mjQuarter) || {}).id}
+        value={a.energyPreset}
         onChange={(id) => {
           const pr = ENERGY_PRESETS.find((x) => x.id === id);
-          if (pr) setA((s) => ({ ...s, kwhQuarter: pr.kwh, mjQuarter: pr.mj }));
+          if (pr) setA((s) => ({ ...s, energyPreset: id, kwhQuarter: pr.kwhPerAdult * s.householdSize, mjQuarter: pr.mjPerAdult * s.householdSize }));
         }}
         note={ONBOARD.energy.presetNote}
       />
-      <SliderField icon="bolt" label={ONBOARD.energy.kwh} value={a.kwhQuarter} min={0} max={6000} step={10} unit="kWh"
-        onChange={(v) => set('kwhQuarter', v)} />
-      <SliderField icon="flame" label={ONBOARD.energy.mj} value={a.mjQuarter} min={0} max={30000} step={50} unit="MJ"
-        onChange={(v) => set('mjQuarter', v)} />
+      {/* Dragging or typing a real bill is whole-home too, so it clears the
+          preset (household size no longer rescales it) and the engine still
+          splits it per adult. */}
+      <SliderField icon="bolt" label={ONBOARD.energy.kwh} value={a.kwhQuarter} min={0} max={8000} step={10} unit="kWh"
+        onChange={(v) => setA((s) => ({ ...s, kwhQuarter: v, energyPreset: null }))} />
+      <SliderField icon="flame" label={ONBOARD.energy.mj} value={a.mjQuarter} min={0} max={40000} step={50} unit="MJ"
+        onChange={(v) => setA((s) => ({ ...s, mjQuarter: v, energyPreset: null }))} />
       <p className="ob-splitnote"><Icon name="people" size={14} className="ob-label-i" />{splitNote}</p>
       <Chips
         icon="leaf"
