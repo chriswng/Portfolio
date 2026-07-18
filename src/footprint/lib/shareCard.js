@@ -231,13 +231,13 @@ const PAINTERS = {
       const y = 430 + i * 220;
       ctx.fillStyle = MATCHA;
       ctx.font = `700 84px ${DISP}`;
-      ctx.fillText('-' + a.t + ' t', 84, y);
+      ctx.fillText('-' + a.pct + '%', 84, y);
       ctx.fillStyle = INK;
       ctx.font = `600 36px ${SANS}`;
       ctx.fillText(a.action, 84, y + 56);
       ctx.fillStyle = MID;
       ctx.font = `500 28px ${MONO}`;
-      ctx.fillText(a.cost, 84, y + 104);
+      ctx.fillText(a.t + ' t/yr · ' + a.cost, 84, y + 104);
     });
     ctx.fillStyle = INK;
     ctx.font = `400 38px ${SANS}`;

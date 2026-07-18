@@ -408,7 +408,7 @@ export function WorstMonth({ d, voice }) {
     <section className="st-moment st-months" id="st-months" aria-label="The worst month">
       <motion.div className="st-center st-wide" initial="hidden" whileInView="visible" viewport={inView}>
         <motion.div className="sec-tag" data-idx="" variants={rise}>{MONTHS_ST.tag}</motion.div>
-        <motion.h2 className="st-h2 display" variants={rise} custom={1}>{d.worst.name}.</motion.h2>
+        <motion.h2 className="st-h2 display" variants={rise} custom={1}>{d.worst.name}</motion.h2>
         <motion.p className="st-line" variants={rise} custom={2}>
           <CountUp value={d.worst.total} decimals={1} className="st-line-num" /> t {MONTHS_ST.line[voice]}
         </motion.p>
@@ -510,7 +510,7 @@ export function Bench({ d, voice }) {
 // ---------------------------------------------------------------------------
 // 8 · The needle
 // ---------------------------------------------------------------------------
-export function Needle({ d, voice }) {
+export function Needle({ d, voice, onPlan }) {
   if (!d.needle.length) return null;
   return (
     <section className="st-moment st-needle" id="st-needle" aria-label="What would move the needle">
@@ -521,7 +521,8 @@ export function Needle({ d, voice }) {
         <div className="st-needle-cards">
           {d.needle.map((a, i) => (
             <motion.div className="st-needle-card" key={a.id} variants={rise} custom={3 + i} style={{ '--ac': a.hex }}>
-              <div className="st-needle-t display">-<CountUp value={a.reduction} decimals={1} delay={0.15 + i * 0.12} /> t</div>
+              <div className="st-needle-t display">-<CountUp value={a.pct} decimals={0} delay={0.15 + i * 0.12} /><span className="st-needle-pct">%</span></div>
+              <div className="st-needle-of">{NEEDLE.ofYear} · {fmtT(a.reduction)} {NEEDLE.perYear}</div>
               <div className="st-needle-name">{a.action}</div>
               <div className="st-needle-cost">
                 {a.costPerTonne == null ? '' : a.costPerTonne <= 0
@@ -533,11 +534,11 @@ export function Needle({ d, voice }) {
         </div>
         <motion.p className="st-punch" variants={rise} custom={7}>{NEEDLE.punch}</motion.p>
         <motion.div className="st-share-row" variants={rise} custom={8}>
-          <a className="btn btn-secondary" href="#fp-plan">{NEEDLE.cta} ↓</a>
+          <button type="button" className="btn btn-secondary" onClick={onPlan}>{NEEDLE.cta} ↓</button>
           <MomentShare kind="needle" fy={d.fy} data={{
             title: SHARE_ST.cards.needle[voice],
             actions: d.needle.map((a) => ({
-              action: a.action, t: fmtT(a.reduction),
+              action: a.action, pct: a.pct, t: fmtT(a.reduction),
               cost: a.costPerTonne == null ? '' : a.costPerTonne <= 0
                 ? `${NEEDLE.saves} $${Math.abs(a.costPerTonne).toLocaleString()} / t`
                 : `${NEEDLE.costs} $${a.costPerTonne.toLocaleString()} / t`,
@@ -550,29 +551,23 @@ export function Needle({ d, voice }) {
 }
 
 // ---------------------------------------------------------------------------
-// 9 · Outro
+// 9 · Outro. Deliberately short: the total was the show two moments ago and
+// the working audit sits directly below, so the ending is an exit, not a
+// recap.
 // ---------------------------------------------------------------------------
-export function Outro({ d, voice, onStart, onExplore, onReplay, endRef }) {
+export function Outro({ voice, onStart, onExplore, onReplay, endRef }) {
   return (
     <section className="st-moment st-outro" id="st-outro" aria-label="On to the audit">
       <div ref={endRef} className="st-end-sentinel" aria-hidden="true" />
       <motion.div className="st-center" initial="hidden" whileInView="visible" viewport={inView}>
         <motion.div className="sec-tag" data-idx="" variants={rise}>{OUTRO.tag}</motion.div>
-        <motion.div className="st-outro-recap display" variants={rise} custom={1}>
-          <span className="st-outro-kicker">{TOTAL.kicker[voice]}</span>
-          {fmtT(d.total)}<span className="st-outro-unit"> t</span>
-        </motion.div>
-        <motion.h2 className="st-h2 display" variants={rise} custom={2}>{OUTRO.headline[voice]}</motion.h2>
-        <motion.p className="st-line" variants={rise} custom={3}>{OUTRO.sub[voice]}</motion.p>
-        <motion.div className="st-share-row" variants={rise} custom={4}>
+        <motion.h2 className="st-h2 display" variants={rise} custom={1}>{OUTRO.headline[voice]}</motion.h2>
+        <motion.p className="st-line" variants={rise} custom={2}>{OUTRO.sub[voice]}</motion.p>
+        <motion.div className="st-share-row" variants={rise} custom={3}>
           <button type="button" className="btn btn-primary fp-btn" onClick={onExplore}>{OUTRO.explore} ↓</button>
           {voice === 'example' && (
             <button type="button" className="btn btn-secondary" onClick={onStart}>{OUTRO.start}</button>
           )}
-          <MomentShare kind="total" fy={d.fy} data={{
-            title: SHARE_ST.cards.total[voice],
-            total: fmtT(d.total), cats: d.ranked.map((c) => ({ label: c.label, t: c.t })),
-          }} />
           <button type="button" className="st-quiet" onClick={onReplay}>{OUTRO.again}</button>
         </motion.div>
       </motion.div>

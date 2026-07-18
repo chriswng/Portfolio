@@ -151,14 +151,40 @@ export function PathwayChart({ pathway, budget, labels }) {
 // ---------------------------------------------------------------------------
 // Personal MACC: variable-width bars, cost per tonne (y) against cumulative
 // abatement (x). Custom SVG because no charting library draws one honestly.
+// The drawing squeezes to the container: below ~620px the viewBox narrows so
+// on-chart text renders near CSS size instead of scaling away to nothing,
+// and bars answer to tap as well as hover and focus.
 // ---------------------------------------------------------------------------
 export function MaccChart({ rows }) {
   const [tip, setTip] = useState(null);
+  const [compact, setCompact] = useState(false);
+  const wrapRef = useRef(null);
+
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el || typeof ResizeObserver === 'undefined') return undefined;
+    const ro = new ResizeObserver((entries) => {
+      const w = entries[entries.length - 1].contentRect.width;
+      if (w > 0) setCompact(w < 620);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   const live = rows.filter((r) => r.applicable && r.reduction > 0.004 && r.costPerTonne != null)
     .sort((a, b) => a.costPerTonne - b.costPerTonne);
   if (!live.length) return <p className="fp-empty">Nothing applicable to plot yet. Add some entries first.</p>;
 
-  const W = 720, H = 300, padL = 56, padR = 10, padT = 16, padB = 34;
+  const W = compact ? 440 : 720;
+  const H = compact ? 330 : 300;
+  const padL = compact ? 52 : 56;
+  const padR = compact ? 6 : 10;
+  const padT = compact ? 20 : 16;
+  const padB = compact ? 40 : 34;
+  // Font sizes in viewBox units: the compact viewBox renders close to 1:1 on
+  // a phone, so these land near their CSS-pixel size.
+  const fsTick = compact ? 13 : 11;
+  const fsLabel = compact ? 12.5 : 10.5;
   const totalRed = live.reduce((s, r) => s + r.reduction, 0);
 
   // MACC-standard axis capping: tiny-tonnage behavioural options can carry
@@ -173,7 +199,9 @@ export function MaccChart({ rows }) {
   const yFor = (c) => padT + ((maxC - c) / (maxC - minC)) * (H - padT - padB);
   const y0 = yFor(0);
 
-  const tickStep = (maxC - minC) > 1500 ? 500 : (maxC - minC) > 600 ? 250 : 100;
+  let tickStep = (maxC - minC) > 1500 ? 500 : (maxC - minC) > 600 ? 250 : 100;
+  // Fewer, bigger gridline labels on a narrow chart.
+  if (compact && (maxC - minC) / tickStep > 4) tickStep *= 2;
   const yTicks = [];
   for (let v = Math.ceil(minC / tickStep) * tickStep; v <= maxC; v += tickStep) yTicks.push(v);
   if (!yTicks.includes(0)) yTicks.push(0);
@@ -189,32 +217,35 @@ export function MaccChart({ rows }) {
   });
 
   return (
-    <div className="fp-macc">
+    <div className="fp-macc" ref={wrapRef}>
       <svg viewBox={'0 0 ' + W + ' ' + H} role="img" style={{ width: '100%', height: 'auto', display: 'block' }}
         aria-label={'Marginal abatement cost curve: ' + live.map((r) => r.action + ' abates ' + r.reduction.toFixed(2) + ' tonnes a year at ' + (r.costPerTonne < 0 ? 'a saving of $' + Math.abs(r.costPerTonne) : '$' + r.costPerTonne) + ' per tonne').join('; ') + '.'}>
         {yTicks.map((v) => (
           <g key={v}>
             <line x1={padL} x2={W - padR} y1={yFor(v)} y2={yFor(v)} stroke="rgba(15,23,42,0.07)" strokeWidth="1" />
-            <text x={padL - 6} y={yFor(v) + 3} textAnchor="end" fontSize="9" fontFamily="JetBrains Mono, monospace" fill="#64748B">{'$' + v.toLocaleString()}</text>
+            <text x={padL - 6} y={yFor(v) + 4} textAnchor="end" fontSize={fsTick} fontFamily="JetBrains Mono, monospace" fill="#64748B">{'$' + v.toLocaleString()}</text>
           </g>
         ))}
         <line x1={padL} x2={W - padR} y1={y0} y2={y0} stroke="#475569" strokeWidth="1.5" />
         {bars.map((b) => (
           <g key={b.id} tabIndex={0} className="fp-macc-bar" role="img"
             aria-label={b.action + ': ' + b.reduction.toFixed(2) + ' tonnes a year at ' + (b.costPerTonne < 0 ? 'a saving of $' + Math.abs(b.costPerTonne) : '$' + b.costPerTonne) + ' per tonne' + (b.offScale ? ', beyond the axis cap' : '')}
-            onMouseEnter={() => setTip(b)} onMouseLeave={() => setTip(null)}
-            onFocus={() => setTip(b)} onBlur={() => setTip(null)}>
+            onMouseEnter={() => setTip(b)} onMouseLeave={() => setTip((t) => (t && t.id === b.id && !t.pinned ? null : t))}
+            onFocus={() => setTip(b)} onBlur={() => setTip((t) => (t && t.id === b.id && !t.pinned ? null : t))}
+            onClick={() => setTip((t) => (t && t.id === b.id && t.pinned ? null : { ...b, pinned: true }))}>
             <title>{b.action + ': ' + b.reduction.toFixed(2) + ' t/yr at ' + (b.costPerTonne < 0 ? '-$' + Math.abs(b.costPerTonne) : '$' + b.costPerTonne) + '/t' + (b.offScale ? ' (beyond the axis cap)' : '')}</title>
+            {/* Invisible hit area widens skinny bars to a tappable target. */}
+            <rect x={b.x - 4} y={padT} width={b.w + 8} height={H - padT - padB} fill="transparent" />
             <rect x={b.x} y={b.y} width={b.w} height={b.h} fill={categoryById(b.category).hex} opacity="0.85" rx="2" />
             {b.offScale && (
-              <text x={b.x + b.w / 2} y={b.below ? b.y + b.h - 4 : b.y + 10} textAnchor="middle" fontSize="10" fontWeight="700" fill="#FFFFFF">⌄</text>
+              <text x={b.x + b.w / 2} y={b.below ? b.y + b.h - 4 : b.y + 12} textAnchor="middle" fontSize={fsTick} fontWeight="700" fill="#FFFFFF">⌄</text>
             )}
           </g>
         ))}
-        <text x={W - padR} y={H - 8} textAnchor="end" fontSize="9" fontFamily="JetBrains Mono, monospace" fill="#64748B">
+        <text x={W - padR} y={H - 8} textAnchor="end" fontSize={fsLabel} fontFamily="JetBrains Mono, monospace" fill="#64748B">
           {'cumulative abatement → ' + totalRed.toFixed(1) + ' t/yr'}
         </text>
-        <text x={12} y={padT + 2} fontSize="9" fontFamily="JetBrains Mono, monospace" fill="#64748B" transform={'rotate(-90 12 ' + (padT + 2) + ')'} textAnchor="end">$ / tCO₂-e</text>
+        <text x={14} y={padT + 2} fontSize={fsLabel} fontFamily="JetBrains Mono, monospace" fill="#64748B" transform={'rotate(-90 14 ' + (padT + 2) + ')'} textAnchor="end">$ / tCO₂-e</text>
       </svg>
       <div className="fp-macc-tip" aria-live="polite">
         {tip ? (
@@ -225,7 +256,7 @@ export function MaccChart({ rows }) {
           </>
         ) : (
           <span>
-            Hover or tab across the bars. Width is tonnes; below the line pays you.
+            Tap, hover or tab across the bars. Width is tonnes; below the line pays you.
             {clamped ? ' Axis capped at -$' + Math.abs(CAP_MIN).toLocaleString() + '/t, MACC convention; marked bars run further and carry their true figure.' : ''}
           </span>
         )}
