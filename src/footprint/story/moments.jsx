@@ -528,10 +528,12 @@ export function Needle({ d, voice, onPlan }) {
 // ---------------------------------------------------------------------------
 export function Outro({ d, voice, character, onStart, onExplore, onReplay, onCopyLink, endRef }) {
   const top = d.ranked[0];
+  // Put a name on the marquee card when we have one: "ADA'S CARBON EMISSIONS".
+  const totalTitle = d.name ? d.name.toUpperCase() + '’S CARBON EMISSIONS' : SHARE_ST.cards.total[voice];
   const cards = [];
   cards.push({
     key: 'total', kind: 'total', label: 'The total',
-    data: { title: SHARE_ST.cards.total[voice], total: fmtT(d.total), cats: d.ranked.map((c) => ({ label: c.label, t: c.t })) },
+    data: { title: totalTitle, total: fmtT(d.total), cats: d.ranked.map((c) => ({ label: c.label, t: c.t })) },
   });
   if (character) {
     cards.push({

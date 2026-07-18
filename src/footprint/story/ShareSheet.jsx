@@ -66,7 +66,7 @@ export default function ShareSheet({ kind, data, linkedIn, onClose }) {
     };
   }, [onClose]);
 
-  const filename = () => 'life-footprint-' + k + '-' + fmt + '-' + slug(d.fy) + '.png';
+  const filename = () => 'carbon-footprint-' + k + '-' + fmt + '-' + slug(d.fy) + '.png';
 
   const onShare = async () => {
     if (!canvasRef.current || busy) return;
