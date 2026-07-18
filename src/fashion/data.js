@@ -415,7 +415,7 @@ export const COPY = {
   brand: 'SEVENFOLD',
   strap: 'One garment, seven lenses',
   byline: 'A working prototype by Christopher Wang',
-  backLink: 'itschriswang.github.io',
+  backLink: 'itschriswang.com',
 
   hero: {
     kicker: 'Sustainable fashion intelligence, in one continuous room',

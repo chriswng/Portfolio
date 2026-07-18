@@ -261,7 +261,7 @@ export const SHARE_ST = {
     },
   },
   // Card footers and titles by moment.
-  site: 'itschriswang.github.io/Portfolio/footprint',
+  site: 'itschriswang.com/footprint',
   method: 'Home energy, travel, freight and diet · published factors, no offsets',
   cards: {
     total: { example: 'MY YEAR IN CARBON', own: 'MY YEAR IN CARBON' },

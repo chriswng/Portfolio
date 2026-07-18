@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://itschriswang.github.io/Portfolio/sitemap.xml
+Sitemap: https://itschriswang.com/sitemap.xml
