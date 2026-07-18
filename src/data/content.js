@@ -201,7 +201,7 @@ export const FOOTER = {
       links: [
         { label: 'Decarb Model', href: '#scenario' },
         { label: 'Work Samples', href: 'work/' },
-        { label: 'Life Footprint', href: 'footprint/' },
+        { label: 'Carbon Footprint', href: 'footprint/' },
         { label: 'Sevenfold', href: 'fashion/' },
       ],
     },

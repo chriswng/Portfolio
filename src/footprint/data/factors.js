@@ -8,10 +8,13 @@
 // re-prices it). Research notes and verification status for every value:
 // docs/footprint-research/factor-sources.md.
 
+// Internal provenance tag stamped on each entry so a future factor update
+// never silently re-prices old entries. It is a data key, not a brand: the
+// UI shows the plain source list below, never this string.
 export const FACTOR_SET = {
-  id: 'CW-PF-2026.1',
+  id: 'nga2025-ukghg2026',
   updated: 'July 2026',
-  note: 'Electricity, gas and transport fuels: DCCEEW NGA Factors 2025 (August 2025). Aviation: UK Government GHG Conversion Factors 2026. Refreshed when new editions publish.',
+  note: 'Australian electricity, gas and transport fuels use the DCCEEW National Greenhouse Accounts Factors (2025). Flights and freight use the UK Government conversion factors (2026), published by DESNZ and still widely known as the DEFRA factors. Updated when new editions are published.',
 };
 
 // Canonical category order: identity colours and stack order everywhere.
@@ -196,8 +199,8 @@ export const FREIGHT_MODES = {
 // and the source is UK consumption data, standardised to 2,000 kcal.
 // ---------------------------------------------------------------------------
 export const DIET_SOURCE = {
-  name: 'Scarborough et al. 2014, Climatic Change 125:179-192',
-  detail: 'Dietary GHG of meat-eaters, fish-eaters, vegetarians and vegans in the UK (n = 55,504), kg CO2-e per day standardised to 2,000 kcal. Indicative: UK LCA basis, wide ranges. Scarborough et al. 2023 (Nature Food) confirms the gradient on Poore & Nemecek LCA data (vegans about 25% of high meat-eaters).',
+  name: 'Scarborough et al. 2014, Climatic Change 125:179-192 (per-day gradient), cross-checked against Australian work',
+  detail: 'Diet is an estimate, not a precise figure. Per-day values by diet type come from a large UK study (n = 55,504) standardised to 2,000 kcal, chosen because it separates high-meat, medium-meat, low-meat, pescetarian, vegetarian and vegan cleanly. The size and direction hold up in later work, including Australian studies: CSIRO (Hendrie et al. 2014, Nutrients) and Ridoutt et al. find the same gradient, with meat and dairy dominating. Treat the diet line as the right order of magnitude, not a measured number.',
   url: 'https://doi.org/10.1007/s10584-014-1169-1',
 };
 
