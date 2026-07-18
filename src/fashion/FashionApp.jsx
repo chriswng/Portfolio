@@ -13,6 +13,7 @@ import React, {
   useRef, useState,
 } from 'react';
 import { prefersReducedMotion, canHover } from '../utils/media';
+import ClothField from './ClothField';
 import {
   DYES, FABRICS, GARMENT_TYPES, ORIGINS, DEST, WORLD_MASK, STAGES, FACTORS,
   BREAKEVEN_WEARS, LOOP_MODS, FATES, BRAND_METRICS, BRANDS, VAGUE_TERMS,
@@ -741,6 +742,7 @@ function Hero() {
   };
   return (
     <section className="fs-hero" id="top" aria-label="Introduction">
+      <ClothField />
       <Seat id="hero" className="fs-hero-seat">
         <div
           className="fs-hero-swing" data-cursor="push"
@@ -3064,6 +3066,7 @@ function Shell() {
       <Footer />
       <WorldLayer />
       <CursorLayer />
+      <div className="fs-tex" aria-hidden="true" />
     </div>
   );
 }
