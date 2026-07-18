@@ -8,6 +8,7 @@ export const NAV_LINKS = [
   { href: '#scenario', label: 'Decarb Model' },
   { href: 'work/', label: 'Work Samples', external: true },
   { href: 'footprint/', label: 'Footprint', external: true },
+  { href: 'fashion/', label: 'Sevenfold', external: true },
   { href: '#experience', label: 'Experience' },
   { href: '#contact', label: 'Contact' },
 ];
