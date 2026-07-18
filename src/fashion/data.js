@@ -258,6 +258,37 @@ export function segmentCount(id) {
   return BRANDS.filter((b) => b.segment === id).length;
 }
 
+// ---------------------------------------------------------------------------
+// "Dig deeper" — reliable link-outs to richer per-brand data on other
+// services. Openweave is a launchpad, not the last word: these send you to
+// independent ratings and the primary sources so you can judge for yourself.
+// We only LINK; we never restate another service's rating as our own.
+// Good On You directory pages follow /brand/<slug>; a handful need an
+// explicit slug where the obvious one would not resolve.
+// ---------------------------------------------------------------------------
+const GOODONYOU_SLUG = {
+  'hm': 'h-m', 'pull-and-bear': 'pull-bear', 'the-iconic': 'the-iconic',
+  'kmart-australia': 'kmart', 'target-australia': 'target-australia',
+  'tk-maxx': 'tk-maxx', 'levi-strauss': 'levis', 'saint-laurent': 'saint-laurent',
+};
+
+function goodOnYouUrl(brand) {
+  const slug = GOODONYOU_SLUG[brand.id] || brand.id;
+  return `https://directory.goodonyou.eco/brand/${slug}`;
+}
+
+// Returns the ordered list of external references for a brand.
+export function digLinks(brand) {
+  const links = [];
+  if (brand.reportUrl) {
+    links.push({ label: 'Own sustainability report', url: brand.reportUrl, note: 'What the company says about itself' });
+  }
+  links.push({ label: 'Good On You rating', url: goodOnYouUrl(brand), note: 'Independent people, planet and animal score' });
+  links.push({ label: 'Baptist World Aid (AU)', url: 'https://baptistworldaid.org.au/resources/ethical-fashion-guide/', note: 'Australian worker-rights and environment score out of 100' });
+  links.push({ label: 'Fashion Transparency Index', url: 'https://www.fashionrevolution.org/about/transparency/', note: 'The source of the disclosure score above' });
+  return links;
+}
+
 // The signal fields shown, in display order, with their human labels.
 export const SIGNAL_FIELDS = [
   { id: 'transparency', label: 'Transparency Index', help: 'Fashion Revolution FTI 2023 disclosure score.' },
@@ -268,6 +299,117 @@ export const SIGNAL_FIELDS = [
   { id: 'supplyChain', label: 'Supplier list', help: 'A published list of manufacturing facilities.' },
   { id: 'circularity', label: 'Circularity', help: 'Repair, resale, take-back or recycling programmes.' },
 ];
+
+// ===========================================================================
+// CLAIM CHECK — a small, honest greenwashing utility.
+//
+// Grounded in the ACCC's guidance "Making environmental claims: a guide for
+// business" (the eight principles), with the same direction of travel as the
+// EU Green Claims and Empowering Consumers Directives, the UK CMA Green Claims
+// Code and the US FTC Green Guides. It flags the vague and absolute terms
+// regulators single out, and the qualifiers each one demands. It reads what
+// YOU paste. It makes no claim about any real brand.
+// ===========================================================================
+
+// The eight ACCC principles, shown as the standard the checker applies.
+export const ACCC_PRINCIPLES = [
+  'Make accurate and truthful claims',
+  'Have evidence to back up your claims',
+  'Do not leave out or hide important information',
+  'Explain any conditions or qualifications',
+  'Avoid broad and unqualified claims',
+  'Use clear and easy-to-understand language',
+  'Visuals and imagery should not mislead',
+  'Be transparent about your sustainability transition',
+];
+
+// Vague terms with no fixed meaning: regulators treat these as red flags
+// unless the specific, measured impact is named alongside them.
+export const VAGUE_TERMS = [
+  { re: /\bsustainab(le|ly|ility)\b/gi, term: 'sustainable', ask: 'Sustaining what, measured how? Name the impact and the number.' },
+  { re: /\beco[- ]?friendly\b/gi, term: 'eco-friendly', ask: 'Friendly compared with what? Every garment has a footprint.' },
+  { re: /\bgreen\b/gi, term: 'green', ask: 'Green is a colour. Which impact fell, and by how much?' },
+  { re: /\bconscious\b/gi, term: 'conscious', ask: 'Consciousness is not a supply-chain attribute. What changed in the product?' },
+  { re: /\bnatural(ly)?\b/gi, term: 'natural', ask: 'Natural is not the same as low impact. Crude oil is natural.' },
+  { re: /\bethical(ly)?\b/gi, term: 'ethical', ask: 'Whose code, audited by whom, and when was the last audit?' },
+  { re: /\bresponsibl[ey]\b/gi, term: 'responsible', ask: 'Responsible to what standard? Point to it.' },
+  { re: /\bclean\b/gi, term: 'clean', ask: 'Clean of what? Name the substance or drop the word.' },
+  { re: /\bkind (to|on) the planet\b/gi, term: 'kind to the planet', ask: 'The planet has not been consulted. State the measured impact instead.' },
+  { re: /\bplanet[- ](positive|friendly)\b/gi, term: 'planet positive', ask: 'A net-positive claim needs extraordinary evidence. Where is it?' },
+  { re: /\bguilt[- ]free\b/gi, term: 'guilt-free', ask: 'Feelings are not a metric. State what the garment actually does.' },
+  { re: /\bearth[- ]friendly\b/gi, term: 'earth-friendly', ask: 'Friendly how? Pick an impact, state the change.' },
+];
+
+// Absolute claims fail on the first exception: regulators expect these struck
+// out unless every unit can be proven.
+export const ABSOLUTE_TERMS = [
+  { re: /\b100%\s*(sustainable|eco[- ]?friendly|green|recyclable|biodegradable|natural)\b/gi, term: 'the 100% absolute', ask: 'Absolute claims fail on the first exception. Strike it or prove every unit.' },
+  { re: /\bzero\s*(impact|waste|emissions?|carbon)\b/gi, term: 'zero', ask: 'Nothing made at scale is zero anything. Show the boundary or strike it.' },
+  { re: /\b(fully|completely|totally)\s+(sustainable|recyclable|biodegradable|circular)\b/gi, term: 'a totalising qualifier', ask: 'Fully, completely and totally are doing unpaid work here. Strike them.' },
+  { re: /\bclimate[- ]positive\b/gi, term: 'climate positive', ask: 'Beyond neutral is a bold accounting position. Publish the ledger or strike it.' },
+];
+
+// Terms that can be legitimate but demand a specific qualifier.
+export const QUALIFIER_TERMS = [
+  { re: /\brecyclable\b/gi, term: 'recyclable', demand: 'In which stream, in which country, and what share is actually recycled today?' },
+  { re: /\bbiodegradable\b/gi, term: 'biodegradable', demand: 'Under what conditions, and in how long? A landfill is not a compost heap.' },
+  { re: /\bcompostable\b/gi, term: 'compostable', demand: 'Home or industrial composting? Name the standard.' },
+  { re: /\brecycled\b/gi, term: 'recycled', demand: 'What percentage, of which component, certified by whom?' },
+  { re: /\bcarbon[- ]neutral\b/gi, term: 'carbon neutral', demand: 'Reduced or offset? Which scopes, whose offsets, what vintage?' },
+  { re: /\borganic\b/gi, term: 'organic', demand: 'Certified to which scheme, and what share of the fibre?' },
+  { re: /\brenewable\b/gi, term: 'renewable', demand: 'What share of energy, contracted how, over what period?' },
+  { re: /\bplastic[- ]free\b/gi, term: 'plastic-free', demand: 'Product, packaging or both? Polyester is plastic.' },
+  { re: /\bup to\b/gi, term: 'up to', demand: 'Up to includes zero. State the typical figure, not the ceiling.' },
+  { re: /\bplant[- ]based\b/gi, term: 'plant-based', demand: 'What share is plant-derived, and what carries the rest?' },
+  { re: /\bwe plant a tree\b/gi, term: 'tree planting', demand: 'Survival rate, land tenure, and is it additional to what would grow anyway?' },
+];
+
+// Signals that a claim actually carries evidence.
+export const EVIDENCE_PATTERNS = [
+  /\b\d+(\.\d+)?\s*(%|percent|kg|g|litres?|l\b|kwh|tonnes?)/i,
+  /\b(gots|grs|oeko[- ]?tex|fsc|bluesign|fair\s?trade|b corp|iso\s?14|climate active)\b/i,
+  /\b(audit(ed)?|verif(y|ied|ication)|certif(y|ied|ication)|third[- ]party|independent)/i,
+  /\b(report|published|publish|methodology|footprint)\b/i,
+  /\b(20\d\d)\b/,
+  /\bcompared (with|to)\b/i,
+  /\bscope\s?[123]\b/i,
+];
+
+// Specimen claims to try, from empty to sound.
+export const SPECIMEN_CLAIMS = [
+  'Made with 100% sustainable materials.',
+  'Our most eco-friendly collection yet.',
+  'Kind to the planet, kind to you.',
+  'Carbon neutral since 2022.',
+  'This tee is 60% recycled polyester, certified to GRS, and we publish the third-party audit.',
+  'Cut from organic cotton certified to GOTS, 41% less irrigation than our 2020 baseline.',
+];
+
+export const CLAIM_VERDICTS = {
+  sound: { id: 'sound', label: 'Reads as substantiated', line: 'Specific, evidenced and qualified. This is what a claim that survives scrutiny looks like.' },
+  vague: { id: 'vague', label: 'Vague', line: 'Not necessarily false, just empty. Every flagged word needs a number or a name behind it.' },
+  risk: { id: 'risk', label: 'High greenwashing risk', line: 'Overclaimed and unsubstantiated. In Australia this is the pattern the ACCC has been pursuing.' },
+};
+
+// The analysis. Pure function over a string; no brand data involved.
+export function analyseClaim(text) {
+  const t = (text || '').trim();
+  if (!t) return null;
+  const hit = (list, key) => list
+    .map((d) => { const m = t.match(d.re); return m ? { term: d.term, word: m[0], note: d[key] } : null; })
+    .filter(Boolean);
+  const vague = hit(VAGUE_TERMS, 'ask');
+  const absolute = hit(ABSOLUTE_TERMS, 'ask');
+  const qualifier = hit(QUALIFIER_TERMS, 'demand');
+  const evidence = EVIDENCE_PATTERNS.filter((re) => re.test(t)).length;
+  const flags = vague.length + absolute.length;
+  let verdict;
+  if (absolute.length > 0 || (flags >= 2 && evidence === 0)) verdict = CLAIM_VERDICTS.risk;
+  else if (flags > 0 && evidence === 0) verdict = CLAIM_VERDICTS.vague;
+  else if (flags > 0 && evidence > 0) verdict = qualifier.length && evidence < 2 ? CLAIM_VERDICTS.vague : CLAIM_VERDICTS.sound;
+  else verdict = evidence > 0 ? CLAIM_VERDICTS.sound : CLAIM_VERDICTS.vague;
+  return { vague, absolute, qualifier, evidence, verdict };
+}
 
 // ---------------------------------------------------------------------------
 // Editorial copy. Australian English, plain, active. No em dashes.
@@ -293,6 +435,14 @@ export const COPY = {
     recentLabel: 'Recently viewed',
   },
 
+  // At-a-glance stat band under the hero.
+  stats: [
+    { k: 'brands and companies', from: 'brands' },
+    { k: 'corporate groups own them', from: 'groups' },
+    { k: 'transparency scores verified', from: 'scored' },
+    { k: 'segments, from luxury to value', from: 'segments' },
+  ],
+
   lookup: {
     idx: '01',
     title: 'Brand lookup',
@@ -314,6 +464,10 @@ export const COPY = {
     shareLabel: 'Copy link',
     shareDone: 'Link copied',
     researchTag: 'Needs research',
+    digLabel: 'Dig deeper',
+    digHint: 'Openweave is a launchpad. Cross-check this brand against independent ratings and the primary sources.',
+    checklistLabel: 'Before you buy',
+    checklistHint: 'A quick, practical read for this brand, built from what is on file.',
   },
 
   compare: {
@@ -350,8 +504,32 @@ export const COPY = {
     groupAvgLabel: 'Mean FTI of scored brands',
   },
 
-  signals: {
+  spotlight: {
+    stat: 'Ten owners',
+    line: 'hold most of the brands on this page. The name on the label is rarely the company making the calls on climate, suppliers or wages. If you want the real numbers, read the parent.',
+    sub: 'Which is why Openweave shows you the owner first',
+  },
+
+  claim: {
     idx: '04',
+    title: 'Claim check',
+    sub: 'Paste a green claim, see what holds up',
+    lede: 'Marketing is where a brand chooses its words. Paste any sustainability claim and this checks it against the way regulators read it: flagging vague and absolute terms, and the qualifiers each one demands. It reads what you paste. It makes no judgement about any real brand.',
+    placeholder: 'Paste or type a marketing claim…',
+    run: 'Check it',
+    tryLabel: 'Or try one',
+    principlesLabel: 'The standard it applies',
+    principlesNote: 'The ACCC’s eight principles for environmental claims, the benchmark for Australian businesses.',
+    flaggedVague: 'Vague terms flagged',
+    flaggedAbsolute: 'Absolute terms flagged',
+    flaggedQualifier: 'Terms that need a qualifier',
+    evidenceLabel: 'Evidence signals found',
+    emptyResult: 'Type a claim above to check it.',
+    disclaimer: 'This is an educational aid, not legal advice. It reflects the direction of the ACCC guidance, and the EU, UK and US equivalents, not a specific ruling.',
+  },
+
+  signals: {
+    idx: '05',
     title: 'What the signals mean',
     sub: 'Disclosure is not the same as doing well',
     lede: 'Openweave measures what a brand tells the public, not whether the brand is good. Read these before you draw a conclusion.',
@@ -377,7 +555,7 @@ export const COPY = {
   },
 
   backlog: {
-    idx: '05',
+    idx: '06',
     title: 'Research backlog',
     sub: 'What still needs a human',
     lede: 'This tool is honest about its gaps. Structural facts, parent, segment, headquarters, are verified. Quantified disclosure fields are being filled in over time. Anything marked "Needs research" below is waiting for a checked source.',
@@ -401,6 +579,7 @@ export const COPY = {
     { label: 'Lookup', id: 'lookup' },
     { label: 'Compare', id: 'compare' },
     { label: 'Directory', id: 'directory' },
+    { label: 'Claim check', id: 'claim' },
     { label: 'Signals', id: 'signals' },
     { label: 'Backlog', id: 'backlog' },
   ],
