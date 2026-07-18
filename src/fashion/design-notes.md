@@ -1,65 +1,84 @@
-# Sevenfold — v2 design notes
+# Openweave — design notes
 
-Not built or bundled (plain `.md`). The record of what the rebuild took from
-each reference, the motion system, and how the brief's constraints are met.
+Not built or bundled (plain `.md`). The record of what the page is for, how it
+is built, and the honesty rules it holds to.
 
-## References — what I took (a mechanic, not a screenshot)
+## What this page is
 
-One extraction each: a layout structure, a motion curve, a cursor behaviour, a
-type treatment, or a colour logic. Studied for how they *work*, then rebuilt in
-this page's own material (textile, not their pixels).
+A practical fashion brand transparency lookup. You search a brand you actually
+recognise and get its real corporate parent, its market segment, its
+headquarters, and a plain reading of what it discloses. It is a useful daily
+tool first, an interesting exploration second.
 
-| Reference | What I took | Where it lives here |
-|---|---|---|
-| **mesh3d.gallery / the-state-of-the-gallery** (primary) | **Layout structure.** A "state of" report that treats data as the exhibition: one continuous scroll, each measure given its own room, the frame established then leaned off-centre. | The whole page is one continuous world; `.fs-sec-inner` never centres, it leans module by module. The Road (m3) is a pinned, full-bleed "room". |
-| **bilalgurkansanli.com / pro-mode** | **Motion curve.** A hard, confident *catch* on interaction — response is instant, then eases; no soft 300ms fade. | The `--grab` curve `cubic-bezier(0.18,0.9,0.12,1)`: cursor-ring press, chip `:active`, the cloth node snapping to the pointer. |
-| **wforwumbo.com** | **Cursor behaviour.** The cursor is a tool that names itself — it changes word and shape over each zone. | `CursorLayer`: a ring plus a word that reads `grab / stretch / pour / rub / scrub / weigh` from `data-cursor` on the zone under it. |
-| **tekatekistudios.com** | **Texture.** Surface is never flat digital white; a woven/paper grain sits under everything at low opacity. | Body ground is a woven calico (repeating thread gradients + faint dye-bleed); `.fs-tex` is a fixed feTurbulence paper grain at 5%. |
-| **meech213.com** | **Type treatment.** Oversized display set tight and cropped, mixed with an italic serif annotation voice. | Archivo 900 headlines at `clamp(...,10.5vw,8.6rem)` line-height 0.9; Instrument Serif italics for asides (`.fs-sub`, rig reads). |
-| **seve.app** | **Motion curve.** Weight coming to rest with a small overshoot, like a hung object settling. | The `--settle` curve and the CPU springs: the verdict beam, the travelling garment landing in each seat, swatch lift. |
-| **clothing-network.de** | **Layout structure.** An editorial grid built to be broken — content deliberately misaligned row to row. | Two named grid-breaks: the Lab (m2) head shoved right off its rig column; the Field (m5) plot bled to the right viewport edge. |
-| **permianworld.com** | **WebGL as the ground, not an ornament.** A live simulated surface you move through, reacting under the pointer. | `ClothField`: a real Verlet cloth (CPU sim, `ogl` draw) as the hero surface — grab it and the weave stretches with fold light and shadow. |
-| **appsignal.com** | **Colour logic + data type.** Restrained ground, one accent that only appears to mean something; monospace for every figure. | Calico ground, indigo used only for live/selected/strained states (never decoration); JetBrains Mono on every number, labelled once as indicative. |
+The page answers one job clearly: **"Before I buy from this brand, who owns it
+and what does it actually tell me?"**
 
-## Motion — three curves, three jobs
+## Structure, ordered by usefulness
 
-Nothing linear, nothing a stock 300ms ease. Different elements move at
-different rates. The CPU springs in `FashionApp` and `ClothField` are the
-physical extension of the same three intents.
+1. **Hero** — one-line reason to use it, and the search box as the primary
+   action. The fashion-coded visual is a small stack of swaying swing tags
+   (pure CSS), not a literal garment.
+2. **Brand lookup** — the core. Search resolves to a "care label" brand card:
+   parent company, segment, HQ, an FTI disclosure score where verified, and a
+   row of disclosure signals each labelled honestly.
+3. **Compare** — line up to three brands tag to tag.
+4. **The directory** — every tracked brand as a compact tag, filterable by
+   segment and Australian relevance, sortable by score / recognition / segment.
+5. **What the signals mean** — the load-bearing explainer: transparency is not
+   performance, the parent company matters, Scope 3 is where the weight sits.
+6. **Research backlog** — honest about the gaps, links to the editable CSV.
 
-- **grab** `cubic-bezier(0.18, 0.9, 0.12, 1)` — the instant of catching: quick
-  to respond, then eases off. Press, pick-up, node-snap.
-- **settle** `cubic-bezier(0.34, 1.56, 0.64, 1)` — coming to rest: a small
-  overshoot, like weight finding its hang. Landings, the verdict.
-- **travel** `cubic-bezier(0.22, 1, 0.36, 1)` — moving across distance or
-  revealing: long, unhurried, no bounce. Section reveals, the garment's transit.
+## Honesty rules
 
-## Modules a still frame can't capture
+- **No fictional brands.** Every company is real, grouped under its real parent
+  (Gucci → Kering, Uniqlo → Fast Retailing, The North Face/Vans/Timberland →
+  VF Corporation, and so on).
+- **No invented metrics.** The only quantified signal is the Fashion
+  Transparency Index 2023 score, and only where a specific published figure was
+  verified (Gucci 80, Kmart AU 76, Target AU 76, H&M 71, The North Face 66,
+  Timberland 66, Vans 65). Everything else reads "Needs research".
+- **We label, we do not rank.** Statuses are Disclosed / Partly disclosed /
+  Parent-level only / Not found / Needs research. No "good", "bad", "ethical" or
+  "sustainable" is attached to any brand.
+- **The tracker is real.** `public/data/fashion-brands.csv` is the editable
+  research document; `src/fashion/data.js` is what ships.
 
-- **Cloth (hero).** Grab the weave; it stretches with fold light/shadow and
-  indigo bleeds along the pull, then springs back. Ambient breeze ripples it.
-- **The Lab (m2).** Stretch frays and recovers by fabric; rub sheds visible
-  microfibres for polyester, barely for linen; pour absorbs or beads; bury
-  decays over scrubbed years. The animation *is* the data.
-- **Cut & make (m1).** The total is grabbable — drag it down and the model
-  solves backwards for which single decision would land it there.
-- **The Verdict (m7).** Factor tags fall onto a balance and it settles under
-  spring physics; you feel the ruling approaching before it lands.
+## Design language
 
-## Craft
+Editorial and premium, coded to fashion through the **garment care label** and
+the **swing tag**: monospaced data rows (JetBrains Mono), punched holes and
+string, hard ink borders with offset shadows, no rounded cards, no gradient
+blobs. Archivo for display, Instrument Serif for editorial asides. Palette is
+calico ground, vat indigo accent, madder for section indices.
 
-- 60fps target with particles: cloth sim is ~800 nodes / 3 constraint
-  iterations, strain buffers hoisted (no per-frame allocation); every canvas
-  and the cloth pause off-screen via `IntersectionObserver`.
-- `prefers-reduced-motion`: the cloth settles to a static drape (not blank);
-  loops stop; reveals become instant. A working static site, not a disabled one.
-- Keyboard: rail, chips, sliders and scrub targets are focusable with a visible
-  indigo focus ring (weld on dark sections).
-- Touch: stretch, rub, pour, scrub and cloth-grab are all pointer-events, so
-  they work the same on touch.
+## Interaction and access
 
-## Chrome bans honoured
+- Search is forgiving: partial, lowercase, alias and parent-company aware, with
+  keyboard-navigable autocomplete (arrow keys, enter, escape).
+- One source of truth: selecting a brand anywhere (hero, lookup, directory,
+  example chips) loads it into the lookup card and scrolls to it.
+- No canvas, no WebGL, no drag physics. The old spinning cloth hero and its
+  runaway rotation are gone. The only motion is the CSS swing-tag sway, which is
+  disabled under `prefers-reduced-motion`.
+- Skip link first, labelled inputs, `aria` roles on the combobox/listbox,
+  decorative visuals `aria-hidden`.
 
-No rounded cards, no soft drop shadows (hard letterpress ink offsets instead),
-no glassmorphism, no gradient blobs, no icon library, no emoji, no Tailwind
-greys (neutrals are tinted toward the textile hues), no purple.
+## Product depth
+
+- **Deep-linked state.** The selected brand and the compare set live in the URL
+  hash (`#brand=gucci&compare=zara,h-m`), so any lookup is shareable and the
+  back button works. A brand card has a copy-link button.
+- **Corporate group lens.** The parent name on every card is a link, and the
+  directory has a Groups view: LVMH, Kering, Inditex, VF and the rest shown as
+  cards listing the brands they own with each brand's score and a mean. This is
+  the "read the parent, not the brand" thesis made explorable.
+- **Sister brands.** A card lists the other labels under the same owner as
+  chips with their scores, so you can hop across a portfolio.
+- **Compare table.** Up to three brands aligned in one table, row by row
+  (parent, segment, HQ, FTI bar, then each disclosure signal).
+- **Directory tools.** Free-text filter, segment chips with live counts,
+  Australian and Scored-only toggles, four sort orders.
+- **Wayfinding and polish.** A fixed section rail tracks the active section;
+  `/` (or Cmd/Ctrl+K) focuses search from anywhere; recently viewed brands
+  persist in localStorage; sections reveal on scroll, disabled under
+  reduced motion.
