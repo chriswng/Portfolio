@@ -1,12 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import SplitText from '../components/SplitText';
-import { CATEGORIES, categoryById } from './data/factors';
-import { classifyCharacter, BADGE } from './data/characters';
-import { EmblemDots } from './story/CarbonField';
-import { BENCHMARKS, AUS_AVG, BUDGET_2030, BENCHMARK_CAVEAT } from './data/benchmarks';
+import { CATEGORIES } from './data/factors';
+import { BENCHMARK_CAVEAT } from './data/benchmarks';
 import { DASH, DASH_UI, fmtT } from './data/copy';
-import { DASH_EXTRA, CHARACTER_ST, fill } from './data/storyCopy';
+import { DASH_EXTRA, fill } from './data/storyCopy';
 import { CountUp } from './story/CountUp';
 import { TrendChart } from './charts';
 import Icon from './Icons';
@@ -23,9 +21,12 @@ const fadeUp = {
   transition: { duration: 0.4, ease: [0.25, 1, 0.5, 1] },
 };
 
+// The working detail below the reveal: the exact numbers, the year month by
+// month, and the split by category. The reveal above tells the story; this is
+// the spreadsheet behind it, so it deliberately does not re-tell the scopes,
+// the benchmarks or the result label.
 export default function Dashboard({ agg, period, compareAgg, comparePeriod, isExample }) {
   const [compareOn, setCompareOn] = useState(false);
-  const character = useMemo(() => classifyCharacter(agg), [agg]);
   const total = agg.total;
   const cats = CATEGORIES
     .map((c) => ({ ...c, t: agg.byCategory[c.id] || 0 }))
@@ -34,8 +35,6 @@ export default function Dashboard({ agg, period, compareAgg, comparePeriod, isEx
   const flightsDominate = ranked.length && ranked[0].id === 'flight' && ranked[0].t / (total || 1) > 0.4;
 
   const compare = compareOn && compareAgg ? compareAgg : null;
-  // With the overlay on, include categories only the other audit has, and
-  // share one scale so the two audits read honestly.
   const rows = compare
     ? [
       ...ranked,
@@ -52,11 +51,11 @@ export default function Dashboard({ agg, period, compareAgg, comparePeriod, isEx
   return (
     <section id="fp-dash">
       <div className="canvas">
-        <div className="sec-tag" data-idx="01 / "><Icon name="chart" size={16} />The audit · {period.label}</div>
-        <h2 className="display fp-h2"><SplitText text={DASH.title[0]} /> <SplitText text={DASH.title[1]} accentIndex={0} /></h2>
+        <div className="sec-tag" data-idx="01 / "><Icon name="chart" size={16} />The detail · {period.label}</div>
+        <h2 className="display fp-h2"><SplitText text={DASH.title[0]} /> <SplitText text={DASH.title[1]} accentIndex={1} /></h2>
         <p className="fp-sub">{DASH.sub}</p>
 
-        <motion.div className="fp-kpis" {...fadeUp}>
+        <motion.div className="fp-kpis fp-kpis-2" {...fadeUp}>
           <div className="fp-kpi live">
             <div className="fp-kpi-l">{period.label} {DASH.kpis.total}</div>
             <div className="fp-kpi-v"><CountUp value={total} decimals={1} duration={0.9} /><span> tCO₂-e</span></div>
@@ -65,47 +64,12 @@ export default function Dashboard({ agg, period, compareAgg, comparePeriod, isEx
             )}
           </div>
           <div className="fp-kpi">
-            <div className="fp-kpi-l">{DASH.kpis.aus}</div>
-            <div className="fp-kpi-v"><CountUp value={Math.round((total / AUS_AVG.tco2e) * 100)} decimals={0} duration={0.9} /><span>%</span></div>
-          </div>
-          <div className="fp-kpi">
-            <div className="fp-kpi-l">{DASH.kpis.budget}</div>
-            <div className="fp-kpi-v"><CountUp value={total / BUDGET_2030.tco2e} decimals={1} duration={0.9} /><span>×</span></div>
-          </div>
-          <div className="fp-kpi">
             <div className="fp-kpi-l">{DASH.kpis.largest}</div>
             <div className="fp-kpi-v">{agg.largest ? fmtT(agg.largest.tco2e) : '0'}<span> t</span></div>
             {agg.largest && <div className="fp-kpi-n">{agg.largest.label}</div>}
           </div>
         </motion.div>
-        {total > 0 && (
-        <motion.div className="fp-char-strip" {...fadeUp}>
-          <EmblemDots stencil={character.stencil} hex={character.hex} size={40} />
-          <span>
-            <strong>{DASH_EXTRA.characterLabel}: {character.name}.</strong> {character.tagline}
-          </span>
-          <span className="fp-char-axes">
-            {['weight', 'shape', 'rhythm'].map((k) => (
-              <em key={k}>{CHARACTER_ST.axes[k].levels[character.axes[k].level]}</em>
-            ))}
-            {character.badge && <em className="fp-char-cust">{BADGE.name}</em>}
-          </span>
-        </motion.div>
-        )}
         <p className="fp-caveat">{BENCHMARK_CAVEAT}</p>
-
-        <div className="fp-scopes">
-          {DASH.scopes.map((s, i) => {
-            const t = agg.byScope[s.n] || 0;
-            return (
-              <motion.div className="fp-scope" key={s.n} {...fadeUp} transition={{ ...fadeUp.transition, delay: i * 0.08 }}>
-                <div className="fp-scope-tag">{s.title}</div>
-                <div className="fp-scope-v">{fmtT(t, 2)}<span> t</span><em>{total > 0 ? ' · ' + Math.round((t / total) * 100) + '%' : ''}</em></div>
-                <div className="fp-scope-b">{s.body}</div>
-              </motion.div>
-            );
-          })}
-        </div>
 
         {/* An audit made entirely of evenly spread estimates has no month
             story: every bar would be the same twelfth. The chart only draws
@@ -125,8 +89,6 @@ export default function Dashboard({ agg, period, compareAgg, comparePeriod, isEx
                     <span className="fp-leg-item" key={c.id}><span className="fp-leg-dot" style={{ background: c.hex }} />{c.label}</span>
                   ))}
                 </div>
-                {/* A worst month is only worth flagging when it genuinely
-                    spikes. Same threshold the story uses. */}
                 {agg.worstMonth && agg.worstMonth.total > meanMonth * 1.35 && (
                   <div className="fp-worst">
                     <span className="fp-worst-tag">{DASH.worstLabel}</span>
@@ -196,15 +158,6 @@ export default function Dashboard({ agg, period, compareAgg, comparePeriod, isEx
             <p className="fp-callout fp-callout-card">{flightsDominate ? DASH.flightCallout : DASH.genericCallout}</p>
           )}
         </motion.div>
-
-        <details className="fp-bench-detail">
-          <summary>{DASH_UI.benchSummary}</summary>
-          <ul>
-            {BENCHMARKS.map((b) => (
-              <li key={b.id}><strong>{b.label}: {b.tco2e} t.</strong> {b.basis}</li>
-            ))}
-          </ul>
-        </details>
       </div>
     </section>
   );

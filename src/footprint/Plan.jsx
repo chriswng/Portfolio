@@ -5,13 +5,12 @@ import { BUDGET_2030 } from './data/benchmarks';
 import { PLAN, fmtT } from './data/copy';
 import { fill } from './data/storyCopy';
 import { prefersReducedMotion } from '../utils/media';
-import { MaccChart, PathwayChart } from './charts';
+import { PathwayChart } from './charts';
 import Icon from './Icons';
 
-const money = (v) => (v < 0 ? '-$' + Math.abs(v).toLocaleString() : '$' + v.toLocaleString());
+const EFFORT = { low: 'Easy', med: 'Moderate', high: 'Harder' };
 
-// A cut as a share of the audited year: whole percentages, with genuinely
-// small-but-real options shown as "<1" rather than a dismissive 0.
+// A cut as a share of the year: whole percentages, small-but-real shown as "<1".
 const pctOf = (reduction, baseline) => {
   if (!(baseline > 0) || !(reduction > 0)) return '0';
   const p = (reduction / baseline) * 100;
@@ -26,14 +25,13 @@ function OptionCard({ r, on, baseline, onToggle }) {
         <>
           <div className="fp-opt-pct display">-{pctOf(r.reduction, baseline)}<span>%</span></div>
           <div className="fp-opt-meta">
-            {fmtT(r.reduction, 2)} t/yr · {r.costPerTonne != null ? money(r.costPerTonne) + '/t' : 'n/a'} · net {money(r.cost)}/yr · {r.effort} effort
+            {fmtT(r.reduction, 2)} t {PLAN.reductionLabel} · {PLAN.effortLabel}: {EFFORT[r.effort] || 'Moderate'}
           </div>
         </>
       ) : (
-        <div className="fp-opt-meta na">{PLAN.na} · not applicable to this audit</div>
+        <div className="fp-opt-meta na">{PLAN.na}</div>
       )}
-      <div className="fp-opt-detail">{r.detail}</div>
-      <div className="fp-opt-src">{r.source}</div>
+      <div className="fp-opt-detail"><span className="fp-opt-why">{PLAN.whyLabel}. </span>{r.detail}</div>
       <button
         type="button"
         className={'fp-toggle fp-opt-toggle' + (on && r.applicable ? ' on' : '')}
@@ -56,15 +54,15 @@ export default function Plan({ macc, pathway, plan, onToggle }) {
   const at2030 = pathway.plan[y2030i];
   const bau2030 = pathway.bau[y2030i];
   const gap = at2030 - BUDGET_2030.tco2e;
-  // Denominator for each card's percentage: the audited year as modelled at
-  // year zero, the same baseline every reduction was computed against.
   const baseline = pathway.bau[0] || 0;
   const enabledCount = pathway.enabled.length;
   const cut2030 = bau2030 > 0 ? Math.max(0, Math.round((1 - at2030 / bau2030) * 100)) : 0;
 
-  // Applicable options lead the carousel; the greyed-out honesty cards sit
-  // at the end rather than interrupting the ones a visitor can act on.
-  const options = [...macc.filter((r) => r.applicable), ...macc.filter((r) => !r.applicable)];
+  // Biggest, doable options first; the not-relevant cards sit at the end.
+  const options = [
+    ...macc.filter((r) => r.applicable).sort((a, b) => b.reduction - a.reduction),
+    ...macc.filter((r) => !r.applicable),
+  ];
 
   const nudge = (dir) => {
     const el = trackRef.current;
@@ -77,12 +75,12 @@ export default function Plan({ macc, pathway, plan, onToggle }) {
   return (
     <section id="fp-plan">
       <div className="canvas">
-        <div className="sec-tag" data-idx="02 / "><Icon name="target" size={16} />The plan</div>
-        <h2 className="display fp-h2"><SplitText text={PLAN.title[0]} /> <SplitText text={PLAN.title[1]} accentIndex={0} /></h2>
+        <div className="sec-tag" data-idx="02 / "><Icon name="target" size={16} />Cut it down</div>
+        <h2 className="display fp-h2"><SplitText text={PLAN.title[0]} /> <SplitText text={PLAN.title[1]} accentIndex={1} /></h2>
         <p className="fp-sub">{PLAN.sub}</p>
 
-        {/* The planner: options as a carousel, the pathway underneath, and a
-            bottom-stuck impact readout so a toggle is never invisible. */}
+        {/* Options as a carousel with the chart alongside, so a choice changes
+            the chart in view. A bottom-stuck readout keeps the effect visible. */}
         <div className="fp-planner">
           <div className="fp-card fp-planner-cards">
             <div className="fp-card-head">{PLAN.tableTitle}</div>
@@ -96,7 +94,6 @@ export default function Plan({ macc, pathway, plan, onToggle }) {
               </ul>
               <button type="button" className="fp-car-btn next" aria-label={PLAN.next} onClick={() => nudge(1)}>›</button>
             </div>
-            <p className="fp-note">{PLAN.maccNote}</p>
           </div>
 
           <div className="fp-card fp-scenario">
@@ -113,16 +110,13 @@ export default function Plan({ macc, pathway, plan, onToggle }) {
               <span className="fp-leg-item"><span className="fp-leg-line dash" style={{ color: '#C7274A' }} />{PLAN.budgetLabel}</span>
             </div>
             <p className="fp-takeaway">
-              By FY{horizonYear} your plan lands at <em>{fmtT(landing)} t</em>, next to {fmtT(bauLanding)} t if nothing changes.
-              At 2030 it reads {fmtT(at2030)} t, {gap > 0
-                ? <>still <em>{fmtT(gap)} t over</em> the 2.5 t target. The distance is not a rounding error; it is a decision.</>
-                : <>which is <em>inside the 2.5 t target</em>. Publish the method and take the bow.</>}
+              By FY{horizonYear} your choices land you at <em>{fmtT(landing)} t</em>, next to {fmtT(bauLanding)} t if nothing changes.
+              At 2030 that reads {fmtT(at2030)} t, {gap > 0
+                ? <>still <em>{fmtT(gap)} t over</em> the 2.5 t benchmark.</>
+                : <>which is <em>inside the 2.5 t benchmark</em>.</>}
             </p>
           </div>
 
-          {/* Sticks to the bottom of the viewport while the planner is on
-              screen, so the effect of a toggle is visible from anywhere in
-              the carousel, on any screen size. */}
           <div className="fp-impact" role="status">
             <span className="fp-impact-l">{PLAN.impact.label}</span>
             {enabledCount === 0 ? (
@@ -139,12 +133,6 @@ export default function Plan({ macc, pathway, plan, onToggle }) {
               </span>
             )}
           </div>
-        </div>
-
-        <div className="fp-card">
-          <div className="fp-card-head">{PLAN.maccTitle}</div>
-          <div className="fp-card-sub">{PLAN.maccSub}</div>
-          <MaccChart rows={macc} />
         </div>
       </div>
     </section>

@@ -244,7 +244,7 @@ export const CHARACTERS = [
     id: 'season-ticket', name: 'The Season Ticket', hex: '#B56A00', stencil: S.turnstile,
     weight: 'middle', shape: 'specialist', rhythm: 'steady',
     tagline: 'The same seat, every single week.',
-    line: 'One wedge on subscription: the commute, the meter, the standing order. The total is built by attendance, never by events.',
+    line: 'One category on subscription: the commute, the meter, the standing order. The total is built by attendance, never by events.',
   },
   {
     id: 'festival-season', name: 'The Festival Season', hex: '#C7274A', stencil: S.flare,
@@ -268,7 +268,7 @@ export const CHARACTERS = [
     id: 'grind', name: 'The Grind', hex: '#B56A00', stencil: S.strata,
     weight: 'heavy', shape: 'specialist', rhythm: 'steady',
     tagline: 'One loop, enormous hours.',
-    line: 'A big total built the slow way: the same dominant wedge, week after week. Nothing ever spiked. It never needed to.',
+    line: 'A big total built the slow way: the same dominant category, week after week. Nothing ever spiked. It never needed to.',
   },
   {
     id: 'crossover-event', name: 'The Crossover Event', hex: '#C7274A', stencil: S.converge,
@@ -280,7 +280,7 @@ export const CHARACTERS = [
     id: 'completionist', name: 'The Completionist', hex: '#475569', stencil: S.grid,
     weight: 'heavy', shape: 'generalist', rhythm: 'steady',
     tagline: 'One hundred percent, in every category.',
-    line: 'Every wedge maxed, steadily, all year. The one achievement nobody should chase. A plan with one line will not do it.',
+    line: 'Every category maxed, steadily, all year. The one result nobody should chase. A single change will not undo it.',
   },
 ];
 
@@ -296,20 +296,20 @@ export const TEMPERAMENT_COLS = [
 // The dominant wedge flavours the reading: one line naming it, one hint
 // that is actually actionable for that wedge.
 export const WEDGE_FLAVOUR = {
-  flight: 'The wedge that decides it: the itineraries.',
-  road: 'The wedge that decides it: the kilometres.',
-  home: 'The wedge that decides it: the house.',
-  diet: 'The wedge that decides it: the table.',
-  freight: 'The wedge that decides it: the parcels.',
+  flight: 'The category that decides it: the flights.',
+  road: 'The category that decides it: the kilometres.',
+  home: 'The category that decides it: the home energy.',
+  diet: 'The category that decides it: the food.',
+  freight: 'The category that decides it: the parcels.',
   none: '',
 };
 export const WEDGE_HINT = {
-  flight: 'One fewer long-haul return moves more than everything else combined.',
-  road: 'Occupancy, mode shift, then an EV, in that order of effort.',
-  home: 'Electrify the lot, then put solar over the new load. A ladder, not paperwork.',
-  diet: 'Fewer of the expensive plates. Nobody is taking your dinner.',
-  freight: 'Sea shipping cuts the freight line by about ninety percent.',
-  none: 'The top two wedges still decide whether the plan works.',
+  flight: 'One fewer long-haul return does more than everything else combined.',
+  road: 'Share the ride, shift to transport, then an EV, in that order.',
+  home: 'Electrify the lot, then put solar over the new load.',
+  diet: 'A bit less of the heaviest meals. Nobody is taking your dinner.',
+  freight: 'Sea shipping cuts the freight roughly ninety percent.',
+  none: 'The biggest one or two categories decide most of the total.',
 };
 
 export const characterById = (id) => CHARACTERS.find((c) => c.id === id) || CHARACTERS[7];

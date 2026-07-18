@@ -2,22 +2,19 @@ import { useCallback, useMemo, useState } from 'react';
 import { MotionConfig } from 'framer-motion';
 import { Grain, ScrollProgress, SkipLink } from '../components/Chrome';
 import SplitText from '../components/SplitText';
-import { buildSeedProfile } from './data/seedProfile';
-import { INTRO, MODE, SHARE, LOG, TOASTS, YEARS, METHOD_LINK, fmtT } from './data/copy';
+import { buildSeedProfile, SEED_SETTINGS } from './data/seedProfile';
+import { INTRO, MODE, SHARE, DATA_CTRL, TOASTS, YEARS, METHOD_LINK, fmtT } from './data/copy';
 import { DASH_EXTRA, fill } from './data/storyCopy';
-import { categoryById, FACTOR_SET } from './data/factors';
-import { aggregate, priceEntry, projectPathway, maccData, newId, rolloverProfile } from './lib/engine';
+import { categoryById } from './data/factors';
+import { aggregate, projectPathway, maccData, rolloverProfile } from './lib/engine';
 import {
-  loadOwnProfile, saveOwnProfile, clearOwnProfile, exportProfile,
+  loadOwnProfile, saveOwnProfile, clearOwnProfile, exportProfile, parseImported,
   encodeSnapshot, decodeSnapshot, storySeen, markStorySeen,
 } from './lib/store';
-import { downloadAuditPack } from './lib/auditPack';
 import { prefersReducedMotion } from '../utils/media';
 import Story from './story/Story';
-import Skim from './Skim';
 import Dashboard from './Dashboard';
 import Plan from './Plan';
-import Log from './Log';
 import Onboarding from './Onboarding';
 import { FootprintNav, FootprintFooter } from './Nav';
 import Icon from './Icons';
@@ -39,13 +36,49 @@ function MethodLink() {
   return (
     <section id="fp-methodlink">
       <div className="canvas">
-        <div className="sec-tag" data-idx="04 / "><Icon name="book" size={16} />Basis of preparation</div>
+        <div className="sec-tag" data-idx="04 / "><Icon name="book" size={16} />How it works</div>
         <h2 className="display fp-h2"><SplitText text={METHOD_LINK.title[0]} /> <SplitText text={METHOD_LINK.title[1]} accentIndex={1} /></h2>
         <p className="fp-sub">{METHOD_LINK.body}</p>
         <div className="fp-ctrl-row">
           <a className="btn btn-primary fp-btn" href="method/">{METHOD_LINK.cta} →</a>
         </div>
-        <p className="fp-note">{fill(METHOD_LINK.factorLine, { id: FACTOR_SET.id, updated: FACTOR_SET.updated })}</p>
+        <p className="fp-note">{METHOD_LINK.factorLine}</p>
+      </div>
+    </section>
+  );
+}
+
+// A compact "your data" strip for someone viewing their own footprint: export
+// a backup, restore one, or delete it. No per-item log is ever shown; the raw
+// entries stay in the browser.
+function DataControls({ onExport, onImportFile, onReset, onShare }) {
+  const onFile = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try { onImportFile(parseImported(String(reader.result))); }
+      catch { window.alert(DATA_CTRL.importError); }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  };
+  return (
+    <section id="fp-data" aria-label={DATA_CTRL.title}>
+      <div className="canvas">
+        <div className="fp-data-card">
+          <div className="fp-card-head">{DATA_CTRL.title}</div>
+          <p className="fp-card-sub">{DATA_CTRL.body}</p>
+          <div className="fp-ctrl-row">
+            <button type="button" className="fp-linkbtn" onClick={onShare}>{DATA_CTRL.share}</button>
+            <button type="button" className="fp-linkbtn" onClick={onExport}>{DATA_CTRL.export}</button>
+            <label className="fp-linkbtn fp-import-label">
+              {DATA_CTRL.import}
+              <input type="file" accept="application/json,.json" onChange={onFile} className="sr-only" />
+            </label>
+            <button type="button" className="fp-linkbtn danger" onClick={onReset}>{DATA_CTRL.reset}</button>
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -120,29 +153,6 @@ export default function FootprintApp() {
     }
   };
 
-  const onAdd = (draft) => {
-    updateOwn((p) => ({ ...p, entries: [...p.entries, priceEntry({ ...draft, id: newId() }, p.settings)] }));
-    flash(TOASTS.entryAdded);
-  };
-  const onAddEntries = (entries) => {
-    if (!entries.length) { flash(TOASTS.nothingSelected); return; }
-    updateOwn((p) => ({ ...p, entries: [...p.entries, ...entries] }));
-    flash(fill(TOASTS.csvAdded, { n: entries.length, s: entries.length > 1 ? 's' : '' }));
-  };
-  const onDelete = (id) => updateOwn((p) => ({ ...p, entries: p.entries.filter((e) => e.id !== id) }));
-  // Edit a logged entry in place: merge the patch, re-price on the profile's
-  // current settings (so a corrected number flows straight into every chart),
-  // and keep the entry's id and position in the log.
-  const onUpdate = (id, patch) => {
-    updateOwn((p) => ({
-      ...p,
-      entries: p.entries.map((e) => (e.id === id
-        ? priceEntry({ ...e, ...patch, meta: { ...e.meta, ...(patch.meta || {}) }, id: e.id }, p.settings)
-        : e)),
-    }));
-    flash(TOASTS.entryUpdated);
-  };
-
   const onExport = () => { exportProfile(own); };
   const onImportFile = (imported) => {
     saveOwnProfile(imported);
@@ -151,13 +161,19 @@ export default function FootprintApp() {
     // The imported file may hold a different set of closed years than the
     // one on screen; never leave the view pointing at a stale index.
     setPastIdx(null);
+    flash(TOASTS.backupImported);
   };
+  // Sharing: ask whether to put a name on the shared page. A name makes the
+  // title "[Name]'s FY2026 carbon emissions"; blank makes it "My ...", because
+  // whoever opens the link is now looking at it as theirs to pass on.
   const onShare = async () => {
+    const name = (window.prompt(SHARE.namePrompt, isExample ? SEED_NAME : '') || '').trim();
     const cats = Object.entries(agg.byCategory)
       .sort((a, b) => b[1] - a[1]).slice(0, 4)
       .map(([id, t]) => [categoryById(id).label, Math.round(t * 100) / 100]);
     const url = encodeSnapshot({
       v: 1, label: profile.period.label,
+      name: name || undefined,
       total: Math.round(agg.total * 100) / 100,
       cats,
       plan: pathway.enabled.length,
@@ -171,13 +187,14 @@ export default function FootprintApp() {
     }
   };
   const onReset = () => {
-    if (!window.confirm(LOG.controls.resetConfirm)) return;
+    if (!window.confirm(DATA_CTRL.resetConfirm)) return;
     clearOwnProfile();
     setOwn(null);
     setMode('example');
     setPastIdx(null);
     flash(TOASTS.auditDeleted);
   };
+  const SEED_NAME = SEED_SETTINGS.name;
   const onStart = () => setOnboarding(true);
   const onRollover = () => {
     const next = rolloverProfile(own, todayIso());
@@ -186,7 +203,6 @@ export default function FootprintApp() {
     setPastIdx(null);
     flash(fill(YEARS.rolledToast, { label: own.period.label, next: next.period.label }));
   };
-  const onPack = () => downloadAuditPack(profile, agg);
   // The audit persists the moment it is built (the done pane says so), not
   // only when a closing button is pressed; Escape can no longer discard it.
   // Rebuilding on top of an existing audit keeps the closed years: starting
@@ -236,22 +252,8 @@ export default function FootprintApp() {
       el.focus({ preventScroll: true });
     }, 50);
   };
-  // The assessor's exit: straight from the story cover to the 45-second
-  // lane. Focus moves with the scroll so a keyboard user's next Tab
-  // continues from the lane instead of the top of the page.
-  const onAssessor = () => {
-    markStorySeen();
-    setStoryOpen(false);
-    window.setTimeout(() => {
-      const el = document.getElementById('fp-skim');
-      if (!el) return;
-      el.scrollIntoView({ behavior: 'auto' });
-      el.setAttribute('tabindex', '-1');
-      el.focus({ preventScroll: true });
-    }, 50);
-  };
-  // "Explore the full audit" from the outro: the show ends, the house lights
-  // come up on the dashboard itself.
+  // "See the detail below" from the outro: the reveal ends, the page lands on
+  // the working detail.
   const onStoryFinish = () => {
     markStorySeen();
     setStoryOpen(false);
@@ -286,7 +288,6 @@ export default function FootprintApp() {
           voice={voice}
           onStart={onStart}
           onSkip={onStorySkip}
-          onAssessor={onAssessor}
           onEnd={onStoryEnd}
           onFinish={onStoryFinish}
           onPlan={onStoryPlan}
@@ -301,7 +302,7 @@ export default function FootprintApp() {
           <section className="fp-snapshot" aria-label="Shared snapshot">
             <div className="canvas">
               <div className="fp-snap-card">
-                <div className="fp-card-head">{SHARE.bannerTitle}</div>
+                <div className="fp-card-head">{fill(SHARE.bannerTitle, { who: snapshot.name ? snapshot.name + '’s' : 'My', label: snapshot.label })}</div>
                 <p className="fp-card-sub">{SHARE.bannerBody}</p>
                 <div className="fp-snap-kpis">
                   <div className="fp-kpi live"><div className="fp-kpi-l">{snapshot.label} total</div><div className="fp-kpi-v">{fmtT(snapshot.total)}<span> t</span></div></div>
@@ -402,16 +403,11 @@ export default function FootprintApp() {
           </div>
         )}
 
-        {isExample && <Skim agg={agg} macc={macc} />}
-
         <Dashboard agg={agg} period={profile.period} compareAgg={compareAgg} comparePeriod={comparePeriod} isExample={isExample} />
         {!archived && <Plan macc={macc} pathway={pathway} plan={profile.plan} onToggle={onToggle} />}
-        <Log
-          profile={profile} isExample={isExample} archived={archived}
-          onAdd={onAdd} onAddEntries={onAddEntries} onDelete={onDelete} onUpdate={onUpdate}
-          onExport={onExport} onImportFile={onImportFile} onShare={onShare} onReset={onReset} onStart={onStart}
-          onPack={onPack}
-        />
+        {!isExample && !archived && (
+          <DataControls onExport={onExport} onImportFile={onImportFile} onReset={onReset} onShare={onShare} />
+        )}
         <MethodLink />
       </main>
 

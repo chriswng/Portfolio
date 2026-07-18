@@ -5,7 +5,7 @@ import { BENCHMARKS } from '../data/benchmarks';
 import { CHROME, CHAPTERS, CATEGORY_QUIPS, BENCH_ST } from '../data/storyCopy';
 import { classifyCharacter } from '../data/characters';
 import {
-  Cover, YearTicker, Guess, TotalReveal, Scopes, Hotspots, WorstMonth, Bench, Needle, Outro,
+  Cover, YearTicker, ReferencePoints, TotalReveal, Scopes, Hotspots, WorstMonth, Bench, Needle, Outro,
 } from './moments';
 import CharacterMoment from './CharacterMoment';
 
@@ -59,10 +59,10 @@ function buildStoryData(profile, agg, macc, voice) {
     : null;
 
   const bench = [
-    { label: BENCH_ST.rows.you[voice], t: agg.total, you: true },
-    { label: BENCH_ST.rows.aus, t: BENCHMARKS.find((b) => b.id === 'aus').tco2e },
-    { label: BENCH_ST.rows.global, t: BENCHMARKS.find((b) => b.id === 'global').tco2e },
-    { label: BENCH_ST.rows.budget, t: BENCHMARKS.find((b) => b.id === 'budget2030').tco2e },
+    { id: 'you', label: BENCH_ST.rows.you[voice], t: agg.total, you: true },
+    { id: 'aus', label: BENCH_ST.rows.aus, t: BENCHMARKS.find((b) => b.id === 'aus').tco2e },
+    { id: 'global', label: BENCH_ST.rows.global, t: BENCHMARKS.find((b) => b.id === 'global').tco2e },
+    { id: 'budget', label: BENCH_ST.rows.budget, t: BENCHMARKS.find((b) => b.id === 'budget2030').tco2e },
   ];
 
   // Personal overshoot day: at this year's pace, the date the 2.5 t budget
@@ -78,6 +78,7 @@ function buildStoryData(profile, agg, macc, voice) {
     overshoot = { within: true };
   }
 
+  const effortLabel = { low: 'Easy', med: 'Moderate', high: 'Harder' };
   const needle = macc
     .filter((r) => r.applicable && r.reduction > 0.05)
     .sort((a, b) => b.reduction - a.reduction)
@@ -85,6 +86,7 @@ function buildStoryData(profile, agg, macc, voice) {
     .map((r) => ({
       ...r,
       hex: categoryById(r.category).hex,
+      effortLabel: effortLabel[r.effort] || 'Moderate',
       // Lead figure: the cut as a share of this year, capped so rounding can
       // never claim more than the whole.
       pct: agg.total > 0 ? Math.min(100, Math.round((r.reduction / agg.total) * 100)) : 0,
@@ -156,11 +158,10 @@ function NextChapter({ active, chapters }) {
 // Act I: the reveal. A continuous scroll of full-screen moments above the
 // working dashboard. Purely presentational: it reads the same aggregates the
 // dashboard reads and never touches the store.
-export default function Story({ profile, agg, macc, voice, onStart, onSkip, onAssessor, onEnd, onFinish, onPlan, onCopyLink }) {
+export default function Story({ profile, agg, macc, voice, onStart, onSkip, onEnd, onFinish, onPlan, onCopyLink }) {
   const reduced = useMemo(() => prefersReducedMotion(), []);
   const d = useMemo(() => buildStoryData(profile, agg, macc, voice), [profile, agg, macc, voice]);
   const character = useMemo(() => classifyCharacter(agg), [agg]);
-  const [guess, setGuess] = useState({ value: null, locked: false });
   const [active, setActive] = useState('st-cover');
   const [chromeOn, setChromeOn] = useState(true);
   const rootRef = useRef(null);
@@ -168,14 +169,11 @@ export default function Story({ profile, agg, macc, voice, onStart, onSkip, onAs
 
   // Chapters whose moments actually render for this audit.
   const chapters = useMemo(() => CHAPTERS.filter((c) => {
-    // Someone who just answered the survey watched their total build as they
-    // typed; asking them to guess it afterwards is a joke at their expense.
-    if (c.id === 'st-guess') return voice === 'example';
     if (c.id === 'st-months') return !!d.worst;
     if (c.id === 'st-needle') return d.needle.length > 0;
     if (c.id === 'st-hotspots') return d.ranked.length > 0;
     return true;
-  }), [d, voice]);
+  }), [d]);
 
   // Track the active chapter for the rail. Re-registered whenever the
   // chapter set changes, so moments that appear or vanish after a log edit
@@ -213,12 +211,7 @@ export default function Story({ profile, agg, macc, voice, onStart, onSkip, onAs
     return () => obs.disconnect();
   }, []);
 
-  const onGuessAgain = () => {
-    setGuess((g) => ({ ...g, locked: false }));
-    goToMoment('st-guess');
-  };
   const onReplay = () => {
-    setGuess({ value: null, locked: false });
     window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
   };
   const onExplore = () => { onFinish(); };
@@ -236,17 +229,17 @@ export default function Story({ profile, agg, macc, voice, onStart, onSkip, onAs
       {chromeOn && <ChapterRail active={active} chapters={chapters} />}
       {chromeOn && <NextChapter active={active} chapters={chapters} />}
 
-      <Cover d={d} voice={voice} onStart={onStart} onAssessor={onAssessor} reduced={reduced} chapterCount={chapters.length} />
+      <Cover d={d} voice={voice} onStart={onStart} reduced={reduced} chapterCount={chapters.length} />
       <YearTicker d={d} voice={voice} reduced={reduced} />
-      {voice === 'example' && <Guess d={d} voice={voice} guess={guess} setGuess={setGuess} goTo={goToMoment} />}
-      <TotalReveal d={d} voice={voice} guess={guess} onGuessAgain={onGuessAgain} onCopyLink={onCopyLink} reduced={reduced} />
+      <ReferencePoints d={d} voice={voice} goTo={goToMoment} />
+      <TotalReveal d={d} voice={voice} onCopyLink={onCopyLink} reduced={reduced} />
       <Scopes d={d} voice={voice} />
       <Hotspots d={d} voice={voice} reduced={reduced} />
       <WorstMonth d={d} voice={voice} />
       <Bench d={d} voice={voice} />
       <CharacterMoment d={d} voice={voice} character={character} />
       <Needle d={d} voice={voice} onPlan={onPlan} />
-      <Outro voice={voice} onStart={onStart} onExplore={onExplore} onReplay={onReplay} endRef={endRef} />
+      <Outro d={d} voice={voice} character={character} onStart={onStart} onExplore={onExplore} onReplay={onReplay} onCopyLink={onCopyLink} endRef={endRef} />
     </div>
   );
 }
