@@ -9,10 +9,9 @@ export const META = {
 export const INTRO = {
   tag: 'Life Footprint Dashboard',
   h1a: 'Scope 1, 2 and 3',
-  h1b: 'of me.',
+  h1b: 'of me',
   paras: [
-    'I spend my working week building GHG inventories and decarbonisation pathways for large organisations. This page points the same discipline at my own life. Every flight, every bill, every parcel and every dinner: logged, dated and priced in carbon, on published factors, with a written basis of preparation and the awkward numbers left in.',
-    'It is also a tool, not a confession booth. Run your own audit below. You get the same hotspot analysis, abatement cost curve and pathway model I build for organisations, sized for one human, and your data never leaves this browser.',
+    'I build GHG inventories and decarbonisation pathways for large organisations. This page points the same discipline at my own life, and it is a tool, not a confession booth: run your own audit and you get the same hotspot analysis, abatement cost curve and pathway model, sized for one human, with your data never leaving this browser.',
   ],
   chips: ['No account', 'No server', 'Data stays in your browser', 'Export any time'],
   ctaStart: 'Start your own audit',
@@ -38,7 +37,7 @@ export const MODE = {
 // everything else; only the words live here.
 export const SKIM = {
   tag: '00 / The short version',
-  title: ['Forty-five seconds,', 'if that is all I get.'],
+  title: ['Forty-five seconds,', 'if that is all I get'],
   lede: 'Here to assess the work rather than run an audit? This row is the tour: what got measured, how the engine works, what the fixes cost, and where the method lives. Everything links deeper.',
   cards: [
     {
@@ -51,11 +50,11 @@ export const SKIM = {
     },
     {
       id: 'plan', label: 'The plan', href: '#fp-plan', cta: 'See the curve',
-      line: 'A personal marginal abatement cost curve: each action priced against the audited year, not a national average. Offsets deliberately absent.',
+      line: 'A personal marginal abatement cost curve: each action priced against the audited year, not a national average. Offsets and green power products deliberately absent.',
     },
     {
-      id: 'method', label: 'The method', href: '#fp-method', cta: 'Read the basis',
-      line: 'A written basis of preparation with the exclusions named and the uncertainty stated, the way an assurer would want it.',
+      id: 'method', label: 'The method', href: 'method/', cta: 'Read the basis',
+      line: 'A written basis of preparation with the exclusions named and the uncertainty stated, the way an assurer would want it. On its own page, next to the live factor tables.',
     },
   ],
   numberUnit: 'tCO₂-e',
@@ -72,7 +71,7 @@ export const SKIM = {
 
 // Year rollover and the multi-year record.
 export const YEARS = {
-  rollTitle: '{label} has ended.',
+  rollTitle: '{label} has ended',
   rollBody: 'The reporting period closed on {end}. Close the year and it archives exactly as it stands, factors pinned; the new year opens empty against the factor set in force, with your diet carried over as a forecast.',
   rollCta: 'Close {label} and open the new year',
   rolledToast: '{label} closed and archived. Welcome to {next}.',
@@ -103,8 +102,8 @@ export const PACK = {
 
 export const DASH = {
   tag: '01 / The audit',
-  title: ['One year,', 'honestly counted.'],
-  sub: 'The reporting period is the Australian financial year. Bills spread across the months they cover, flights land in the month they happened, and every line in the log carries its factor and source. Method in the basis of preparation below.',
+  title: ['One year,', 'honestly counted'],
+  sub: 'The reporting period is the Australian financial year. Bills spread across the months they cover, dated entries land in the month they happened, and guided-audit estimates spread evenly across the year until real bills and itineraries replace them. Every line in the log carries its factor and source; the method lives on the basis of preparation page.',
   kpis: {
     total: 'total',
     range: '{low} to {high} t at the stated quality bands',
@@ -118,42 +117,47 @@ export const DASH = {
     { n: '3', title: 'Scope 3 of me', body: 'Everything I cause but do not combust: flights, trains, rideshare, freight, food, and the fuel supply chains. As in every inventory I have built, this is where the tonnes hide.' },
   ],
   trendTitle: 'The year, month by month',
-  trendSub: 'tCO₂-e per month, stacked by category. Bills are spread across the months they cover; point events land where they happened.',
+  trendSub: 'tCO₂-e per month, stacked by category. Bills are spread across the months they cover; dated point events land where they happened; undated estimates spread evenly.',
   worstLabel: 'worst month',
   catTitle: 'Where the year went',
-  catSub: 'Annual tCO₂-e by category, share of total.',
-};
-
-export const HOTSPOTS = {
-  tag: '02 / Hotspots',
-  title: ['Where the tonnes', 'actually are.'],
-  sub: 'Categories ranked by annual tCO₂-e. The top two decide whether any plan works; the rest is housekeeping. My rule for clients holds for me: chase the big wedges, not the guilt.',
+  catSub: 'Annual tCO₂-e by category, share of total. The top two wedges decide whether any plan works; the rest is housekeeping.',
   flightCallout: 'No car, a frugal flat, trains everywhere. And none of it matters next to the flying: the itineraries are the footprint, and the plan below has to start there or it is theatre.',
   genericCallout: 'The top categories above are the plan. Everything else is housekeeping.',
 };
 
 export const PLAN = {
-  tag: '03 / The plan',
-  title: ['Reduction,', 'not offsets.'],
-  sub: 'This is the part most footprint apps skip. Each action is priced against my audited numbers, not a national average: an estimated annual reduction, a rough net cost or saving, an effort rating, and a stated basis. Offsets are deliberately absent; they belong on the residual, not on the plan.',
+  tag: '02 / The plan',
+  title: ['The decarbonisation', 'plan'],
+  sub: 'This is the part most footprint apps skip. Each action is priced against the audited numbers above, not a national average: an estimated annual reduction, a rough net cost or saving, an effort rating, and a stated basis. Offsets and green power products are deliberately absent: market instruments move the paperwork, not the physics, so nothing here earns a bar unless it removes real activity or real fuel.',
   maccTitle: 'A personal marginal abatement cost curve',
   maccSub: 'Dollars per tonne against tonnes abated per year. Bar width is the annual reduction; bars below the line pay you. Each bar is the action alone at current factors; the pathway resolves overlaps.',
-  maccNote: 'Options greyed out in the table are not applicable to this audit: no car means no EV bar, and a rented apartment makes solar and appliance swaps landlord problems. The method says so rather than pretending.',
+  maccNote: 'Options greyed out among the cards are not applicable to this audit: no car means no EV bar, and a rented apartment makes solar and appliance swaps landlord problems. The method says so rather than pretending.',
   scenarioTitle: 'The pathway',
-  scenarioSub: 'Toggle actions and watch the pathway rebuild. Grid decarbonisation runs in the background on published projections, actions phase in by effort, and interactions resolve in sequence so shared kilowatt hours are never counted twice.',
+  scenarioSub: 'Grid decarbonisation runs in the background on published projections, actions phase in by effort, and interactions resolve in sequence so shared kilowatt hours are never counted twice.',
   budgetLabel: '1.5°C lifestyle budget · 2.5 t by 2030',
   bauLabel: 'Frozen habits (audited year repeats)',
   planLabel: 'With the plan',
-  tableTitle: 'The abatement library, with its homework',
-  tableSub: 'Every reduction estimate and cost basis, stated. Effort is honest: low is a phone call, high is a changed life.',
+  tableTitle: 'Build the plan',
+  tableSub: 'Toggle an action and the impact readout and pathway rebuild in place. Every card states its reduction, cost basis and effort; effort is honest: low is a phone call, high is a changed life.',
   toggleOn: 'In the plan',
-  toggleOff: 'Off',
+  toggleOff: 'Add to plan',
   na: 'N/A here',
+  ofYear: 'of the audited year',
+  carouselLabel: 'Abatement options',
+  prev: 'Previous options',
+  next: 'More options',
+  impact: {
+    label: 'Your plan so far',
+    none: 'Nothing enabled yet. Add an action and watch this line move.',
+    line: '{n} action{s} on · {at2030} t at 2030 against {bau2030} t with frozen habits · down {pct}%',
+    over: '{gap} t over the 2.5 t budget',
+    within: 'inside the 2.5 t budget',
+  },
 };
 
 export const LOG = {
-  tag: '04 / The log',
-  title: ['Every entry,', 'dated and priced.'],
+  tag: '03 / The log',
+  title: ['Every entry,', 'dated and priced'],
   sub: 'The activity log behind every chart above. Each entry stores its activity data, unit, factor, source and scope at the time it was logged. Estimates and forecasts say so in their notes.',
   addTitle: 'Add an entry',
   importTitle: 'Import a year from your bank CSV',
@@ -265,9 +269,10 @@ export const ENERGY_PRESETS = [
 ];
 
 export const METHOD = {
-  tag: '05 / Basis of preparation',
-  title: ['The method,', 'in writing.'],
-  sub: 'Every number above traces to this section. It is written the way I would write it for an external assurer, because a footprint without a basis of preparation is a vibe.',
+  tag: 'Life Footprint / Basis of preparation',
+  title: ['The method,', 'in writing'],
+  sub: 'Every number on the Life Footprint page traces to this one. It is written the way I would write it for an external assurer, because a footprint without a basis of preparation is a vibe.',
+  backToDash: 'Back to the dashboard',
   boundary: {
     title: 'Boundary',
     paras: [
@@ -295,6 +300,7 @@ export const METHOD = {
     title: 'Sensitivity: radiative forcing',
     para: 'Flights are priced with radiative forcing at the published 1.7 multiplier, which counts the non-CO₂ warming effects of burning fuel at altitude. Reasonable inventories disagree on this. Without it, the flights line would read {flights} t and the year {total} t. The with-RF basis is deliberate: leaving warming out because it is not carbon dioxide is a lawyer’s answer, not an accountant’s.',
   },
+  sensitivityBasis: 'Computed live from {label}, the audit on the dashboard.',
   factorsTitle: 'Emission factors in force',
   factorsSub: 'The tables below are the live factor set the calculator prices from, not a copy of it.',
   marketBased: {
@@ -313,7 +319,8 @@ export const METHOD = {
   plan: {
     title: 'How the plan is modelled',
     paras: [
-      'Each abatement option is a function applied to my audited activity, so reductions are personal, not generic. The cost curve shows each option standalone at current factors. The pathway applies enabled options in a declared order (behaviour first, then electrification, then supply measures) so interactions resolve instead of double counting: an EV adds charging load before solar and GreenPower act on whatever load remains. Options phase in by effort. Grid decarbonisation runs in the background in both the frozen-habits line and the plan, on a stylised trajectory from published projections, because the grid improving is not my virtue.',
+      'Each abatement option is a function applied to my audited activity, so reductions are personal, not generic. The cost curve shows each option standalone at current factors. The pathway applies enabled options in a declared order (behaviour first, then electrification, then supply measures) so interactions resolve instead of double counting: an EV adds charging load before rooftop solar acts on whatever load remains. Options phase in by effort. Grid decarbonisation runs in the background in both the frozen-habits line and the plan, on a stylised trajectory from published projections, because the grid improving is not my virtue.',
+      'The plan carries only physical reductions. Offsets and green power products are excluded as abatement by construction: they are market instruments that retire certificates rather than remove activity, so they belong in market-based reporting (stated above), never on the cost curve. Audited GreenPower purchases still price the scope 2 line, because reporting what was bought is accounting, not abatement.',
       'The budget line is the published 1.5°C lifestyle target of 2.5 tCO₂-e per person by 2030 (1.4 by 2040, 0.7 by 2050). The gap between my pathway and that line is not a modelling problem.',
     ],
   },
@@ -347,27 +354,13 @@ export const METHOD = {
   },
 };
 
-export const MARKET = {
-  tag: '06 / Why this exists',
-  title: ['The gap in', 'the app store.'],
-  paras: [
-    'Before building this I surveyed the consumer footprint-app market properly (the research notes live in the repository). The dominant pattern is a five-question quiz, a country-average number, gamified tips, and an offset subscription as the monetisable action. The market is consolidating around that model rather than deepening it: Wren absorbed Klima in May 2025, and the one government-grade Australian consumer calculator (EPA Victoria’s) has been retired.',
-    'The sharper finding: transparency and tracking never co-occur. Every tool that publishes a serious methodology (WWF, UNFCCC and Doconomy, UC Berkeley’s CoolClimate, Carbon Neutral here in Australia) is a one-off quiz. Every tool that tracks real behaviour does it through opaque spend proxies. And nothing consumer-facing anywhere offers a marginal abatement cost view: the nearest neighbours are half of CoolClimate’s ranking engine and a US$149 Excel add-in for professionals.',
-  ],
-  tableHead: ['Tool', 'Method published', 'Tracks your activity', 'Australian factors', 'Plan, or offsets?'],
-  rows: [
-    ['Wren (absorbed Klima, 2025)', 'Partly (licensed model)', 'No, quiz', 'No', 'Offset subscription'],
-    ['Commons (ex Joro)', 'Blog-level', 'Spend proxy via bank cards', 'No', 'Nudges and cashback'],
-    ['Earth Hero', 'Partial, in-app sources', 'Survey refresh', 'No', 'Tips library'],
-    ['CoolClimate (UC Berkeley)', 'Peer-reviewed, factors licensed', 'No, detailed quiz', 'No (US)', 'Ranks tonnes and dollars separately'],
-    ['WWF UK calculator', 'Full methodology PDF', 'No, quiz', 'No (UK)', 'Generic tips'],
-    ['One Small Step (AU)', 'Blog-level, licensed model', 'Habit programmes, self-report', 'AU-localised, not NGA', 'Roadmap to 2 t, no $/t'],
-    ['Carbon Neutral (AU)', 'Methodology PDF on NGA', 'No, quiz', 'NGA national average', 'Ends at offsets'],
-    ['ClimateClever (AU)', 'Partial', 'Yes, bills (schools-first)', 'AU government factors', 'Action plans, org-shaped'],
-    ['CommBank Cogo tracker', 'No', 'Spend proxy', 'AU spend intensities', 'In-app offsets'],
-    ['This page', 'Full basis of preparation, factors inline', 'Yes: bills, itineraries, bank CSV', 'NGA 2025, state-resolved', 'Personal MACC and pathway, no offsets'],
-  ],
-  verdict: 'The whitespace this page sits in: a published NGA-based basis of preparation, ongoing tracking of a person’s own activity data, and an abatement plan priced in dollars per tonne, together. Nothing else in the market combines the three. That is not a boast about the code; it is an indictment of a category that found offsets easier to sell than method.',
+// Compact pointer to the basis of preparation, which lives on its own page.
+export const METHOD_LINK = {
+  tag: '04 / Basis of preparation',
+  title: ['The method,', 'in writing'],
+  body: 'Every number above traces to a written basis of preparation: the boundary, the factor tables in force, the uncertainty bands, and the exclusions named. It lives on its own page, rendered from the same live factor set the calculator prices from, so the words can never drift from the maths.',
+  cta: 'Read the basis of preparation',
+  factorLine: 'Factor set {id} · updated {updated}',
 };
 
 // Transient UI feedback, previously inline in components.
@@ -399,7 +392,6 @@ export const FOOTER = {
 // Dashboard furniture previously inline in the component.
 export const DASH_UI = {
   worstSuffix: '% of the year in one month',
-  hotPct: '% of the year',
   benchSummary: 'How the benchmarks are set',
 };
 

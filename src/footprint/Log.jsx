@@ -281,7 +281,7 @@ export default function Log({ profile, isExample, archived, onAdd, onAddEntries,
   return (
     <section id="fp-log">
       <div className="canvas">
-        <div className="sec-tag" data-idx="04 / ">The log</div>
+        <div className="sec-tag" data-idx="03 / ">The log</div>
         <h2 className="display fp-h2"><SplitText text={LOG.title[0]} /> <SplitText text={LOG.title[1]} accentIndex={1} /></h2>
         <p className="fp-sub">{LOG.sub}</p>
 

@@ -82,7 +82,13 @@ function buildStoryData(profile, agg, macc, voice) {
     .filter((r) => r.applicable && r.reduction > 0.05)
     .sort((a, b) => b.reduction - a.reduction)
     .slice(0, 3)
-    .map((r) => ({ ...r, hex: categoryById(r.category).hex }));
+    .map((r) => ({
+      ...r,
+      hex: categoryById(r.category).hex,
+      // Lead figure: the cut as a share of this year, capped so rounding can
+      // never claim more than the whole.
+      pct: agg.total > 0 ? Math.min(100, Math.round((r.reduction / agg.total) * 100)) : 0,
+    }));
 
   return {
     fy: profile.period.label,
@@ -150,7 +156,7 @@ function NextChapter({ active, chapters }) {
 // Act I: the reveal. A continuous scroll of full-screen moments above the
 // working dashboard. Purely presentational: it reads the same aggregates the
 // dashboard reads and never touches the store.
-export default function Story({ profile, agg, macc, voice, onStart, onSkip, onAssessor, onEnd, onFinish, onCopyLink, soundOn, onToggleSound, onAutoMute }) {
+export default function Story({ profile, agg, macc, voice, onStart, onSkip, onAssessor, onEnd, onFinish, onPlan, onCopyLink, soundOn, onToggleSound, onAutoMute }) {
   const reduced = useMemo(() => prefersReducedMotion(), []);
   const d = useMemo(() => buildStoryData(profile, agg, macc, voice), [profile, agg, macc, voice]);
   const character = useMemo(() => classifyCharacter(agg), [agg]);
@@ -253,8 +259,8 @@ export default function Story({ profile, agg, macc, voice, onStart, onSkip, onAs
       <WorstMonth d={d} voice={voice} />
       <Bench d={d} voice={voice} />
       <CharacterMoment d={d} voice={voice} character={character} />
-      <Needle d={d} voice={voice} />
-      <Outro d={d} voice={voice} onStart={onStart} onExplore={onExplore} onReplay={onReplay} endRef={endRef} />
+      <Needle d={d} voice={voice} onPlan={onPlan} />
+      <Outro voice={voice} onStart={onStart} onExplore={onExplore} onReplay={onReplay} endRef={endRef} />
     </div>
   );
 }

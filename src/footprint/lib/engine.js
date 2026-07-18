@@ -389,8 +389,10 @@ function phase(effort, yearsIn) {
 // ---------------------------------------------------------------------------
 // Pathway projection. Applies enabled actions in APPLY_ORDER (behaviour, then
 // electrification, then supply measures) so interactions resolve rather than
-// double count: an EV's charging load exists before solar and GreenPower act
-// on it. Grid decarbonisation runs in the background in both BAU and plan.
+// double count: an EV's charging load exists before rooftop solar acts on
+// it. Grid decarbonisation runs in the background in both BAU and plan.
+// st.greenpowerPct is the audited purchase from settings (market-based
+// accounting of what is actually bought), not an abatement option.
 // ---------------------------------------------------------------------------
 export function projectPathway(profile, agg, horizonYears = 10) {
   const base = baselineState(profile, agg);

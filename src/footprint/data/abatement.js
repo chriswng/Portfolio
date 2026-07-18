@@ -8,16 +8,22 @@
 // solar and appliance swaps greyed out as landlord problems, and someone
 // without a car never sees an EV bar.
 //
+// Physical reductions only. Offsets and green power products are excluded
+// as abatement by construction: market instruments retire certificates
+// rather than remove activity, so they belong in market-based reporting
+// (an audited GreenPower purchase still prices the scope 2 line), never on
+// the cost curve.
+//
 // APPLY_ORDER resolves interactions in the pathway model: behaviour changes
 // first, then electrification (which adds load), then supply-side measures
-// (solar, GreenPower) act on whatever load is left. The MACC bars are each
+// (rooftop solar) act on whatever load is left. The MACC bars are each
 // option alone; the pathway line is the sequenced combination.
 
 export const APPLY_ORDER = [
   'combine-trips', 'one-less-international', 'skip-one-domestic',
   'uber-to-pt', 'halve-km', 'diet-low', 'diet-veg', 'sea-not-air', 'fewer-parcels',
   'electrify-gas', 'ev-switch',
-  'solar', 'greenpower',
+  'solar',
 ];
 
 const intlItineraries = (st) => st.flights.filter((f) => (f.meta || {}).band !== 'domestic');
@@ -102,7 +108,7 @@ export const ABATEMENT_OPTIONS = [
     id: 'ev-switch',
     category: 'road',
     action: 'Switch the car to an EV',
-    detail: 'Petrol goes to zero; charging load is added to the meter at 0.16 kWh/km, where solar and GreenPower can act on it. At low annual mileage on a fossil grid the standalone win is small, and the curve says so.',
+    detail: 'Petrol goes to zero; charging load is added to the meter at 0.16 kWh/km, where rooftop solar can act on it. At low annual mileage on a fossil grid the standalone win is small, and the curve says so.',
     effort: 'high',
     source: 'Electric Vehicle Council cost-of-ownership guidance: purchase premium amortised about $1,400/yr, less fuel and servicing savings scaled to your audited kilometres.',
     applicable: (st) => st.kmCar > 0 && st.evShare < 1,
@@ -157,7 +163,7 @@ export const ABATEMENT_OPTIONS = [
     id: 'electrify-gas',
     category: 'gas',
     action: 'Electrify the gas appliances',
-    detail: 'Reverse-cycle heating and heat pump hot water replace 90% of gas use; the new electric load is added to the meter before solar and GreenPower act on it. Flagged not applicable for renters and apartments: this one belongs to the landlord, and the method says so out loud.',
+    detail: 'Reverse-cycle heating and heat pump hot water replace 90% of gas use; the new electric load is added to the meter before solar acts on it. Flagged not applicable for renters and apartments: this one belongs to the landlord, and the method says so out loud.',
     effort: 'high',
     source: 'Heat pump COP 3.5 against gas appliance efficiency 0.85; capex about $3,000 net of state rebates, amortised over 12 years, less running-cost saving.',
     applicable: (st) => st.mj > 0 && st.dwelling === 'house',
@@ -178,16 +184,5 @@ export const ABATEMENT_OPTIONS = [
     applicable: (st) => st.dwelling === 'house' && st.kwh > 0,
     apply: (st, p) => { st.solarReduction = Math.max(st.solarReduction, 0.6 * p); },
     cost: (st) => 367 - Math.min(st.kwh, 4400) * 0.6 * 0.3,
-  },
-  {
-    id: 'greenpower',
-    category: 'electricity',
-    action: 'Switch to 100% GreenPower',
-    detail: 'Accredited GreenPower zeroes the market-based scope 2 attribute of every grid kilowatt hour you buy, including any new load from electrification. Scope 3 losses are conservatively retained. Works for renters: it is a phone call, not a ladder.',
-    effort: 'low',
-    source: 'GreenPower accredited retail premium, typically 4 to 6 c/kWh (greenpower.gov.au); priced here at 5.5 c/kWh on your audited usage.',
-    applicable: (st) => st.kwh > 0,
-    apply: (st, p) => { st.greenpowerPct = Math.max(st.greenpowerPct, p); },
-    cost: (st) => st.kwh * 0.055,
   },
 ];

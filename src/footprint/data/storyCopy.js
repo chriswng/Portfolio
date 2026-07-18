@@ -29,7 +29,7 @@ export const CHAPTERS = [
 export const COVER = {
   tag: 'Life Footprint',
   h1a: 'Scope 1, 2 and 3',
-  h1b: 'of me.',
+  h1b: 'of me',
   sub: {
     example:
       'I measure carbon for big organisations. This is the same maths pointed at my own life: a year of flights, bills, parcels and dinners, honestly added up.',
@@ -44,7 +44,7 @@ export const COVER = {
 
 export const YEAR = {
   tag: '01 · The year',
-  headline: { example: 'Twelve months.', own: 'Your twelve months.' },
+  headline: { example: 'Twelve months', own: 'Your twelve months' },
   sub: {
     example: 'entries in the log. Every flight, bill and dinner, each with its own number.',
     own: 'entries built from your answers, each with its own number.',
@@ -55,7 +55,7 @@ export const YEAR = {
 
 export const GUESS = {
   tag: '02 · Guess',
-  headline: { example: 'Guess my number.', own: 'Guess your number.' },
+  headline: { example: 'Guess my number', own: 'Guess your number' },
   sub: {
     example: 'One person, one year: every flight, power bill, meal and delivery. How many tonnes of carbon? Have a guess.',
     own: 'How many tonnes did your year add up to? Have a guess.',
@@ -94,7 +94,7 @@ export const TOTAL = {
 
 export const SCOPES = {
   tag: '04 · Three scopes',
-  headline: 'One life, three buckets.',
+  headline: 'One life, three buckets',
   gloss: 'Carbon accountants call the buckets scopes. In plain words: what you burn, the power you buy, and everything made or moved for you.',
   items: [
     {
@@ -134,7 +134,7 @@ export const SCOPES = {
 export const HOTSPOTS_ST = {
   tag: '05 · Hotspots',
   rankWord: 'Hotspot',
-  headline: { example: 'Where my tonnes actually are.', own: 'Where your tonnes actually are.' },
+  headline: { example: 'Where my tonnes actually are', own: 'Where your tonnes actually are' },
   ofYear: 'of the year',
   punch: {
     example: 'The top wedge is the plan. Everything else is housekeeping.',
@@ -165,7 +165,7 @@ export const MONTHS_ST = {
 
 export const BENCH_ST = {
   tag: '07 · Context',
-  headline: { example: 'How my year compares.', own: 'How your year compares.' },
+  headline: { example: 'How my year compares', own: 'How your year compares' },
   rows: {
     you: { example: 'This audit', own: 'Your audit' },
     aus: 'Australian average',
@@ -195,11 +195,12 @@ export const BENCH_ST = {
 
 export const NEEDLE = {
   tag: '09 · The needle',
-  headline: 'What would actually move it.',
+  headline: 'What would actually move it',
   sub: {
-    example: 'The three changes that would cut the most, sized to my actual year. Ranked by tonnes saved, not by vibes.',
-    own: 'The three changes that would cut the most, sized to your actual year. Ranked by tonnes saved, not by vibes.',
+    example: 'The three changes that would cut the biggest share of my actual year, not of a national average. Ranked by size, not by vibes.',
+    own: 'The three changes that would cut the biggest share of your actual year, not of a national average. Ranked by size, not by vibes.',
   },
+  ofYear: 'of the year',
   perYear: 't / yr',
   perTonne: 'a tonne',
   saves: 'saves you about',
@@ -210,10 +211,10 @@ export const NEEDLE = {
 
 export const OUTRO = {
   tag: '10 · The audit',
-  headline: { example: 'That is the story.', own: 'That is your story.' },
+  headline: { example: 'That is the story', own: 'That is your story' },
   sub: {
-    example: 'Below: every entry, every source, what each fix costs, and the method in writing.',
-    own: 'Below: every entry, what each fix would save you, and your plan. It saves in this browser as you edit.',
+    example: 'The working audit is below: every entry with its source, the plan with its costs, and the method one click away.',
+    own: 'Your working audit is below: every entry, your plan, and what each fix would save. It saves in this browser as you edit.',
   },
   explore: 'Explore the full audit',
   start: 'Start your own audit',
@@ -243,7 +244,7 @@ export const SHARE_ST = {
 export const CHARACTER_ST = {
   tag: '08 · The character',
   kicker: { example: 'My audit classifies as', own: 'Your audit classifies as' },
-  headline: 'Twelve shapes a footprint takes.',
+  headline: 'Twelve shapes a footprint takes',
   sub: {
     example: 'Three measurements decide it: how big the year is, how concentrated, and how it arrived. Mine reads like this.',
     own: 'Three measurements decide it: how big the year is, how concentrated, and how it arrived. Yours reads like this.',
@@ -291,7 +292,7 @@ export const CHARACTER_ST = {
   ],
   matrixRows: { feather: 'Under 6.6 t', middle: '6.6 to 16 t', heavy: 'Over 16 t' },
   matrixAria: 'The twelve characters as a grid: three weight rows by four temperament columns. Yours is {name}.',
-  othersNote: 'Assigned by rule, not by quiz: three measured axes, twelve cells. The thresholds are in the basis of preparation below, next to everything else.',
+  othersNote: 'Assigned by rule, not by quiz: three measured axes, twelve cells. The thresholds are stated in the basis of preparation, next to everything else.',
   yoursFlag: 'you',
 };
 
@@ -312,9 +313,8 @@ export const OB = {
   flightTop: '{t} t. That flight just became your #1 hotspot.',
   stepLabels: ['You', 'Home energy', 'Getting around', 'Flights', 'Food & parcels'],
   done: {
-    title: 'Your audit is live.',
-    sub: 'Saved to this browser, priced on the same factors as everything else on this page. Now the good part.',
-    profileLabel: 'Your profile:',
+    title: 'Your audit is live',
+    sub: 'Saved to this browser, priced on the same factors as everything else on this page. The reveal tells you the rest: where it lands, what shape it takes, what would move it.',
     watch: 'Watch your reveal',
     skip: 'Straight to the dashboard',
   },
