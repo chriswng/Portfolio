@@ -149,7 +149,10 @@ export const FLIGHT_FACTORS = {
 export const FLIGHT_RF_MULTIPLIER = 1.7;
 export const FLIGHT_DISTANCE_UPLIFT = 1.08;
 
-// Great-circle distances (km, one way) for the route picker.
+// Great-circle distances (km, one way) for the simple route picker used by the
+// activity log's quick-add form. The guided audit uses a From/To airport
+// picker instead (AIRPORTS below), computing the same great-circle distance
+// live so no origin is baked in.
 export const FLIGHT_ROUTES = [
   { id: 'SYD-MEL', label: 'Sydney to Melbourne', km: 706, band: 'domestic' },
   { id: 'SYD-BNE', label: 'Sydney to Brisbane', km: 750, band: 'domestic' },
@@ -166,10 +169,105 @@ export const FLIGHT_ROUTES = [
   { id: 'SYD-LHR', label: 'Sydney to London', km: 17016, band: 'longIntl' },
 ];
 
+// ---------------------------------------------------------------------------
+// Airport reference for the guided-audit flight picker. Any From can pair with
+// any To: the distance is the great-circle (haversine) between the two, so the
+// picker is not Sydney-centric and stays consistent with FLIGHT_SOURCE, which
+// already prices on great-circle distance uplifted 8% (the DEFRA method; the
+// engine applies FLIGHT_DISTANCE_UPLIFT). country is used to decide domestic
+// versus international; region only groups the dropdown. Coordinates are the
+// airport's published latitude and longitude in degrees.
+// ---------------------------------------------------------------------------
+export const AIRPORTS = [
+  // Australia
+  { code: 'SYD', city: 'Sydney', country: 'AU', region: 'Australia', lat: -33.95, lon: 151.18 },
+  { code: 'MEL', city: 'Melbourne', country: 'AU', region: 'Australia', lat: -37.67, lon: 144.84 },
+  { code: 'BNE', city: 'Brisbane', country: 'AU', region: 'Australia', lat: -27.38, lon: 153.12 },
+  { code: 'PER', city: 'Perth', country: 'AU', region: 'Australia', lat: -31.94, lon: 115.97 },
+  { code: 'ADL', city: 'Adelaide', country: 'AU', region: 'Australia', lat: -34.95, lon: 138.53 },
+  { code: 'CBR', city: 'Canberra', country: 'AU', region: 'Australia', lat: -35.31, lon: 149.20 },
+  { code: 'OOL', city: 'Gold Coast', country: 'AU', region: 'Australia', lat: -28.16, lon: 153.51 },
+  { code: 'CNS', city: 'Cairns', country: 'AU', region: 'Australia', lat: -16.89, lon: 145.75 },
+  { code: 'HBA', city: 'Hobart', country: 'AU', region: 'Australia', lat: -42.84, lon: 147.51 },
+  { code: 'DRW', city: 'Darwin', country: 'AU', region: 'Australia', lat: -12.41, lon: 130.88 },
+  { code: 'AYQ', city: 'Uluru (Ayers Rock)', country: 'AU', region: 'Australia', lat: -25.19, lon: 130.98 },
+  // Asia Pacific
+  { code: 'AKL', city: 'Auckland', country: 'NZ', region: 'Asia Pacific', lat: -37.01, lon: 174.79 },
+  { code: 'DPS', city: 'Bali (Denpasar)', country: 'ID', region: 'Asia Pacific', lat: -8.75, lon: 115.17 },
+  { code: 'CGK', city: 'Jakarta', country: 'ID', region: 'Asia Pacific', lat: -6.13, lon: 106.66 },
+  { code: 'SIN', city: 'Singapore', country: 'SG', region: 'Asia Pacific', lat: 1.36, lon: 103.99 },
+  { code: 'KUL', city: 'Kuala Lumpur', country: 'MY', region: 'Asia Pacific', lat: 2.75, lon: 101.71 },
+  { code: 'BKK', city: 'Bangkok', country: 'TH', region: 'Asia Pacific', lat: 13.69, lon: 100.75 },
+  { code: 'SGN', city: 'Ho Chi Minh City', country: 'VN', region: 'Asia Pacific', lat: 10.82, lon: 106.66 },
+  { code: 'HAN', city: 'Hanoi', country: 'VN', region: 'Asia Pacific', lat: 21.22, lon: 105.81 },
+  { code: 'MNL', city: 'Manila', country: 'PH', region: 'Asia Pacific', lat: 14.51, lon: 121.02 },
+  { code: 'HKG', city: 'Hong Kong', country: 'HK', region: 'Asia Pacific', lat: 22.31, lon: 113.91 },
+  { code: 'TPE', city: 'Taipei', country: 'TW', region: 'Asia Pacific', lat: 25.08, lon: 121.23 },
+  { code: 'PVG', city: 'Shanghai', country: 'CN', region: 'Asia Pacific', lat: 31.14, lon: 121.81 },
+  { code: 'PEK', city: 'Beijing', country: 'CN', region: 'Asia Pacific', lat: 40.08, lon: 116.58 },
+  { code: 'ICN', city: 'Seoul', country: 'KR', region: 'Asia Pacific', lat: 37.46, lon: 126.44 },
+  { code: 'HND', city: 'Tokyo', country: 'JP', region: 'Asia Pacific', lat: 35.55, lon: 139.78 },
+  { code: 'KIX', city: 'Osaka', country: 'JP', region: 'Asia Pacific', lat: 34.43, lon: 135.24 },
+  { code: 'DEL', city: 'Delhi', country: 'IN', region: 'Asia Pacific', lat: 28.56, lon: 77.10 },
+  { code: 'BOM', city: 'Mumbai', country: 'IN', region: 'Asia Pacific', lat: 19.09, lon: 72.87 },
+  // Middle East
+  { code: 'DXB', city: 'Dubai', country: 'AE', region: 'Middle East', lat: 25.25, lon: 55.36 },
+  { code: 'DOH', city: 'Doha', country: 'QA', region: 'Middle East', lat: 25.27, lon: 51.61 },
+  // Americas
+  { code: 'LAX', city: 'Los Angeles', country: 'US', region: 'Americas', lat: 33.94, lon: -118.41 },
+  { code: 'SFO', city: 'San Francisco', country: 'US', region: 'Americas', lat: 37.62, lon: -122.38 },
+  { code: 'JFK', city: 'New York', country: 'US', region: 'Americas', lat: 40.64, lon: -73.78 },
+  { code: 'HNL', city: 'Honolulu', country: 'US', region: 'Americas', lat: 21.32, lon: -157.92 },
+  { code: 'YVR', city: 'Vancouver', country: 'CA', region: 'Americas', lat: 49.19, lon: -123.18 },
+  // Europe
+  { code: 'LHR', city: 'London', country: 'GB', region: 'Europe', lat: 51.47, lon: -0.45 },
+  { code: 'CDG', city: 'Paris', country: 'FR', region: 'Europe', lat: 49.01, lon: 2.55 },
+  { code: 'AMS', city: 'Amsterdam', country: 'NL', region: 'Europe', lat: 52.31, lon: 4.76 },
+  { code: 'FRA', city: 'Frankfurt', country: 'DE', region: 'Europe', lat: 50.04, lon: 8.56 },
+  { code: 'FCO', city: 'Rome', country: 'IT', region: 'Europe', lat: 41.80, lon: 12.24 },
+];
+
+export const airportByCode = (code) => AIRPORTS.find((p) => p.code === code) || null;
+
+// Great-circle distance in kilometres between two airports (haversine). Raw,
+// un-uplifted: the engine applies the DEFRA 8% uplift when it prices, exactly
+// as it does for the FLIGHT_ROUTES table.
+export function greatCircleKm(a, b) {
+  if (!a || !b) return 0;
+  const R = 6371; // mean Earth radius, km
+  const toRad = (d) => (d * Math.PI) / 180;
+  const dLat = toRad(b.lat - a.lat);
+  const dLon = toRad(b.lon - a.lon);
+  const s = Math.sin(dLat / 2) ** 2
+    + Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * Math.sin(dLon / 2) ** 2;
+  return Math.round(2 * R * Math.asin(Math.min(1, Math.sqrt(s))));
+}
+
+// Home airport suggested per state, so a new flight card opens from a sensible
+// origin without ever forcing it. ACT rides on the NSW label.
+export const HOME_AIRPORT = {
+  NSW: 'SYD', VIC: 'MEL', QLD: 'BNE', SA: 'ADL', WA: 'PER', TAS: 'HBA', NT: 'DRW',
+};
+
 export function flightBandForKm(km, international) {
   if (!international) return 'domestic';
   return km < 3700 ? 'shortIntl' : 'longIntl';
 }
+
+// ---------------------------------------------------------------------------
+// Weekly public-transport fare caps by state. Spend above the cap buys no
+// extra travel, so annualising uncapped weekly spend overstates both the money
+// and the kilometres. Only capped where a single, published, easy-to-maintain
+// figure exists; everywhere else the survey leaves spend uncapped and says so.
+// ---------------------------------------------------------------------------
+export const PT_FARE_CAPS = {
+  NSW: {
+    weekly: 50,
+    label: 'Adult Opal weekly travel cap',
+    source: 'Transport for NSW, Opal fares: Adult weekly travel capped at $50 (plus separate daily and Sunday caps).',
+    url: 'https://transportnsw.info/tickets-opal/opal/fares-payments/adult-fares',
+  },
+};
 
 // ---------------------------------------------------------------------------
 // Freight. kg CO2-e per tonne-km by mode, plus an indicative per-parcel
