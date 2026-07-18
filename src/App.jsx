@@ -6,7 +6,7 @@ import Ticker from './components/Ticker';
 import Scenario from './components/Scenario';
 import Experience from './components/Experience';
 import Contact from './components/Contact';
-import StripesFooter from './components/StripesFooter';
+import SiteFooter from './components/SiteFooter';
 
 export default function App() {
   return (
@@ -15,7 +15,7 @@ export default function App() {
       <Grain />
       <ScrollProgress />
       <Nav />
-      <main id="main-content">
+      <main id="main-content" className="page-home">
         <Hero />
         <Bio />
         <Principles />
@@ -24,7 +24,7 @@ export default function App() {
         <Experience />
         <Contact />
       </main>
-      <StripesFooter />
+      <SiteFooter />
     </>
   );
 }
