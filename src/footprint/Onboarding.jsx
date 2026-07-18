@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { animate, AnimatePresence, motion } from 'framer-motion';
-import { ELECTRICITY, FLIGHT_ROUTES, ROAD_FUELS, DIET_TYPES } from './data/factors';
+import { AnimatePresence, motion } from 'framer-motion';
+import {
+  ELECTRICITY, ROAD_FUELS, DIET_TYPES,
+  AIRPORTS, airportByCode, greatCircleKm, flightBandForKm, HOME_AIRPORT, PT_FARE_CAPS,
+} from './data/factors';
 import { CONVERSIONS } from './data/vendorMap';
-import { ONBOARD, ENERGY_PRESETS, fmtT } from './data/copy';
+import { ONBOARD, ENERGY_PRESETS } from './data/copy';
 import { OB, fill } from './data/storyCopy';
-import { priceEntry, aggregate } from './lib/engine';
+import { priceEntry } from './lib/engine';
 import Icon from './Icons';
 import { prefersReducedMotion } from '../utils/media';
 
@@ -27,6 +30,45 @@ const shiftMonths = (isoDate, delta, day) => {
   return localIso(new Date(d.getFullYear(), d.getMonth() + delta, day));
 };
 
+// The home airport a fresh flight card opens from, given the visitor's state.
+const homeAirportFor = (state) => HOME_AIRPORT[state] || 'SYD';
+
+// Public-transport spend actually counted: capped at the state's weekly fare
+// cap unless the visitor overrides it, because spend past the cap buys no
+// extra travel and annualising it would overstate the kilometres.
+export function effectivePtWeek(a) {
+  const cap = PT_FARE_CAPS[a.state];
+  return cap && !a.ptCapOverride ? Math.min(a.ptWeek, cap.weekly) : a.ptWeek;
+}
+
+// A flight card turned into priced flight meta, or null when it is not a real
+// trip yet (no destination, or the same city both ends). Distance is the
+// great-circle between the two airports; the engine adds the DEFRA uplift.
+export function flightMeta(fl) {
+  const from = airportByCode(fl.from);
+  const to = airportByCode(fl.to);
+  if (!from || !to || from.code === to.code) return null;
+  const km = greatCircleKm(from, to);
+  const international = !(from.country === 'AU' && to.country === 'AU');
+  return {
+    km,
+    band: flightBandForKm(km, international),
+    international,
+    cabin: fl.cabin,
+    return: fl.ret,
+    passengers: Math.max(1, Math.round(fl.pax || 1)),
+    from: from.code,
+    to: to.code,
+  };
+}
+
+const flightLabel = (fl) => {
+  const from = airportByCode(fl.from);
+  const to = airportByCode(fl.to);
+  if (!from || !to) return 'Flight';
+  return from.city + ' to ' + to.city + (fl.ret ? ' return' : '');
+};
+
 export function buildProfileFromOnboarding(a) {
   const period = lastTwelveMonths();
   const settings = {
@@ -46,14 +88,14 @@ export function buildProfileFromOnboarding(a) {
     qEnds.forEach((date, i) => entries.push(E({
       category: 'electricity', date, period_months: 3, label: 'Electricity, quarter ' + (i + 1) + ' (onboarding)',
       meta: { kwh: a.kwhQuarter, wholeHousehold: true },
-      notes: 'From the guided audit: a typical quarterly household bill. Replace with real bills as they arrive.',
+      notes: 'From the guided audit: a typical quarterly household bill, counted as your share. Replace with real bills as they arrive.',
     })));
   }
   if (a.mjQuarter > 0) {
     qEnds.forEach((date, i) => entries.push(E({
       category: 'gas', date, period_months: 3, label: 'Gas, quarter ' + (i + 1) + ' (onboarding)',
       meta: { mj: a.mjQuarter, wholeHousehold: true },
-      notes: 'From the guided audit: a typical quarterly household bill.',
+      notes: 'From the guided audit: a typical quarterly household bill, counted as your share.',
     })));
   }
   if (a.carKmWeek > 0) {
@@ -71,29 +113,30 @@ export function buildProfileFromOnboarding(a) {
       notes: 'Spend-converted at about $' + CONVERSIONS.ridesharePerKm.value.toFixed(2) + ' per km.',
     }));
   }
-  if (a.ptWeek > 0) {
+  const ptWeekEff = effectivePtWeek(a);
+  if (ptWeekEff > 0) {
+    const cap = PT_FARE_CAPS[a.state];
+    const capped = cap && !a.ptCapOverride && a.ptWeek > cap.weekly;
     entries.push(E({
       category: 'road', date: period.end, period_months: 12, label: 'Public transport, typical year (onboarding)',
-      meta: { mode: 'pt', km: Math.round((a.ptWeek * 52) / CONVERSIONS.ptPerKm.value) },
-      notes: 'Fares converted at about ' + Math.round(CONVERSIONS.ptPerKm.value * 100) + 'c per km. Indicative rail factor.',
+      meta: { mode: 'pt', km: Math.round((ptWeekEff * 52) / CONVERSIONS.ptPerKm.value) },
+      notes: 'Fares converted at about ' + Math.round(CONVERSIONS.ptPerKm.value * 100) + 'c per km. Indicative rail factor.'
+        + (capped ? ' Capped at the ' + a.state + ' weekly fare cap of $' + cap.weekly + '.' : ''),
     }));
   }
   // A flight given a month lands in that month as a real point event; one
   // left open carries no invented date and spreads evenly across the year
   // (like the other typical-year entries) until a dated trip replaces it.
   a.flights.forEach((fl) => {
-    const route = FLIGHT_ROUTES.find((r) => r.id === fl.route);
+    const meta = flightMeta(fl);
+    if (!meta) return;
     const dated = !!fl.month;
     entries.push(E({
       category: 'flight',
       date: dated ? fl.month : period.end,
       ...(dated ? {} : { period_months: 12 }),
-      label: (route ? route.label : Math.round(fl.km) + ' km flight') + (fl.ret ? ' return' : ''),
-      meta: {
-        km: route ? route.km : fl.km, band: route ? route.band : undefined,
-        international: route ? undefined : fl.km > 1500, cabin: fl.cabin, return: fl.ret,
-        ...(dated ? { synthetic: false } : {}),
-      },
+      label: flightLabel(fl),
+      meta: { ...meta, ...(dated ? { synthetic: false } : {}) },
       notes: dated
         ? 'From the guided audit, dated to the month you gave. Swap in the exact itinerary when you have it.'
         : 'From the guided audit: a typical-year itinerary, spread across the year. Log the real trip with its date to replace it.',
@@ -132,64 +175,21 @@ const DEFAULTS = {
   state: 'NSW', householdSize: 2, dwelling: 'apartment', dietType: 'medMeat', fuelType: 'petrol',
   // gpChoice is the picked chip; greenpowerPct is what the engine prices from.
   // 'no' and 'unsure' are distinct choices that both price at 0% renewable.
-  gpChoice: 'no', greenpowerPct: 0, kwhQuarter: 1000, mjQuarter: 3000, carKmWeek: 0, carOccupancy: 1, rideshareWeek: 0, ptWeek: 0,
+  gpChoice: 'no', greenpowerPct: 0, energyPreset: null, kwhQuarter: 1000, mjQuarter: 3000, carKmWeek: 0, carOccupancy: 1,
+  rideshareWeek: 0, ptWeek: 0, ptCapOverride: false,
   parcelsMonth: 2, intlOrdersMonth: 0, flights: [],
 };
 
-// ---------------------------------------------------------------------------
-// Live pricing: each input shows its own annual tonnes as you drag, priced by
-// the same engine that prices the audit itself. Nothing here is a second
-// model; it is priceEntry with the visitor's current settings.
-// ---------------------------------------------------------------------------
-const settingsOf = (a) => ({
-  name: '', state: a.state, householdSize: a.householdSize, dwelling: a.dwelling,
-  dietType: a.dietType, fuelType: a.fuelType, greenpowerPct: a.greenpowerPct,
-});
-
-function liveT(a, draft) {
-  try {
-    return priceEntry({ date: '2026-01-01', label: '', ...draft }, settingsOf(a)).tco2e;
-  } catch { return 0; }
-}
-
-const LIVE = {
-  electricity: (a) => liveT(a, { category: 'electricity', meta: { kwh: a.kwhQuarter * 4, wholeHousehold: true } }),
-  gas: (a) => liveT(a, { category: 'gas', meta: { mj: a.mjQuarter * 4, wholeHousehold: true } }),
-  car: (a) => liveT(a, { category: 'road', meta: { mode: 'car', fuel: a.fuelType, km: Math.round(a.carKmWeek * 52), occupants: a.carOccupancy } }),
-  rideshare: (a) => liveT(a, { category: 'road', meta: { mode: 'rideshare', km: Math.round((a.rideshareWeek * 52) / CONVERSIONS.ridesharePerKm.value) } }),
-  pt: (a) => liveT(a, { category: 'road', meta: { mode: 'pt', km: Math.round((a.ptWeek * 52) / CONVERSIONS.ptPerKm.value) } }),
-  flight: (a, fl) => {
-    const route = FLIGHT_ROUTES.find((r) => r.id === fl.route);
-    return liveT(a, {
-      category: 'flight',
-      meta: { km: route ? route.km : fl.km, band: route ? route.band : undefined, international: route ? undefined : fl.km > 1500, cabin: fl.cabin, return: fl.ret },
-    });
-  },
-  parcels: (a) => liveT(a, { category: 'freight', meta: { parcels: Math.round(a.parcelsMonth * 12) } }),
-  intl: (a) => liveT(a, { category: 'freight', meta: { mode: 'air', tonneKm: Math.round(a.intlOrdersMonth * 12 * 0.003 * 8000) } }),
-  diet: (a, dietType) => liveT(a, { category: 'diet', meta: { dietType, days: 365 } }),
-};
-
-// Small but non-zero inputs read "< 0.1" rather than a dismissive "0.0".
-const approx = (t) => fill(OB.approx, { t: t > 0 && t < 0.05 ? '< 0.1' : fmtT(t) });
-
-// A number that eases to its new value instead of snapping.
-function LiveNumber({ value, decimals = 1 }) {
-  const ref = useRef(null);
-  const prev = useRef(value);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return undefined;
-    if (prefersReducedMotion()) { el.textContent = value.toFixed(decimals); prev.current = value; return undefined; }
-    const controls = animate(prev.current, value, {
-      duration: 0.45, ease: [0.25, 1, 0.5, 1],
-      onUpdate: (v) => { el.textContent = v.toFixed(decimals); },
-    });
-    prev.current = value;
-    return () => controls.stop();
-  }, [value, decimals]);
-  return <span ref={ref} aria-hidden="true">{value.toFixed(decimals)}</span>;
-}
+// Airports grouped by region for the From/To dropdowns, order preserved.
+const AIRPORT_GROUPS = (() => {
+  const out = [];
+  for (const p of AIRPORTS) {
+    let g = out.find((x) => x.region === p.region);
+    if (!g) { g = { region: p.region, items: [] }; out.push(g); }
+    g.items.push(p);
+  }
+  return out;
+})();
 
 // ---- Input primitives ------------------------------------------------------
 
@@ -200,7 +200,7 @@ function Chips({ label, options, value, onChange, note, icon }) {
       <div className="ob-chips">
         {options.map((o) => (
           <button
-            key={o.value} type="button"
+            key={String(o.value)} type="button"
             className={'ob-chip' + (value === o.value ? ' on' : '')}
             aria-pressed={value === o.value}
             onClick={() => onChange(o.value)}
@@ -215,10 +215,10 @@ function Chips({ label, options, value, onChange, note, icon }) {
   );
 }
 
-function Stepper({ label, value, onChange, min = 0, max = 99, step = 1, live, icon }) {
+function Stepper({ label, value, onChange, min = 0, max = 99, step = 1, icon, compact }) {
   const clamp = (v) => Math.min(max, Math.max(min, v));
   return (
-    <div className="ob-field">
+    <div className={compact ? 'ob-field ob-field-compact' : 'ob-field'}>
       <span className="ob-label">{icon && <Icon name={icon} size={15} className="ob-label-i" />}{label}</span>
       <div className="ob-stepper">
         <button type="button" aria-label={'Decrease ' + label} onClick={() => onChange(clamp(value - step))}>−</button>
@@ -228,7 +228,6 @@ function Stepper({ label, value, onChange, min = 0, max = 99, step = 1, live, ic
           onChange={(e) => onChange(clamp(Number(e.target.value) || 0))}
         />
         <button type="button" aria-label={'Increase ' + label} onClick={() => onChange(clamp(value + step))}>+</button>
-        {live != null && <span className="ob-live">{live}</span>}
         {/* The +/- buttons keep focus, so echo the new value politely. */}
         <span className="sr-only" role="status">{value}</span>
       </div>
@@ -239,7 +238,7 @@ function Stepper({ label, value, onChange, min = 0, max = 99, step = 1, live, ic
 // Slide it, or type it. The number beside the label is a real input, so a
 // visitor who knows their exact bill can enter it instead of hunting for the
 // right slider position. The two stay in sync; typing clamps to the range.
-function SliderField({ label, value, onChange, min, max, step, unit, live, icon }) {
+function SliderField({ label, value, onChange, min, max, step, unit, icon }) {
   const [text, setText] = useState(String(value));
   // Reflect slider drags (and any external change) back into the input.
   useEffect(() => { setText(String(value)); }, [value]);
@@ -276,21 +275,82 @@ function SliderField({ label, value, onChange, min, max, step, unit, live, icon 
         aria-valuetext={value.toLocaleString() + ' ' + unit}
         onChange={(e) => onChange(Number(e.target.value))}
       />
-      {live != null && <span className="ob-live">{live}</span>}
+    </div>
+  );
+}
+
+// An airport dropdown, grouped by region. Any From can pair with any To.
+function AirportSelect({ label, value, placeholder, onChange }) {
+  return (
+    <label className="ob-fl-field">
+      <span>{label}</span>
+      <select value={value} onChange={(e) => onChange(e.target.value)}>
+        <option value="">{placeholder}</option>
+        {AIRPORT_GROUPS.map((g) => (
+          <optgroup key={g.region} label={g.region}>
+            {g.items.map((p) => <option key={p.code} value={p.code}>{p.city}</option>)}
+          </optgroup>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+// One flight, as its own editable card: From, To, return or one way, cabin,
+// month, and the seats you paid for. Editable at any time; removable. No
+// carbon shown here on purpose, so the reveal keeps its punch; the distance is
+// shown because it makes the estimate feel honest, not because it spoils it.
+function FlightCard({ fl, index, monthOptions, onChange, onRemove }) {
+  const set = (k, v) => onChange({ ...fl, [k]: v });
+  const meta = flightMeta(fl);
+  let distText = ONBOARD.flights.pickTo;
+  if (fl.to && fl.from && fl.from === fl.to) distText = ONBOARD.flights.sameCities;
+  else if (meta) distText = fill(ONBOARD.flights.dist, { km: meta.km.toLocaleString() });
+  return (
+    <div className="ob-fcard">
+      <div className="ob-fcard-head">
+        <span className="ob-fcard-n"><Icon name="plane" size={15} className="ob-flight-i" /> {fill(ONBOARD.flights.tripLabel, { n: index + 1 })}</span>
+        <button type="button" className="ob-remove" onClick={onRemove}>{ONBOARD.flights.remove} ×</button>
+      </div>
+      <div className="ob-fcard-route">
+        <AirportSelect label={ONBOARD.flights.from} value={fl.from} placeholder={ONBOARD.flights.pickFrom} onChange={(v) => set('from', v)} />
+        <span className="ob-fcard-arrow" aria-hidden="true">→</span>
+        <AirportSelect label={ONBOARD.flights.to} value={fl.to} placeholder={ONBOARD.flights.pickTo} onChange={(v) => set('to', v)} />
+      </div>
+      <div className="ob-fcard-opts">
+        <div className="ob-seg2" role="group" aria-label={ONBOARD.flights.trip}>
+          <button type="button" className={'ob-seg2-btn' + (fl.ret ? ' on' : '')} aria-pressed={fl.ret} onClick={() => set('ret', true)}>{ONBOARD.flights.roundTrip}</button>
+          <button type="button" className={'ob-seg2-btn' + (!fl.ret ? ' on' : '')} aria-pressed={!fl.ret} onClick={() => set('ret', false)}>{ONBOARD.flights.oneWay}</button>
+        </div>
+        <label className="ob-fl-field">
+          <span>{ONBOARD.flights.cabin}</span>
+          <select value={fl.cabin} onChange={(e) => set('cabin', e.target.value)}>
+            {Object.entries(ONBOARD.flights.cabins).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+          </select>
+        </label>
+        <label className="ob-fl-field">
+          <span>{ONBOARD.flights.when}</span>
+          <select value={fl.month} onChange={(e) => set('month', e.target.value)}>
+            <option value="">{ONBOARD.flights.whenAny}</option>
+            {monthOptions.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
+          </select>
+        </label>
+        <Stepper compact icon="people" label={ONBOARD.flights.passengers} value={fl.pax} min={1} max={9} onChange={(v) => set('pax', v)} />
+      </div>
+      <p className="ob-fcard-dist">{distText}</p>
     </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// The guided audit, staged full-screen. Same five questions and the same
-// profile builder as before; the difference is that every answer prices
-// itself the moment it lands, and the running total recalculates in view.
+// The guided audit, staged full-screen. The visitor answers five short steps;
+// the profile is built the moment the last step lands. Deliberately spoiler-
+// free: no running total, no per-line tonnes, no ranking. The number, its
+// shape and its context all belong to the reveal that follows.
 // ---------------------------------------------------------------------------
 export default function Onboarding({ onDone, onBuilt, onCancel }) {
   const [step, setStep] = useState(0);
   const [a, setA] = useState(DEFAULTS);
-  const [fl, setFl] = useState({ route: 'SYD-MEL', km: 700, cabin: 'economy', ret: true, month: '' });
-  const [reaction, setReaction] = useState('');
   // The audit window's twelve months, oldest first, for the optional
   // when-was-it picker. Value is a mid-month date inside the window.
   const monthOptions = useMemo(() => {
@@ -303,9 +363,17 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
   }, []);
   const headRef = useRef(null);
   const set = (k, v) => setA((s) => ({ ...s, [k]: v }));
-  const num = (v) => (v === '' || isNaN(Number(v)) ? 0 : Number(v));
 
-  const runningTotal = useMemo(() => aggregate(buildProfileFromOnboarding(a)).total, [a]);
+  // Changing the number of adults rescales a chosen "typical home" preset, so
+  // the whole-home estimate grows with the household instead of being split
+  // ever thinner. A hand-typed bill (no preset selected) is left untouched.
+  const setHousehold = (v) => setA((s) => {
+    const next = { ...s, householdSize: v };
+    const pr = s.energyPreset && ENERGY_PRESETS.find((x) => x.id === s.energyPreset);
+    if (pr) { next.kwhQuarter = pr.kwhPerAdult * v; next.mjQuarter = pr.mjPerAdult * v; }
+    return next;
+  });
+
   const doneProfile = useMemo(() => (step === 5 ? buildProfileFromOnboarding(a) : null), [step, a]);
 
   // The done pane says the audit is saved, so save it as the pane appears;
@@ -334,39 +402,29 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
     };
   }, [onCancel]);
 
-  // Debounced copy of the running total for the polite live region, so
-  // dragging a slider announces one settled value, not sixty per second.
-  const [announcedTotal, setAnnouncedTotal] = useState(() => fmtT(runningTotal));
-  useEffect(() => {
-    const id = window.setTimeout(() => setAnnouncedTotal(fmtT(runningTotal)), 600);
-    return () => window.clearTimeout(id);
-  }, [runningTotal]);
-
   const addFlight = () => {
-    const route = FLIGHT_ROUTES.find((r) => r.id === fl.route);
-    const entry = { ...fl, km: route ? route.km : num(fl.km) };
-    const t = LIVE.flight(a, entry);
-    const next = { ...a, flights: [...a.flights, entry] };
-    setA(next);
-    // The month belongs to the trip just added; the next trip chooses its own.
-    setFl((s) => ({ ...s, month: '' }));
-    // Micro-reaction: rank this flight among every line logged so far.
-    // Flights build in list order, so the new one is the last flight entry;
-    // rank by identity so a duplicate itinerary cannot misreport.
-    const built = buildProfileFromOnboarding(next).entries;
-    const newEntry = built.filter((e) => e.category === 'flight')[next.flights.length - 1];
-    const rank = [...built].sort((x, y) => y.tco2e - x.tco2e).indexOf(newEntry) + 1;
-    setReaction((rank === 1
-      ? fill(OB.flightTop, { t: fmtT(t) })
-      : fill(OB.flightAdded[Math.min(next.flights.length - 1, OB.flightAdded.length - 1)], { t: fmtT(t), rank: Math.max(rank, 2) }))
-      + ' ' + ONBOARD.flights.added);
+    setA((s) => ({
+      ...s,
+      flights: [...s.flights, { from: homeAirportFor(s.state), to: '', ret: true, cabin: 'economy', month: '', pax: 1 }],
+    }));
   };
+  const updateFlight = (i, next) => setA((s) => ({ ...s, flights: s.flights.map((f, j) => (j === i ? next : f)) }));
+  const removeFlight = (i) => setA((s) => ({ ...s, flights: s.flights.filter((_, j) => j !== i) }));
 
   const dietOptions = Object.entries(DIET_TYPES).map(([k, v]) => ({
     value: k,
     label: v.label.split(' (')[0],
-    note: (ONBOARD.food.dietHints[k] || '') + ' · ' + fill(OB.approx, { t: fmtT(LIVE.diet(a, k)) }),
+    note: ONBOARD.food.dietHints[k] || '',
   }));
+
+  const ptCap = PT_FARE_CAPS[a.state];
+  const ptCapActive = ptCap && !a.ptCapOverride && a.ptWeek > ptCap.weekly;
+  const flightsReady = a.flights.filter((f) => flightMeta(f)).length;
+
+  // Household split reminder for the energy step, in plain words, no carbon.
+  const splitNote = a.householdSize > 1
+    ? fill(ONBOARD.energy.splitNote, { n: a.householdSize, s: a.householdSize > 1 ? 's' : '' })
+    : ONBOARD.energy.splitNoteSolo;
 
   const steps = [
     <div key="you">
@@ -381,7 +439,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         options={Object.entries(ELECTRICITY).map(([k, v]) => ({ value: k, label: v.label }))}
         value={a.state} onChange={(v) => set('state', v)}
       />
-      <Stepper icon="people" label={ONBOARD.you.household} value={a.householdSize} min={1} max={10} onChange={(v) => set('householdSize', v)} />
+      <Stepper icon="people" label={ONBOARD.you.household} value={a.householdSize} min={1} max={10} onChange={setHousehold} />
       <p className="ob-note">{ONBOARD.you.householdNote}</p>
       <Chips
         icon="building"
@@ -403,17 +461,21 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         icon="house"
         label={ONBOARD.energy.presetLabel}
         options={ENERGY_PRESETS.map((pr) => ({ value: pr.id, label: pr.label }))}
-        value={(ENERGY_PRESETS.find((pr) => pr.kwh === a.kwhQuarter && pr.mj === a.mjQuarter) || {}).id}
+        value={a.energyPreset}
         onChange={(id) => {
           const pr = ENERGY_PRESETS.find((x) => x.id === id);
-          if (pr) setA((s) => ({ ...s, kwhQuarter: pr.kwh, mjQuarter: pr.mj }));
+          if (pr) setA((s) => ({ ...s, energyPreset: id, kwhQuarter: pr.kwhPerAdult * s.householdSize, mjQuarter: pr.mjPerAdult * s.householdSize }));
         }}
         note={ONBOARD.energy.presetNote}
       />
-      <SliderField icon="bolt" label={ONBOARD.energy.kwh} value={a.kwhQuarter} min={0} max={6000} step={10} unit="kWh"
-        onChange={(v) => set('kwhQuarter', v)} live={approx(LIVE.electricity(a))} />
-      <SliderField icon="flame" label={ONBOARD.energy.mj} value={a.mjQuarter} min={0} max={30000} step={50} unit="MJ"
-        onChange={(v) => set('mjQuarter', v)} live={approx(LIVE.gas(a))} />
+      {/* Dragging or typing a real bill is whole-home too, so it clears the
+          preset (household size no longer rescales it) and the engine still
+          splits it per adult. */}
+      <SliderField icon="bolt" label={ONBOARD.energy.kwh} value={a.kwhQuarter} min={0} max={8000} step={10} unit="kWh"
+        onChange={(v) => setA((s) => ({ ...s, kwhQuarter: v, energyPreset: null }))} />
+      <SliderField icon="flame" label={ONBOARD.energy.mj} value={a.mjQuarter} min={0} max={40000} step={50} unit="MJ"
+        onChange={(v) => setA((s) => ({ ...s, mjQuarter: v, energyPreset: null }))} />
+      <p className="ob-splitnote"><Icon name="people" size={14} className="ob-label-i" />{splitNote}</p>
       <Chips
         icon="leaf"
         label={ONBOARD.energy.greenpower}
@@ -435,7 +497,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
       </div>
       <p>{ONBOARD.travel.sub}</p>
       <SliderField icon="car" label={ONBOARD.travel.car} value={a.carKmWeek} min={0} max={1000} step={5} unit="km / wk"
-        onChange={(v) => set('carKmWeek', v)} live={a.carKmWeek > 0 ? approx(LIVE.car(a)) : null} />
+        onChange={(v) => set('carKmWeek', v)} />
       {a.carKmWeek > 0 && (
         <>
           <Chips
@@ -445,14 +507,37 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
             value={a.fuelType} onChange={(v) => set('fuelType', v)}
           />
           <Stepper icon="people" label={ONBOARD.travel.occupancy} value={a.carOccupancy} min={1} max={7}
-            onChange={(v) => set('carOccupancy', v)} live={approx(LIVE.car(a))} />
+            onChange={(v) => set('carOccupancy', v)} />
           <p className="ob-note">{ONBOARD.travel.occupancyNote}</p>
         </>
       )}
       <SliderField icon="phone" label={ONBOARD.travel.rideshare} value={a.rideshareWeek} min={0} max={400} step={5} unit="$ / wk"
-        onChange={(v) => set('rideshareWeek', v)} live={a.rideshareWeek > 0 ? approx(LIVE.rideshare(a)) : null} />
+        onChange={(v) => set('rideshareWeek', v)} />
       <SliderField icon="bus" label={ONBOARD.travel.pt} value={a.ptWeek} min={0} max={250} step={5} unit="$ / wk"
-        onChange={(v) => set('ptWeek', v)} live={a.ptWeek > 0 ? approx(LIVE.pt(a)) : null} />
+        onChange={(v) => set('ptWeek', v)} />
+      {ptCap && (
+        <div className="ob-ptcap">
+          <p className="ob-note ob-ptcap-note">
+            <Icon name="leaf" size={14} className="ob-label-i" />
+            {fill(ONBOARD.travel.ptCapNote, { state: a.state, label: ptCap.label, cap: ptCap.weekly })}
+          </p>
+          {a.ptWeek > ptCap.weekly && (
+            <div className="ob-ptcap-row">
+              <button
+                type="button"
+                className={'ob-chip' + (a.ptCapOverride ? ' on' : '')}
+                aria-pressed={a.ptCapOverride}
+                onClick={() => set('ptCapOverride', !a.ptCapOverride)}
+              >
+                {ONBOARD.travel.ptOverride}
+              </button>
+              {!a.ptCapOverride && (
+                <span className="ob-ptcap-applied">{fill(ONBOARD.travel.ptCapApplied, { cap: ptCap.weekly })}</span>
+              )}
+            </div>
+          )}
+        </div>
+      )}
     </div>,
     <div key="flights">
       <div className="ob-stephead">
@@ -460,70 +545,30 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         <h3 ref={headRef} tabIndex={-1}>{ONBOARD.flights.title}</h3>
       </div>
       <p>{ONBOARD.flights.sub}</p>
-      <div className="ob-flight-form">
-        <label className="fp-field"><span><Icon name="plane" size={15} className="ob-label-i" />{ONBOARD.flights.route}</span>
-          <select value={fl.route} onChange={(e) => setFl((s) => ({ ...s, route: e.target.value }))}>
-            {FLIGHT_ROUTES.map((r) => <option key={r.id} value={r.id}>{r.label}</option>)}
-            <option value="custom">{ONBOARD.flights.customOpt}</option>
-          </select>
-        </label>
-        {fl.route === 'custom' && (
-          <label className="fp-field"><span>{ONBOARD.flights.custom}</span>
-            <input type="number" min="50" value={fl.km} onChange={(e) => setFl((s) => ({ ...s, km: num(e.target.value) }))} />
-          </label>
-        )}
-        <Chips
-          label={ONBOARD.flights.cabin}
-          options={Object.entries(ONBOARD.flights.cabins).map(([k, v]) => ({ value: k, label: v }))}
-          value={fl.cabin} onChange={(v) => setFl((s) => ({ ...s, cabin: v }))}
-        />
-        <Chips
-          label={ONBOARD.flights.return}
-          options={[{ value: true, label: ONBOARD.flights.return }, { value: false, label: ONBOARD.flights.oneWay }]}
-          value={fl.ret} onChange={(v) => setFl((s) => ({ ...s, ret: v }))}
-        />
-        <label className="fp-field"><span><Icon name="clock" size={15} className="ob-label-i" />{ONBOARD.flights.when}</span>
-          <select value={fl.month} onChange={(e) => setFl((s) => ({ ...s, month: e.target.value }))}>
-            <option value="">{ONBOARD.flights.whenAny}</option>
-            {monthOptions.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
-          </select>
-        </label>
-        <p className="ob-note">{ONBOARD.flights.whenNote}</p>
-        <button type="button" className="btn btn-primary fp-btn" onClick={addFlight}>
-          {ONBOARD.flights.add} · {approx(LIVE.flight(a, { ...fl, km: fl.route === 'custom' ? num(fl.km) : fl.km }))}
-        </button>
-      </div>
-      <p className="ob-reaction" role="status">{reaction}</p>
+
       <div className="ob-flight-list">
-        <div className="ob-flight-list-head">
-          <span className="ob-label">{ONBOARD.flights.listTitle} ({a.flights.length})</span>
-          {a.flights.length > 0 && (
-            <span className="ob-flight-subtotal">
-              {ONBOARD.flights.subtotal}: <strong>{fmtT(a.flights.reduce((s, f) => s + LIVE.flight(a, f), 0))} t</strong>
-            </span>
-          )}
-        </div>
-        <ul className="ob-flights">
-          {a.flights.map((f, i) => {
-            const routeLabel = (FLIGHT_ROUTES.find((r) => r.id === f.route) || { label: f.km + ' km' }).label;
-            const when = f.month ? (monthOptions.find((m) => m.value === f.month) || {}).label : null;
-            return (
-              <li key={i} className="ob-flight-item">
-                <Icon name="plane" size={16} className="ob-flight-i" />
-                <span className="ob-flight-name">{routeLabel}{f.ret ? ' return' : ''}</span>
-                <span className="ob-flight-meta">{f.cabin}{when ? ' · ' + when : ''} · <strong>{fmtT(LIVE.flight(a, f), 2)} t</strong></span>
-                <button
-                  type="button" className="ob-remove"
-                  onClick={() => { setReaction(''); setA((s) => ({ ...s, flights: s.flights.filter((_, j) => j !== i) })); }}
-                >
-                  {ONBOARD.flights.remove} ×
-                </button>
-              </li>
-            );
-          })}
-          {!a.flights.length && <li className="ob-none">{ONBOARD.flights.none}</li>}
-        </ul>
+        <span className="ob-label">{ONBOARD.flights.listTitle} ({a.flights.length})</span>
+        {!a.flights.length && <p className="ob-none">{ONBOARD.flights.none}</p>}
+        {a.flights.map((fl, i) => (
+          <FlightCard
+            key={i}
+            fl={fl}
+            index={i}
+            monthOptions={monthOptions}
+            onChange={(next) => updateFlight(i, next)}
+            onRemove={() => removeFlight(i)}
+          />
+        ))}
       </div>
+
+      <button type="button" className="btn btn-secondary ob-addflight" onClick={addFlight}>
+        + {a.flights.length ? ONBOARD.flights.addAnother : ONBOARD.flights.add}
+      </button>
+
+      <details className="ob-disclose">
+        <summary>{ONBOARD.flights.sourceSummary}</summary>
+        <p>{ONBOARD.flights.sourceBody}</p>
+      </details>
     </div>,
     <div key="food">
       <div className="ob-stephead">
@@ -533,22 +578,18 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
       <p>{ONBOARD.food.sub}</p>
       <Chips icon="fork" label={ONBOARD.food.diet} options={dietOptions} value={a.dietType} onChange={(v) => set('dietType', v)} />
       <Stepper icon="box" label={ONBOARD.food.parcels} value={a.parcelsMonth} min={0} max={200}
-        onChange={(v) => set('parcelsMonth', v)} live={a.parcelsMonth > 0 ? approx(LIVE.parcels(a)) : null} />
+        onChange={(v) => set('parcelsMonth', v)} />
       <Stepper icon="globe" label={ONBOARD.food.intlOrders} value={a.intlOrdersMonth} min={0} max={100}
-        onChange={(v) => set('intlOrdersMonth', v)} live={a.intlOrdersMonth > 0 ? approx(LIVE.intl(a)) : null} />
+        onChange={(v) => set('intlOrdersMonth', v)} />
     </div>,
     <div key="done" className="ob-done">
-      {/* Deliberately spoiler-free: the character, hotspots and context all
-          belong to the reveal below, so the done pane holds only the number
-          the visitor watched build. */}
+      {/* Deliberately spoiler-free: no number here. The total, its shape and
+          its context all belong to the reveal below. */}
       <div className="ob-stephead">
         <span className="ob-stephead-i" aria-hidden="true"><Icon name="spark" size={26} /></span>
         <h3 ref={headRef} tabIndex={-1}>{OB.done.title}</h3>
       </div>
-      <div className="ob-done-num display">
-        <span className="sr-only">{fmtT(runningTotal) + ' tonnes per year'}</span>
-        <LiveNumber value={runningTotal} /> <span className="ob-done-unit" aria-hidden="true">t / yr</span>
-      </div>
+      <p className="ob-done-ready"><Icon name="spark" size={16} className="ob-label-i" />{OB.done.ready}</p>
       <p>{OB.done.sub}</p>
       <div className="ob-done-ctas">
         <button type="button" className="btn btn-primary fp-btn" onClick={() => onDone(doneProfile, { watch: true })}>{OB.done.watch} →</button>
@@ -556,6 +597,16 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
       </div>
     </div>,
   ];
+
+  // Neutral, spoiler-free progress line for the footer: what this step
+  // captured, never a tonnes total.
+  const stepStatus = [
+    OB.progress.you,
+    OB.progress.energy,
+    OB.progress.travel,
+    flightsReady ? fill(OB.progress.flights.some, { n: flightsReady, s: flightsReady > 1 ? 's' : '' }) : OB.progress.flights.none,
+    OB.progress.food,
+  ][step];
 
   const stepMotion = prefersReducedMotion()
     ? {}
@@ -595,13 +646,10 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
       {step < 5 && (
         <div className="ob-foot">
           <div className="canvas ob-foot-inner">
-            <div className="ob-total">
-              <span className="ob-total-l">{OB.soFar}</span>
-              <span className="ob-total-v" aria-hidden="true">
-                <LiveNumber value={runningTotal} /><em> {OB.perYear}</em>
-              </span>
-              <span className="sr-only" aria-live="polite">{fill(OB.soFarSr, { t: announcedTotal })}</span>
-              <span className="ob-total-note">{OB.liveNote}</span>
+            <div className="ob-foot-status">
+              <span className="ob-foot-tick" aria-hidden="true"><Icon name="spark" size={14} /></span>
+              <span className="ob-foot-status-t">{stepStatus}</span>
+              <span className="ob-foot-note">{OB.keepForReveal}</span>
             </div>
             <div className="ob-foot-btns">
               <button type="button" className="fp-linkbtn" onClick={() => (step === 0 ? onCancel() : setStep(step - 1))}>

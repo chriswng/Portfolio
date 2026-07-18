@@ -7,7 +7,7 @@ import { CountUp, ScrubNumber } from './CountUp';
 import { fmtT } from '../data/copy';
 import ShareSheet from './ShareSheet';
 import {
-  CHROME, COVER, YEAR, GUESS, GUESS_VERDICTS, GUESS_RESULT, TOTAL, SCOPES, HOTSPOTS_ST,
+  CHROME, COVER, YEAR, GUESS, TOTAL, SCOPES, HOTSPOTS_ST,
   MONTHS_ST, BENCH_ST, NEEDLE, OUTRO, SHARE_ST, fill,
 } from '../data/storyCopy';
 
@@ -43,7 +43,7 @@ export function MomentShare({ kind, data, fy, linkedIn }) {
 // ---------------------------------------------------------------------------
 // 0 · Cover
 // ---------------------------------------------------------------------------
-export function Cover({ d, voice, onStart, onAssessor, reduced, chapterCount }) {
+export function Cover({ d, voice, onStart, reduced, chapterCount }) {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
   const ghostY = useTransform(scrollYProgress, [0, 1], ['0%', reduced ? '0%' : '34%']);
@@ -93,9 +93,6 @@ export function Cover({ d, voice, onStart, onAssessor, reduced, chapterCount }) 
             <button type="button" className="btn btn-primary fp-btn" onClick={onStart}>{COVER.start} →</button>
             <span className="st-cover-note">{COVER.startNote}</span>
           </div>
-        )}
-        {voice === 'example' && onAssessor && (
-          <button type="button" className="st-assessor" onClick={onAssessor}>{COVER.assessor} ↓</button>
         )}
       </motion.div>
       <div className="st-cue" aria-hidden="true">
@@ -162,62 +159,45 @@ export function YearTicker({ d, voice, reduced }) {
 }
 
 // ---------------------------------------------------------------------------
-// 2 · The guess: the playable moment.
+// 2 · Reference points: three published benchmarks, so the total lands with
+// context instead of arriving cold. Replaces the old "guess my number", which
+// asked people to guess against nothing.
 // ---------------------------------------------------------------------------
-export function Guess({ d, voice, guess, setGuess, goTo }) {
-  const slide = (v) => setGuess({ ...guess, value: v });
-  const lock = () => {
-    // Accepting the default without touching the slider still counts.
-    setGuess({ value: guess.value ?? 10, locked: true });
-    goTo('st-total');
-  };
-  const skip = () => {
-    setGuess({ value: null, locked: false });
-    goTo('st-total');
-  };
-
+export function ReferencePoints({ d, voice, goTo }) {
   return (
-    <section className="st-moment st-guess" id="st-guess" aria-label="Guess the total">
-      <motion.div className="st-center" initial="hidden" whileInView="visible" viewport={inView}>
+    <section className="st-moment st-guess" id="st-guess" aria-label="Reference points">
+      <motion.div className="st-center st-wide" initial="hidden" whileInView="visible" viewport={inView}>
         <motion.div className="sec-tag" data-idx="" variants={rise}>{GUESS.tag}</motion.div>
         <motion.h2 className="st-h2 display" variants={rise} custom={1}>{GUESS.headline[voice]}</motion.h2>
         <motion.p className="st-line" variants={rise} custom={2}>{GUESS.sub[voice]}</motion.p>
-        <motion.div className="st-guess-box" variants={rise} custom={3}>
-          <div className="st-guess-num" aria-hidden="true">
-            {(guess.value ?? 10).toFixed(1)}<span> {GUESS.unit}</span>
-          </div>
-          <input
-            type="range" min="0.5" max="30" step="0.5"
-            value={guess.value ?? 10}
-            onChange={(e) => slide(Number(e.target.value))}
-            aria-label={GUESS.sliderLabel}
-            aria-valuetext={(guess.value ?? 10).toFixed(1) + ' tonnes'}
-            className="st-slider"
-          />
-          <div className="st-guess-ctas">
-            <button type="button" className="btn btn-primary fp-btn" onClick={lock}>{GUESS.lockIn} →</button>
-            <button type="button" className="st-quiet" onClick={skip}>{GUESS.noIdea}</button>
-          </div>
-        </motion.div>
+        <div className="st-ref-cards">
+          {GUESS.refs.map((r, i) => {
+            const b = d.bench.find((x) => x.id === r.id);
+            return (
+              <motion.div className="st-ref-card" key={r.id} variants={rise} custom={3 + i}>
+                <div className="st-ref-v display">
+                  <CountUp value={b ? b.t : 0} decimals={1} delay={0.2 + i * 0.15} /><span> {r.unit}</span>
+                </div>
+                <div className="st-ref-label">{r.label}</div>
+                <div className="st-ref-note">{r.note}</div>
+              </motion.div>
+            );
+          })}
+        </div>
+        <motion.button type="button" className="btn btn-secondary" variants={rise} custom={6} onClick={() => goTo('st-total')}>
+          {voice === 'example' ? GUESS.cont : GUESS.contOwn} ↓
+        </motion.button>
       </motion.div>
     </section>
   );
 }
 
-export function guessVerdict(guessValue, total) {
-  const diff = guessValue - total;
-  const rel = Math.abs(diff) / Math.max(total, 0.001);
-  const verdict = GUESS_VERDICTS.find((g) => rel <= g.within).text;
-  const result = Math.abs(diff) < 0.05
-    ? GUESS_RESULT.exact
-    : fill(diff < 0 ? GUESS_RESULT.under : GUESS_RESULT.over, { d: fmtT(Math.abs(diff)) });
-  return { verdict, result };
-}
-
 // ---------------------------------------------------------------------------
-// 3 · The total: screen-filling number with parallax depth.
+// 3 · The total: the number answers "what was it?" immediately on arrival, no
+// extra scrolling required. Tapping a category lights up its share of the
+// particle field so the interaction reads as "this is that category's slice".
 // ---------------------------------------------------------------------------
-export function TotalReveal({ d, voice, guess, onGuessAgain, onCopyLink, reduced }) {
+export function TotalReveal({ d, voice, onCopyLink, reduced }) {
   const ref = useRef(null);
   // The carbon field behind the number: one particle per 10 kg. Hovering or
   // focusing a category chip gathers that category's particles.
@@ -225,26 +205,39 @@ export function TotalReveal({ d, voice, guess, onGuessAgain, onCopyLink, reduced
   // pins, a second tap unpins, and mouse traversal only previews.
   const [pinnedCat, setPinnedCat] = useState(null);
   const [hoverCat, setHoverCat] = useState(null);
+  const [shown, setShown] = useState(false);
   const focusCat = pinnedCat ?? hoverCat;
+  const focusName = focusCat ? (d.ranked.find((c) => c.id === focusCat) || {}) : null;
+  // Gentle parallax on the unit ghost only; the number itself reveals on view.
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end end'] });
-  const raw = useTransform(scrollYProgress, [0.02, 0.52], [0.42, 1]);
-  const scale = useSpring(raw, { stiffness: 90, damping: 24, mass: 0.6 });
-  const countP = useTransform(scrollYProgress, [0.04, 0.48], [0, 1]);
   const ghostY = useTransform(scrollYProgress, [0, 1], ['16%', '-16%']);
-  const tailO = useTransform(scrollYProgress, [0.5, 0.66], [0, 1]);
-  const tailY = useTransform(scrollYProgress, [0.5, 0.66], [26, 0]);
-  const locked = guess.locked && guess.value != null;
-  const v = locked ? guessVerdict(guess.value, d.total) : null;
 
   const body = (
     <>
       <div className="st-kicker">{TOTAL.kicker[voice]}</div>
-      <motion.div className="st-total-num display" style={reduced ? undefined : { scale }}>
-        <ScrubNumber progress={countP} value={d.total} decimals={1} />
+      <motion.div
+        className="st-total-num display"
+        initial={reduced ? false : { scale: 0.6, opacity: 0 }}
+        whileInView={{ scale: 1, opacity: 1 }}
+        viewport={{ once: true, margin: '-30% 0px' }}
+        transition={{ type: 'spring', stiffness: 90, damping: 18, mass: 0.7 }}
+        onViewportEnter={() => setShown(true)}
+      >
+        {reduced ? fmtT(d.total, 1) : (shown ? <CountUp value={d.total} decimals={1} duration={1.1} /> : fmtT(d.total, 1))}
         <span className="st-total-unit">{TOTAL.unit}</span>
       </motion.div>
-      <motion.div className="st-total-tail" style={reduced ? undefined : { opacity: tailO, y: tailY }}>
+      <motion.div
+        className="st-total-tail"
+        initial={reduced ? false : { opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-20% 0px' }}
+        transition={{ duration: 0.5, delay: 0.35, ease: [0.25, 1, 0.5, 1] }}
+      >
         <p className="st-line">{TOTAL.line[voice]}</p>
+        <p className="st-enote">{TOTAL.eNote}</p>
+        <p className="st-cat-hint" aria-hidden="true">
+          {focusName ? `${focusName.label}: ${fmtT(focusName.t)} t, ${focusName.pct}% of the total` : TOTAL.chipsHint}
+        </p>
         <div className="st-cat-chips" role="group" aria-label={TOTAL.chipsLabel}>
           {d.ranked.map((c) => (
             <button
@@ -263,30 +256,11 @@ export function TotalReveal({ d, voice, guess, onGuessAgain, onCopyLink, reduced
             </button>
           ))}
         </div>
-        {locked && (
-          <div className="st-verdict">
-            <strong>{v.result}</strong> {v.verdict}
-            <button type="button" className="st-quiet" onClick={onGuessAgain}>{GUESS_RESULT.playAgain}</button>
+        {onCopyLink && (
+          <div className="st-share-row">
+            <button type="button" className="st-quiet" onClick={onCopyLink}>{SHARE_ST.copyLink}</button>
           </div>
         )}
-        {/* Persistent live region: mounts with the moment, fills on reveal. */}
-        <span className="sr-only" role="status">{locked ? v.result + ' ' + v.verdict : ''}</span>
-        <div className="st-share-row">
-          {locked ? (
-            <MomentShare kind="guess" fy={d.fy} data={{
-              title: SHARE_ST.cards.guess[voice],
-              guess: fmtT(guess.value), actual: fmtT(d.total), verdict: v.verdict,
-            }} />
-          ) : (
-            <MomentShare kind="total" fy={d.fy} data={{
-              title: SHARE_ST.cards.total[voice],
-              total: fmtT(d.total), cats: d.ranked.map((c) => ({ label: c.label, t: c.t })),
-            }} />
-          )}
-          {onCopyLink && (
-            <button type="button" className="st-quiet" onClick={onCopyLink}>{SHARE_ST.copyLink}</button>
-          )}
-        </div>
       </motion.div>
     </>
   );
@@ -303,7 +277,6 @@ export function TotalReveal({ d, voice, guess, onGuessAgain, onCopyLink, reduced
           className="st-field"
         />
         <div className="st-center st-total-center">{body}</div>
-        <ScrollHint progress={scrollYProgress} fadeEnd={0.5} tone="dark" />
       </div>
     </section>
   );
@@ -393,10 +366,6 @@ export function Hotspots({ d, voice, reduced }) {
             ))}
           </div>
           <p className="st-punch-sm">{HOTSPOTS_ST.punch[voice]}</p>
-          <MomentShare kind="hotspot" fy={d.fy} data={{
-            title: SHARE_ST.cards.hotspot[voice],
-            rank: 1, label: top.label, t: fmtT(top.t), pct: top.pct, quip: top.quip,
-          }} />
         </motion.div>
         <ScrollHint progress={scrollYProgress} fadeEnd={0.72} />
       </div>
@@ -515,13 +484,8 @@ export function Bench({ d, voice }) {
           </motion.div>
         )}
         <motion.p className="st-punch-sm" variants={rise} custom={6}>{BENCH_ST.line[voice]}</motion.p>
-        <motion.p className="st-caveat" variants={rise} custom={7}>{BENCH_ST.caveat}</motion.p>
-        <motion.div variants={rise} custom={8}>
-          <MomentShare kind="bench" fy={d.fy} data={{
-            title: SHARE_ST.cards.bench[voice],
-            rows: d.bench.map((b) => ({ label: b.label, t: b.t, dim: !b.you })),
-          }} />
-        </motion.div>
+        <motion.p className="st-benchnote" variants={rise} custom={7}>{BENCH_ST.benchNote}</motion.p>
+        <motion.p className="st-caveat" variants={rise} custom={8}>{BENCH_ST.caveat}</motion.p>
       </motion.div>
     </section>
   );
@@ -533,10 +497,10 @@ export function Bench({ d, voice }) {
 export function Needle({ d, voice, onPlan }) {
   if (!d.needle.length) return null;
   return (
-    <section className="st-moment st-needle" id="st-needle" aria-label="What would move the needle">
+    <section className="st-moment st-needle" id="st-needle" aria-label="How to cut it down">
       <motion.div className="st-center st-wide" initial="hidden" whileInView="visible" viewport={inView}>
         <motion.div className="sec-tag" data-idx="" variants={rise}>{NEEDLE.tag}</motion.div>
-        <motion.h2 className="st-h2 display" variants={rise} custom={1}>{NEEDLE.headline}</motion.h2>
+        <motion.h2 className="st-h2 display" variants={rise} custom={1}>{voice === 'example' ? NEEDLE.headline : NEEDLE.headlineOwn}</motion.h2>
         <motion.p className="st-line" variants={rise} custom={2}>{NEEDLE.sub[voice]}</motion.p>
         <div className="st-needle-cards">
           {d.needle.map((a, i) => (
@@ -544,26 +508,13 @@ export function Needle({ d, voice, onPlan }) {
               <div className="st-needle-t display">-<CountUp value={a.pct} decimals={0} delay={0.15 + i * 0.12} /><span className="st-needle-pct">%</span></div>
               <div className="st-needle-of">{NEEDLE.ofYear} · {fmtT(a.reduction)} {NEEDLE.perYear}</div>
               <div className="st-needle-name">{a.action}</div>
-              <div className="st-needle-cost">
-                {a.costPerTonne == null ? '' : a.costPerTonne <= 0
-                  ? `${NEEDLE.saves} $${Math.abs(a.costPerTonne).toLocaleString()} ${NEEDLE.perTonne}`
-                  : `${NEEDLE.costs} $${a.costPerTonne.toLocaleString()} ${NEEDLE.perTonne}`}
-              </div>
+              <div className="st-needle-effort">{a.effortLabel}</div>
             </motion.div>
           ))}
         </div>
         <motion.p className="st-punch" variants={rise} custom={7}>{NEEDLE.punch}</motion.p>
         <motion.div className="st-share-row" variants={rise} custom={8}>
           <button type="button" className="btn btn-secondary" onClick={onPlan}>{NEEDLE.cta} ↓</button>
-          <MomentShare kind="needle" fy={d.fy} data={{
-            title: SHARE_ST.cards.needle[voice],
-            actions: d.needle.map((a) => ({
-              action: a.action, pct: a.pct, t: fmtT(a.reduction),
-              cost: a.costPerTonne == null ? '' : a.costPerTonne <= 0
-                ? `${NEEDLE.saves} $${Math.abs(a.costPerTonne).toLocaleString()} / t`
-                : `${NEEDLE.costs} $${a.costPerTonne.toLocaleString()} / t`,
-            })),
-          }} />
         </motion.div>
       </motion.div>
     </section>
@@ -571,22 +522,75 @@ export function Needle({ d, voice, onPlan }) {
 }
 
 // ---------------------------------------------------------------------------
-// 9 · Outro. Deliberately short: the total was the show two moments ago and
-// the working audit sits directly below, so the ending is an exit, not a
-// recap.
+// 9 · Outro and share gallery. All the shareable cards are gathered here, in a
+// horizontal scroller, so they never interrupt the reveal itself: someone
+// leaving to post something does it once, at the end.
 // ---------------------------------------------------------------------------
-export function Outro({ voice, onStart, onExplore, onReplay, endRef }) {
+export function Outro({ d, voice, character, onStart, onExplore, onReplay, onCopyLink, endRef }) {
+  const top = d.ranked[0];
+  // Put a name on the marquee card when we have one: "ADA'S CARBON EMISSIONS".
+  const totalTitle = d.name ? d.name.toUpperCase() + '’S CARBON EMISSIONS' : SHARE_ST.cards.total[voice];
+  const cards = [];
+  cards.push({
+    key: 'total', kind: 'total', label: 'The total',
+    data: { title: totalTitle, total: fmtT(d.total), cats: d.ranked.map((c) => ({ label: c.label, t: c.t })) },
+  });
+  if (character) {
+    cards.push({
+      key: 'character', kind: 'character', label: 'Your result',
+      linkedIn: {
+        title: SHARE_ST.cards.character[voice], fy: d.fy, name: character.name,
+        tagline: character.tagline, stencil: character.stencil, hex: character.hex,
+        total: fmtT(d.total), badge: character.badge,
+      },
+      data: {
+        title: SHARE_ST.cards.character[voice], name: character.name, tagline: character.tagline,
+        stencil: character.stencil, hex: character.hex, total: fmtT(d.total), badge: character.badge, axes: [],
+      },
+    });
+  }
+  if (top) {
+    cards.push({
+      key: 'hotspot', kind: 'hotspot', label: 'Biggest source',
+      data: { title: SHARE_ST.cards.hotspot[voice], rank: 1, label: top.label, t: fmtT(top.t), pct: top.pct, quip: top.quip },
+    });
+  }
+  cards.push({
+    key: 'bench', kind: 'bench', label: 'In context',
+    data: { title: SHARE_ST.cards.bench[voice], rows: d.bench.map((b) => ({ label: b.label, t: b.t, dim: !b.you })) },
+  });
+  if (d.needle.length) {
+    cards.push({
+      key: 'needle', kind: 'needle', label: 'Biggest cuts',
+      data: {
+        title: SHARE_ST.cards.needle[voice],
+        actions: d.needle.map((a) => ({ action: a.action, pct: a.pct, t: fmtT(a.reduction), cost: a.effortLabel })),
+      },
+    });
+  }
+
   return (
-    <section className="st-moment st-outro" id="st-outro" aria-label="On to the audit">
+    <section className="st-moment st-outro" id="st-outro" aria-label="Share">
       <div ref={endRef} className="st-end-sentinel" aria-hidden="true" />
-      <motion.div className="st-center" initial="hidden" whileInView="visible" viewport={inView}>
+      <motion.div className="st-center st-wide" initial="hidden" whileInView="visible" viewport={inView}>
         <motion.div className="sec-tag" data-idx="" variants={rise}>{OUTRO.tag}</motion.div>
         <motion.h2 className="st-h2 display" variants={rise} custom={1}>{OUTRO.headline[voice]}</motion.h2>
         <motion.p className="st-line" variants={rise} custom={2}>{OUTRO.sub[voice]}</motion.p>
-        <motion.div className="st-share-row" variants={rise} custom={3}>
-          <button type="button" className="btn btn-primary fp-btn" onClick={onExplore}>{OUTRO.explore} ↓</button>
+
+        <motion.div className="st-gallery" variants={rise} custom={3} role="group" aria-label={OUTRO.galleryLabel}>
+          {cards.map((c) => (
+            <div className="st-gallery-card" key={c.key}>
+              <span className="st-gallery-label">{c.label}</span>
+              <MomentShare kind={c.kind} fy={d.fy} data={c.data} linkedIn={c.linkedIn} />
+            </div>
+          ))}
+        </motion.div>
+
+        <motion.div className="st-share-row" variants={rise} custom={4}>
+          {onCopyLink && <button type="button" className="btn btn-secondary" onClick={onCopyLink}>{SHARE_ST.copyLink}</button>}
+          <button type="button" className="fp-linkbtn" onClick={onExplore}>{OUTRO.explore} ↓</button>
           {voice === 'example' && (
-            <button type="button" className="btn btn-secondary" onClick={onStart}>{OUTRO.start}</button>
+            <button type="button" className="fp-linkbtn" onClick={onStart}>{OUTRO.start}</button>
           )}
           <button type="button" className="st-quiet" onClick={onReplay}>{OUTRO.again}</button>
         </motion.div>
