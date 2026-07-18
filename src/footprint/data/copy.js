@@ -203,7 +203,7 @@ export const ONBOARD = {
     title: 'Home energy',
     sub: 'Best case: read the kWh and MJ straight off a power and gas bill. No bills nearby? Start with a typical home and nudge it.',
     presetLabel: 'No bills nearby? Start with a typical home',
-    presetNote: 'Rough starting points for a whole home per quarter. Gas-heated homes down south often run well above these. Swap in your real bills whenever you find them.',
+    presetNote: 'Rough starting points, sized to your household: each adult adds their share, so a busier home reads higher. The figures below are the whole-home total per quarter for the number of adults you set. Gas-heated homes down south often run well above these. Swap in your real bills whenever you find them.',
     kwh: 'Electricity, kWh per quarter (whole home)',
     mj: 'Gas, MJ per quarter (0 if no gas)',
     // {n}/{s} filled with the household size in the component.
@@ -282,14 +282,19 @@ export const ONBOARD = {
   cancel: 'Cancel',
 };
 
-// Typical-household starting points for the energy step, whole household per
-// quarter. Deliberately coarse: they exist so someone without a bill in reach
-// can still finish, and the note tells them to swap in real numbers later.
+// Typical-home starting points for the energy step, expressed PER ADULT per
+// quarter. The whole-home figure the engine prices from is kwhPerAdult times
+// the number of adults at home, so a busier home reads higher rather than
+// splitting one fixed number ever thinner. At the default two adults these
+// reproduce the long-standing whole-home defaults (e.g. an apartment at 1,100
+// kWh); the per-capita share stays realistic as the household grows.
+// Deliberately coarse: they exist so someone without a bill in reach can still
+// finish, and the note tells them to swap in real numbers later.
 export const ENERGY_PRESETS = [
-  { id: 'aptSmall', label: 'Small apartment', kwh: 700, mj: 0 },
-  { id: 'apt', label: 'Apartment', kwh: 1100, mj: 2500 },
-  { id: 'house', label: 'House', kwh: 1600, mj: 5500 },
-  { id: 'houseLarge', label: 'Large house', kwh: 2300, mj: 9000 },
+  { id: 'aptSmall', label: 'Small apartment', kwhPerAdult: 350, mjPerAdult: 0 },
+  { id: 'apt', label: 'Apartment', kwhPerAdult: 550, mjPerAdult: 1250 },
+  { id: 'house', label: 'House', kwhPerAdult: 800, mjPerAdult: 2750 },
+  { id: 'houseLarge', label: 'Large house', kwhPerAdult: 1150, mjPerAdult: 4500 },
 ];
 
 export const METHOD = {
