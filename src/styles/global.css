@@ -533,12 +533,6 @@ section { position:relative; }
   border-radius:var(--r-2xl); padding:clamp(1.9rem,5vw,3.4rem) clamp(1.5rem,4vw,3rem) clamp(1.6rem,3.5vw,2.4rem);
   overflow:hidden; color:var(--forest); box-shadow:var(--shadow-card);
 }
-/* Folder-tab notch: a page-coloured bite out of the top-right corner, so the
-   card reads as a raised tab on the left stepping down on the right. */
-.footer-card::before{
-  content:''; position:absolute; top:0; right:0; width:min(34%,220px); height:clamp(34px,5vw,54px);
-  background:var(--bg); border-bottom-left-radius:var(--r-lg);
-}
 .footer-wordmark{
   font-family:var(--disp); font-weight:700; letter-spacing:-0.05em; line-height:0.86;
   font-size:clamp(2.8rem,11vw,7rem); color:var(--forest); margin-bottom:clamp(1.4rem,3.5vw,2.2rem);
