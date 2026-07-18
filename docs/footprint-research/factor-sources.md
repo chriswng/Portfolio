@@ -109,6 +109,45 @@ correction replacing COVID-era load factors (passenger factors down 16-42%);
   (IGES / Aalto / D-mat 1.5-Degree Lifestyles 2019; Hot or Cool Institute
   2021 update).
 
+## Data quality tiers and uncertainty bands (July 2026 addition)
+
+`QUALITY_TIERS` in `factors.js`: metered/billed ±5%, forecast ±15%,
+estimated ±30%, summed per entry with no correlation credit. The tier
+framework follows the GHG Protocol quantitative uncertainty guidance and
+IPCC 2006 GL Vol 1 Ch 3 (measured data materially tighter than proxies);
+the band widths themselves are stated assumptions of this method, declared
+as such in the basis of preparation. They size the displayed range only and
+never move a central estimate. Change them freely with the method note; no
+external value depends on them.
+
+## July 2026 session: verification-blocked queue
+
+Three additions were designed, scored and then withheld because the build
+environment could not verify their values against any source (egress proxy
+allows package registries and search snippets only; gov.uk, dcceew.gov.au,
+epa.gov and all factor mirrors returned 403). Dataset identities verified;
+values not retrieved; nothing shipped from memory. Details and scores in
+`improvement-scoring.md`. The unblock list:
+
+- **Hotel stay** (UK Gov conversion factors, hotel stay tab): AU, JP, KR,
+  SG, PH per room-night + fallback row label. Basis verified: room-night,
+  Cornell Hotel Sustainability Benchmarking Index via the Hotel
+  Footprinting Tool; 2026 methodology still cites HSBI 2021 data, so values
+  likely carried forward (confirm, do not assume). UK 2022 = 10.4 kg
+  CO2e/room-night (Circular Ecology, single lineage).
+- **Spend screening** (EPA Supply Chain GHG Emission Factors v1.3.0,
+  NAICS-6, 2022 USD, AR5): with-margins column for the consumer categories;
+  CSV at pasteur.epa.gov DOI 10.23719/1531143. AUD/USD to state at ship
+  time (calendar 2025 average 0.6449 per exchange-rates.org was the only
+  value surfaced; prefer RBA/ATO FY2026).
+- **Waste to landfill** (NGA Factors 2025, waste chapter; Tables 15-16 in
+  2023/24 editions): MSW, food, garden, paper factors + gas-capture wording.
+  NSW EPA fact sheet 24p4522 corroborates the food line.
+- Bus (DEFRA average local bus) was scored and rejected on audience value,
+  not just verification; see the scoring doc. Note if ever revisited: the
+  2024 edition was corrected 30 Oct 2024 (v1.1) for Business Travel - Land
+  rounding errors, so 2024 values must come from v1.1.
+
 ## Annual refresh checklist
 
 1. NGA Factors (new edition ~August): Tables 1, 5, 6, 9 → `factors.js`
@@ -116,5 +155,9 @@ correction replacing COVID-era load factors (passenger factors down 16-42%);
 2. UK conversion factors (new edition ~June): flights (all bands/cabins),
    freight air/sea/HGV.
 3. Re-check the flagged single-mirror values against the primary workbooks.
-4. Refresh seed profile with the new financial year's bills and itineraries.
-5. Benchmarks: EDGAR annual report, DCCEEW quarterly inventory.
+4. Work the verification-blocked queue above: hotels, spend screening,
+   waste. Each is design-complete and waiting on numbers.
+5. Refresh seed profile with the new financial year's bills and itineraries.
+6. Benchmarks: EDGAR annual report, DCCEEW quarterly inventory.
+7. Entries pin their factor set id (`factor_set`); closed years are never
+   re-priced. New factors apply forward only.

@@ -26,6 +26,10 @@
 
 /* ---- Mode bar ---- */
 .fp-modebar{ position:sticky; top:0; z-index:30; background:var(--slate); color:#E8EDE6; border-bottom:1px solid rgba(255,255,255,0.08); }
+/* On small screens the bar is taller than the nav it slides beneath, so its
+   text ghosted through the translucent nav. Static below 700px: the context
+   line reads in place and the viewport gets its 90px back. */
+@media (max-width:700px){ .fp-modebar{ position:static; } }
 .fp-modebar-inner{ display:flex; align-items:center; justify-content:space-between; gap:0.75rem; padding-top:0.5rem; padding-bottom:0.5rem; font-family:var(--mono); font-size:10.5px; letter-spacing:0.04em; flex-wrap:wrap; }
 .fp-modebar-btns{ display:flex; gap:0.4rem; flex-wrap:wrap; }
 .fp-mode-btn{ font-family:var(--mono); font-size:10px; letter-spacing:0.06em; text-transform:uppercase; background:transparent; color:#B9C4B4; border:1px solid rgba(255,255,255,0.25); padding:0.3rem 0.7rem; cursor:pointer; transition:all 0.2s var(--ease); }
@@ -343,3 +347,50 @@
 .fp-char-strip{ display:flex; align-items:center; gap:0.9rem; background:var(--white); border:1px solid var(--rule-dk); border-top:none; padding:0.75rem 1.25rem; margin-bottom:0.75rem; }
 .fp-char-strip span{ font-size:0.85rem; color:#475569; }
 .fp-char-strip strong{ color:var(--slate); }
+
+/* ---- The 45-second lane (audience 1: assessors) --------------------------- */
+#fp-skim{ padding:4.5rem 0 3rem; border-bottom:1px solid var(--rule-lt); }
+.fp-skim-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--rule-dk); border:1px solid var(--rule-dk); margin-top:2rem; }
+.fp-skim-card{ display:flex; flex-direction:column; gap:0.45rem; background:var(--white); padding:1.3rem 1.4rem 1.15rem; text-decoration:none; color:inherit; transition:background 0.2s var(--ease); }
+.fp-skim-card:hover{ background:rgba(181,196,43,0.07); }
+.fp-skim-n{ font-family:var(--mono); font-size:10px; color:var(--mid); letter-spacing:0.08em; }
+.fp-skim-label{ font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:0.1em; color:var(--slate); font-weight:700; }
+.fp-skim-v{ font-family:var(--disp); font-size:clamp(1.6rem,2.6vw,2.2rem); font-weight:700; line-height:1; color:var(--slate); }
+.fp-skim-v span{ font-size:0.8rem; font-family:var(--mono); font-weight:400; color:var(--mid); margin-left:0.3rem; }
+.fp-skim-v.fp-skim-mono{ font-family:var(--mono); font-size:1.05rem; letter-spacing:0.04em; padding-top:0.45rem; }
+.fp-skim-s{ font-family:var(--mono); font-size:10.5px; color:var(--mid); line-height:1.5; }
+.fp-skim-line{ font-size:0.8rem; color:#475569; line-height:1.55; margin:0.35rem 0 0.6rem; flex-grow:1; }
+.fp-skim-cta{ font-family:var(--mono); font-size:10.5px; letter-spacing:0.06em; color:#75821D; font-weight:700; }
+.fp-skim-contact{ display:flex; align-items:center; justify-content:space-between; gap:1.5rem; flex-wrap:wrap; border:1px solid var(--rule-dk); border-top:none; background:var(--slate); color:#E8EDE6; padding:1.2rem 1.4rem; }
+.fp-skim-contact p{ font-size:0.85rem; line-height:1.6; margin:0; max-width:34rem; color:#CBD5C6; }
+.fp-skim-contact .fp-linkbtn{ color:#E8EDE6; border-color:rgba(255,255,255,0.35); }
+.fp-skim-contact .fp-linkbtn:hover{ color:var(--matcha); border-color:var(--matcha); }
+
+/* ---- Year rollover and the multi-year record ------------------------------ */
+.fp-rollover{ padding:1.5rem 0 0; }
+.fp-roll-card{ border:1px solid #75821D; border-left:4px solid var(--matcha); background:rgba(181,196,43,0.08); padding:1.25rem 1.5rem; }
+.fp-roll-card .fp-card-sub{ max-width:640px; }
+.fp-archivebar{ background:rgba(181,196,43,0.1); border-bottom:1px solid var(--rule-dk); font-family:var(--mono); font-size:10.5px; color:#475569; }
+.fp-archivebar .canvas{ padding-top:0.5rem; padding-bottom:0.5rem; }
+.fp-yearpick select{ font-family:var(--mono); font-size:10px; letter-spacing:0.06em; text-transform:uppercase; background:transparent; color:#E8EDE6; border:1px solid rgba(255,255,255,0.25); padding:0.3rem 0.5rem; cursor:pointer; }
+.fp-yearpick select:focus-visible{ outline:2px solid var(--matcha); outline-offset:2px; }
+.fp-yearpick option{ color:var(--slate); background:var(--white); }
+.fp-fresh{ color:#B5C42B; }
+
+/* ---- Data quality chips. Text colours hold 4.5:1 on white at chip size. --- */
+.fp-q{ display:inline-block; font-family:var(--mono); font-size:9px; letter-spacing:0.07em; text-transform:uppercase; border:1px solid var(--rule-dk); color:#5C6156; padding:0.1rem 0.4rem; margin-left:0.5rem; vertical-align:middle; white-space:nowrap; }
+.fp-q-metered{ border-color:#75821D; color:#5F6A17; }
+.fp-q-forecast{ border-color:#B56A00; color:#8A5200; }
+
+/* ---- Story cover: the assessor's exit -------------------------------------- */
+.st-assessor{ margin-top:1.1rem; background:none; border:none; padding:0; font-family:var(--mono); font-size:10.5px; letter-spacing:0.05em; color:#475569; cursor:pointer; text-decoration:underline; text-underline-offset:3px; transition:color 0.2s var(--ease); align-self:flex-start; }
+.st-assessor:hover{ color:var(--slate); }
+.st-assessor:focus-visible{ outline:2px solid var(--matcha); outline-offset:3px; }
+
+@media (max-width: 900px){
+  .fp-skim-grid{ grid-template-columns:1fr 1fr; }
+}
+@media (max-width: 560px){
+  .fp-skim-grid{ grid-template-columns:1fr; }
+  .fp-skim-contact{ flex-direction:column; align-items:flex-start; }
+}

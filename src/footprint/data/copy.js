@@ -23,10 +23,82 @@ export const INTRO = {
 export const MODE = {
   example: 'You are viewing the worked example: my FY2026 audit. Your own audit is private to this browser.',
   mine: 'You are viewing your audit. It lives only in this browser; export a backup any time.',
+  archived: 'You are viewing a closed year, kept exactly as it ended. Restating it is deliberate: export, correct, re-import, and say why.',
   switchToMine: 'My audit',
   switchToExample: 'Worked example',
   startCta: 'Start your own audit',
   resumeNote: 'Your audit auto-saves here as you edit.',
+  yearLabel: 'Year',
+  freshness: 'Newest entry is {months} months old. The next quarterly bill probably exists; log it and the range tightens.',
+};
+
+// The 45-second lane for people assessing the work rather than running an
+// audit: four cards that show the craft and end at the method and a
+// conversation. Values are computed live from the same aggregates as
+// everything else; only the words live here.
+export const SKIM = {
+  tag: '00 / The short version',
+  title: ['Forty-five seconds,', 'if that is all I get.'],
+  lede: 'Here to assess the work rather than run an audit? This row is the tour: what got measured, how the engine works, what the fixes cost, and where the method lives. Everything links deeper.',
+  cards: [
+    {
+      id: 'number', label: 'The number', href: '#fp-dash', cta: 'See the audit',
+      line: 'One year of one life, measured like an organisation. The national average counts a wider basket than this boundary, so the percentage flatters; the method says so.',
+    },
+    {
+      id: 'engine', label: 'The engine', href: '#fp-log', cta: 'Read the log',
+      line: 'Every entry stores its activity data, factor, source, scope and data quality. The method tables render from the live factor set, so the words can never drift from the maths.',
+    },
+    {
+      id: 'plan', label: 'The plan', href: '#fp-plan', cta: 'See the curve',
+      line: 'A personal marginal abatement cost curve: each action priced against the audited year, not a national average. Offsets deliberately absent.',
+    },
+    {
+      id: 'method', label: 'The method', href: '#fp-method', cta: 'Read the basis',
+      line: 'A written basis of preparation with the exclusions named and the uncertainty stated, the way an assurer would want it.',
+    },
+  ],
+  numberUnit: 'tCO₂-e',
+  numberSub: 'of the Australian average',
+  engineUnit: 'entries',
+  engineSub: 'factor tables, cited inline',
+  planUnit: 't/yr',
+  planSub: 'biggest single lever',
+  methodSub: 'exclusions, named',
+  contact: 'This page is how I build inventories when nobody is making me. If your organisation needs the same discipline with more zeroes on it, I am open to that conversation.',
+  contactCta: 'Connect on LinkedIn',
+  contactProfile: 'The full profile',
+};
+
+// Year rollover and the multi-year record.
+export const YEARS = {
+  rollTitle: '{label} has ended.',
+  rollBody: 'The reporting period closed on {end}. Close the year and it archives exactly as it stands, factors pinned; the new year opens empty against the factor set in force, with your diet carried over as a forecast.',
+  rollCta: 'Close {label} and open the new year',
+  rolledToast: '{label} closed and archived. Welcome to {next}.',
+  archiveNote: 'Closed {closedAt} on factor set {factorSet}. Entries and their factors are pinned as logged.',
+  switcherAria: 'Choose which year to view',
+  gapNote: 'Reporting gap: {note}',
+};
+
+// The assurance-style audit pack: one document with the method, the factors
+// and the log, built in the browser from the live data.
+export const PACK = {
+  cta: 'Download the audit pack',
+  ctaExample: 'Download this worked example as an audit pack',
+  note: 'One self-contained document: basis of preparation, factor tables, uncertainty statement, the full log. Open it anywhere; print it to PDF if an assurer wants a file.',
+  fileTitle: 'Life Footprint audit pack',
+  generated: 'Generated',
+  factorSetLabel: 'Factor set',
+  periodLabel: 'Reporting period',
+  totalLabel: 'Total',
+  rangeLabel: 'Range at stated confidence bands',
+  scopeLabel: 'By scope',
+  categoryLabel: 'By category',
+  logTitle: 'Activity log',
+  qualityLabel: 'Quality',
+  pastTitle: 'Closed years',
+  packDisclaimer: 'Prepared from the live page data at generation time. The page is the primary record; this document is a convenience copy for review.',
 };
 
 export const DASH = {
@@ -35,6 +107,7 @@ export const DASH = {
   sub: 'The reporting period is the Australian financial year. Bills spread across the months they cover, flights land in the month they happened, and every line in the log carries its factor and source. Method in the basis of preparation below.',
   kpis: {
     total: 'total',
+    range: '{low} to {high} t at the stated quality bands',
     aus: 'of the Australian average',
     budget: 'of the 2030 lifestyle budget',
     largest: 'largest single entry',
@@ -206,22 +279,35 @@ export const METHOD = {
   period: {
     title: 'Reporting period and recalculation',
     paras: [
-      'The reporting period is the Australian financial year. The audited year here is FY2026 (July 2025 to June 2026). Entries snapshot their factor at logging time; a factor refresh (the NGA Factors update each August) applies to new entries, and any restatement of a prior year is done explicitly, not silently.',
+      'The reporting period is the Australian financial year. The audited year here is FY2026 (July 2025 to June 2026). Entries snapshot their factor at logging time and record which factor set priced them; a factor refresh (the NGA Factors update each August) applies to new entries, and any restatement of a prior year is done explicitly, not silently.',
+      'Years now roll over. Closing a year archives it exactly as it stands, entries and pinned factors included, and opens the next twelve months against the factor set in force. A closed year is never re-priced by a refresh. Restating one is deliberate by construction: export your data, correct the closed year in the file, re-import it, and record why. The restatement rule is the organisational one, sized down: material errors are corrected and said out loud; factor updates apply forward, not backward.',
       'One honest gap: we moved apartments in late July 2025, so the first weeks of the year have no home energy data. The audit carries the gap rather than inventing a number for it.',
     ],
+  },
+  uncertainty: {
+    title: 'Uncertainty, stated',
+    paras: [
+      'Every entry carries a data quality tier, and every tier carries a band: metered or billed at ±5%, forecast at ±15%, estimated at ±30%. The bands are summed entry by entry with no correlation credit, which is the cautious end of the published error-propagation approaches: the honest worst case each way. The result is the range shown beside the total.',
+      'Two things the range is not. It is not a confidence interval in the statistical sense; the band widths are stated assumptions of this method, sized from the tier framework in the GHG Protocol uncertainty guidance rather than measured error distributions. And it never moves the central estimate: better data narrows the range, it does not flatter the number.',
+    ],
+  },
+  sensitivity: {
+    title: 'Sensitivity: radiative forcing',
+    para: 'Flights are priced with radiative forcing at the published 1.7 multiplier, which counts the non-CO₂ warming effects of burning fuel at altitude. Reasonable inventories disagree on this. Without it, the flights line would read {flights} t and the year {total} t. The with-RF basis is deliberate: leaving warming out because it is not carbon dioxide is a lawyer’s answer, not an accountant’s.',
   },
   factorsTitle: 'Emission factors in force',
   factorsSub: 'The tables below are the live factor set the calculator prices from, not a copy of it.',
   marketBased: {
     title: 'Market-based instruments',
     paras: [
-      'Grid electricity is reported location-based by default. Accredited GreenPower, where selected, nets the scope 2 generation attribute to zero for the covered share, market-based. Scope 3 fuel-cycle and network losses are conservatively retained in full either way. No offsets are netted against anything, anywhere on this page.',
+      'Grid electricity is reported location-based by default. Accredited GreenPower, where selected, nets the scope 2 generation attribute to zero for the covered share, market-based. Where the two bases differ the audit shows the market-based figure and each electricity entry names its GreenPower share beside the location-based factor table, so the other basis stays recoverable from the same line: the GHG Protocol dual-reporting rule sized for one meter. Scope 3 fuel-cycle and network losses are conservatively retained in full either way. No offsets are netted against anything, anywhere on this page.',
     ],
   },
   quality: {
     title: 'Estimation and data quality',
     paras: [
-      'Entries carry one of three qualities, visible in their notes: metered or billed (meter reads, bill quantities, actual itineraries), spend-converted (bank transactions turned into litres, kilometres or parcels at stated conversion rates), and forecast (a metered daily average extended to an unbilled period). Spend conversion is a screening tool borrowed from organisational scope 3 practice: good enough to find hotspots, not good enough to hide behind, which is why flights and energy always ask for the real quantity.',
+      'Entries carry one of three quality tiers, now a structured field on every line of the log: metered or billed (meter reads, bill quantities, actual itineraries), estimated (bank transactions turned into litres, kilometres or parcels at stated conversion rates, and survey answers from the guided audit), and forecast (a metered daily average extended to an unbilled period). Spend conversion is a screening tool borrowed from organisational scope 3 practice: good enough to find hotspots, not good enough to hide behind, which is why flights and energy always ask for the real quantity.',
+      'The tiers do work. Each one carries the uncertainty band described below, so replacing a survey answer with a real bill visibly tightens the range on the total.',
     ],
   },
   plan: {
@@ -241,8 +327,8 @@ export const METHOD = {
   exclusions: {
     title: 'Exclusions and limitations, named',
     items: [
-      'General purchased goods and services (clothing, electronics, entertainment, health): the largest gap in this boundary. National consumption averages put the excluded basket at several tonnes per person per year, so totals here understate a full consumption footprint and the benchmarks say so where they appear.',
-      'Hotel nights: counted in no category yet. A per-night factor is a candidate for the next factor set.',
+      'General purchased goods and services (clothing, electronics, entertainment, health): the largest gap in this boundary. National consumption averages put the excluded basket at several tonnes per person per year, so totals here understate a full consumption footprint and the benchmarks say so where they appear. The screening basis is chosen (US EPA supply chain factors v1.3, spend-based, clearly labelled screening); its per-category values enter at the next verification pass, because this page does not publish a factor it has not checked against the source.',
+      'Hotel nights: counted in no category yet. The source is identified (the UK Government conversion factors publish a per-night figure by country, Australia included); the values enter at the next verification pass rather than from memory. Until then the nights stay a named exclusion.',
       'Rideshare deadheading (the car driving to me, empty): excluded, understates rideshare by roughly a third.',
       'Tenant energy in an investment property (my personal Category 13, downstream leased assets): no activity data, excluded, noted with a straight face.',
       'Public transport uses a UK rail factor as an indicative proxy pending a published NSW per-passenger-km figure.',
@@ -252,6 +338,13 @@ export const METHOD = {
     ],
   },
   versionTitle: 'Factor set',
+  refresh: {
+    title: 'Factor refresh workflow, in writing',
+    paras: [
+      'Factors refresh on a written routine, not on vibes. Each August when the NGA Factors publish: re-check electricity, gas and road fuels against the new tables, bump the factor set id, and re-verify the flagged single-mirror values against the primary workbooks. Each June when the UK conversion factors publish: flights, freight, and the identified-but-unshipped hotel table. New factors price new entries only; every logged entry keeps the factor and the factor set id it was priced under, and closed years are never re-priced.',
+      'The research trail for every value, including the ones that did not make it in, lives in the repository next to the code.',
+    ],
+  },
 };
 
 export const MARKET = {
@@ -291,7 +384,9 @@ export const TOASTS = {
 
 export const SHARE = {
   bannerTitle: 'You are looking at a shared snapshot',
-  bannerBody: 'Someone ran their audit and shared the summary. Totals, categories and plan headline only; their log stayed in their browser.',
+  bannerBody: 'Someone ran their audit and shared the summary. Totals and categories only; their log stayed in their browser.',
+  provenance: 'The numbers come from a cited-factor engine with a written method.',
+  provenanceCta: 'Read the basis of preparation',
   cta: 'Start your own audit',
   dismiss: 'View the full page',
 };

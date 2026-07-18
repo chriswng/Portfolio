@@ -216,6 +216,49 @@ export const FOOD_PER_KG = {
 };
 
 // ---------------------------------------------------------------------------
+// Data quality tiers and the uncertainty band each carries. The central
+// estimate never moves; the tiers only set the width of the range shown
+// around the total. Band percentages are stated assumptions of this method
+// (the framework is published, the exact widths are editorial), applied to
+// each entry and summed without correlation credit: the honest worst case
+// each way, screening-grade and labelled as such.
+// ---------------------------------------------------------------------------
+export const QUALITY_SOURCE = {
+  name: 'GHG Protocol, Quantitative Inventory Uncertainty guidance; IPCC 2006 Guidelines Vol 1 Ch 3',
+  detail: 'Tier framework per the published guidance (measured data carries materially less uncertainty than proxies or extrapolation). The band widths themselves are stated assumptions of this method, not published values: they size the range, never the central estimate.',
+  url: 'https://ghgprotocol.org/sites/default/files/2023-03/ghg-uncertainty.pdf',
+};
+
+export const QUALITY_TIERS = {
+  metered: {
+    label: 'Metered or billed',
+    band: 0.05,
+    plain: 'Meter reads, bill quantities, actual itineraries.',
+  },
+  forecast: {
+    label: 'Forecast',
+    band: 0.15,
+    plain: 'A metered daily average extended over an unbilled period.',
+  },
+  estimated: {
+    label: 'Estimated',
+    band: 0.30,
+    plain: 'Spend conversions, counts from memory, survey answers.',
+  },
+};
+
+// Default tier per category when an entry does not say otherwise. Flights
+// come from itineraries and bills from meters; most of the rest arrives as
+// an estimate until a real quantity replaces it.
+export const DEFAULT_QUALITY = {
+  electricity: 'metered', gas: 'metered', flight: 'metered', other: 'metered',
+  road: 'estimated', freight: 'estimated', diet: 'estimated',
+};
+
+export const qualityOf = (entry) =>
+  QUALITY_TIERS[entry.quality] ? entry.quality : (DEFAULT_QUALITY[entry.category] || 'estimated');
+
+// ---------------------------------------------------------------------------
 // Other fuels occasionally logged at home. kg CO2-e per unit shown.
 // ---------------------------------------------------------------------------
 export const OTHER_SOURCE = {

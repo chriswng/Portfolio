@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import SplitText from '../components/SplitText';
-import { CATEGORIES, categoryById, FLIGHT_ROUTES, ROAD_FUELS, DIET_TYPES } from './data/factors';
-import { LOG, ONBOARD, fmtT } from './data/copy';
+import { CATEGORIES, categoryById, FLIGHT_ROUTES, ROAD_FUELS, DIET_TYPES, QUALITY_TIERS, DEFAULT_QUALITY, qualityOf } from './data/factors';
+import { LOG, ONBOARD, PACK, fmtT } from './data/copy';
 import { analyseCsv, buildEntriesFromImport, templateCsv } from './lib/importCsv';
 import { exportProfile, parseImported } from './lib/store';
 
@@ -25,14 +25,14 @@ function Field({ label, children }) {
 // ---------------------------------------------------------------------------
 function EntryForm({ onAdd, settings }) {
   const [cat, setCat] = useState('flight');
-  const [f, setF] = useState({ date: todayIso(), route: 'SYD-MEL', cabin: 'economy', ret: true, km: '', amount: '', household: true, months: 3, mode: 'car', fuel: 'petrol', occupants: Math.max(1, Math.round((settings && settings.carOccupancy) || 1)), freightKind: 'parcels', dietType: 'medMeat', days: 365, label: '' });
+  const [f, setF] = useState({ date: todayIso(), route: 'SYD-MEL', cabin: 'economy', ret: true, km: '', amount: '', household: true, months: 3, mode: 'car', fuel: 'petrol', occupants: Math.max(1, Math.round((settings && settings.carOccupancy) || 1)), freightKind: 'parcels', dietType: 'medMeat', days: 365, label: '', quality: '' });
   const set = (k, v) => setF((s) => ({ ...s, [k]: v }));
   const num = (v) => (v === '' || isNaN(Number(v)) ? 0 : Number(v));
 
   const submit = (e) => {
     e.preventDefault();
     let draft = null;
-    const base = { date: f.date, label: f.label, notes: '' };
+    const base = { date: f.date, label: f.label, notes: '', quality: f.quality || DEFAULT_QUALITY[cat] || 'estimated' };
     if (cat === 'flight') {
       const route = FLIGHT_ROUTES.find((r) => r.id === f.route);
       const km = f.route === 'custom' ? num(f.km) : route.km;
@@ -65,12 +65,19 @@ function EntryForm({ onAdd, settings }) {
     <form className="fp-entryform" onSubmit={submit}>
       <div className="fp-form-row">
         <Field label="Category">
-          <select value={cat} onChange={(e) => setCat(e.target.value)}>
+          {/* Changing category resets the quality choice to that category's
+              default; a sticky earlier choice would silently mislabel. */}
+          <select value={cat} onChange={(e) => { setCat(e.target.value); set('quality', ''); }}>
             {CATEGORIES.filter((c) => c.id !== 'other').map((c) => <option key={c.id} value={c.id}>{c.label}</option>)}
           </select>
         </Field>
         <Field label="Date"><input type="date" value={f.date} onChange={(e) => set('date', e.target.value)} required /></Field>
         <Field label="Label (optional)"><input type="text" value={f.label} onChange={(e) => set('label', e.target.value)} placeholder="e.g. Winter power bill" /></Field>
+        <Field label="Data quality">
+          <select value={f.quality || DEFAULT_QUALITY[cat] || 'estimated'} onChange={(e) => set('quality', e.target.value)}>
+            {Object.entries(QUALITY_TIERS).map(([k, t]) => <option key={k} value={k}>{t.label}</option>)}
+          </select>
+        </Field>
       </div>
 
       {cat === 'flight' && (
@@ -257,9 +264,10 @@ function CsvImport({ settings, onAddEntries }) {
 // ---------------------------------------------------------------------------
 // The log section.
 // ---------------------------------------------------------------------------
-export default function Log({ profile, isExample, onAdd, onAddEntries, onDelete, onExport, onImportFile, onShare, onReset, onStart }) {
+export default function Log({ profile, isExample, archived, onAdd, onAddEntries, onDelete, onExport, onImportFile, onShare, onReset, onStart, onPack }) {
   const [importMsg, setImportMsg] = useState('');
   const entries = [...profile.entries].sort((a, b) => (a.date < b.date ? 1 : -1));
+  const readOnly = isExample || archived;
 
   const handleImportBackup = (file) => {
     const reader = new FileReader();
@@ -280,7 +288,7 @@ export default function Log({ profile, isExample, onAdd, onAddEntries, onDelete,
         <div className="fp-scroll-x">
           <table className="fp-table">
             <thead>
-              <tr>{LOG.table.head.map((h) => <th key={h}>{h}</th>)}{!isExample && <th aria-label="Actions" />}</tr>
+              <tr>{LOG.table.head.map((h) => <th key={h}>{h}</th>)}{!readOnly && <th aria-label="Actions" />}</tr>
             </thead>
             <tbody>
               {entries.map((e) => (
@@ -288,6 +296,7 @@ export default function Log({ profile, isExample, onAdd, onAddEntries, onDelete,
                   <td className="mono">{e.date}</td>
                   <td>
                     <span className="fp-e-label">{e.label}</span>
+                    <span className={'fp-q fp-q-' + qualityOf(e)}>{QUALITY_TIERS[qualityOf(e)].label}</span>
                     {e.notes && <span className="fp-e-notes">{e.notes}</span>}
                   </td>
                   <td><span className="fp-leg-dot" style={{ background: categoryById(e.category).hex }} /> {categoryById(e.category).label}</td>
@@ -295,7 +304,7 @@ export default function Log({ profile, isExample, onAdd, onAddEntries, onDelete,
                   <td className="fp-e-factor">{e.factor_used} kg/{e.unit}<span className="fp-e-src">{e.factor_source}</span></td>
                   <td className="mono">{e.scope}</td>
                   <td className="mono strong">{fmtT(e.tco2e, 3)}</td>
-                  {!isExample && (
+                  {!readOnly && (
                     <td><button type="button" className="fp-del" aria-label={'Delete ' + e.label} onClick={() => onDelete(e.id)}>×</button></td>
                   )}
                 </tr>
@@ -308,7 +317,18 @@ export default function Log({ profile, isExample, onAdd, onAddEntries, onDelete,
         {isExample ? (
           <div className="fp-example-note">
             <p>{LOG.exampleNote.body}</p>
-            <button type="button" className="btn btn-primary fp-btn" onClick={onStart}>{LOG.exampleNote.cta} →</button>
+            <div className="fp-ctrl-row">
+              <button type="button" className="btn btn-primary fp-btn" onClick={onStart}>{LOG.exampleNote.cta} →</button>
+              <button type="button" className="fp-linkbtn" onClick={onPack}>{PACK.ctaExample}</button>
+            </div>
+            <p className="fp-note">{PACK.note}</p>
+          </div>
+        ) : archived ? (
+          <div className="fp-example-note">
+            <div className="fp-ctrl-row">
+              <button type="button" className="fp-linkbtn" onClick={onPack}>{PACK.cta}</button>
+            </div>
+            <p className="fp-note">{PACK.note}</p>
           </div>
         ) : (
           <>
@@ -330,9 +350,11 @@ export default function Log({ profile, isExample, onAdd, onAddEntries, onDelete,
                   {LOG.controls.import}
                   <input type="file" accept=".json,application/json" onChange={(e) => e.target.files[0] && handleImportBackup(e.target.files[0])} />
                 </label>
+                <button type="button" className="fp-linkbtn" onClick={onPack}>{PACK.cta}</button>
                 <button type="button" className="fp-linkbtn" onClick={onShare}>{LOG.controls.share}</button>
                 <button type="button" className="fp-linkbtn danger" onClick={onReset}>{LOG.controls.reset}</button>
               </div>
+              <p className="fp-note">{PACK.note}</p>
               <p className="fp-note">{LOG.controls.shareNote}</p>
               {importMsg && <p className="fp-note" role="status">{importMsg}</p>}
             </div>
