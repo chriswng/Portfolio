@@ -255,8 +255,8 @@ section { position:relative; }
 .outcomes-head::after{ content:''; flex:1; height:1px; background:var(--rule-lt); }
 .outcomes-grid{ display:grid; grid-template-columns:1fr; gap:1px; background:var(--rule-dk); border:1px solid var(--rule-dk); border-radius:var(--r-lg); overflow:hidden; }
 @media(min-width:640px){ .outcomes-grid{ grid-template-columns:repeat(3,1fr); } }
-.outcome{ background:linear-gradient(158deg,var(--lime-wash),var(--white) 62%); padding:1.6rem 1.6rem; border-top:3px solid var(--oc,var(--matcha)); transition:background 0.35s var(--ease); }
-.outcome:hover{ background:linear-gradient(158deg,var(--lime-soft),var(--white) 72%); }
+.outcome{ background:linear-gradient(178deg,color-mix(in srgb,var(--oc,var(--matcha)) 16%,var(--white)) 0%,var(--white) 34%); padding:1.7rem 1.6rem; transition:background 0.35s var(--ease); }
+.outcome:hover{ background:linear-gradient(178deg,color-mix(in srgb,var(--oc,var(--matcha)) 26%,var(--white)) 0%,var(--white) 44%); }
 .outcome-num{ font-family:var(--disp); font-size:clamp(2.4rem,6vw,3.4rem); font-weight:700; line-height:1; color:var(--oc,var(--matcha)); letter-spacing:-0.03em; margin-bottom:0.5rem; }
 .outcome-num small{ font-size:0.42em; font-weight:600; letter-spacing:0; }
 .outcome-what{ font-weight:600; font-size:0.88rem; color:var(--slate); margin-bottom:0.3rem; line-height:1.4; }
@@ -270,8 +270,8 @@ section { position:relative; }
 .pipeline{ border:1px solid var(--rule-dk); border-radius:var(--r-lg); overflow:hidden; }
 .pipe-row{ display:flex; flex-direction:column; }
 .pipe-row + .pipe-row{ border-top:1px solid var(--rule-lt); }
-.pipe-step{ display:flex; align-items:center; gap:0.9rem; padding:0.95rem 1rem; border-left:3px solid var(--pc,var(--rule-dk)); background:var(--white); cursor:pointer; user-select:none; transition:background 0.25s var(--ease); }
-.pipe-step:hover{ background:var(--red-bg); }
+.pipe-step{ display:flex; align-items:center; gap:0.9rem; padding:0.95rem 1rem 0.95rem 1.15rem; background:linear-gradient(90deg,color-mix(in srgb,var(--pc,var(--matcha)) 42%,var(--white)) 0%,var(--white) 92px); cursor:pointer; user-select:none; transition:background 0.25s var(--ease); }
+.pipe-step:hover{ background:linear-gradient(90deg,color-mix(in srgb,var(--pc,var(--matcha)) 55%,var(--white)) 0%,var(--lime-wash) 150px); }
 .pipe-step:focus-visible{ outline:2px solid var(--matcha); outline-offset:-2px; }
 .pipe-n{ font-family:var(--mono); font-size:10px; letter-spacing:0.1em; color:var(--subtle); width:1.7rem; flex-shrink:0; }
 .pipe-label{ font-family:var(--mono); font-size:0.82rem; letter-spacing:0.08em; text-transform:uppercase; font-weight:600; color:var(--pc,var(--slate)); }
@@ -357,13 +357,19 @@ section { position:relative; }
 /* Grid variant: buttons fill an even 2x2 so wrapped rows leave no grey gap. */
 .seg-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); width:100%; }
 .seg-grid .seg-btn{ width:100%; text-align:center; }
-.seg-sm{ margin-top:0; }
-.seg-sm .seg-btn{ font-size:0.74rem; padding:0.4rem 0.85rem; }
-.seg-sm .seg-btn.on{ background:var(--sc,var(--slate)); }
+/* Small (lever) selectors fill their card as an even grid rather than a
+   wrapping flex — a wrapping flex left ragged grey where short buttons didn't
+   reach the edge. An odd final option spans the full row so no empty cell shows. */
+.seg-sm{ margin-top:0; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); width:100%; }
+.seg-sm .seg-btn{ font-size:0.74rem; padding:0.5rem 0.85rem; width:100%; text-align:center; }
+.seg-sm .seg-btn:last-child:nth-child(odd){ grid-column:1 / -1; }
+.seg-sm .seg-btn.on{ background:var(--sc,var(--slate)); color:#fff; }
 
 .lever-deck{ display:grid; grid-template-columns:1fr; gap:1px; background:var(--rule-dk); border:1px solid var(--rule-dk); margin-top:1.25rem; border-radius:var(--r-lg); overflow:hidden; }
 @media(min-width:720px){ .lever-deck{ grid-template-columns:1fr 1fr; } }
-.lever-card{ background:var(--white); padding:1.25rem 1.4rem; border-top:3px solid var(--lc,var(--rule-dk)); }
+/* Accent reads as a gradient wash from the top edge instead of a hard bar, so
+   it blends into the deck's rounded corners rather than being clipped by them. */
+.lever-card{ background:linear-gradient(176deg,color-mix(in srgb,var(--lc,var(--matcha)) 14%,var(--white)) 0%,var(--white) 32%); padding:1.25rem 1.4rem; }
 .lever-card-rev{ grid-column:1/-1; }
 .lever-top{ display:flex; align-items:center; gap:0.55rem; margin-bottom:0.25rem; }
 .lever-dot{ width:9px; height:9px; border-radius:50%; background:var(--lc,var(--matcha)); flex-shrink:0; }
@@ -371,7 +377,9 @@ section { position:relative; }
 .lever-src{ font-family:var(--mono); font-size:11px; color:var(--mid); margin-bottom:0.8rem; letter-spacing:0.02em; line-height:1.5; }
 .lever-card .seg-row{ border-color:var(--rule-lt); background:var(--rule-lt); }
 
-.takeaway{ background:linear-gradient(150deg,var(--lime-wash),var(--white) 70%); border-left:4px solid var(--forest-ink); padding:1.15rem 1.5rem; margin-bottom:1.5rem; font-family:var(--disp); font-size:clamp(1.05rem,2.6vw,1.4rem); font-weight:600; line-height:1.45; color:var(--slate); letter-spacing:-0.01em; border-radius:var(--r-md); box-shadow:0 6px 20px rgba(33,48,15,0.10),0 1px 2px rgba(15,23,42,0.04); }
+.takeaway{ position:relative; background:linear-gradient(150deg,var(--lime-wash),var(--white) 70%); padding:1.15rem 1.5rem 1.15rem 1.75rem; margin-bottom:1.5rem; font-family:var(--disp); font-size:clamp(1.05rem,2.6vw,1.4rem); font-weight:600; line-height:1.45; color:var(--slate); letter-spacing:-0.01em; border-radius:var(--r-md); box-shadow:0 6px 20px rgba(33,48,15,0.10),0 1px 2px rgba(15,23,42,0.04); }
+/* Inset rounded gradient bar — sits inside the rounded box, never meeting the curve. */
+.takeaway::before{ content:''; position:absolute; left:0.8rem; top:1.05rem; bottom:1.05rem; width:4px; border-radius:var(--r-pill); background:linear-gradient(180deg,var(--forest-ink),var(--matcha)); }
 .takeaway em{ font-style:normal; color:#75821D; }
 .takeaway .tk-note{ display:block; font-family:var(--sans); font-size:11px; font-weight:400; color:var(--mid); margin-top:0.35rem; letter-spacing:0; line-height:1.5; }
 
@@ -483,7 +491,7 @@ section { position:relative; }
 .edu-deg{ font-size:0.85rem; font-weight:400; color:#475569; margin-bottom:1.25rem; }
 .edu-grid{ display:grid; grid-template-columns:1fr; gap:1px; background:var(--rule-dk); border:1px solid var(--rule-dk); border-radius:var(--r-md); overflow:hidden; }
 @media(min-width:640px){ .edu-grid{ grid-template-columns:1fr 1fr; } }
-.edu-cell{ background:var(--white); padding:1rem 1.1rem; border-left:3px solid var(--unsw); }
+.edu-cell{ background:linear-gradient(90deg,color-mix(in srgb,var(--unsw) 15%,var(--white)) 0%,var(--white) 78px); padding:1rem 1.1rem; }
 .edu-cell-l{ font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--mid); font-weight:600; margin-bottom:0.3rem; }
 .edu-cell-b{ font-size:0.82rem; font-weight:400; color:#334155; line-height:1.6; }
 .edu-cell-b strong{ font-weight:600; color:var(--slate); }
