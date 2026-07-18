@@ -23,23 +23,37 @@
 
 .panel-intro{ font-size:0.9rem; font-weight:400; color:#475569; max-width:640px; line-height:1.8; margin-bottom:2rem; }
 
-/* ---- Baseline ---- */
-.bl-banner{ background:linear-gradient(150deg,var(--lime-soft),#E2E8F0 80%); padding:1.85rem 1.6rem; margin-bottom:1px; border-radius:var(--r-lg) var(--r-lg) 0 0; }
+/* ---- Baseline — one connected tool card ---- */
+.baseline-tool{ background:var(--white); border:1px solid var(--rule-dk); border-radius:var(--r-lg); overflow:hidden; margin-bottom:2rem; box-shadow:0 1px 2px rgba(15,23,42,0.04); }
+/* Selector sits at the top of the card as a clean control strip, connected to
+   the claim and the scope split below by a hairline, not a heavy divider. */
+.baseline-ctrl{ display:flex; align-items:center; gap:0.75rem 1rem; background:var(--white); padding:1rem 1.5rem; border-bottom:1px solid var(--rule-lt); flex-wrap:wrap; }
+.baseline-ctrl-lbl{ font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--mid); white-space:nowrap; font-weight:600; }
+.baseline-seg{ display:flex; flex-wrap:wrap; gap:1px; background:var(--rule-dk); border:1px solid var(--rule-dk); border-radius:var(--r-pill); overflow:hidden; }
+.baseline-seg button{ font-family:var(--mono); font-size:11px; background:var(--bg); border:none; color:#475569; padding:0.4rem 0.95rem; cursor:pointer; transition:background 0.2s,color 0.2s; }
+.baseline-seg button:hover:not(.on){ background:var(--lime-wash); color:var(--forest); }
+.baseline-seg button.on{ background:var(--forest); color:var(--lime-bright); }
+
+/* Standalone (LCA panel) the banner keeps a rounded top; inside the tool card
+   it is a flat middle band and the wrapper supplies the corners. */
+.bl-banner{ background:var(--lime-wash); padding:1.6rem; border-bottom:1px solid var(--rule-lt); border-radius:var(--r-lg) var(--r-lg) 0 0; }
+.baseline-tool .bl-banner{ border-radius:0; }
 .bl-claim{ font-style:normal; font-weight:700; font-size:clamp(0.95rem,2vw,1.3rem); color:var(--slate); line-height:1.3; max-width:600px; margin-bottom:0.65rem; }
 .bl-meta{ font-family:var(--mono); font-size:11px; color:var(--mid); letter-spacing:0.04em; }
-.baseline-ctrl{ display:flex; align-items:center; gap:0.75rem; background:#F1F5F9; padding:0.65rem 1.5rem; border-bottom:1px solid var(--rule-dk); flex-wrap:wrap; }
-.baseline-ctrl-lbl{ font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--mid); white-space:nowrap; font-weight:600; }
-.baseline-seg{ display:flex; gap:1px; background:var(--rule-dk); border:1px solid var(--rule-dk); border-radius:var(--r-pill); overflow:hidden; }
-.baseline-seg button{ font-family:var(--mono); font-size:11px; background:var(--bg); border:none; color:#475569; padding:0.4rem 0.95rem; cursor:pointer; transition:background 0.2s,color 0.2s; }
-.baseline-seg button.on{ background:var(--forest); color:var(--lime-bright); }
 
 .scope-grid{ display:grid; grid-template-columns:1fr; gap:1px; background:var(--rule-dk); border:1px solid var(--rule-dk); margin-bottom:2rem; border-radius:var(--r-lg); overflow:hidden; }
 @media(min-width:560px){ .scope-grid{ grid-template-columns:repeat(3,1fr); } }
-.scope-cell{ background:linear-gradient(158deg,var(--lime-wash),var(--white) 60%); padding:1.35rem 1.5rem; }
-.scope-cell:nth-child(2), .scope-cell:nth-child(3){ background:var(--white); }
+/* Inside the tool card the split is a connected footer, not a separate box. */
+.baseline-tool .scope-grid{ border:none; border-radius:0; margin-bottom:0; }
+.scope-cell{ background:var(--white); padding:1.35rem 1.5rem; }
 .scope-tag{ font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--mid); margin-bottom:0.4rem; font-weight:600; }
 .scope-pct{ font-family:var(--disp); font-size:2.6rem; font-weight:700; line-height:1; margin-bottom:0.4rem; color:var(--forest); }
+/* LCA panel: first system (structural frame) is the hotspot and stays forest. */
 .scope-cell:nth-child(2) .scope-pct, .scope-cell:nth-child(3) .scope-pct{ color:var(--mid); }
+/* Baseline tool: the value chain (Scope 3) is the dominant cell, so it carries
+   the forest weight while the direct/electricity scopes recede. */
+.baseline-tool .scope-cell:nth-child(1) .scope-pct, .baseline-tool .scope-cell:nth-child(2) .scope-pct{ color:var(--mid); }
+.baseline-tool .scope-cell:nth-child(3) .scope-pct{ color:var(--forest); }
 .scope-body{ font-size:0.8rem; font-weight:400; color:#475569; line-height:1.6; }
 
 /* ---- Sankey band (full-bleed) ---- */
@@ -57,10 +71,14 @@
 /* ---- Implication tiles ---- */
 .impl-grid{ display:grid; grid-template-columns:1fr; gap:1px; background:var(--rule-dk); border:1px solid var(--rule-dk); margin-top:2rem; border-radius:var(--r-lg); overflow:hidden; }
 @media(min-width:560px){ .impl-grid{ grid-template-columns:repeat(3,1fr); } }
-.impl{ background:linear-gradient(90deg,color-mix(in srgb,var(--forest-ink) 13%,var(--white)) 0%,var(--white) 82px); padding:1.35rem 1.5rem; transition:background 0.3s var(--ease); }
-.impl:hover{ background:linear-gradient(90deg,color-mix(in srgb,var(--forest-ink) 24%,var(--white)) 0%,var(--lime-wash) 150px); }
-.impl-head{ font-weight:700; font-size:0.85rem; color:var(--slate); margin-bottom:0.35rem; }
-.impl-body{ font-size:0.78rem; font-weight:400; color:#475569; line-height:1.6; }
+/* Insight cards — calm and design-led. Flat white, a short accent tick above
+   the heading as the only ornament, a quiet wash on hover. The old sage
+   gradient bleed is gone. */
+.impl{ background:var(--white); padding:1.7rem 1.5rem 1.5rem; transition:background 0.3s var(--ease); position:relative; }
+.impl::before{ content:''; position:absolute; top:0; left:1.5rem; width:26px; height:2px; background:var(--forest-ink); }
+.impl:hover{ background:var(--lime-wash); }
+.impl-head{ font-weight:700; font-size:0.92rem; color:var(--slate); margin-bottom:0.5rem; line-height:1.3; letter-spacing:-0.01em; }
+.impl-body{ font-size:0.8rem; font-weight:400; color:#475569; line-height:1.65; }
 
 /* ---- Roadmap stages ---- */
 .stage-grid{ display:grid; grid-template-columns:1fr; gap:1px; background:var(--rule-dk); border:1px solid var(--rule-dk); margin-bottom:2rem; align-items:stretch; border-radius:var(--r-lg); overflow:hidden; }
@@ -77,8 +95,10 @@
 /* ---- Tables ---- */
 .scroll-x{ overflow-x:auto; -webkit-overflow-scrolling:touch; border:1px solid var(--rule-dk); border-radius:var(--r-lg); }
 .c-table{ width:100%; border-collapse:collapse; font-size:0.82rem; }
-.c-table thead tr{ background:linear-gradient(180deg,var(--lime-soft),#E2E8F0); }
-.c-table thead th{ font-family:var(--mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--slate); padding:0.6rem 0.9rem; text-align:left; font-weight:600; white-space:nowrap; }
+/* Flat forest header — the green-to-grey gradient read as noise at this height.
+   A single solid band with lime type is calmer and holds contrast cleanly. */
+.c-table thead tr{ background:var(--forest); }
+.c-table thead th{ font-family:var(--mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--lime-bright); padding:0.7rem 0.9rem; text-align:left; font-weight:600; white-space:nowrap; }
 .c-table tbody tr{ background:var(--bg); border-bottom:1px solid var(--rule-dk); transition:background 0.2s; }
 .c-table tbody tr:nth-child(even){ background:var(--white); }
 .c-table tbody tr:hover{ background:var(--red-bg); }

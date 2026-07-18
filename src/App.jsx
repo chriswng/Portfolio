@@ -5,7 +5,6 @@ import Principles from './components/Principles';
 import Ticker from './components/Ticker';
 import Scenario from './components/Scenario';
 import Experience from './components/Experience';
-import Contact from './components/Contact';
 import SiteFooter from './components/SiteFooter';
 
 export default function App() {
@@ -22,7 +21,6 @@ export default function App() {
         <Ticker />
         <Scenario />
         <Experience />
-        <Contact />
       </main>
       <SiteFooter />
     </>

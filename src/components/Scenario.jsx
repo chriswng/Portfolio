@@ -48,9 +48,9 @@ function Seg({ value, options, onChange, sc, small }) {
 }
 
 export default function Scenario() {
-  const [scn, setScn] = useState({ sector: 'infrastructure', grid: 'base', lv: 'base', hv: 'base', plant: 'base', rev: 'moderate' });
+  const [scn, setScn] = useState({ sector: 'property', grid: 'base', lv: 'base', hv: 'base', plant: 'base', rev: 'moderate' });
   const result = useMemo(() => runModel(scn), [scn]);
-  const labels = LEVER_LABELS[result.mode];
+  const labels = LEVER_LABELS[result.leverKey];
   const sectorDesc = resolveSector(scn.sector).desc;
 
   const canvasRef = useRef(null);
@@ -172,7 +172,7 @@ export default function Scenario() {
               <span className="scn-step-num">Step 01</span>
               <h3 className="scn-step-title">Choose an operating profile</h3>
               <p className="scn-step-sub">Each profile loads a different emissions mix and its own set of abatement levers.</p>
-              <div className="seg-row seg-grid" role="group" aria-label="Organisation type">
+              <div className="seg-profiles" role="group" aria-label="Operating profile">
                 {SECTOR_OPTIONS.map((o) => (
                   <button key={o.value} type="button" className={'seg-btn' + (scn.sector === o.value ? ' on' : '')} onClick={() => set('sector', o.value)}>{o.label}</button>
                 ))}
