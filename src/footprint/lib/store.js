@@ -65,7 +65,7 @@ export function exportProfile(profile) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'my-life-footprint-' + payload.period.label.toLowerCase() + '.json';
+  a.download = 'my-carbon-footprint-' + payload.period.label.toLowerCase() + '.json';
   document.body.appendChild(a);
   a.click();
   a.remove();

@@ -94,6 +94,7 @@ function buildStoryData(profile, agg, macc, voice) {
 
   return {
     fy: profile.period.label,
+    name: (profile.settings && profile.settings.name || '').trim(),
     total: agg.total,
     entryCount: agg.count,
     byScope: agg.byScope,
