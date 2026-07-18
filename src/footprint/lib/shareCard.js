@@ -5,7 +5,7 @@
 // falls back to a straight download.
 
 import { SHARE_ST, CARD_TEXT, NEEDLE } from '../data/storyCopy';
-import { CUSTODIAN } from '../data/characters';
+import { BADGE } from '../data/characters';
 import { drawEmblemDots, lighten } from './emblem';
 
 const W = 1080;
@@ -156,10 +156,10 @@ const PAINTERS = {
     ctx.font = `500 28px ${MONO}`;
     ctx.fillText(CARD_TEXT.tonnes + d.fy.toUpperCase(), 524, 510);
     if (d.badge) {
-      drawEmblemDots(ctx, CUSTODIAN.stencil, { x: 524, y: 556, size: 64, color: lighten(CUSTODIAN.hex, 0.3) });
+      drawEmblemDots(ctx, BADGE.stencil, { x: 524, y: 556, size: 64, color: lighten(BADGE.hex, 0.3) });
       ctx.fillStyle = MID;
       ctx.font = `500 26px ${MONO}`;
-      ctx.fillText(CUSTODIAN.name.toUpperCase(), 608, 598);
+      ctx.fillText(BADGE.name.toUpperCase(), 608, 598);
     }
     ctx.fillStyle = INK;
     fitText(ctx, d.name, 78, 820, W - 156, 700, DISP, 96);
@@ -314,11 +314,11 @@ export async function drawLinkedInCard(d) {
     ctx.fillText(d.mix, 434, 528);
   }
   if (d.badge) {
-    drawEmblemDots(ctx, CUSTODIAN.stencil, { x: LW - 72 - 64, y: 420, size: 64, color: lighten(CUSTODIAN.hex, 0.3) });
+    drawEmblemDots(ctx, BADGE.stencil, { x: LW - 72 - 64, y: 420, size: 64, color: lighten(BADGE.hex, 0.3) });
     ctx.fillStyle = MID;
     ctx.font = `500 20px ${MONO}`;
     ctx.textAlign = 'right';
-    ctx.fillText(CUSTODIAN.name.toUpperCase(), LW - 72, 516);
+    ctx.fillText(BADGE.name.toUpperCase(), LW - 72, 516);
     ctx.textAlign = 'left';
   }
 
