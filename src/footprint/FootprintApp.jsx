@@ -2,11 +2,10 @@ import { useCallback, useMemo, useState } from 'react';
 import { MotionConfig } from 'framer-motion';
 import { Grain, ScrollProgress, SkipLink } from '../components/Chrome';
 import SplitText from '../components/SplitText';
-import { NAV_LINKS } from '../data/content';
 import { buildSeedProfile } from './data/seedProfile';
-import { INTRO, MODE, SHARE, FOOTER, LOG, TOASTS, YEARS, fmtT } from './data/copy';
+import { INTRO, MODE, SHARE, LOG, TOASTS, YEARS, METHOD_LINK, fmtT } from './data/copy';
 import { DASH_EXTRA, fill } from './data/storyCopy';
-import { categoryById } from './data/factors';
+import { categoryById, FACTOR_SET } from './data/factors';
 import { aggregate, priceEntry, projectPathway, maccData, newId, rolloverProfile } from './lib/engine';
 import {
   loadOwnProfile, saveOwnProfile, clearOwnProfile, exportProfile,
@@ -21,7 +20,7 @@ import Dashboard from './Dashboard';
 import Plan from './Plan';
 import Log from './Log';
 import Onboarding from './Onboarding';
-import { Method, Market } from './MethodMarket';
+import { FootprintNav, FootprintFooter } from './Nav';
 
 // Local date, never toISOString: UTC lands on yesterday in Australian zones.
 const todayIso = () => {
@@ -34,33 +33,21 @@ const monthsOld = (iso) => {
   return (Number(t.slice(0, 4)) - Number(iso.slice(0, 4))) * 12 + (Number(t.slice(5, 7)) - Number(iso.slice(5, 7)));
 };
 
-function FootprintNav() {
-  const [menuOpen, setMenuOpen] = useState(false);
+// Compact pointer to the basis of preparation page: the method itself, with
+// its factor tables, lives at method/ rather than weighing down this page.
+function MethodLink() {
   return (
-    <nav className="nav" aria-label="Primary">
-      <div className="nav-inner canvas">
-        <a href="../" className="nav-logo">./</a>
-        <div className={`nav-links${menuOpen ? ' open' : ''}`}>
-          {NAV_LINKS.map((l) => {
-            const self = l.href === 'footprint/';
-            const href = self ? './' : '../' + l.href;
-            return (
-              <a key={l.label} href={href} className={self ? 'active' : undefined} aria-current={self ? 'true' : undefined}>
-                {l.label}
-              </a>
-            );
-          })}
+    <section id="fp-methodlink">
+      <div className="canvas">
+        <div className="sec-tag" data-idx="04 / ">Basis of preparation</div>
+        <h2 className="display fp-h2"><SplitText text={METHOD_LINK.title[0]} /> <SplitText text={METHOD_LINK.title[1]} accentIndex={1} /></h2>
+        <p className="fp-sub">{METHOD_LINK.body}</p>
+        <div className="fp-ctrl-row">
+          <a className="btn btn-primary fp-btn" href="method/">{METHOD_LINK.cta} →</a>
         </div>
-        <button
-          className={`nav-hamburger${menuOpen ? ' open' : ''}`}
-          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-          aria-expanded={menuOpen}
-          onClick={() => setMenuOpen((v) => !v)}
-        >
-          <span /><span /><span />
-        </button>
+        <p className="fp-note">{fill(METHOD_LINK.factorLine, { id: FACTOR_SET.id, updated: FACTOR_SET.updated })}</p>
       </div>
-    </nav>
+    </section>
   );
 }
 
@@ -230,6 +217,21 @@ export default function FootprintApp() {
     muteAudio();
     landOnDashboard();
   };
+  // "Open the full plan" from the needle moment: the story has made its
+  // point, so it closes properly and the page lands on the plan itself
+  // instead of anchor-jumping over the sections in between.
+  const onStoryPlan = () => {
+    markStorySeen();
+    setStoryOpen(false);
+    muteAudio();
+    window.setTimeout(() => {
+      const el = document.getElementById('fp-plan');
+      if (!el) return;
+      el.scrollIntoView({ behavior: 'auto' });
+      el.setAttribute('tabindex', '-1');
+      el.focus({ preventScroll: true });
+    }, 50);
+  };
   // The assessor's exit: straight from the story cover to the 45-second
   // lane. Focus moves with the scroll so a keyboard user's next Tab
   // continues from the lane instead of the top of the page.
@@ -285,6 +287,7 @@ export default function FootprintApp() {
           onAssessor={onAssessor}
           onEnd={onStoryEnd}
           onFinish={onStoryFinish}
+          onPlan={onStoryPlan}
           onCopyLink={onShare}
           soundOn={soundOn}
           onToggleSound={toggleSound}
@@ -307,7 +310,7 @@ export default function FootprintApp() {
                     <div className="fp-kpi" key={label}><div className="fp-kpi-l">{label}</div><div className="fp-kpi-v">{fmtT(t)}<span> t</span></div></div>
                   ))}
                 </div>
-                <p className="fp-note">{SHARE.provenance} <a href="#fp-method">{SHARE.provenanceCta}</a></p>
+                <p className="fp-note">{SHARE.provenance} <a href="method/">{SHARE.provenanceCta}</a></p>
                 <div className="fp-ctrl-row">
                   <button type="button" className="btn btn-primary fp-btn" onClick={() => { dismissSnapshot(); setOnboarding(true); }}>{SHARE.cta} →</button>
                   <button type="button" className="fp-linkbtn" onClick={dismissSnapshot}>{SHARE.dismiss}</button>
@@ -410,17 +413,10 @@ export default function FootprintApp() {
           onExport={onExport} onImportFile={onImportFile} onShare={onShare} onReset={onReset} onStart={onStart}
           onPack={onPack}
         />
-        <Method agg={agg} />
-        <Market />
+        <MethodLink />
       </main>
 
-      <footer className="fp-footer">
-        <div className="canvas fp-footer-inner">
-          <a href="../" className="fp-footer-home">./</a>
-          <span className="fp-footer-name">{FOOTER.name}</span>
-          <a href="../" className="fp-footer-back">← {FOOTER.back}</a>
-        </div>
-      </footer>
+      <FootprintFooter />
       </div>
 
       {onboarding && <Onboarding onDone={onOnboardDone} onBuilt={onOnboardBuilt} onCancel={() => setOnboarding(false)} />}

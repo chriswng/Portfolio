@@ -8,10 +8,12 @@ built as a React + Vite multi-page app and deployed to GitHub Pages.
 - React 18 + Vite 5, `framer-motion` for motion, `chart.js` for the scenario
   model, `ogl` for the hero aurora (WebGL), plus hand-written canvas renderers
   (contour field, warming stripes).
-- Three pages: the main profile (`index.html` → `src/main.jsx` → `App.jsx`), a
+- Four pages: the main profile (`index.html` → `src/main.jsx` → `App.jsx`), a
   standalone work-samples page (`work/index.html` → `src/work/main.jsx`) at
-  `/work/`, and the Life Footprint dashboard (`footprint/index.html` →
-  `src/footprint/main.jsx`) at `/footprint/`.
+  `/work/`, the Life Footprint dashboard (`footprint/index.html` →
+  `src/footprint/main.jsx`) at `/footprint/`, and its basis of preparation
+  (`footprint/method/index.html` → `src/footprint/method/main.jsx`) at
+  `/footprint/method/`.
 
 ## Layout
 
@@ -20,6 +22,7 @@ built as a React + Vite multi-page app and deployed to GitHub Pages.
 | `src/components/` | Main-page sections (Hero, Bio, Principles, Ticker, Scenario, Experience, Contact, StripesFooter) plus shared Chrome (nav, grain, scroll progress, skip link). |
 | `src/work/` | Work-samples page: `WorkApp`, `Baseline`, `CaseStudy`, data in `workData.js`, styles in `work.css`. |
 | `src/footprint/` | Life Footprint page: calculation engine and factor data in `lib/` and `data/` (keep rigorous; every factor cites its source), the Wrapped-style reveal in `story/` (WebGL carbon field, carbon characters, share cards), guided audit in `Onboarding.jsx`, dashboard sections alongside. Copy lives in `data/copy.js` and `data/storyCopy.js`. |
+| `src/footprint/method/` | The basis of preparation page (`/footprint/method/`): the written method plus the live factor tables, rendered from the same factor set the engine prices from. |
 | `src/data/` | Content and model inputs: `content.js` (all editorial copy), `scenario.js` (decarbonisation model), `stripes.js` (warming-stripes series). |
 | `src/hooks/` | `useMagnetic` — cursor-follow interaction. |
 | `src/utils/` | `media.js` — `prefersReducedMotion()` / `canHover()` guards. |
@@ -35,6 +38,12 @@ built as a React + Vite multi-page app and deployed to GitHub Pages.
   deliberate and contrast is held to the original lightness.
 - **All editorial copy is data**, not JSX. Add or edit words in `src/data/`,
   never inline in components.
+- **The basis of preparation stays in sync.** The footprint's method page
+  (`/footprint/method/`, rendered from `METHOD` in `src/footprint/data/copy.js`
+  by `src/footprint/Method.jsx`) is the written record of the model. Any change
+  to the footprint engine, factors, abatement options, pathway or forecasting
+  logic, boundary or exclusions must update the basis of preparation page in
+  the same change. Titles across the site never end in a full stop.
 - **Motion respects preferences.** Gate every animation/loop on
   `prefersReducedMotion()` and cursor-only interactions on `canHover()` (both
   from `src/utils/media.js`). Canvas/WebGL loops must pause off-screen via

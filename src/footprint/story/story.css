@@ -323,16 +323,15 @@
 @media (min-width: 720px) { .st-needle-cards { grid-template-columns: repeat(3, 1fr); } }
 .st-needle-card { background: var(--white); padding: 1.5rem 1.5rem 1.3rem; border-top: 3px solid var(--ac); transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease); }
 .st-needle-card:hover { transform: translateY(-3px); box-shadow: 0 14px 34px rgba(23, 28, 19, 0.10); }
-.st-needle-t { font-size: clamp(2.2rem, 5vw, 3.2rem); font-weight: 700; color: var(--slate); line-height: 1; margin-bottom: 0.6rem; font-variant-numeric: tabular-nums; }
+.st-needle-t { font-size: clamp(2.4rem, 5.5vw, 3.4rem); font-weight: 700; color: var(--slate); line-height: 1; margin-bottom: 0.35rem; font-variant-numeric: tabular-nums; }
+.st-needle-pct { font-size: 0.55em; color: #75821D; font-weight: 700; }
+.st-needle-of { font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mid); font-weight: 600; margin-bottom: 0.7rem; }
 .st-needle-name { font-weight: 700; font-size: 0.92rem; color: var(--slate); line-height: 1.4; margin-bottom: 0.45rem; }
 .st-needle-cost { font-family: var(--mono); font-size: 10.5px; color: #66731A; font-weight: 600; }
 
 /* ---- Outro ---- */
 .st-outro { border-bottom: 1px solid var(--st-dark-rule); }
 .st-outro .st-center { text-align: center; }
-.st-outro-recap { font-size: clamp(2.6rem, 8vw, 5rem); line-height: 0.95; letter-spacing: -0.04em; margin-bottom: 0.4rem; font-variant-numeric: tabular-nums; }
-.st-outro-kicker { display: block; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--st-dark-mid); font-weight: 600; margin-bottom: 0.7rem; }
-.st-outro-unit { font-size: 0.4em; color: var(--matcha); font-weight: 600; }
 .st-outro .st-line { margin-left: auto; margin-right: auto; }
 .st-outro .st-share-row { justify-content: center; }
 .st-outro .btn-secondary { color: var(--st-dark-ink); border-color: var(--st-dark-rule); }

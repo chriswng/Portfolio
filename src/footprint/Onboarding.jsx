@@ -4,11 +4,8 @@ import { ELECTRICITY, FLIGHT_ROUTES, ROAD_FUELS, DIET_TYPES } from './data/facto
 import { CONVERSIONS } from './data/vendorMap';
 import { ONBOARD, ENERGY_PRESETS, fmtT } from './data/copy';
 import { OB, fill } from './data/storyCopy';
-import { classifyCharacter } from './data/characters';
 import { priceEntry, aggregate } from './lib/engine';
 import { audio } from './lib/audio';
-import { EmblemDots } from './story/CarbonField';
-import { lighten } from './lib/emblem';
 import { prefersReducedMotion } from '../utils/media';
 
 // Local-date formatter. toISOString converts to UTC, which in Australian
@@ -79,13 +76,16 @@ export function buildProfileFromOnboarding(a) {
       notes: 'Fares converted at about ' + Math.round(CONVERSIONS.ptPerKm.value * 100) + 'c per km. Indicative rail factor.',
     }));
   }
-  a.flights.forEach((fl, i) => {
+  // Survey flights carry no real dates, so none are invented: each itinerary
+  // spreads evenly across the year (like the other typical-year entries)
+  // until a real, dated trip replaces it in the log.
+  a.flights.forEach((fl) => {
     const route = FLIGHT_ROUTES.find((r) => r.id === fl.route);
     entries.push(E({
-      category: 'flight', date: shiftMonths(period.end, -((i * 3) % 12) - 1, 15),
+      category: 'flight', date: period.end, period_months: 12,
       label: (route ? route.label : Math.round(fl.km) + ' km flight') + (fl.ret ? ' return' : ''),
       meta: { km: route ? route.km : fl.km, band: route ? route.band : undefined, international: route ? undefined : fl.km > 1500, cabin: fl.cabin, return: fl.ret },
-      notes: 'From the guided audit: a typical-year itinerary.',
+      notes: 'From the guided audit: a typical-year itinerary, spread across the year. Log the real trip with its date to replace it.',
     }));
   });
   if (a.parcelsMonth > 0) {
@@ -258,7 +258,6 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
 
   const runningTotal = useMemo(() => aggregate(buildProfileFromOnboarding(a)).total, [a]);
   const doneProfile = useMemo(() => (step === 5 ? buildProfileFromOnboarding(a) : null), [step, a]);
-  const doneCharacter = useMemo(() => (doneProfile ? classifyCharacter(aggregate(doneProfile)) : null), [doneProfile]);
 
   // The done pane says the audit is saved, so save it as the pane appears;
   // closing with Escape or the cross after that point loses nothing.
@@ -460,32 +459,18 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         onChange={(v) => set('intlOrdersMonth', v)} live={a.intlOrdersMonth > 0 ? approx(LIVE.intl(a)) : null} />
     </div>,
     <div key="done" className="ob-done">
-      <div className="ob-done-grid">
-        {doneCharacter && (
-          <div className="ob-done-stage" aria-hidden="true">
-            <EmblemDots stencil={doneCharacter.stencil} hex={lighten(doneCharacter.hex, 0.22)} size={200} />
-          </div>
-        )}
-        <div>
-          <h3 ref={headRef} tabIndex={-1}>{OB.done.title}</h3>
-          <div className="ob-done-num display">
-            <span className="sr-only">{fmtT(runningTotal) + ' tonnes per year'}</span>
-            <LiveNumber value={runningTotal} /> <span className="ob-done-unit" aria-hidden="true">t / yr</span>
-          </div>
-          {doneCharacter && (
-            <div className="ob-done-char">
-              <span>
-                {OB.done.profileLabel} <strong style={{ color: doneCharacter.hex }}>{doneCharacter.name}.</strong>
-                <em> {doneCharacter.tagline}</em>
-              </span>
-            </div>
-          )}
-          <p>{OB.done.sub}</p>
-          <div className="ob-done-ctas">
-            <button type="button" className="btn btn-primary fp-btn" onClick={() => onDone(doneProfile, { watch: true })}>{OB.done.watch} →</button>
-            <button type="button" className="fp-linkbtn" onClick={() => onDone(doneProfile, { watch: false })}>{OB.done.skip}</button>
-          </div>
-        </div>
+      {/* Deliberately spoiler-free: the character, hotspots and context all
+          belong to the reveal below, so the done pane holds only the number
+          the visitor watched build. */}
+      <h3 ref={headRef} tabIndex={-1}>{OB.done.title}</h3>
+      <div className="ob-done-num display">
+        <span className="sr-only">{fmtT(runningTotal) + ' tonnes per year'}</span>
+        <LiveNumber value={runningTotal} /> <span className="ob-done-unit" aria-hidden="true">t / yr</span>
+      </div>
+      <p>{OB.done.sub}</p>
+      <div className="ob-done-ctas">
+        <button type="button" className="btn btn-primary fp-btn" onClick={() => onDone(doneProfile, { watch: true })}>{OB.done.watch} →</button>
+        <button type="button" className="fp-linkbtn" onClick={() => onDone(doneProfile, { watch: false })}>{OB.done.skip}</button>
       </div>
     </div>,
   ];
