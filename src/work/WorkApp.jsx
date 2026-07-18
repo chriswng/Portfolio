@@ -170,7 +170,7 @@ export default function WorkApp() {
       <ScrollProgress />
       <WorkNav />
 
-      <main id="main-content">
+      <main id="main-content" className="page-work">
       <section id="work-intro">
         <div className="bloom-wrap" aria-hidden="true"><div className="bloom bloom-a" /><div className="bloom bloom-b" /><div className="bloom bloom-c" /></div>
         <div className="canvas" style={{ position: 'relative', zIndex: 1 }}>

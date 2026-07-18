@@ -15,7 +15,7 @@ export default function App() {
       <Grain />
       <ScrollProgress />
       <Nav />
-      <main id="main-content">
+      <main id="main-content" className="page-home">
         <Hero />
         <Bio />
         <Principles />
