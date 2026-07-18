@@ -12,6 +12,7 @@ import {
 } from './data/factors';
 import { METHOD, fmtT } from './data/copy';
 import { fill } from './data/storyCopy';
+import Icon from './Icons';
 
 function FTable({ caption, head, rows, source }) {
   return (
@@ -42,7 +43,7 @@ export default function Method({ agg, periodLabel }) {
   return (
     <section id="fp-method">
       <div className="canvas">
-        <div className="sec-tag" data-idx="./ ">{METHOD.tag}</div>
+        <div className="sec-tag" data-idx="./ "><Icon name="book" size={16} />{METHOD.tag}</div>
         <h1 className="display fp-h2"><SplitText text={METHOD.title[0]} /> <SplitText text={METHOD.title[1]} accentIndex={1} /></h1>
         <p className="fp-sub">{METHOD.sub}</p>
         <p className="fp-note">← <a href="../">{METHOD.backToDash}</a></p>

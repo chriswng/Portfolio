@@ -8,6 +8,7 @@ import { CONTACT } from '../data/content';
 import { FACTOR_SET } from './data/factors';
 import { METHOD, SKIM, fmtT } from './data/copy';
 import { AUS_AVG } from './data/benchmarks';
+import Icon from './Icons';
 
 export default function Skim({ agg, macc }) {
   const topLever = macc
@@ -45,7 +46,7 @@ export default function Skim({ agg, macc }) {
     <section id="fp-skim" aria-label="The 45-second version">
       <div className="canvas">
         {/* Unnumbered: the numbered sequence starts at the audit below. */}
-        <div className="sec-tag" data-idx="./ ">The short version</div>
+        <div className="sec-tag" data-idx="./ "><Icon name="spark" size={16} />The short version</div>
         <h2 className="display fp-h2"><SplitText text={SKIM.title[0]} /> <SplitText text={SKIM.title[1]} accentIndex={3} /></h2>
         <p className="fp-sub">{SKIM.lede}</p>
         <div className="fp-skim-grid">
