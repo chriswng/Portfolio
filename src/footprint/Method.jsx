@@ -89,9 +89,9 @@ export default function Method({ agg, periodLabel }) {
           <p>{METHOD.factorsSub}</p>
 
           <FTable
-            caption="Electricity, by grid region · kg CO₂-e per kWh"
-            head={['Region', 'Scope 2', 'Scope 3']}
-            rows={Object.values(ELECTRICITY).map((r) => [r.label, r.s2.toFixed(2), r.s3.toFixed(2)])}
+            caption="Electricity, by state and grid region · kg CO₂-e per kWh"
+            head={['State / region', 'Scope 2', 'Scope 3']}
+            rows={Object.values(ELECTRICITY).map((r) => [r.label + (r.grid ? ' · ' + r.grid : ''), r.s2.toFixed(2), r.s3.toFixed(2)])}
             source={ELECTRICITY_SOURCE}
           />
           <FTable

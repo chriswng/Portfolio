@@ -40,14 +40,18 @@ export const ELECTRICITY_SOURCE = {
   url: 'https://www.dcceew.gov.au/climate-change/publications/national-greenhouse-accounts-factors-2025',
 };
 
+// label: the full state or territory name, used consistently everywhere the
+// visitor picks a place (guided audit) and on the method factor table. grid:
+// the named interconnected system the factor applies to, shown only on the
+// method table where the region detail belongs. ACT sits on the NSW grid.
 export const ELECTRICITY = {
-  NSW: { label: 'NSW / ACT', s2: 0.64, s3: 0.03 },
+  NSW: { label: 'New South Wales & ACT', s2: 0.64, s3: 0.03 },
   VIC: { label: 'Victoria', s2: 0.78, s3: 0.09 },
   QLD: { label: 'Queensland', s2: 0.67, s3: 0.09 },
   SA: { label: 'South Australia', s2: 0.22, s3: 0.04 },
-  WA: { label: 'WA (SWIS)', s2: 0.50, s3: 0.06 },
+  WA: { label: 'Western Australia', grid: 'SWIS grid', s2: 0.50, s3: 0.06 },
   TAS: { label: 'Tasmania', s2: 0.20, s3: 0.03 },
-  NT: { label: 'NT (DKIS)', s2: 0.56, s3: 0.09 },
+  NT: { label: 'Northern Territory', grid: 'Darwin-Katherine (DKIS)', s2: 0.56, s3: 0.09 },
 };
 
 // Stylised grid decarbonisation trajectory used only by the pathway model:

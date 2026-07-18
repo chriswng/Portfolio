@@ -199,6 +199,29 @@
 .fp-del{ border:none; background:none; color:var(--mid); font-size:1.05rem; cursor:pointer; line-height:1; padding:0.2rem 0.45rem; }
 .fp-del:hover{ color:#C7274A; }
 
+/* Inline log editing: the activity number is a real control, and the Edit
+   button opens a re-pricing form in a row beneath the entry. */
+.fp-row-actions{ white-space:nowrap; text-align:right; }
+.fp-num-edit{
+  font-family:var(--mono); font-size:0.74rem; color:var(--slate); background:none;
+  border:none; border-bottom:1px dashed var(--rule-dk); padding:0.05rem 0.1rem; cursor:pointer;
+  white-space:nowrap; transition:color 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+.fp-num-edit:hover{ color:#75821D; border-bottom-color:var(--matcha); }
+.fp-num-edit:focus-visible{ outline:2px solid var(--matcha); outline-offset:2px; }
+.fp-edit-btn{
+  font-family:var(--mono); font-size:9.5px; letter-spacing:0.08em; text-transform:uppercase; font-weight:700;
+  background:none; border:1px solid var(--rule-dk); color:var(--slate); padding:0.3rem 0.55rem;
+  border-radius:6px; cursor:pointer; margin-right:0.3rem; transition:all 0.2s var(--ease);
+}
+.fp-edit-btn:hover{ border-color:var(--matcha); color:#75821D; }
+.fp-row-editing td{ background:rgba(181,196,43,0.07); }
+.fp-editrow td{ background:rgba(181,196,43,0.05); padding:0; }
+.fp-edit{ display:flex; gap:0.9rem; flex-wrap:wrap; align-items:flex-end; padding:1rem 0.8rem; }
+.fp-edit .fp-field{ min-width:120px; }
+.fp-edit-btns{ display:flex; gap:0.7rem; align-items:center; flex-wrap:wrap; }
+.fp-log-edithint{ margin-top:0.7rem; }
+
 /* ---- Forms ---- */
 .fp-entryform{ margin-top:0.5rem; }
 .fp-form-row{ display:flex; gap:0.9rem; flex-wrap:wrap; margin-bottom:0.9rem; }
@@ -277,8 +300,19 @@
 .ob-stepper input:focus-visible{ outline:2px solid var(--matcha); outline-offset:3px; }
 
 .ob-slider-head{ display:flex; justify-content:space-between; align-items:baseline; gap:1rem; }
-.ob-value{ font-family:var(--disp); font-weight:700; font-size:1.25rem; color:var(--slate); font-variant-numeric:tabular-nums; white-space:nowrap; }
+.ob-value{ display:inline-flex; align-items:baseline; gap:0.25rem; font-family:var(--disp); font-weight:700; font-size:1.25rem; color:var(--slate); font-variant-numeric:tabular-nums; white-space:nowrap; }
 .ob-value em{ font-style:normal; font-family:var(--mono); font-size:0.6em; color:var(--mid); font-weight:500; }
+/* The value is a real input: type an exact figure, or use the slider below. */
+.ob-value-input{
+  font:inherit; color:inherit; text-align:right; width:7ch; max-width:11ch;
+  background:transparent; border:none; border-bottom:1px dashed var(--rule-dk);
+  padding:0 0.1rem 0.1rem; font-variant-numeric:tabular-nums;
+  transition:border-color 0.2s var(--ease);
+}
+.ob-value-input:hover{ border-bottom-color:var(--mid); }
+.ob-value-input:focus{ outline:none; border-bottom-color:var(--matcha); border-bottom-style:solid; }
+/* Keep the native spinners; they are a handy nudge on desktop. */
+.ob-value-input::-webkit-inner-spin-button{ opacity:0.5; }
 .ob-range{ -webkit-appearance:none; appearance:none; width:100%; height:36px; background:transparent; cursor:pointer; }
 .ob-range::-webkit-slider-runnable-track{ height:4px; background:var(--rule-dk); border-radius:2px; }
 .ob-range::-moz-range-track{ height:4px; background:var(--rule-dk); border-radius:2px; }

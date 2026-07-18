@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { Fragment, useRef, useState } from 'react';
 import SplitText from '../components/SplitText';
 import { CATEGORIES, categoryById, FLIGHT_ROUTES, ROAD_FUELS, DIET_TYPES, QUALITY_TIERS, DEFAULT_QUALITY, qualityOf } from './data/factors';
 import { LOG, ONBOARD, PACK, fmtT } from './data/copy';
@@ -262,12 +262,71 @@ function CsvImport({ settings, onAddEntries }) {
 }
 
 // ---------------------------------------------------------------------------
+// Inline editing: the one number that drives each entry's activity, so a
+// visitor can correct a bill or a distance in place and watch every chart
+// re-price, instead of deleting and re-adding. Editing this field, the date,
+// the label or the quality tier is enough; the rest of the meta rides along.
+// ---------------------------------------------------------------------------
+function primaryField(e) {
+  const m = e.meta || {};
+  switch (e.category) {
+    case 'electricity': return { key: 'kwh', label: 'kWh', value: m.kwh };
+    case 'gas': return { key: 'mj', label: 'MJ', value: m.mj };
+    case 'diet': return { key: 'days', label: 'Days', value: m.days };
+    case 'flight': return { key: 'km', label: 'km (one way)', value: m.km };
+    case 'freight': return m.parcels != null
+      ? { key: 'parcels', label: 'Parcels', value: m.parcels }
+      : { key: 'tonneKm', label: 'Tonne-km', value: m.tonneKm };
+    case 'road': return m.litres != null
+      ? { key: 'litres', label: 'Litres', value: m.litres }
+      : { key: 'km', label: 'km', value: m.km };
+    case 'other': return { key: 'amount', label: m.unit || 'Amount', value: m.amount };
+    default: return { key: 'km', label: 'Amount', value: m.km };
+  }
+}
+
+function EditRow({ e, colSpan, onSave, onCancel }) {
+  const pf = primaryField(e);
+  const [label, setLabel] = useState(e.label || '');
+  const [date, setDate] = useState(e.date);
+  const [qty, setQty] = useState(pf.value ?? '');
+  const [quality, setQuality] = useState(qualityOf(e));
+  const num = (v) => (v === '' || isNaN(Number(v)) ? 0 : Number(v));
+  const save = (ev) => {
+    ev.preventDefault();
+    onSave(e.id, { label, date, quality, meta: { [pf.key]: num(qty) } });
+  };
+  return (
+    <tr className="fp-editrow">
+      <td colSpan={colSpan}>
+        <form className="fp-edit" onSubmit={save}>
+          <Field label="Label"><input type="text" value={label} onChange={(ev) => setLabel(ev.target.value)} /></Field>
+          <Field label="Date"><input type="date" value={date} onChange={(ev) => setDate(ev.target.value)} required /></Field>
+          <Field label={pf.label}><input type="number" step="any" min="0" value={qty} onChange={(ev) => setQty(ev.target.value)} autoFocus /></Field>
+          <Field label="Data quality">
+            <select value={quality} onChange={(ev) => setQuality(ev.target.value)}>
+              {Object.entries(QUALITY_TIERS).map(([k, t]) => <option key={k} value={k}>{t.label}</option>)}
+            </select>
+          </Field>
+          <div className="fp-edit-btns">
+            <button type="submit" className="btn btn-primary fp-btn">Save changes →</button>
+            <button type="button" className="fp-linkbtn" onClick={onCancel}>Cancel</button>
+          </div>
+        </form>
+      </td>
+    </tr>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // The log section.
 // ---------------------------------------------------------------------------
-export default function Log({ profile, isExample, archived, onAdd, onAddEntries, onDelete, onExport, onImportFile, onShare, onReset, onStart, onPack }) {
+export default function Log({ profile, isExample, archived, onAdd, onAddEntries, onDelete, onUpdate, onExport, onImportFile, onShare, onReset, onStart, onPack }) {
   const [importMsg, setImportMsg] = useState('');
+  const [editingId, setEditingId] = useState(null);
   const entries = [...profile.entries].sort((a, b) => (a.date < b.date ? 1 : -1));
   const readOnly = isExample || archived;
+  const colSpan = LOG.table.head.length + 1;
 
   const handleImportBackup = (file) => {
     const reader = new FileReader();
@@ -292,27 +351,56 @@ export default function Log({ profile, isExample, archived, onAdd, onAddEntries,
             </thead>
             <tbody>
               {entries.map((e) => (
-                <tr key={e.id}>
-                  <td className="mono">{e.date}</td>
-                  <td>
-                    <span className="fp-e-label">{e.label}</span>
-                    <span className={'fp-q fp-q-' + qualityOf(e)}>{QUALITY_TIERS[qualityOf(e)].label}</span>
-                    {e.notes && <span className="fp-e-notes">{e.notes}</span>}
-                  </td>
-                  <td><span className="fp-leg-dot" style={{ background: categoryById(e.category).hex }} /> {categoryById(e.category).label}</td>
-                  <td className="mono">{Number(e.activity_data).toLocaleString()} {e.unit}</td>
-                  <td className="fp-e-factor">{e.factor_used} kg/{e.unit}<span className="fp-e-src">{e.factor_source}</span></td>
-                  <td className="mono">{e.scope}</td>
-                  <td className="mono strong">{fmtT(e.tco2e, 3)}</td>
-                  {!readOnly && (
-                    <td><button type="button" className="fp-del" aria-label={'Delete ' + e.label} onClick={() => onDelete(e.id)}>×</button></td>
+                <Fragment key={e.id}>
+                  <tr className={editingId === e.id ? 'fp-row-editing' : undefined}>
+                    <td className="mono">{e.date}</td>
+                    <td>
+                      <span className="fp-e-label">{e.label}</span>
+                      <span className={'fp-q fp-q-' + qualityOf(e)}>{QUALITY_TIERS[qualityOf(e)].label}</span>
+                      {e.notes && <span className="fp-e-notes">{e.notes}</span>}
+                    </td>
+                    <td><span className="fp-leg-dot" style={{ background: categoryById(e.category).hex }} /> {categoryById(e.category).label}</td>
+                    <td className="mono">
+                      {readOnly ? (
+                        <>{Number(e.activity_data).toLocaleString()} {e.unit}</>
+                      ) : (
+                        <button
+                          type="button"
+                          className="fp-num-edit"
+                          aria-label={'Edit the numbers for ' + e.label}
+                          onClick={() => setEditingId((id) => (id === e.id ? null : e.id))}
+                        >
+                          {Number(e.activity_data).toLocaleString()} {e.unit}
+                        </button>
+                      )}
+                    </td>
+                    <td className="fp-e-factor">{e.factor_used} kg/{e.unit}<span className="fp-e-src">{e.factor_source}</span></td>
+                    <td className="mono">{e.scope}</td>
+                    <td className="mono strong">{fmtT(e.tco2e, 3)}</td>
+                    {!readOnly && (
+                      <td className="fp-row-actions">
+                        <button type="button" className="fp-edit-btn" aria-expanded={editingId === e.id} onClick={() => setEditingId((id) => (id === e.id ? null : e.id))}>
+                          {editingId === e.id ? 'Close' : 'Edit'}
+                        </button>
+                        <button type="button" className="fp-del" aria-label={'Delete ' + e.label} onClick={() => { if (editingId === e.id) setEditingId(null); onDelete(e.id); }}>×</button>
+                      </td>
+                    )}
+                  </tr>
+                  {!readOnly && editingId === e.id && (
+                    <EditRow
+                      e={e}
+                      colSpan={colSpan}
+                      onSave={(id, patch) => { onUpdate(id, patch); setEditingId(null); }}
+                      onCancel={() => setEditingId(null)}
+                    />
                   )}
-                </tr>
+                </Fragment>
               ))}
-              {!entries.length && <tr><td colSpan={8}>{LOG.table.empty}</td></tr>}
+              {!entries.length && <tr><td colSpan={colSpan}>{LOG.table.empty}</td></tr>}
             </tbody>
           </table>
         </div>
+        {!readOnly && entries.length > 0 && <p className="fp-note fp-log-edithint">{LOG.editHint}</p>}
 
         {isExample ? (
           <div className="fp-example-note">
