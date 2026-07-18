@@ -29,8 +29,19 @@
   --disp: 'Archivo', system-ui, sans-serif;
   --serif: 'Instrument Serif', Georgia, serif;
   --mono: 'JetBrains Mono', 'Courier New', monospace;
-  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ---- three named motion curves, each with one job. Nothing on this page
+     is linear and nothing is a stock 300ms ease. The CPU springs in the JS
+     (grab/settle) are the physical extension of the same three intents. ----
+     grab   — the instant of catching: quick to respond, then eases off.
+     settle — coming to rest: a small overshoot, like weight finding its hang.
+     travel — moving across distance or revealing: long, unhurried, no bounce. */
+  --grab: cubic-bezier(0.18, 0.9, 0.12, 1);
+  --settle: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --travel: cubic-bezier(0.22, 1, 0.36, 1);
+  /* legacy aliases map the older names onto the named system */
+  --ease-out: var(--travel);
+  --ease-spring: var(--settle);
   --gut: clamp(1.2rem, 5vw, 4.5rem);
   --z-world: 30;
   --z-chrome: 60;
@@ -46,9 +57,26 @@ body {
   font-size: 1rem;
   line-height: 1.55;
   color: var(--ink);
-  background: var(--calico);
+  /* woven calico ground: two fine thread sets and a faint madder dye-bleed,
+     so the base surface is cloth, never flat digital white */
+  background-color: var(--calico);
+  background-image:
+    radial-gradient(120% 80% at 88% -10%, rgba(166, 80, 63, 0.05), transparent 60%),
+    radial-gradient(90% 70% at -8% 108%, rgba(51, 72, 122, 0.045), transparent 55%),
+    repeating-linear-gradient(90deg, rgba(38, 35, 29, 0.028) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(0deg, rgba(38, 35, 29, 0.022) 0 1px, transparent 1px 3px);
+  background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+}
+
+/* paper grain, laid over the whole page at low opacity. Fixed, never caught
+   by the pointer, and dropped entirely under reduced motion is unnecessary —
+   it does not move, so it stays. */
+.fs-tex {
+  position: fixed; inset: 0; z-index: 55; pointer-events: none;
+  mix-blend-mode: multiply; opacity: 0.5;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
 }
 
 a { color: inherit; }
@@ -289,8 +317,17 @@ input:focus-visible, textarea:focus-visible {
 }
 .fs-hero-cue .tick { width: 10px; height: 10px; border: 1.5px solid var(--madder); transform: rotate(45deg); animation: fs-cue 1.8s var(--ease-out) infinite; }
 @keyframes fs-cue { 0%, 100% { transform: rotate(45deg) translate(0, 0); } 50% { transform: rotate(45deg) translate(3px, 3px); } }
-.fs-hero-seat { position: absolute; right: clamp(0rem, 8vw, 10rem); top: 12vh; width: min(44vw, 460px); height: 62vh; }
+.fs-hero-seat { position: absolute; right: clamp(0rem, 8vw, 10rem); top: 12vh; width: min(44vw, 460px); height: 62vh; z-index: 2; }
 .fs-hero-swing { position: absolute; inset: 0; touch-action: none; }
+
+/* the WebGL cloth is the hero's living surface, behind the words */
+.fs-cloth { position: absolute; inset: 0; z-index: 0; touch-action: none; }
+.fs-cloth canvas { display: block; width: 100%; height: 100%; }
+.fs-cloth[data-grab='1'] { cursor: grabbing; }
+/* keep every worded child above the cloth and catching its own pointer */
+.fs-hero > :not(.fs-cloth) { position: relative; z-index: 2; }
+.fs-hero-kicker, .fs-hero h1, .fs-hero-stand, .fs-hero-cue { pointer-events: none; }
+.fs-hero-cue { pointer-events: auto; width: max-content; }
 
 /* --------------------------------------------------------- module 1: cut -- */
 
