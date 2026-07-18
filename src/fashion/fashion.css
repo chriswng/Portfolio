@@ -181,7 +181,7 @@ input:focus-visible, textarea:focus-visible {
 .fs-cursor .ring {
   position: absolute; left: -14px; top: -14px; width: 28px; height: 28px;
   border: 1.5px solid var(--ink); border-radius: 50%;
-  transition: transform 0.18s var(--ease-out), border-color 0.18s, opacity 0.18s;
+  transition: transform 0.18s var(--grab), border-color 0.18s, opacity 0.18s;
 }
 .fs-cursor .dot {
   position: absolute; left: -2px; top: -2px; width: 4px; height: 4px;
@@ -236,7 +236,34 @@ input:focus-visible, textarea:focus-visible {
 /* ------------------------------------------------------------- sections -- */
 
 .fs-sec { position: relative; padding: clamp(5rem, 12vh, 9rem) var(--gut); }
-.fs-sec-inner { max-width: 1180px; margin: 0 auto; position: relative; }
+
+/* Asymmetric spine. Nothing centres: each module leans off the mid-line,
+   alternating sides, so the composition always has a heavier edge. The grid
+   is established (a consistent inner frame) and then broken, deliberately,
+   in two places below. */
+.fs-sec-inner { width: min(1180px, 100%); margin: 0; position: relative; }
+#m1 .fs-sec-inner { margin-left: clamp(0px, 6vw, 7rem); }
+#m4 .fs-sec-inner { margin-left: clamp(0px, 10vw, 12rem); width: min(1040px, 100%); }
+#m6 .fs-sec-inner { margin-left: auto; margin-right: clamp(0px, 7vw, 9rem); }
+#m7 .fs-sec-inner { margin-left: clamp(0px, 4vw, 5rem); }
+@media (max-width: 900px) {
+  #m1 .fs-sec-inner, #m4 .fs-sec-inner, #m6 .fs-sec-inner, #m7 .fs-sec-inner {
+    margin-left: 0; margin-right: 0; width: 100%;
+  }
+}
+
+/* Grid break 1 — the Lab (m2): the head shoves to the right of its own column
+   while the rigs below stay left-wide, so the two rows deliberately misalign. */
+#m2 .fs-sec-inner { margin-left: auto; margin-right: clamp(0px, 4vw, 5rem); width: min(1080px, 100%); }
+#m2 .fs-head { margin-left: auto; max-width: 540px; }
+/* Grid break 2 — the Field (m5): the inner frame runs to the right viewport
+   edge and the head hangs left, off the content column. */
+#m5 .fs-sec-inner { margin-right: calc(var(--gut) * -1); }
+#m5 .fs-head { margin-left: clamp(0px, -3vw, 0px); max-width: 620px; }
+@media (max-width: 900px) {
+  #m2 .fs-sec-inner, #m5 .fs-sec-inner { margin-left: 0; margin-right: 0; width: 100%; }
+  #m2 .fs-head { margin-left: 0; }
+}
 
 .fs-head { max-width: 760px; margin-bottom: clamp(2rem, 5vh, 3.6rem); }
 .fs-idx {
@@ -277,6 +304,7 @@ input:focus-visible, textarea:focus-visible {
   touch-action: manipulation;
 }
 .fs-chip:hover { border-style: solid; color: var(--ink); transform: translateY(-1px); }
+.fs-chip:active { transform: translateY(0) scale(0.97); transition-timing-function: var(--grab); }
 .fs-chip[aria-pressed='true'], .fs-chip.on {
   background: var(--ink); color: var(--calico); border: 1px solid var(--ink);
 }
@@ -351,7 +379,7 @@ input:focus-visible, textarea:focus-visible {
   transition: transform 0.2s var(--ease-spring), box-shadow 0.2s, border-color 0.2s;
   touch-action: none;
 }
-.fs-swatch:hover { transform: translateY(-2px) rotate(-0.6deg); box-shadow: 0 6px 18px rgba(38, 35, 29, 0.14); border-color: var(--faint); }
+.fs-swatch:hover { transform: translateY(-2px) rotate(-0.6deg); box-shadow: 3px 4px 0 rgba(38, 35, 29, 0.16); border-color: var(--faint); }
 .fs-swatch.applied { border: 1.5px solid var(--ink); }
 .fs-swatch.applied::after {
   content: 'ON THE BLANK'; position: absolute; top: -9px; right: 6px;
@@ -366,7 +394,7 @@ input:focus-visible, textarea:focus-visible {
 .fs-drag-ghost {
   position: fixed; z-index: var(--z-cursor); pointer-events: none;
   width: 74px; height: 54px; border: 1.5px solid var(--ink);
-  box-shadow: 0 10px 26px rgba(38, 35, 29, 0.28);
+  box-shadow: 4px 5px 0 rgba(38, 35, 29, 0.3);
   transform: translate(-50%, -55%) rotate(3deg);
 }
 
@@ -609,8 +637,8 @@ input:focus-visible, textarea:focus-visible {
   box-shadow: 0 1px 0 rgba(38, 35, 29, 0.08);
   transition: box-shadow 0.2s, border-color 0.2s;
 }
-.fs-brandtag:hover { box-shadow: 0 8px 20px rgba(38, 35, 29, 0.16); border-color: var(--faint); z-index: 4; }
-.fs-brandtag.drag { z-index: 6; box-shadow: 0 14px 34px rgba(38, 35, 29, 0.24); }
+.fs-brandtag:hover { box-shadow: 3px 4px 0 rgba(38, 35, 29, 0.18); border-color: var(--faint); z-index: 4; }
+.fs-brandtag.drag { z-index: 6; box-shadow: 5px 7px 0 rgba(38, 35, 29, 0.26); }
 .fs-brandtag .nm { display: block; font-weight: 700; font-size: 0.78rem; white-space: nowrap; line-height: 1.1; }
 .fs-brandtag .sc { display: block; font-family: var(--mono); font-size: 9.5px; color: var(--ink-soft); font-variant-numeric: tabular-nums; margin-top: 1px; }
 .fs-brandtag.assigned { border-left-color: var(--madder); }
