@@ -5,10 +5,10 @@ import SplitText from '../../components/SplitText';
 import CarbonField from './CarbonField';
 import { CountUp, ScrubNumber } from './CountUp';
 import { fmtT } from '../data/copy';
-import { shareCard } from '../lib/shareCard';
+import ShareSheet from './ShareSheet';
 import { audio } from '../lib/audio';
 import {
-  COVER, YEAR, GUESS, GUESS_VERDICTS, GUESS_RESULT, TOTAL, SCOPES, HOTSPOTS_ST,
+  CHROME, COVER, YEAR, GUESS, GUESS_VERDICTS, GUESS_RESULT, TOTAL, SCOPES, HOTSPOTS_ST,
   MONTHS_ST, BENCH_ST, NEEDLE, OUTRO, SHARE_ST, fill,
 } from '../data/storyCopy';
 
@@ -23,30 +23,20 @@ const rise = {
 const inView = { once: true, margin: '-18% 0px' };
 
 // ---------------------------------------------------------------------------
-// Per-moment share affordance: renders a PNG card composed for social.
+// Per-moment share affordance: opens the share sheet, which previews the card
+// and offers Instagram story, post, or (for the character) LinkedIn. Pass
+// `linkedIn` to add the LinkedIn banner as a format.
 // ---------------------------------------------------------------------------
-export const shareSlug = (label) => label.replace(/[^a-z0-9-]+/gi, '-').toLowerCase();
-
-export function MomentShare({ kind, data, fy }) {
-  const [state, setState] = useState('idle');
-  const click = async () => {
-    if (state === 'busy') return;
-    setState('busy');
-    try {
-      const ok = await shareCard(kind, { ...data, fy }, `life-footprint-${kind}-${shareSlug(fy)}.png`);
-      setState(ok ? 'done' : 'idle');
-      if (!ok) return;
-    } catch { setState('idle'); return; }
-    window.setTimeout(() => setState('idle'), 2600);
-  };
+export function MomentShare({ kind, data, fy, linkedIn }) {
+  const [open, setOpen] = useState(false);
   return (
     <>
-      <button type="button" className="st-share" onClick={click}>
-        <span aria-hidden="true">⤓</span> {state === 'done' ? SHARE_ST.copied : SHARE_ST.button}
+      <button type="button" className="st-share" onClick={() => setOpen(true)}>
+        <span aria-hidden="true">↗</span> {SHARE_ST.button}
       </button>
-      {/* Announcement lives outside the button so it never rewrites the
-          control's accessible name mid-press. */}
-      <span className="sr-only" role="status">{state === 'done' ? SHARE_ST.copied : ''}</span>
+      {open && (
+        <ShareSheet kind={kind} data={{ ...data, fy }} linkedIn={linkedIn} onClose={() => setOpen(false)} />
+      )}
     </>
   );
 }
@@ -54,7 +44,7 @@ export function MomentShare({ kind, data, fy }) {
 // ---------------------------------------------------------------------------
 // 0 · Cover
 // ---------------------------------------------------------------------------
-export function Cover({ d, voice, onStart, onAssessor, reduced }) {
+export function Cover({ d, voice, onStart, onAssessor, reduced, chapterCount }) {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
   const ghostY = useTransform(scrollYProgress, [0, 1], ['0%', reduced ? '0%' : '34%']);
@@ -72,18 +62,33 @@ export function Cover({ d, voice, onStart, onAssessor, reduced }) {
     my.set(((e.clientY - r.top) / r.height) * 2 - 1);
   };
 
+  // The cover is deliberately unlike the site's home hero: a dark title card
+  // with the audited year already alive as a field of particles behind the
+  // words, so a first-time visitor reads "this is a walk-through", not another
+  // landing page. The swarm is a teaser, not a spoiler; the number stays for
+  // the reveal three chapters down.
   return (
     <section className="st-moment st-cover" id="st-cover" ref={ref} aria-label="Opening" onPointerMove={onMove}>
-      <div className="bloom-wrap" aria-hidden="true"><div className="bloom bloom-a" /><div className="bloom bloom-b" /><div className="bloom bloom-c" /></div>
-      <motion.div className="st-ghost" style={{ y: ghostY }} aria-hidden="true">
+      <CarbonField
+        mode="swarm"
+        total={d.total}
+        categories={d.ranked.map((c) => ({ id: c.id, hex: c.hex, share: c.t }))}
+        alpha={0.55}
+        className="st-field st-cover-field"
+      />
+      <motion.div className="st-ghost st-ghost-cover" style={{ y: ghostY }} aria-hidden="true">
         <motion.span style={{ x: ghostX, y: ghostYc, display: 'inline-block' }}>CO₂</motion.span>
       </motion.div>
       <motion.div className="st-cover-inner" style={reduced ? undefined : { opacity: fade, x: innerX }}>
+        <div className="st-cover-eyebrow">
+          <span className="st-cover-eyebrow-dot" aria-hidden="true" />{COVER.eyebrow}
+        </div>
         <div className="sec-tag" data-idx={d.fy + ' / '}>{COVER.tag}</div>
         <h1 className="st-h1 display">
           <SplitText text={COVER.h1a} /> <SplitText text={COVER.h1b} accentIndex={1} />
         </h1>
         <p className="st-cover-sub">{COVER.sub[voice]}</p>
+        <p className="st-cover-meta">{fill(COVER.meta, { n: chapterCount })}</p>
         {voice === 'example' && (
           <div className="st-cover-cta">
             <button type="button" className="btn btn-primary fp-btn" onClick={onStart}>{COVER.start} →</button>
@@ -99,6 +104,20 @@ export function Cover({ d, voice, onStart, onAssessor, reduced }) {
         <span className="st-cue-line" />
       </div>
     </section>
+  );
+}
+
+// A quiet, recurring "keep scrolling" mark for the pinned moments, where the
+// animation only advances if you scroll. It fades out as the moment's scrub
+// completes, and never shows under reduced motion (those moments are static).
+export function ScrollHint({ progress, fadeEnd = 0.45, label = CHROME.keepScrolling, tone }) {
+  const opacity = useTransform(progress, [0, fadeEnd * 0.35, fadeEnd], [0.9, 0.9, 0]);
+  if (prefersReducedMotion()) return null;
+  return (
+    <motion.div className={'st-scrollhint' + (tone === 'dark' ? ' dark' : '')} style={{ opacity }} aria-hidden="true">
+      <span>{label}</span>
+      <span className="st-cue-line" />
+    </motion.div>
   );
 }
 
@@ -137,6 +156,7 @@ export function YearTicker({ d, voice, reduced }) {
             </motion.div>
           ))}
         </div>
+        <ScrollHint progress={scrollYProgress} fadeEnd={0.5} />
       </div>
     </section>
   );
@@ -285,6 +305,7 @@ export function TotalReveal({ d, voice, guess, onGuessAgain, onCopyLink, reduced
           className="st-field"
         />
         <div className="st-center st-total-center">{body}</div>
+        <ScrollHint progress={scrollYProgress} fadeEnd={0.5} tone="dark" />
       </div>
     </section>
   );
@@ -379,6 +400,7 @@ export function Hotspots({ d, voice, reduced }) {
             rank: 1, label: top.label, t: fmtT(top.t), pct: top.pct, quip: top.quip,
           }} />
         </motion.div>
+        <ScrollHint progress={scrollYProgress} fadeEnd={0.72} />
       </div>
     </section>
   );

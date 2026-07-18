@@ -349,7 +349,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
       <p>{ONBOARD.you.sub}</p>
       <Chips
         label={ONBOARD.you.state}
-        options={Object.entries(ELECTRICITY).map(([k, v]) => ({ value: k, label: v.label.replace(/\s*\(.*\)/, '') }))}
+        options={Object.entries(ELECTRICITY).map(([k, v]) => ({ value: k, label: v.label }))}
         value={a.state} onChange={(v) => set('state', v)}
       />
       <Stepper label={ONBOARD.you.household} value={a.householdSize} min={1} max={10} onChange={(v) => set('householdSize', v)} />

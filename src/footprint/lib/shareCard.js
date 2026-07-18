@@ -32,6 +32,13 @@ async function ensureFonts() {
 }
 
 function roundedBar(ctx, x, y, w, h, r) {
+  roundRectPath(ctx, x, y, w, h, r);
+  ctx.fill();
+}
+
+// Path only: the caller fills, clips or strokes. Shared by the bars and the
+// story-card frame that lifts a post card onto a 9:16 canvas.
+function roundRectPath(ctx, x, y, w, h, r) {
   const rr = Math.min(r, w / 2, h / 2);
   ctx.beginPath();
   ctx.moveTo(x + rr, y);
@@ -40,7 +47,6 @@ function roundedBar(ctx, x, y, w, h, r) {
   ctx.arcTo(x, y + h, x, y, rr);
   ctx.arcTo(x, y, x + w, y, rr);
   ctx.closePath();
-  ctx.fill();
 }
 
 function frame(ctx, title, fy) {
@@ -257,6 +263,77 @@ export async function drawShareCard(kind, data) {
   return canvas;
 }
 
+// Instagram / TikTok story: 1080 x 1920 (9:16). The standard 4:5 post card is
+// composed and then lifted onto the taller canvas as a floating card, so a
+// single card design serves both the feed and the story.
+const SW = 1080;
+const SH = 1920;
+
+export async function drawStoryCard(kind, data) {
+  const card = await drawShareCard(kind, data);
+  const canvas = document.createElement('canvas');
+  canvas.width = SW;
+  canvas.height = SH;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = BG;
+  ctx.fillRect(0, 0, SW, SH);
+  const g = ctx.createRadialGradient(SW * 0.82, -90, 0, SW * 0.82, -90, 980);
+  g.addColorStop(0, 'rgba(181,196,43,0.16)');
+  g.addColorStop(1, 'rgba(181,196,43,0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, SW, SH);
+  // A faint vignette at the foot so the card reads as lifted, not tiled.
+  const v = ctx.createLinearGradient(0, SH * 0.6, 0, SH);
+  v.addColorStop(0, 'rgba(0,0,0,0)');
+  v.addColorStop(1, 'rgba(0,0,0,0.28)');
+  ctx.fillStyle = v;
+  ctx.fillRect(0, 0, SW, SH);
+
+  const margin = 66;
+  const cw = SW - margin * 2;
+  const scale = cw / W;
+  const ch = H * scale;
+  const top = Math.round((SH - ch) / 2) + 24;
+  const r = 44;
+
+  ctx.save();
+  roundRectPath(ctx, margin, top, cw, ch, r);
+  ctx.shadowColor = 'rgba(0,0,0,0.55)';
+  ctx.shadowBlur = 46;
+  ctx.shadowOffsetY = 20;
+  ctx.fillStyle = BG;
+  ctx.fill();
+  ctx.restore();
+
+  ctx.save();
+  roundRectPath(ctx, margin, top, cw, ch, r);
+  ctx.clip();
+  ctx.drawImage(card, margin, top, cw, ch);
+  ctx.restore();
+
+  ctx.save();
+  roundRectPath(ctx, margin, top, cw, ch, r);
+  ctx.strokeStyle = 'rgba(181,196,43,0.30)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.restore();
+
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillStyle = MATCHA;
+  ctx.font = `500 34px ${MONO}`;
+  ctx.fillText('./', margin, top - 44);
+  ctx.fillStyle = MID;
+  ctx.font = `500 26px ${MONO}`;
+  ctx.textAlign = 'right';
+  ctx.fillText((data.fy || '').toUpperCase(), SW - margin, top - 44);
+  ctx.textAlign = 'center';
+  ctx.fillStyle = MID;
+  ctx.font = `500 24px ${MONO}`;
+  ctx.fillText(SHARE_ST.site, SW / 2, top + ch + 76);
+  ctx.textAlign = 'left';
+  return canvas;
+}
+
 // LinkedIn banner: 1200 x 627, the feed's native landscape ratio, so the
 // card posts full-bleed with nothing cropped.
 const LW = 1200;
@@ -335,19 +412,36 @@ export async function drawLinkedInCard(d) {
   return canvas;
 }
 
-async function shareCanvas(canvas, filename) {
+// Whether the browser can hand a PNG file to the native share sheet (mobile
+// Safari/Chrome). When true, "Share" reaches Instagram, LinkedIn and Messages
+// directly; when false the sheet offers a straight download instead.
+export function canShareImage() {
+  try {
+    const probe = new File([new Blob()], 'x.png', { type: 'image/png' });
+    return !!(navigator.canShare && navigator.canShare({ files: [probe] }));
+  } catch { return false; }
+}
+
+// Returns 'shared' | 'saved' | 'cancelled'. Tries the native share sheet first
+// (so the user can pick Instagram Story / LinkedIn), and falls back to a
+// download otherwise.
+export async function shareCanvas(canvas, filename, shareText) {
   const blob = await new Promise((res) => canvas.toBlob(res, 'image/png'));
-  if (!blob) return false;
+  if (!blob) return 'cancelled';
   const file = new File([blob], filename, { type: 'image/png' });
   if (navigator.canShare && navigator.canShare({ files: [file] })) {
     try {
-      await navigator.share({ files: [file] });
-      return true;
+      await navigator.share({ files: [file], text: shareText });
+      return 'shared';
     } catch (err) {
-      // The user closed the share sheet: not an error, but not "saved" either.
-      if (err && err.name === 'AbortError') return false;
+      if (err && err.name === 'AbortError') return 'cancelled';
+      // Fall through to a download on any other failure.
     }
   }
+  return downloadBlob(blob, filename) ? 'saved' : 'cancelled';
+}
+
+function downloadBlob(blob, filename) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
@@ -357,6 +451,20 @@ async function shareCanvas(canvas, filename) {
   a.remove();
   URL.revokeObjectURL(url);
   return true;
+}
+
+export async function downloadCanvas(canvas, filename) {
+  const blob = await new Promise((res) => canvas.toBlob(res, 'image/png'));
+  return blob ? downloadBlob(blob, filename) : false;
+}
+
+// One entry point for the share sheet: draw the card at the requested format.
+// 'post' is the 4:5 feed card, 'story' the 9:16 story frame, 'linkedin' the
+// 1200x627 banner (its own data shape).
+export async function renderShare(format, kind, data, linkedIn) {
+  if (format === 'linkedin') return drawLinkedInCard(linkedIn);
+  if (format === 'story') return drawStoryCard(kind, data);
+  return drawShareCard(kind, data);
 }
 
 export async function shareCard(kind, data, filename) {

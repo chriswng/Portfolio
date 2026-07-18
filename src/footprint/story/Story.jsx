@@ -250,7 +250,7 @@ export default function Story({ profile, agg, macc, voice, onStart, onSkip, onAs
       {chromeOn && <ChapterRail active={active} chapters={chapters} />}
       {chromeOn && <NextChapter active={active} chapters={chapters} />}
 
-      <Cover d={d} voice={voice} onStart={onStart} onAssessor={onAssessor} reduced={reduced} />
+      <Cover d={d} voice={voice} onStart={onStart} onAssessor={onAssessor} reduced={reduced} chapterCount={chapters.length} />
       <YearTicker d={d} voice={voice} reduced={reduced} />
       {voice === 'example' && <Guess d={d} voice={voice} guess={guess} setGuess={setGuess} goTo={goToMoment} />}
       <TotalReveal d={d} voice={voice} guess={guess} onGuessAgain={onGuessAgain} onCopyLink={onCopyLink} reduced={reduced} />
