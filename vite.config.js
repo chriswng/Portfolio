@@ -19,6 +19,7 @@ export default defineConfig({
         work: resolve(__dirname, 'work/index.html'),
         footprint: resolve(__dirname, 'footprint/index.html'),
         footprintMethod: resolve(__dirname, 'footprint/method/index.html'),
+        fashion: resolve(__dirname, 'fashion/index.html'),
       },
       output: {
         // Stable vendor chunks: both pages share react/framer-motion, and the
