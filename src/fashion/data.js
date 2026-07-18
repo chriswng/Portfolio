@@ -173,6 +173,11 @@ const RAW_BRANDS = [
   { name: 'Cotton On', aliases: ['cotton on', 'cottonon'], parent: 'Cotton On Group', segment: 'fastfashion', country: 'Australia', au: true, recognition: 'high', knownFor: 'Value fashion basics', fti: null, reportUrl: 'https://cottonon.com/AU/good-business/' },
   { name: 'Country Road', aliases: ['country road'], parent: 'Country Road Group', group: 'Country Road Group (Woolworths Holdings, South Africa)', segment: 'department', country: 'Australia', au: true, recognition: 'high', knownFor: 'Mid-market apparel and lifestyle', fti: null, reportUrl: 'https://www.countryroad.com.au/sustainability' },
   { name: 'The Iconic', aliases: ['the iconic', 'iconic'], parent: 'Global Fashion Group', segment: 'online', country: 'Australia', au: true, recognition: 'high', knownFor: 'Online fashion retailer', fti: null, ftiScope: 'outside', ftiNote: 'Not assessed by the Fashion Transparency Index. It is a multi-brand marketplace, not a single label.', reportUrl: 'https://www.theiconic.com.au/considered/' },
+  { name: 'R.M. Williams', aliases: ['rm williams', 'r.m. williams', 'rmwilliams'], parent: 'Tattarang', group: 'Tattarang (Andrew and Nicola Forrest)', segment: 'footwear', country: 'Australia', au: true, recognition: 'high', knownFor: 'Heritage leather boots', fti: null, reportUrl: null, notes: 'Certified B Corporation (2024). Australian-owned since Tattarang acquired it in 2020.' },
+  { name: 'Zimmermann', aliases: ['zimmermann', 'zimmerman'], parent: 'Advent International', group: 'Advent International (majority, with the Zimmermann family)', segment: 'luxury', country: 'Australia', au: true, recognition: 'high', knownFor: 'Resort and occasion wear', fti: null, reportUrl: null, notes: 'Majority sold to private-equity firm Advent International in 2023.' },
+  { name: 'Camilla', aliases: ['camilla', 'camilla franks'], parent: 'Camilla (private)', segment: 'luxury', country: 'Australia', au: true, recognition: 'medium', knownFor: 'Prints and resort wear', fti: null, reportUrl: null, notes: 'Certified B Corporation (2024).' },
+  { name: 'Lorna Jane', aliases: ['lorna jane'], parent: 'Lorna Jane (private)', segment: 'sportswear', country: 'Australia', au: true, recognition: 'medium', knownFor: 'Womenswear activewear', fti: null, reportUrl: null },
+  { name: 'Bonds', aliases: ['bonds'], parent: 'Hanesbrands', group: 'Hanesbrands (acquired by Gildan, 2025)', segment: 'basics', country: 'Australia', au: true, recognition: 'high', knownFor: 'Underwear and basics', fti: null, reportUrl: null },
 ];
 
 // ---------------------------------------------------------------------------
@@ -184,10 +189,36 @@ function slug(name) {
   return name.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 }
 
+// ---------------------------------------------------------------------------
+// Commitments and memberships. Real, verifiable industry facts, not our own
+// judgement. These are membership signals, not performance: a company can sign
+// a pact and still move slowly. We only mark what a source confirms.
+//   The Fashion Pact: CEO-led coalition on climate, biodiversity and oceans.
+//     Signatory list per thefashionpact.org and 2019 founding coverage.
+//     LVMH is notably NOT a signatory. Hermès signed then left in 2023.
+//   Certified B Corporation: independently verified social/environmental
+//     performance standard (B Lab). In this set: Patagonia, and the Australian
+//     labels R.M. Williams and Camilla.
+// ---------------------------------------------------------------------------
+const FASHION_PACT_IDS = new Set([
+  'adidas', 'nike', 'puma', 'burberry', 'chanel', 'moncler', 'prada', 'miu-miu',
+  'ralph-lauren', 'gucci', 'saint-laurent', 'balenciaga', 'bottega-veneta',
+  'zara', 'pullandbear', 'bershka', 'handm', 'cos', 'gap', 'calvin-klein',
+  'tommy-hilfiger', 'coach', 'kate-spade',
+]);
+const FASHION_PACT_FORMER = new Set(['herm-s']); // slug('Hermès') === 'herm-s'
+const B_CORP_IDS = new Set(['patagonia', 'r-m-williams', 'camilla']);
+
+function commitmentsFor(id) {
+  const fashionPact = FASHION_PACT_IDS.has(id) ? 'yes' : (FASHION_PACT_FORMER.has(id) ? 'former' : 'no');
+  return { fashionPact, bCorp: B_CORP_IDS.has(id) };
+}
+
 function buildBrand(raw) {
   const band = ftiBand(raw.fti);
+  const id = slug(raw.name);
   return {
-    id: slug(raw.name),
+    id,
     name: raw.name,
     aliases: raw.aliases || [],
     parent: raw.parent,
@@ -215,6 +246,7 @@ function buildBrand(raw) {
       supplyChain: raw.supplyChain || STATUS.research.id,
       circularity: raw.circularity || STATUS.research.id,
     },
+    commitments: commitmentsFor(id),
     notes: raw.notes || '',
     needsResearch: raw.fti == null && raw.ftiScope !== 'outside',
   };
@@ -258,6 +290,52 @@ export function segmentCount(id) {
   return BRANDS.filter((b) => b.segment === id).length;
 }
 
+// Display metadata for the commitment badges on a brand card.
+export const COMMITMENT_INFO = {
+  fashionPact: {
+    label: 'The Fashion Pact', former: 'Left the Fashion Pact',
+    help: 'Signed the CEO-led coalition on climate, biodiversity and oceans. A commitment, not a result.',
+    url: 'https://www.thefashionpact.org/',
+  },
+  bCorp: {
+    label: 'Certified B Corp',
+    help: 'Independently verified social and environmental performance, certified by B Lab.',
+    url: 'https://www.bcorporation.net/',
+  },
+};
+
+export function commitmentCounts() {
+  return {
+    fashionPact: BRANDS.filter((b) => b.commitments.fashionPact === 'yes').length,
+    bCorp: BRANDS.filter((b) => b.commitments.bCorp).length,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Materials guide. Fibre-level context for the "before you buy" job. Plain,
+// honest, and deliberately careful: single "sustainability" rankings of fibres
+// (notably the Higg Materials Sustainability Index) are contested. The Higg MSI
+// scored synthetics well partly because it left out microplastic and ocean
+// pollution, and its consumer-facing use was paused in 2022 after challenges
+// from regulators in Norway and the Netherlands. So this names the trade-offs
+// rather than crowning a winner. Impact notes are directional, from published
+// LCA literature, not a measurement of any one garment.
+// ---------------------------------------------------------------------------
+export const FIBRES = [
+  { name: 'Conventional cotton', kind: 'Natural', good: 'Breathable, durable, biodegradable.', watch: 'Thirsty crop; heavy irrigation and pesticide use where rain-fed farming is not used.' },
+  { name: 'Organic cotton', kind: 'Natural', good: 'Grown without synthetic pesticides; look for GOTS certification.', watch: 'Still water-intensive; certification covers the field, not the dye house.' },
+  { name: 'Linen', kind: 'Natural', good: 'Flax needs little water or pesticide; long-lasting and biodegradable.', watch: 'Creases readily; some processing uses chemical retting.' },
+  { name: 'Hemp', kind: 'Natural', good: 'Low water and input; improves soil and lasts for years.', watch: 'Coarser hand feel; softer blends can add synthetics.' },
+  { name: 'Wool', kind: 'Natural', good: 'Warm, long-lived, biodegradable, needs fewer washes.', watch: 'Higher on-farm emissions (methane); mulesing and animal-welfare questions.' },
+  { name: 'Polyester', kind: 'Synthetic', good: 'Cheap, strong, low water to make; recyclable in theory.', watch: 'Fossil-derived; sheds microplastics in the wash and effectively never breaks down.' },
+  { name: 'Recycled polyester (rPET)', kind: 'Synthetic', good: 'Roughly half the carbon of virgin polyester; look for GRS certification.', watch: 'Still sheds microplastics; mostly made from bottles, not old clothes, and recycles once.' },
+  { name: 'Nylon', kind: 'Synthetic', good: 'Strong and elastic; recycled versions (e.g. ECONYL) exist.', watch: 'Fossil-derived, energy-intensive, sheds microplastics.' },
+  { name: 'Viscose / rayon', kind: 'Regenerated', good: 'Soft, breathable, plant-derived from wood pulp.', watch: 'Can drive deforestation and use harsh solvents unless responsibly sourced.' },
+  { name: 'Lyocell (Tencel)', kind: 'Regenerated', good: 'Wood pulp spun in a closed-loop solvent system; look for FSC pulp.', watch: 'Genuinely lower-impact only when the pulp is responsibly sourced.' },
+  { name: 'Leather', kind: 'Animal', good: 'Durable and repairable; ages well.', watch: 'Linked to land use and deforestation; tanning can be chemically intensive.' },
+  { name: 'Elastane / spandex', kind: 'Synthetic', good: 'A little adds stretch and fit.', watch: 'Even small amounts blended in can make a garment unrecyclable.' },
+];
+
 // ---------------------------------------------------------------------------
 // "Dig deeper" — reliable link-outs to richer per-brand data on other
 // services. Openweave is a launchpad, not the last word: these send you to
@@ -266,10 +344,11 @@ export function segmentCount(id) {
 // Good On You directory pages follow /brand/<slug>; a handful need an
 // explicit slug where the obvious one would not resolve.
 // ---------------------------------------------------------------------------
+// Keys are Openweave brand ids (see slug()); values are the Good On You slug
+// where it differs from ours. Best effort: a miss still lands on Good On You.
 const GOODONYOU_SLUG = {
-  'hm': 'h-m', 'pull-and-bear': 'pull-bear', 'the-iconic': 'the-iconic',
-  'kmart-australia': 'kmart', 'target-australia': 'target-australia',
-  'tk-maxx': 'tk-maxx', 'levi-strauss': 'levis', 'saint-laurent': 'saint-laurent',
+  handm: 'h-m', pullandbear: 'pull-bear', 'kmart-australia': 'kmart',
+  'levi-strauss': 'levis',
 };
 
 function goodOnYouUrl(brand) {
@@ -468,6 +547,9 @@ export const COPY = {
     digHint: 'Openweave is a launchpad. Cross-check this brand against independent ratings and the primary sources.',
     checklistLabel: 'Before you buy',
     checklistHint: 'A quick, practical read for this brand, built from what is on file.',
+    commitmentsLabel: 'Commitments and memberships',
+    commitmentsHint: 'Industry pledges this brand has signed. A commitment, not a result.',
+    commitmentsNone: 'No memberships confirmed on file yet.',
   },
 
   compare: {
@@ -491,6 +573,8 @@ export const COPY = {
     viewBrands: 'Brands',
     viewGroups: 'Groups',
     scored: 'Scored only',
+    pactOnly: 'Fashion Pact',
+    bcorpOnly: 'B Corp',
     sort: {
       name: 'A to Z',
       fti: 'Transparency score',
@@ -528,8 +612,20 @@ export const COPY = {
     disclaimer: 'This is an educational aid, not legal advice. It reflects the direction of the ACCC guidance, and the EU, UK and US equivalents, not a specific ruling.',
   },
 
-  signals: {
+  materials: {
     idx: '05',
+    title: 'Materials',
+    sub: 'What the fabric is telling you',
+    lede: 'Half of a garment’s story is the fibre it is cut from. This is a plain read of the common ones, and their trade-offs. It is not a ranking, on purpose.',
+    kindLabel: 'Type',
+    goodLabel: 'In its favour',
+    watchLabel: 'What to watch',
+    caveatTitle: 'Why there is no single winner',
+    caveat: 'Be wary of anyone who tells you one fibre is simply "the sustainable one". The best-known attempt at a single score, the Higg Materials Sustainability Index, ranked synthetics well partly because it left out microplastic and ocean pollution, and regulators in Norway and the Netherlands paused its consumer use in 2022. The honest answer is trade-offs: the lowest-impact garment is usually the one you already own, worn for years and repaired.',
+  },
+
+  signals: {
+    idx: '06',
     title: 'What the signals mean',
     sub: 'Disclosure is not the same as doing well',
     lede: 'Openweave measures what a brand tells the public, not whether the brand is good. Read these before you draw a conclusion.',
@@ -555,7 +651,7 @@ export const COPY = {
   },
 
   backlog: {
-    idx: '06',
+    idx: '07',
     title: 'Research backlog',
     sub: 'What still needs a human',
     lede: 'This tool is honest about its gaps. Structural facts, parent, segment, headquarters, are verified. Quantified disclosure fields are being filled in over time. Anything marked "Needs research" below is waiting for a checked source.',
@@ -580,6 +676,7 @@ export const COPY = {
     { label: 'Compare', id: 'compare' },
     { label: 'Directory', id: 'directory' },
     { label: 'Claim check', id: 'claim' },
+    { label: 'Materials', id: 'materials' },
     { label: 'Signals', id: 'signals' },
     { label: 'Backlog', id: 'backlog' },
   ],
@@ -591,6 +688,11 @@ export const COPY = {
 export const SOURCES = [
   { label: 'Fashion Revolution · Fashion Transparency Index 2023', url: 'https://www.fashionrevolution.org/about/transparency/' },
   { label: 'Fashion Revolution · What Fuels Fashion 2024', url: 'https://www.fashionrevolution.org/what-fuels-fashion/' },
+  { label: 'Good On You · Brand ratings directory', url: 'https://directory.goodonyou.eco/' },
+  { label: 'Baptist World Aid · Ethical Fashion Guide (AU)', url: 'https://baptistworldaid.org.au/resources/ethical-fashion-guide/' },
+  { label: 'The Fashion Pact · Signatories', url: 'https://www.thefashionpact.org/' },
+  { label: 'B Lab · Certified B Corporation directory', url: 'https://www.bcorporation.net/' },
+  { label: 'ACCC · Making environmental claims: a guide for business', url: 'https://www.accc.gov.au/business/environmental-claims' },
   { label: 'LVMH · Environment and social commitments', url: 'https://www.lvmh.com/en/our-commitments' },
   { label: 'Kering · Sustainability', url: 'https://www.kering.com/en/sustainability/' },
   { label: 'Inditex · Sustainability', url: 'https://www.inditex.com/itxcomweb/en/sustainability' },

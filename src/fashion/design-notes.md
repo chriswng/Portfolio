@@ -111,3 +111,27 @@ guidance):
 All additions hold the honesty rules: no invented metrics, no fictional brands,
 link out rather than overclaim, and static-site-safe (every integration is a
 link or a baked dataset, never a runtime API call).
+
+## More real data and a materials lens (v4)
+
+Another research pass (The Fashion Pact signatory list, B Lab's B Corp
+directory, Good On You's method, Baptist World Aid, and the Higg MSI debate):
+
+- **Commitments and memberships.** Each brand card now shows verified industry
+  memberships: **The Fashion Pact** (the CEO-led climate/biodiversity/oceans
+  coalition, 23 signatories in this set, with Hermès marked as having left in
+  2023 and LVMH correctly absent) and **Certified B Corp** (Patagonia, plus the
+  Australian labels R.M. Williams and Camilla). These are membership signals,
+  not performance, and the copy says so. Both are directory filters.
+- **More Australian brands.** Added R.M. Williams (Tattarang), Zimmermann
+  (Advent International), Camilla, Lorna Jane and Bonds (Hanesbrands, now
+  Gildan) with verified ownership, taking the set to 61.
+- **Materials.** A fibre-level guide for the "before you buy" job: the common
+  fibres with an honest "in its favour / what to watch" for each, and a
+  deliberate refusal to crown a winner. It names the Higg Materials
+  Sustainability Index controversy (synthetics scored well partly because
+  microplastic and ocean pollution were left out; regulators in Norway and the
+  Netherlands paused its consumer use in 2022) rather than parroting a single
+  ranking.
+- **Sources.** Good On You, Baptist World Aid, The Fashion Pact, B Lab and the
+  ACCC guide are now cited in the footer.
