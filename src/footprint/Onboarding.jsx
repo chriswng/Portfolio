@@ -36,7 +36,9 @@ export function buildProfileFromOnboarding(a) {
   };
   // Guided-audit answers are survey answers, so every entry lands in the
   // 'estimated' quality tier until a real bill or itinerary replaces it.
-  const E = (draft) => priceEntry({ quality: 'estimated', ...draft, meta: { ...draft.meta, synthetic: true } }, settings);
+  // meta.synthetic marks an invented-or-absent date; a draft that carries a
+  // real user-given date overrides it to false.
+  const E = (draft) => priceEntry({ quality: 'estimated', ...draft, meta: { synthetic: true, ...draft.meta } }, settings);
   const entries = [];
   const qEnds = [-9, -6, -3, 0].map((d) => shiftMonths(period.end, d, 28));
 
@@ -76,16 +78,25 @@ export function buildProfileFromOnboarding(a) {
       notes: 'Fares converted at about ' + Math.round(CONVERSIONS.ptPerKm.value * 100) + 'c per km. Indicative rail factor.',
     }));
   }
-  // Survey flights carry no real dates, so none are invented: each itinerary
-  // spreads evenly across the year (like the other typical-year entries)
-  // until a real, dated trip replaces it in the log.
+  // A flight given a month lands in that month as a real point event; one
+  // left open carries no invented date and spreads evenly across the year
+  // (like the other typical-year entries) until a dated trip replaces it.
   a.flights.forEach((fl) => {
     const route = FLIGHT_ROUTES.find((r) => r.id === fl.route);
+    const dated = !!fl.month;
     entries.push(E({
-      category: 'flight', date: period.end, period_months: 12,
+      category: 'flight',
+      date: dated ? fl.month : period.end,
+      ...(dated ? {} : { period_months: 12 }),
       label: (route ? route.label : Math.round(fl.km) + ' km flight') + (fl.ret ? ' return' : ''),
-      meta: { km: route ? route.km : fl.km, band: route ? route.band : undefined, international: route ? undefined : fl.km > 1500, cabin: fl.cabin, return: fl.ret },
-      notes: 'From the guided audit: a typical-year itinerary, spread across the year. Log the real trip with its date to replace it.',
+      meta: {
+        km: route ? route.km : fl.km, band: route ? route.band : undefined,
+        international: route ? undefined : fl.km > 1500, cabin: fl.cabin, return: fl.ret,
+        ...(dated ? { synthetic: false } : {}),
+      },
+      notes: dated
+        ? 'From the guided audit, dated to the month you gave. Swap in the exact itinerary when you have it.'
+        : 'From the guided audit: a typical-year itinerary, spread across the year. Log the real trip with its date to replace it.',
     }));
   });
   if (a.parcelsMonth > 0) {
@@ -250,8 +261,18 @@ function SliderField({ label, value, onChange, min, max, step, unit, live }) {
 export default function Onboarding({ onDone, onBuilt, onCancel }) {
   const [step, setStep] = useState(0);
   const [a, setA] = useState(DEFAULTS);
-  const [fl, setFl] = useState({ route: 'SYD-MEL', km: 700, cabin: 'economy', ret: true });
+  const [fl, setFl] = useState({ route: 'SYD-MEL', km: 700, cabin: 'economy', ret: true, month: '' });
   const [reaction, setReaction] = useState('');
+  // The audit window's twelve months, oldest first, for the optional
+  // when-was-it picker. Value is a mid-month date inside the window.
+  const monthOptions = useMemo(() => {
+    const { end } = lastTwelveMonths();
+    return Array.from({ length: 12 }, (_, i) => {
+      const iso = shiftMonths(end, -(11 - i), 15);
+      const d = new Date(iso + 'T00:00:00');
+      return { value: iso, label: d.toLocaleDateString('en-AU', { month: 'long', year: 'numeric' }) };
+    });
+  }, []);
   const headRef = useRef(null);
   const set = (k, v) => setA((s) => ({ ...s, [k]: v }));
   const num = (v) => (v === '' || isNaN(Number(v)) ? 0 : Number(v));
@@ -301,6 +322,8 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
     const t = LIVE.flight(a, entry);
     const next = { ...a, flights: [...a.flights, entry] };
     setA(next);
+    // The month belongs to the trip just added; the next trip chooses its own.
+    setFl((s) => ({ ...s, month: '' }));
     // Micro-reaction: rank this flight among every line logged so far.
     // Flights build in list order, so the new one is the last flight entry;
     // rank by identity so a duplicate itinerary cannot misreport.
@@ -415,6 +438,13 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
           options={[{ value: true, label: ONBOARD.flights.return }, { value: false, label: ONBOARD.flights.oneWay }]}
           value={fl.ret} onChange={(v) => setFl((s) => ({ ...s, ret: v }))}
         />
+        <label className="fp-field"><span>{ONBOARD.flights.when}</span>
+          <select value={fl.month} onChange={(e) => setFl((s) => ({ ...s, month: e.target.value }))}>
+            <option value="">{ONBOARD.flights.whenAny}</option>
+            {monthOptions.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
+          </select>
+        </label>
+        <p className="ob-note">{ONBOARD.flights.whenNote}</p>
         <button type="button" className="btn btn-primary fp-btn" onClick={addFlight}>
           {ONBOARD.flights.add} · {approx(LIVE.flight(a, { ...fl, km: fl.route === 'custom' ? num(fl.km) : fl.km }))}
         </button>
@@ -432,10 +462,11 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         <ul className="ob-flights">
           {a.flights.map((f, i) => {
             const routeLabel = (FLIGHT_ROUTES.find((r) => r.id === f.route) || { label: f.km + ' km' }).label;
+            const when = f.month ? (monthOptions.find((m) => m.value === f.month) || {}).label : null;
             return (
               <li key={i} className="ob-flight-item">
                 <span className="ob-flight-name">{routeLabel}{f.ret ? ' return' : ''}</span>
-                <span className="ob-flight-meta">{f.cabin} · <strong>{fmtT(LIVE.flight(a, f), 2)} t</strong></span>
+                <span className="ob-flight-meta">{f.cabin}{when ? ' · ' + when : ''} · <strong>{fmtT(LIVE.flight(a, f), 2)} t</strong></span>
                 <button
                   type="button" className="ob-remove"
                   onClick={() => { setReaction(''); setA((s) => ({ ...s, flights: s.flights.filter((_, j) => j !== i) })); }}
