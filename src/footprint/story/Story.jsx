@@ -65,6 +65,19 @@ function buildStoryData(profile, agg, macc, voice) {
     { label: BENCH_ST.rows.budget, t: BENCHMARKS.find((b) => b.id === 'budget2030').tco2e },
   ];
 
+  // Personal overshoot day: at this year's pace, the date the 2.5 t budget
+  // ran out, counted from the start of the audit window.
+  const budgetT = BENCHMARKS.find((b) => b.id === 'budget2030').tco2e;
+  let overshoot = null;
+  if (agg.total > budgetT) {
+    const day = Math.max(1, Math.round(365 * (budgetT / agg.total)));
+    const dt = new Date(profile.period.start + 'T00:00:00');
+    dt.setDate(dt.getDate() + day - 1);
+    overshoot = { day, date: dt.getDate() + ' ' + MONTH_NAMES[dt.getMonth()] + ' ' + dt.getFullYear() };
+  } else if (agg.total > 0.005) {
+    overshoot = { within: true };
+  }
+
   const needle = macc
     .filter((r) => r.applicable && r.reduction > 0.05)
     .sort((a, b) => b.reduction - a.reduction)
@@ -81,6 +94,8 @@ function buildStoryData(profile, agg, macc, voice) {
     monthly,
     worst,
     bench,
+    overshoot,
+    largest: agg.largest ? { label: agg.largest.label, t: agg.largest.tco2e } : null,
     needle,
   };
 }
