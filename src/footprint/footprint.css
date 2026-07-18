@@ -300,8 +300,19 @@
 .ob-stepper input:focus-visible{ outline:2px solid var(--matcha); outline-offset:3px; }
 
 .ob-slider-head{ display:flex; justify-content:space-between; align-items:baseline; gap:1rem; }
-.ob-value{ font-family:var(--disp); font-weight:700; font-size:1.25rem; color:var(--slate); font-variant-numeric:tabular-nums; white-space:nowrap; }
+.ob-value{ display:inline-flex; align-items:baseline; gap:0.25rem; font-family:var(--disp); font-weight:700; font-size:1.25rem; color:var(--slate); font-variant-numeric:tabular-nums; white-space:nowrap; }
 .ob-value em{ font-style:normal; font-family:var(--mono); font-size:0.6em; color:var(--mid); font-weight:500; }
+/* The value is a real input: type an exact figure, or use the slider below. */
+.ob-value-input{
+  font:inherit; color:inherit; text-align:right; width:7ch; max-width:11ch;
+  background:transparent; border:none; border-bottom:1px dashed var(--rule-dk);
+  padding:0 0.1rem 0.1rem; font-variant-numeric:tabular-nums;
+  transition:border-color 0.2s var(--ease);
+}
+.ob-value-input:hover{ border-bottom-color:var(--mid); }
+.ob-value-input:focus{ outline:none; border-bottom-color:var(--matcha); border-bottom-style:solid; }
+/* Keep the native spinners; they are a handy nudge on desktop. */
+.ob-value-input::-webkit-inner-spin-button{ opacity:0.5; }
 .ob-range{ -webkit-appearance:none; appearance:none; width:100%; height:36px; background:transparent; cursor:pointer; }
 .ob-range::-webkit-slider-runnable-track{ height:4px; background:var(--rule-dk); border-radius:2px; }
 .ob-range::-moz-range-track{ height:4px; background:var(--rule-dk); border-radius:2px; }
