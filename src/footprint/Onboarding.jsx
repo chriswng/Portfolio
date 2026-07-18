@@ -37,7 +37,9 @@ export function buildProfileFromOnboarding(a) {
     dietType: a.dietType, fuelType: a.fuelType, greenpowerPct: a.greenpowerPct,
     carOccupancy: a.carOccupancy,
   };
-  const E = (draft) => priceEntry({ ...draft, meta: { ...draft.meta, synthetic: true } }, settings);
+  // Guided-audit answers are survey answers, so every entry lands in the
+  // 'estimated' quality tier until a real bill or itinerary replaces it.
+  const E = (draft) => priceEntry({ quality: 'estimated', ...draft, meta: { ...draft.meta, synthetic: true } }, settings);
   const entries = [];
   const qEnds = [-9, -6, -3, 0].map((d) => shiftMonths(period.end, d, 28));
 
@@ -107,10 +109,11 @@ export function buildProfileFromOnboarding(a) {
   }));
 
   return {
-    schema: 'cw-footprint/1',
+    schema: 'cw-footprint/2',
     kind: 'own',
     settings, period, entries,
     plan: { enabled: [] },
+    pastYears: [],
   };
 }
 

@@ -3,6 +3,7 @@
 // aggregates them for the dashboard, and projects the abatement pathway.
 
 import {
+  FACTOR_SET,
   ELECTRICITY, ELECTRICITY_SOURCE, GRID_DECLINE,
   GAS, GAS_SOURCE, gasS3,
   ROAD_FUELS, ROAD_MODES, ROAD_SOURCE,
@@ -10,6 +11,7 @@ import {
   FREIGHT_MODES, FREIGHT_SOURCE,
   DIET_TYPES, DIET_SOURCE,
   OTHER_FUELS, OTHER_SOURCE,
+  QUALITY_TIERS, qualityOf,
 } from '../data/factors';
 import { ABATEMENT_OPTIONS, APPLY_ORDER } from '../data/abatement';
 
@@ -138,7 +140,7 @@ export function priceEntry(draft, settings) {
   }
 
   const tco2e = components.reduce((s, c) => s + c.tco2e, 0);
-  return {
+  const entry = {
     id: draft.id || newId(),
     date: draft.date,
     category: draft.category,
@@ -147,6 +149,9 @@ export function priceEntry(draft, settings) {
     unit,
     factor_used: activity > 0 ? round((tco2e * 1000) / activity, 4) : 0,
     factor_source: source,
+    // Vintage pinning: every entry records the factor set that priced it, so
+    // a future refresh can never silently re-price history.
+    factor_set: FACTOR_SET.id,
     scope,
     tco2e: round(tco2e),
     notes: draft.notes || '',
@@ -154,6 +159,8 @@ export function priceEntry(draft, settings) {
     meta,
     components: components.map((c) => ({ scope: c.scope, tco2e: round(c.tco2e) })),
   };
+  if (draft.quality) entry.quality = draft.quality;
+  return entry;
 }
 
 // ---------------------------------------------------------------------------
@@ -182,10 +189,13 @@ export function aggregate(profile) {
 
   const byCategory = {}, byScope = { 1: 0, 2: 0, 3: 0 };
   const byMonth = Object.fromEntries(months.map((m) => [m, {}]));
-  let total = 0, largest = null;
+  let total = 0, largest = null, band = 0;
 
   for (const e of inWindow) {
     total += e.tco2e;
+    // Uncertainty: each entry contributes its quality tier's half-width,
+    // summed linearly (no correlation credit). Central estimate untouched.
+    band += e.tco2e * QUALITY_TIERS[qualityOf(e)].band;
     byCategory[e.category] = (byCategory[e.category] || 0) + e.tco2e;
     for (const c of e.components || [{ scope: e.scope, tco2e: e.tco2e }]) {
       // Malformed imports fold into scope 3 rather than poisoning the tiles with NaN.
@@ -207,7 +217,79 @@ export function aggregate(profile) {
     if (!worstMonth || t > worstMonth.total) worstMonth = { month: m, total: t, cats: byMonth[m] };
   }
 
-  return { months, byMonth, byCategory, byScope, total, largest, worstMonth, count: inWindow.length };
+  return {
+    months, byMonth, byCategory, byScope, total, largest, worstMonth,
+    count: inWindow.length,
+    uncertainty: { band, low: Math.max(0, total - band), high: total + band },
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Year rollover. Closes the current reporting period into pastYears and
+// opens the next twelve months against the factor set in force. Pure:
+// returns a new profile, touches nothing.
+// ---------------------------------------------------------------------------
+const fyLabelFor = (startIso, endIso) => {
+  if (startIso.slice(5, 10) === '07-01') return 'FY' + endIso.slice(0, 4);
+  const mon = (iso) => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][Number(iso.slice(5, 7)) - 1];
+  return mon(startIso) + ' ' + startIso.slice(0, 4) + ' to ' + mon(endIso) + ' ' + endIso.slice(0, 4);
+};
+
+const plusMonthsEnd = (startIso, months) => {
+  // Last day of the month `months - 1` after the start month.
+  const [y, m] = [Number(startIso.slice(0, 4)), Number(startIso.slice(5, 7))];
+  const t = y * 12 + (m - 1) + months;
+  const yy = Math.floor(t / 12), mm = (t % 12) + 1;
+  const lastDay = new Date(yy, mm - 1, 0);
+  return lastDay.getFullYear() + '-' + String(lastDay.getMonth() + 1).padStart(2, '0') + '-' + String(lastDay.getDate()).padStart(2, '0');
+};
+
+const addYearIso = (iso) => String(Number(iso.slice(0, 4)) + 1) + iso.slice(4);
+
+export function rolloverProfile(profile, todayIso) {
+  // Advance whole years until today sits inside the new period, so a long
+  // absence never manufactures empty intermediate "years".
+  let start = addYearIso(profile.period.start);
+  let end = plusMonthsEnd(start, 12);
+  let skipped = 0;
+  while (end < todayIso) { start = addYearIso(start); end = plusMonthsEnd(start, 12); skipped++; }
+
+  const label = fyLabelFor(start, end);
+  // A year can hold entries priced under more than one factor set (logged
+  // either side of a refresh); the close record says so rather than
+  // pretending one vintage covered the year.
+  const vintages = [...new Set(profile.entries.map((e) => e.factor_set || 'unrecorded'))];
+  const past = {
+    label: profile.period.label,
+    start: profile.period.start,
+    end: profile.period.end,
+    entries: profile.entries,
+    plan: { ...profile.plan },
+    settingsAtClose: { ...profile.settings },
+    factorSetAtClose: vintages.length ? vintages.join(' + ') : FACTOR_SET.id,
+    closedAt: todayIso,
+  };
+
+  const entries = [];
+  if (profile.entries.some((e) => e.category === 'diet')) {
+    entries.push(priceEntry({
+      category: 'diet', date: end, period_months: 12,
+      label: DIET_TYPES[profile.settings.dietType || 'medMeat'].label,
+      quality: 'forecast',
+      meta: { dietType: profile.settings.dietType || 'medMeat', days: 365 },
+      notes: 'Carried from your settings at rollover as a forecast. Adjust if your diet changed.',
+    }, profile.settings));
+  }
+
+  return {
+    ...profile,
+    period: {
+      label, start, end,
+      note: skipped > 0 ? 'Nothing was logged for ' + skipped + ' intervening year' + (skipped > 1 ? 's' : '') + '; the gap is carried, not filled.' : undefined,
+    },
+    entries,
+    pastYears: [...(profile.pastYears || []), past],
+  };
 }
 
 // ---------------------------------------------------------------------------

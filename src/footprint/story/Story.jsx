@@ -150,7 +150,7 @@ function NextChapter({ active, chapters }) {
 // Act I: the reveal. A continuous scroll of full-screen moments above the
 // working dashboard. Purely presentational: it reads the same aggregates the
 // dashboard reads and never touches the store.
-export default function Story({ profile, agg, macc, voice, onStart, onSkip, onEnd, onFinish, onCopyLink, soundOn, onToggleSound, onAutoMute }) {
+export default function Story({ profile, agg, macc, voice, onStart, onSkip, onAssessor, onEnd, onFinish, onCopyLink, soundOn, onToggleSound, onAutoMute }) {
   const reduced = useMemo(() => prefersReducedMotion(), []);
   const d = useMemo(() => buildStoryData(profile, agg, macc, voice), [profile, agg, macc, voice]);
   const character = useMemo(() => classifyCharacter(agg), [agg]);
@@ -244,7 +244,7 @@ export default function Story({ profile, agg, macc, voice, onStart, onSkip, onEn
       {chromeOn && <ChapterRail active={active} chapters={chapters} />}
       {chromeOn && <NextChapter active={active} chapters={chapters} />}
 
-      <Cover d={d} voice={voice} onStart={onStart} reduced={reduced} />
+      <Cover d={d} voice={voice} onStart={onStart} onAssessor={onAssessor} reduced={reduced} />
       <YearTicker d={d} voice={voice} reduced={reduced} />
       {voice === 'example' && <Guess d={d} voice={voice} guess={guess} setGuess={setGuess} goTo={goToMoment} />}
       <TotalReveal d={d} voice={voice} guess={guess} onGuessAgain={onGuessAgain} onCopyLink={onCopyLink} reduced={reduced} />

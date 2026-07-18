@@ -3,8 +3,10 @@ import {
   FACTOR_SET, ELECTRICITY, ELECTRICITY_SOURCE, GAS, GAS_SOURCE, gasS3,
   ROAD_FUELS, ROAD_MODES, ROAD_SOURCE, FLIGHT_FACTORS, FLIGHT_SOURCE, FLIGHT_RF_MULTIPLIER,
   FREIGHT_MODES, FREIGHT_SOURCE, DIET_TYPES, DIET_SOURCE, FOOD_PER_KG, GRID_DECLINE,
+  QUALITY_TIERS, QUALITY_SOURCE,
 } from './data/factors';
-import { METHOD, MARKET } from './data/copy';
+import { METHOD, MARKET, fmtT } from './data/copy';
+import { fill } from './data/storyCopy';
 
 function FTable({ caption, head, rows, source }) {
   return (
@@ -25,7 +27,12 @@ function FTable({ caption, head, rows, source }) {
 
 const n3 = (v) => Number(v).toFixed(v < 0.01 ? 4 : 3);
 
-export function Method() {
+export function Method({ agg }) {
+  // Radiative forcing sensitivity, computed from the audit on screen: both
+  // bases are published; the page states what the other one would say.
+  const flightsT = agg ? agg.byCategory.flight || 0 : 0;
+  const noRfFlights = flightsT / FLIGHT_RF_MULTIPLIER;
+  const noRfTotal = agg ? agg.total - flightsT + noRfFlights : 0;
   return (
     <section id="fp-method">
       <div className="canvas">
@@ -49,6 +56,14 @@ export function Method() {
           <div className="fp-method-block">
             <h3>{METHOD.quality.title}</h3>
             {METHOD.quality.paras.map((p, i) => <p key={i}>{p}</p>)}
+          </div>
+          <div className="fp-method-block">
+            <h3>{METHOD.uncertainty.title}</h3>
+            {METHOD.uncertainty.paras.map((p, i) => <p key={i}>{p}</p>)}
+          </div>
+          <div className="fp-method-block">
+            <h3>{METHOD.sensitivity.title}</h3>
+            <p>{agg ? fill(METHOD.sensitivity.para, { flights: fmtT(noRfFlights), total: fmtT(noRfTotal) }) : METHOD.sensitivity.para}</p>
           </div>
           <div className="fp-method-block fp-method-wide">
             <h3>{METHOD.plan.title}</h3>
@@ -125,6 +140,17 @@ export function Method() {
             rows={FOOD_PER_KG.rows.map(([f, v]) => [f, v.toFixed(1)])}
             source={{ name: FOOD_PER_KG.source, detail: '' }}
           />
+          <FTable
+            caption="Data quality tiers · uncertainty band applied per entry"
+            head={['Tier', 'Band', 'What it covers']}
+            rows={Object.values(QUALITY_TIERS).map((t) => [t.label, '±' + Math.round(t.band * 100) + '%', t.plain])}
+            source={QUALITY_SOURCE}
+          />
+        </div>
+
+        <div className="fp-method-block fp-method-wide">
+          <h3>{METHOD.refresh.title}</h3>
+          {METHOD.refresh.paras.map((p, i) => <p key={i}>{p}</p>)}
         </div>
 
         <div className="fp-method-block fp-method-wide">
