@@ -50,6 +50,8 @@
 /* ---- KPIs ---- */
 .fp-kpis{ display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--rule-dk); border:1px solid var(--rule-dk); margin-bottom:0.75rem; }
 @media(min-width:760px){ .fp-kpis{ grid-template-columns:repeat(4,1fr); } }
+.fp-kpis-2{ grid-template-columns:repeat(2,1fr); max-width:560px; }
+@media(min-width:760px){ .fp-kpis-2{ grid-template-columns:repeat(2,1fr); } }
 .fp-kpi{ background:var(--white); padding:1.1rem 1.25rem; transition:background 0.3s var(--ease); }
 .fp-kpi:hover{ background:oklch(0.975 0.008 118); }
 .fp-kpi.live{ background:rgba(181,196,43,0.10); }
@@ -501,3 +503,10 @@
   .fp-skim-grid{ grid-template-columns:1fr; }
   .fp-skim-contact{ flex-direction:column; align-items:flex-start; }
 }
+
+/* Redesign: compact data-controls strip (replaces the public log) */
+.fp-data-card{ background:var(--bg); border:1px solid var(--rule-dk); padding:1.4rem 1.5rem; max-width:640px; }
+.fp-import-label{ position:relative; cursor:pointer; }
+.fp-excl-group{ margin-top:1.4rem; }
+.fp-excl-group:first-of-type{ margin-top:0.6rem; }
+.fp-excl-group .fp-card-head{ margin-bottom:0.6rem; }
