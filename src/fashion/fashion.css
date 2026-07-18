@@ -563,6 +563,36 @@ input { font: inherit; color: inherit; }
 .ow-principles-list .pn { font-family: var(--mono); font-size: 11px; color: var(--madder); }
 .ow-principles-note { font-family: var(--serif); font-style: italic; font-size: 0.95rem; color: var(--faint); margin-top: 1.1rem; }
 
+/* ---------------------------------------------------- commitments badges -- */
+.ow-commit { padding: 0.2rem 1.5rem 0.2rem; border-top: 1px solid var(--line-soft); margin-top: 0.4rem; }
+.ow-commit-h { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); margin: 1rem 0 0.7rem; }
+.ow-commit-h span { color: var(--faint); text-transform: none; letter-spacing: 0.02em; }
+.ow-commit-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.ow-badge { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--mono); font-size: 11px; letter-spacing: 0.03em; padding: 0.4rem 0.7rem; border: 1.5px solid; }
+.ow-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.ow-badge.fp { color: var(--indigo); border-color: var(--indigo); background: rgba(51,72,122,0.07); }
+.ow-badge.bc { color: var(--sage); border-color: var(--sage); background: rgba(91,107,78,0.08); }
+.ow-badge.former { color: var(--faint); border-color: var(--line); background: var(--calico-2); }
+.ow-badge.former::before { background: var(--faint); }
+a.ow-badge { transition: transform 0.14s var(--ease); }
+a.ow-badge:hover { transform: translateY(-1px); }
+.ow-commit-none { font-size: 0.9rem; color: var(--faint); font-family: var(--serif); font-style: italic; }
+
+/* ----------------------------------------------------------- materials ---- */
+.ow-fibres { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 0.9rem; }
+.ow-fibre { border: 1.5px solid var(--ink); background: var(--paper-2); }
+.ow-fibre-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.6rem; padding: 0.85rem 1rem; border-bottom: 1px solid var(--line); }
+.ow-fibre-head .fn { font-weight: 700; font-size: 1.05rem; letter-spacing: -0.01em; }
+.ow-fibre-head .fk { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); border: 1px solid var(--line); padding: 0.15rem 0.4rem; }
+.ow-fibre-body { padding: 0.9rem 1rem; display: grid; gap: 0.7rem; }
+.ow-fibre-row { font-size: 0.9rem; color: var(--ink-soft); padding-left: 0.9rem; border-left: 2px solid; }
+.ow-fibre-row.good { border-color: var(--sage); }
+.ow-fibre-row.watch { border-color: var(--madder); }
+.ow-fibre-row .fl { display: block; font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); margin-bottom: 0.2rem; }
+.ow-caveat { margin-top: 2rem; border: 1.5px solid var(--ink); background: var(--indigo); color: var(--paper); padding: 1.4rem 1.6rem; }
+.ow-caveat h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.6rem; }
+.ow-caveat p { color: rgba(245,241,229,0.9); max-width: 74ch; }
+
 @media (prefers-reduced-motion: reduce) {
-  .ow-swing, .ow-tag, .ow-search-box, .ow-card, .ow-group, .ow-familychip, .ow-groupchip, .ow-diglink { transition: none !important; animation: none !important; }
+  .ow-swing, .ow-tag, .ow-search-box, .ow-card, .ow-group, .ow-familychip, .ow-groupchip, .ow-diglink, .ow-badge { transition: none !important; animation: none !important; }
 }

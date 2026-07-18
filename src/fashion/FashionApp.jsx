@@ -17,6 +17,7 @@ import {
   BRANDS, BRAND_BY_ID, SEGMENTS, SIGNAL_FIELDS, STATUS, COPY, SOURCES,
   MULTI_GROUPS, segmentCount, ftiBand, groupFamily,
   digLinks, analyseClaim, SPECIMEN_CLAIMS, ACCC_PRINCIPLES, CLAIM_VERDICTS,
+  COMMITMENT_INFO, FIBRES,
 } from './data';
 import { prefersReducedMotion } from '../utils/media';
 
@@ -432,6 +433,20 @@ function BrandCard({ brand, inCompare, onToggleCompare, onSelect, onOpenGroup })
         </div>
       </div>
 
+      <div className="ow-commit">
+        <div className="ow-commit-h">{COPY.lookup.commitmentsLabel} <span>· {COPY.lookup.commitmentsHint}</span></div>
+        <div className="ow-commit-row">
+          {(() => {
+            const badges = [];
+            const c = brand.commitments;
+            if (c.fashionPact === 'yes') badges.push(<a key="fp" className="ow-badge fp" href={COMMITMENT_INFO.fashionPact.url} target="_blank" rel="noopener noreferrer" title={COMMITMENT_INFO.fashionPact.help}>{COMMITMENT_INFO.fashionPact.label}</a>);
+            else if (c.fashionPact === 'former') badges.push(<span key="fp" className="ow-badge former" title={COMMITMENT_INFO.fashionPact.help}>{COMMITMENT_INFO.fashionPact.former}</span>);
+            if (c.bCorp) badges.push(<a key="bc" className="ow-badge bc" href={COMMITMENT_INFO.bCorp.url} target="_blank" rel="noopener noreferrer" title={COMMITMENT_INFO.bCorp.help}>{COMMITMENT_INFO.bCorp.label}</a>);
+            return badges.length ? badges : <span className="ow-commit-none">{COPY.lookup.commitmentsNone}</span>;
+          })()}
+        </div>
+      </div>
+
       {family.length > 0 && (
         <div className="ow-family">
           <div className="ow-family-h">{COPY.lookup.familyLabel} <span>· {COPY.lookup.familyHint}</span></div>
@@ -625,6 +640,8 @@ function Directory({ onSelect, view, setView, focusGroup }) {
   const [seg, setSeg] = useState('all');
   const [auOnly, setAuOnly] = useState(false);
   const [scoredOnly, setScoredOnly] = useState(false);
+  const [pactOnly, setPactOnly] = useState(false);
+  const [bcorpOnly, setBcorpOnly] = useState(false);
   const [text, setText] = useState('');
   const [sort, setSort] = useState('name');
   const focusRef = useRef(null);
@@ -634,6 +651,8 @@ function Directory({ onSelect, view, setView, focusGroup }) {
     if (seg !== 'all') out = out.filter((b) => b.segment === seg);
     if (auOnly) out = out.filter((b) => b.au);
     if (scoredOnly) out = out.filter((b) => b.fti != null);
+    if (pactOnly) out = out.filter((b) => b.commitments.fashionPact === 'yes');
+    if (bcorpOnly) out = out.filter((b) => b.commitments.bCorp);
     const q = normalise(text);
     if (q) out = out.filter((b) => normalise(b.name).includes(q) || normalise(b.parent).includes(q) || b.aliases.some((a) => normalise(a).includes(q)));
     out.sort((a, b) => {
@@ -643,7 +662,7 @@ function Directory({ onSelect, view, setView, focusGroup }) {
       return a.name.localeCompare(b.name);
     });
     return out;
-  }, [seg, auOnly, scoredOnly, text, sort]);
+  }, [seg, auOnly, scoredOnly, pactOnly, bcorpOnly, text, sort]);
 
   useEffect(() => {
     if (view === 'groups' && focusGroup && focusRef.current) {
@@ -691,6 +710,8 @@ function Directory({ onSelect, view, setView, focusGroup }) {
               ))}
               <button className="ow-chip alt" aria-pressed={auOnly} onClick={() => setAuOnly((v) => !v)}>{COPY.directory.auOnly}</button>
               <button className="ow-chip alt" aria-pressed={scoredOnly} onClick={() => setScoredOnly((v) => !v)}>{COPY.directory.scored}</button>
+              <button className="ow-chip alt" aria-pressed={pactOnly} onClick={() => setPactOnly((v) => !v)}>{COPY.directory.pactOnly}</button>
+              <button className="ow-chip alt" aria-pressed={bcorpOnly} onClick={() => setBcorpOnly((v) => !v)}>{COPY.directory.bcorpOnly}</button>
             </div>
 
             <p className="ow-count">{COPY.directory.resultTemplate.replace('{n}', list.length)}</p>
@@ -839,6 +860,38 @@ function ClaimCheck() {
             </ol>
             <p className="ow-principles-note">{COPY.claim.principlesNote}</p>
           </aside>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// =========================================================================
+// Materials guide (fibre-level "before you buy" context)
+// =========================================================================
+function MaterialsGuide() {
+  return (
+    <section className="ow-section ow-reveal" id="materials">
+      <div className="ow-wrap">
+        <SecHead c={COPY.materials} />
+        <p className="ow-lede">{COPY.materials.lede}</p>
+        <div className="ow-fibres">
+          {FIBRES.map((f) => (
+            <div className="ow-fibre" key={f.name}>
+              <div className="ow-fibre-head">
+                <span className="fn">{f.name}</span>
+                <span className="fk">{f.kind}</span>
+              </div>
+              <div className="ow-fibre-body">
+                <div className="ow-fibre-row good"><span className="fl">{COPY.materials.goodLabel}</span>{f.good}</div>
+                <div className="ow-fibre-row watch"><span className="fl">{COPY.materials.watchLabel}</span>{f.watch}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="ow-caveat">
+          <h3>{COPY.materials.caveatTitle}</h3>
+          <p>{COPY.materials.caveat}</p>
         </div>
       </div>
     </section>
@@ -1073,6 +1126,7 @@ export default function FashionApp() {
         <Directory onSelect={select} view={dirView} setView={setDirView} focusGroup={focusGroup} />
         <Spotlight />
         <ClaimCheck />
+        <MaterialsGuide />
         <SignalsExplainer />
         <Backlog />
       </main>
