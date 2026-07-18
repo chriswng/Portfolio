@@ -532,13 +532,17 @@ section { position:relative; }
   position:relative; background:linear-gradient(150deg,var(--lime-bright) 0%,var(--lime) 42%,var(--sage) 100%);
   border-radius:var(--r-2xl); padding:clamp(1.9rem,5vw,3.4rem) clamp(1.5rem,4vw,3rem) clamp(1.6rem,3.5vw,2.4rem);
   color:var(--forest);
-  /* Folder-tab: a genuine cut, not a painted-over rectangle. An SVG notch (a
-     rounded rect with a square top-right so it meets the card edge) is XOR'd
-     out of the top-right, so the page shows through cleanly and the rounded
-     step corners stay circular at any width. No box-shadow: it would follow the
-     un-notched border box and leak around the cut, and the reference card is
-     flat anyway. The notch shrinks on narrow screens so the tab stays a tab. */
-  --notch:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='360'%20height='54'%3E%3Cpath%20d='M20,0L360,0L360,34A20,20,0,0,1,340,54L20,54A20,20,0,0,1,0,34L0,20A20,20,0,0,1,20,0Z'%20fill='%23000'/%3E%3C/svg%3E");
+  /* Folder tab: a genuine cut (XOR mask), not a painted-over rectangle. The
+     notch is a custom folder path, NOT a rounded rectangle — the two outer
+     step corners (tab top-right, body top-right) round convex, but the inner
+     corner where the tall tab meets the lower body rounds CONCAVE (the fillet
+     scoops into the lime the other way). Its top-right is square so it meets
+     the card edge. Corners stay circular at any width because they're baked
+     into the SVG at fixed px and the mask isn't scaled. No box-shadow: it would
+     follow the un-notched border box and leak around the cut; the reference
+     card is flat anyway. The notch shrinks on narrow screens so the tab stays a
+     tab, and mobile gets top padding so the wordmark clears the notch band. */
+  --notch:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='400'%20height='106'%3E%3Cpath%20d='M68,0L400,0L400,62A28,28,0,0,1,372,90L54,90A16,16,0,0,0,38,106L38,28A28,28,0,0,1,66,0Z'%20fill='%23000'/%3E%3C/svg%3E");
   -webkit-mask:linear-gradient(#000 0 0) 0 0/100% 100% no-repeat, var(--notch) top right/auto no-repeat;
   mask:linear-gradient(#000 0 0) 0 0/100% 100% no-repeat, var(--notch) top right/auto no-repeat;
   -webkit-mask-composite:xor;
@@ -546,10 +550,8 @@ section { position:relative; }
 }
 @media(max-width:600px){
   .footer-card{
-    /* The mask clips content too, so the tall wordmark must start below the
-       notch band or its top-right corner gets bitten off. */
-    padding-top:3.4rem;
-    --notch:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='150'%20height='46'%3E%3Cpath%20d='M16,0L150,0L150,30A16,16,0,0,1,134,46L16,46A16,16,0,0,1,0,30L0,16A16,16,0,0,1,16,0Z'%20fill='%23000'/%3E%3C/svg%3E");
+    padding-top:4.6rem;
+    --notch:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='160'%20height='70'%3E%3Cpath%20d='M48,0L160,0L160,36A18,18,0,0,1,142,54L40,54A10,10,0,0,0,30,64L30,18A18,18,0,0,1,48,0Z'%20fill='%23000'/%3E%3C/svg%3E");
   }
 }
 .footer-wordmark{
