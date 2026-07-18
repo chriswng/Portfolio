@@ -15,23 +15,33 @@ html { scroll-behavior: smooth; }
   --indigo:#635BFF;
   --berry:#FF3B60;
   --amber:#FF9500;
-  /* Bright chartreuse family — big colour fills and soft card washes. The
-     matcha above stays the fine accent (hairlines, dots, small type); the lime
-     below carries the large surfaces so the two never fight for the same job.
-     Forest is the dark companion: lime type sits on it, it sits on lime. */
-  --lime:#C6ED4A;
-  --lime-bright:#D7F85A;
-  --lime-soft:#EEF6C9;
-  --lime-wash:#F4F9DE;
+  /* Chartreuse family — big colour fills and soft card washes. Pulled a notch
+     off electric-lime toward the matcha/chartreuse the brand already uses, so
+     the palette reads as our own, not a borrowed one. The matcha above stays
+     the fine accent (hairlines, dots, small type); the chartreuse below carries
+     the large surfaces. Forest is the dark companion: it sits on chartreuse and
+     chartreuse type sits on it. Sage is the desaturated green-grey second tone
+     that keeps the big surfaces from reading as one flat wall of lime. */
+  --lime:#C1E043;
+  --lime-bright:#D0F055;
+  --lime-soft:#E9F2C2;
+  --lime-wash:#F1F7D8;
+  --sage:#D2DFCE;
+  --sage-2:#BFD1C4;
+  --sage-soft:#E4ECE0;
   --forest:#21300F;
   --forest-2:#31461A;
   --forest-ink:#5E6B1E;
-  /* Soft-geometry radius scale — the Firmus-style rounded shapes. */
+  /* Soft-geometry radius scale. */
+  --r-2xl:30px;
   --r-xl:26px;
   --r-lg:18px;
   --r-md:12px;
   --r-sm:8px;
   --r-pill:999px;
+  /* Soft, layered elevation — cards lift off the page rather than sit in a box. */
+  --shadow-soft:0 6px 22px rgba(33,48,15,0.07);
+  --shadow-card:0 16px 44px rgba(33,48,15,0.12),0 4px 12px rgba(15,23,42,0.05);
   /* Brand-tinted neutrals — matcha hue (~118) at low chroma, lightness held
      from the original slate values (was #0F172A / F8FAFC / 64748B / 94A3B8 /
      CBD5E1 / E2E8F0) so contrast is unchanged. */
@@ -228,12 +238,15 @@ section { position:relative; }
   grid-column:1 / 8; font-weight:400; font-size:clamp(1rem,1.6vw,1.3rem); line-height:1.6;
   color:#3f5133; padding:0.2rem 0 0.2rem 1.2rem; border-left:3px solid var(--forest-ink);
 }
-.instr-stack{ grid-column:9 / 13; display:grid; grid-template-columns:1fr 1fr; gap:1px; background:rgba(94,107,30,0.18); border:1px solid rgba(94,107,30,0.18); margin-top:0.2rem; border-radius:var(--r-lg); overflow:hidden; box-shadow:0 10px 30px rgba(33,48,15,0.08); }
+.instr-stack{ grid-column:9 / 13; display:grid; grid-template-columns:1fr 1fr; gap:1px; background:rgba(94,107,30,0.16); border:1px solid rgba(94,107,30,0.16); margin-top:0.2rem; border-radius:var(--r-2xl); overflow:hidden; box-shadow:var(--shadow-card); }
 @media(max-width:680px){
   .hero-prop{ grid-column:1 / 4; grid-row:1; }
   .instr-stack{ grid-column:2 / 5; grid-row:2; margin-top:1.4rem; }
 }
-.instr{ background:linear-gradient(155deg,var(--lime-soft),var(--white) 78%); padding:1.15rem 1.25rem; }
+/* Two-tone stat pair — one chartreuse, one sage — so the block reads as a
+   considered palette rather than a single flat lime. */
+.instr{ background:linear-gradient(155deg,var(--lime-soft),var(--white) 80%); padding:1.2rem 1.3rem; }
+.instr:nth-child(2){ background:linear-gradient(150deg,var(--sage),var(--white) 84%); }
 .instr-lbl{ font-family:var(--mono); font-size:9px; letter-spacing:0.1em; text-transform:uppercase; color:var(--forest-ink); line-height:1.4; margin-bottom:0.5rem; font-weight:600; }
 .instr-val{ font-family:var(--disp); font-size:clamp(2rem,4vw,2.6rem); font-weight:700; color:var(--forest); line-height:1; letter-spacing:-0.02em; }
 .scroll-hint{ display:flex; align-items:center; gap:0.6rem; font-family:var(--mono); font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--subtle); margin-top:clamp(2rem,5vw,3rem); }
@@ -253,7 +266,7 @@ section { position:relative; }
 .outcomes{ margin:clamp(2.5rem,6vw,4rem) 0 0; }
 .outcomes-head{ font-family:var(--mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--slate); font-weight:600; margin-bottom:1rem; display:flex; align-items:center; gap:0.75rem; }
 .outcomes-head::after{ content:''; flex:1; height:1px; background:var(--rule-lt); }
-.outcomes-grid{ display:grid; grid-template-columns:1fr; gap:1px; background:var(--rule-dk); border:1px solid var(--rule-dk); border-radius:var(--r-lg); overflow:hidden; }
+.outcomes-grid{ display:grid; grid-template-columns:1fr; gap:1px; background:var(--rule-dk); border:1px solid var(--rule-dk); border-radius:var(--r-xl); overflow:hidden; box-shadow:var(--shadow-soft); }
 @media(min-width:640px){ .outcomes-grid{ grid-template-columns:repeat(3,1fr); } }
 .outcome{ background:linear-gradient(178deg,color-mix(in srgb,var(--oc,var(--matcha)) 16%,var(--white)) 0%,var(--white) 34%); padding:1.7rem 1.6rem; transition:background 0.35s var(--ease); }
 .outcome:hover{ background:linear-gradient(178deg,color-mix(in srgb,var(--oc,var(--matcha)) 26%,var(--white)) 0%,var(--white) 44%); }
@@ -267,9 +280,10 @@ section { position:relative; }
 .pipe-sub{ font-size:0.92rem; font-weight:400; color:#475569; line-height:1.7; max-width:56ch; }
 .pipe-sub strong{ font-weight:600; color:var(--slate); }
 
-.pipeline{ border:1px solid var(--rule-dk); border-radius:var(--r-lg); overflow:hidden; }
-.pipe-row{ display:flex; flex-direction:column; }
-.pipe-row + .pipe-row{ border-top:1px solid var(--rule-lt); }
+/* Separated rounded cards (reference accordion) rather than one boxed list —
+   each stage floats on its own with a soft shadow. */
+.pipeline{ display:flex; flex-direction:column; gap:0.65rem; }
+.pipe-row{ display:flex; flex-direction:column; border:1px solid var(--rule-dk); border-radius:var(--r-lg); overflow:hidden; background:var(--white); box-shadow:var(--shadow-soft); }
 .pipe-step{ display:flex; align-items:center; gap:0.9rem; padding:0.95rem 1rem 0.95rem 1.15rem; background:linear-gradient(90deg,color-mix(in srgb,var(--pc,var(--matcha)) 42%,var(--white)) 0%,var(--white) 92px); cursor:pointer; user-select:none; transition:background 0.25s var(--ease); }
 .pipe-step:hover{ background:linear-gradient(90deg,color-mix(in srgb,var(--pc,var(--matcha)) 55%,var(--white)) 0%,var(--lime-wash) 150px); }
 .pipe-step:focus-visible{ outline:2px solid var(--matcha); outline-offset:-2px; }
@@ -365,7 +379,7 @@ section { position:relative; }
 .seg-sm .seg-btn:last-child:nth-child(odd){ grid-column:1 / -1; }
 .seg-sm .seg-btn.on{ background:var(--sc,var(--slate)); color:#fff; }
 
-.lever-deck{ display:grid; grid-template-columns:1fr; gap:1px; background:var(--rule-dk); border:1px solid var(--rule-dk); margin-top:1.25rem; border-radius:var(--r-lg); overflow:hidden; }
+.lever-deck{ display:grid; grid-template-columns:1fr; gap:1px; background:var(--rule-dk); border:1px solid var(--rule-dk); margin-top:1.25rem; border-radius:var(--r-lg); overflow:hidden; box-shadow:var(--shadow-soft); }
 @media(min-width:720px){ .lever-deck{ grid-template-columns:1fr 1fr; } }
 /* Accent reads as a gradient wash from the top edge instead of a hard bar, so
    it blends into the deck's rounded corners rather than being clipped by them. */
@@ -383,15 +397,15 @@ section { position:relative; }
 .takeaway em{ font-style:normal; color:#75821D; }
 .takeaway .tk-note{ display:block; font-family:var(--sans); font-size:11px; font-weight:400; color:var(--mid); margin-top:0.35rem; letter-spacing:0; line-height:1.5; }
 
-.kpi-strip{ display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--rule-dk); border:1px solid var(--rule-dk); margin-bottom:1.5rem; border-radius:var(--r-md); overflow:hidden; }
+.kpi-strip{ display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--rule-dk); border:1px solid var(--rule-dk); margin-bottom:1.5rem; border-radius:var(--r-md); overflow:hidden; box-shadow:var(--shadow-soft); }
 @media(min-width:580px){ .kpi-strip{ grid-template-columns:repeat(4,1fr); } }
-.kpi{ background:var(--white); padding:1.1rem 1.25rem; }
-.kpi.live{ background:var(--red-bg); }
+.kpi{ background:linear-gradient(160deg,var(--sage-soft),var(--white) 90%); padding:1.1rem 1.25rem; }
+.kpi.live{ background:linear-gradient(160deg,var(--lime-soft),var(--white) 88%); }
 .kpi-l{ font-family:var(--mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--mid); margin-bottom:0.35rem; font-weight:600; }
 .kpi-v{ font-family:var(--disp); font-size:1.55rem; font-weight:700; color:var(--slate); line-height:1; }
 .kpi.live .kpi-v{ color:#75821D; }
 
-.chart-card{ background:var(--white); border:1px solid var(--rule-dk); padding:1.4rem 1.4rem 1.1rem; margin-bottom:1.5rem; border-radius:var(--r-lg); }
+.chart-card{ background:var(--white); border:1px solid var(--rule-dk); padding:1.4rem 1.4rem 1.1rem; margin-bottom:1.5rem; border-radius:var(--r-xl); box-shadow:var(--shadow-soft); }
 .chart-head{ display:flex; align-items:baseline; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:0.4rem; }
 .chart-title{ font-family:var(--disp); font-size:1.1rem; font-weight:700; color:var(--slate); letter-spacing:-0.01em; }
 .chart-sub{ font-size:11px; color:var(--mid); line-height:1.55; margin-bottom:1rem; }
@@ -403,7 +417,7 @@ section { position:relative; }
 .cl-swatch.line{ height:0; border-top:2px solid currentColor; width:16px; }
 .cl-swatch.dash{ height:0; border-top:2px dashed currentColor; width:16px; }
 
-.contrib-card{ background:var(--white); border:1px solid var(--rule-dk); padding:1.25rem 1.5rem; border-radius:var(--r-lg); }
+.contrib-card{ background:var(--white); border:1px solid var(--rule-dk); padding:1.25rem 1.5rem; border-radius:var(--r-xl); box-shadow:var(--shadow-soft); }
 .contrib-head{ font-family:var(--mono); font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:var(--mid); margin-bottom:1.1rem; padding-bottom:0.75rem; border-bottom:1px solid var(--rule-dk); font-weight:600; }
 .cbar{ display:grid; grid-template-columns:max-content 1fr max-content; gap:0.75rem; align-items:center; margin-bottom:0.7rem; }
 @media(max-width:559px){ .cbar{ gap:0.5rem; } }
@@ -486,7 +500,7 @@ section { position:relative; }
 .exp-bullets li.has-mark::before{ content:'›'; position:absolute; left:0; color:var(--matcha); font-size:1rem; line-height:1.5; }
 .exp-section-lbl{ font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:#75821D; font-weight:600; display:block; margin-top:1.1rem; padding-left:0; }
 
-.edu-block{ margin-top:3rem; background:linear-gradient(160deg,var(--lime-wash),#F1F5F9 65%); border:1px solid var(--rule-dk); padding:1.7rem; position:relative; border-radius:var(--r-xl); }
+.edu-block{ margin-top:3rem; background:linear-gradient(155deg,var(--lime-wash) 0%,var(--sage-soft) 100%); border:1px solid var(--rule-dk); padding:1.8rem; position:relative; border-radius:var(--r-2xl); box-shadow:var(--shadow-soft); }
 .edu-inst{ font-family:var(--disp); font-size:1.35rem; font-weight:700; color:var(--slate); line-height:1.15; margin-bottom:0.15rem; }
 .edu-deg{ font-size:0.85rem; font-weight:400; color:#475569; margin-bottom:1.25rem; }
 .edu-grid{ display:grid; grid-template-columns:1fr; gap:1px; background:var(--rule-dk); border:1px solid var(--rule-dk); border-radius:var(--r-md); overflow:hidden; }
@@ -515,9 +529,9 @@ section { position:relative; }
    ============================================================================ */
 .site-footer{ background:var(--bg); padding:0 var(--gut) clamp(1.5rem,4vw,3rem); }
 .footer-card{
-  position:relative; background:linear-gradient(158deg,var(--lime-bright) 0%,var(--lime) 46%,var(--lime-soft) 100%);
-  border-radius:var(--r-xl); padding:clamp(1.9rem,5vw,3.4rem) clamp(1.5rem,4vw,3rem) clamp(1.6rem,3.5vw,2.4rem);
-  overflow:hidden; color:var(--forest);
+  position:relative; background:linear-gradient(150deg,var(--lime-bright) 0%,var(--lime) 42%,var(--sage) 100%);
+  border-radius:var(--r-2xl); padding:clamp(1.9rem,5vw,3.4rem) clamp(1.5rem,4vw,3rem) clamp(1.6rem,3.5vw,2.4rem);
+  overflow:hidden; color:var(--forest); box-shadow:var(--shadow-card);
 }
 /* Folder-tab notch: a page-coloured bite out of the top-right corner, so the
    card reads as a raised tab on the left stepping down on the right. */
