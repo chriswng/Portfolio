@@ -530,7 +530,8 @@ section { position:relative; }
 .site-footer{ background:var(--bg); padding:0 var(--gut) clamp(1.5rem,4vw,3rem); }
 .footer-card{
   position:relative; background:linear-gradient(150deg,var(--lime-bright) 0%,var(--lime) 42%,var(--sage) 100%);
-  border-radius:var(--r-2xl); padding:clamp(1.9rem,5vw,3.4rem) clamp(1.5rem,4vw,3rem) clamp(1.6rem,3.5vw,2.4rem);
+  --pad-x:clamp(1.5rem,4vw,3rem); --notch-w:360px;
+  border-radius:var(--r-2xl); padding:clamp(1.9rem,5vw,3.4rem) var(--pad-x) clamp(1.6rem,3.5vw,2.4rem);
   color:var(--forest);
   /* Folder tab: a genuine cut (XOR mask), not a painted-over rectangle. The
      notch is a custom folder path, NOT a rounded rectangle — the two outer
@@ -557,7 +558,16 @@ section { position:relative; }
 .footer-wordmark{
   font-family:var(--disp); font-weight:700; letter-spacing:-0.05em; line-height:0.86;
   font-size:clamp(2.8rem,11vw,7rem); color:var(--forest); margin-bottom:clamp(1.4rem,3.5vw,2.2rem);
-  max-width:11ch;
+  /* Centre the wordmark within the tab (the lime area left of the notch): the
+     block spans from the card's left edge to the notch step, then the text is
+     centred, so "Christopher" has equal space either side of it. */
+  width:calc(100% + 2 * var(--pad-x) - var(--notch-w));
+  margin-left:calc(-1 * var(--pad-x));
+  text-align:center;
+}
+/* On mobile the tab is narrower than the word, so keep it left-aligned. */
+@media(max-width:600px){
+  .footer-wordmark{ width:auto; margin-left:0; text-align:left; max-width:11ch; }
 }
 
 .footer-cta{ display:flex; align-items:center; gap:1.2rem 1.6rem; flex-wrap:wrap; max-width:680px; }
