@@ -130,7 +130,9 @@ export function buildProfileFromOnboarding(a) {
 
 const DEFAULTS = {
   state: 'NSW', householdSize: 2, dwelling: 'apartment', dietType: 'medMeat', fuelType: 'petrol',
-  greenpowerPct: 0, kwhQuarter: 1000, mjQuarter: 3000, carKmWeek: 0, carOccupancy: 1, rideshareWeek: 0, ptWeek: 0,
+  // gpChoice is the picked chip; greenpowerPct is what the engine prices from.
+  // 'no' and 'unsure' are distinct choices that both price at 0% renewable.
+  gpChoice: 'no', greenpowerPct: 0, kwhQuarter: 1000, mjQuarter: 3000, carKmWeek: 0, carOccupancy: 1, rideshareWeek: 0, ptWeek: 0,
   parcelsMonth: 2, intlOrdersMonth: 0, flights: [],
 };
 
@@ -234,12 +236,38 @@ function Stepper({ label, value, onChange, min = 0, max = 99, step = 1, live }) 
   );
 }
 
+// Slide it, or type it. The number beside the label is a real input, so a
+// visitor who knows their exact bill can enter it instead of hunting for the
+// right slider position. The two stay in sync; typing clamps to the range.
 function SliderField({ label, value, onChange, min, max, step, unit, live }) {
+  const [text, setText] = useState(String(value));
+  // Reflect slider drags (and any external change) back into the input.
+  useEffect(() => { setText(String(value)); }, [value]);
+  const clamp = (n) => Math.min(max, Math.max(min, n));
+  const onType = (raw) => {
+    setText(raw);
+    if (raw === '' || raw === '-') return;
+    const n = Number(raw);
+    if (!isNaN(n)) onChange(clamp(n));
+  };
+  const onBlurInput = () => {
+    const n = Number(text);
+    setText(String(text === '' || isNaN(n) ? value : clamp(n)));
+  };
   return (
     <div className="ob-field">
       <div className="ob-slider-head">
         <span className="ob-label">{label}</span>
-        <span className="ob-value">{value.toLocaleString()}<em> {unit}</em></span>
+        <span className="ob-value">
+          <input
+            type="number" className="ob-value-input" inputMode="decimal"
+            min={min} max={max} step={step} value={text}
+            aria-label={label + ', type an exact figure'}
+            onChange={(e) => onType(e.target.value)}
+            onBlur={onBlurInput}
+          />
+          <em> {unit}</em>
+        </span>
       </div>
       <input
         type="range" className="ob-range"
@@ -383,11 +411,13 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
       <Chips
         label={ONBOARD.energy.greenpower}
         options={[
-          { value: 0, label: ONBOARD.energy.gpNo },
-          { value: 50, label: ONBOARD.energy.gpHalf },
-          { value: 100, label: ONBOARD.energy.gpFull },
+          { value: 'no', label: ONBOARD.energy.gpNo },
+          { value: 'unsure', label: ONBOARD.energy.gpUnsure },
+          { value: 'half', label: ONBOARD.energy.gpHalf },
+          { value: 'full', label: ONBOARD.energy.gpFull },
         ]}
-        value={a.greenpowerPct} onChange={(v) => set('greenpowerPct', v)}
+        value={a.gpChoice}
+        onChange={(v) => setA((s) => ({ ...s, gpChoice: v, greenpowerPct: v === 'half' ? 50 : v === 'full' ? 100 : 0 }))}
         note={ONBOARD.energy.greenpowerNote}
       />
     </div>,
