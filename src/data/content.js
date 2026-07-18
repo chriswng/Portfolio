@@ -8,7 +8,7 @@ export const NAV_LINKS = [
   { href: '#scenario', label: 'Decarb Model' },
   { href: 'work/', label: 'Work Samples', external: true },
   { href: 'footprint/', label: 'Footprint', external: true },
-  { href: 'fashion/', label: 'Sevenfold', external: true },
+  { href: 'fashion/', label: 'Openweave', external: true },
   { href: '#experience', label: 'Experience' },
   { href: '#contact', label: 'Contact' },
 ];
@@ -202,7 +202,7 @@ export const FOOTER = {
         { label: 'Decarb Model', href: '#scenario' },
         { label: 'Work Samples', href: 'work/' },
         { label: 'Carbon Footprint', href: 'footprint/' },
-        { label: 'Sevenfold', href: 'fashion/' },
+        { label: 'Openweave', href: 'fashion/' },
       ],
     },
     {
