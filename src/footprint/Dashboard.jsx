@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import SplitText from '../components/SplitText';
 import { CATEGORIES, categoryById } from './data/factors';
-import { classifyCharacter, CUSTODIAN } from './data/characters';
+import { classifyCharacter, BADGE } from './data/characters';
 import { EmblemDots } from './story/CarbonField';
 import { BENCHMARKS, AUS_AVG, BUDGET_2030, BENCHMARK_CAVEAT } from './data/benchmarks';
 import { DASH, HOTSPOTS, DASH_UI, fmtT } from './data/copy';
@@ -84,7 +84,7 @@ export default function Dashboard({ agg, period, compareAgg, comparePeriod, isEx
             {['weight', 'shape', 'rhythm'].map((k) => (
               <em key={k}>{CHARACTER_ST.axes[k].levels[character.axes[k].level]}</em>
             ))}
-            {character.custodian && <em className="fp-char-cust">{CUSTODIAN.name}</em>}
+            {character.badge && <em className="fp-char-cust">{BADGE.name}</em>}
           </span>
         </motion.div>
         )}

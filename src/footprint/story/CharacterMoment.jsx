@@ -5,7 +5,7 @@ import { MomentShare } from './moments';
 import { fmtT } from '../data/copy';
 import { CHARACTER_ST, SHARE_ST, fill } from '../data/storyCopy';
 import {
-  CHARACTERS, CUSTODIAN, WEIGHT_ROWS, TEMPERAMENT_COLS,
+  CHARACTERS, BADGE, WEIGHT_ROWS, TEMPERAMENT_COLS,
   GLOBAL_T, HEAVY_T, SPECIALIST_SHARE, SPIKE_MULTIPLE,
 } from '../data/characters';
 import { shareLinkedIn } from '../lib/shareCard';
@@ -77,7 +77,7 @@ function LinkedInShare({ d, voice, character, verdict }) {
         hex: lighten(character.hex, 0.2),
         total: fmtT(d.total),
         mix: verdict,
-        badge: character.custodian,
+        badge: character.badge,
       }, 'life-footprint-linkedin-' + character.id + '.png');
       setState(ok ? 'done' : 'idle');
     } catch { setState('idle'); return; }
@@ -168,11 +168,11 @@ export default function CharacterMoment({ d, voice, character }) {
               </p>
             )}
             <p className="st-char-hint">{character.hint}</p>
-            {character.custodian && (
+            {character.badge && (
               <div className="st-char-badge">
-                <EmblemDots stencil={CUSTODIAN.stencil} hex={lighten(CUSTODIAN.hex, 0.3)} size={34} />
+                <EmblemDots stencil={BADGE.stencil} hex={lighten(BADGE.hex, 0.3)} size={34} />
                 <span>
-                  <em>{CHARACTER_ST.badge.kicker}</em> <strong>{CUSTODIAN.name}.</strong> {CHARACTER_ST.badge.note}
+                  <em>{CHARACTER_ST.badge.kicker}</em> <strong>{BADGE.name}.</strong> {CHARACTER_ST.badge.note}
                 </span>
               </div>
             )}
@@ -185,7 +185,7 @@ export default function CharacterMoment({ d, voice, character }) {
                 stencil: character.stencil,
                 hex: lighten(character.hex, 0.2),
                 total: fmtT(d.total),
-                badge: character.custodian,
+                badge: character.badge,
                 axes: meters.map((m) => ({
                   label: CHARACTER_ST.axes[m.axisKey].label,
                   level: CHARACTER_ST.axes[m.axisKey].levels[m.level],
