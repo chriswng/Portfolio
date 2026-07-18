@@ -181,6 +181,15 @@ export const BENCH_ST = {
     example: 'Under the Australian average, still miles over the 2030 budget of 2.5 tonnes a person. Closing that gap is the plan below.',
     own: 'The 2030 budget of 2.5 tonnes a person is the line that matters. The plan below is how you move toward it.',
   },
+  // Personal overshoot day: the date the 2.5 t budget ran out at this pace.
+  overshoot: {
+    kicker: 'Budget day',
+    line: {
+      example: 'At my pace, the whole 2030 budget was spent by {date}. Day {day} of 365; the rest of the year ran on borrowed carbon.',
+      own: 'At your pace, the 2030 budget was spent by {date}. Day {day} of 365; everything after ran on borrowed carbon.',
+    },
+    within: 'The 2.5 t budget outlasted the whole year. That almost never happens.',
+  },
   caveat: 'The averages count more things than this audit does (clothes, gadgets, services), so the true gap is bigger, not smaller.',
 };
 
@@ -236,12 +245,53 @@ export const CHARACTER_ST = {
   kicker: { example: 'My audit classifies as', own: 'Your audit classifies as' },
   headline: 'Twelve shapes a footprint takes.',
   sub: {
-    example: 'Every audit here lands on one of twelve profiles, from its size and its biggest wedge. Mine lands here.',
-    own: 'Every audit here lands on one of twelve profiles, from its size and its biggest wedge. Yours lands here.',
+    example: 'Three measurements decide it: how big the year is, how concentrated, and how it arrived. Mine reads like this.',
+    own: 'Three measurements decide it: how big the year is, how concentrated, and how it arrived. Yours reads like this.',
   },
-  topLine: '{share}% of the year in the top wedge',
-  othersTitle: 'The other eleven',
-  othersNote: 'Assigned by rule, not by quiz. The classification method is in the basis of preparation below, next to everything else.',
+  // The three meters, shown filling before the emblem forms. Each axis has a
+  // label, a plain-words gloss, a name per level, and a reading template.
+  axes: {
+    weight: {
+      label: 'Weight',
+      gloss: 'the size of the year',
+      levels: { feather: 'Featherweight', middle: 'Middleweight', heavy: 'Heavyweight' },
+      reading: '{t} t',
+      ticks: [
+        { label: '6.6 t · world avg' },
+        { label: '16 t' },
+      ],
+    },
+    shape: {
+      label: 'Shape',
+      gloss: 'how concentrated',
+      levels: { specialist: 'Specialist', generalist: 'Generalist' },
+      reading: '{share}% in the top wedge',
+      tickLabel: '40%',
+    },
+    rhythm: {
+      label: 'Rhythm',
+      gloss: 'how it arrived',
+      levels: { spiky: 'Spiky', steady: 'Steady' },
+      reading: 'worst month {x}× the average',
+      tickLabel: '2×',
+    },
+  },
+  metersAria: 'Three meters: weight {weight}, shape {shape}, rhythm {rhythm}.',
+  badge: {
+    kicker: 'Achievement unlocked',
+    note: 'Inside the 2.5 t lifestyle budget. The rarest ending in the game.',
+  },
+  topEntry: 'Biggest single line: {label}, {t} t on its own.',
+  matrixTitle: 'The whole taxonomy',
+  matrixCols: [
+    ['One wedge', 'in bursts'],
+    ['One wedge', 'steady'],
+    ['Spread', 'in bursts'],
+    ['Spread', 'steady'],
+  ],
+  matrixRows: { feather: 'Under 6.6 t', middle: '6.6 to 16 t', heavy: 'Over 16 t' },
+  matrixAria: 'The twelve characters as a grid: three weight rows by four temperament columns. Yours is {name}.',
+  othersNote: 'Assigned by rule, not by quiz: three measured axes, twelve cells. The thresholds are in the basis of preparation below, next to everything else.',
   yoursFlag: 'you',
 };
 

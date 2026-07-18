@@ -484,6 +484,16 @@ export function Bench({ d, voice }) {
             </motion.div>
           ))}
         </div>
+        {d.overshoot && (
+          <motion.div className="st-overshoot" variants={rise} custom={5.5}>
+            <span className="st-overshoot-k">{BENCH_ST.overshoot.kicker}</span>
+            <span className="st-overshoot-line">
+              {d.overshoot.within
+                ? BENCH_ST.overshoot.within
+                : fill(BENCH_ST.overshoot.line[voice], { date: d.overshoot.date, day: d.overshoot.day })}
+            </span>
+          </motion.div>
+        )}
         <motion.p className="st-punch-sm" variants={rise} custom={6}>{BENCH_ST.line[voice]}</motion.p>
         <motion.p className="st-caveat" variants={rise} custom={7}>{BENCH_ST.caveat}</motion.p>
         <motion.div variants={rise} custom={8}>
