@@ -8,6 +8,7 @@ import {
   ELECTRICITY, ELECTRICITY_SOURCE, GAS, GAS_SOURCE,
   ROAD_FUELS, ROAD_MODES, ROAD_SOURCE, FLIGHT_FACTORS, FLIGHT_SOURCE, FLIGHT_RF_MULTIPLIER,
   FREIGHT_MODES, FREIGHT_SOURCE, DIET_TYPES, DIET_SOURCE, FOOD_PER_KG, GRID_DECLINE,
+  GOODS, GOODS_SOURCE, GOODS_FX, goodsPerAud,
 } from './data/factors';
 import { METHOD } from './data/copy';
 import Icon from './Icons';
@@ -136,6 +137,15 @@ export default function Method() {
             rows={FOOD_PER_KG.rows.map(([f, v]) => [f, v.toFixed(1)])}
             source={{ name: FOOD_PER_KG.source, detail: '' }}
           />
+          <FTable
+            caption="Goods & services (optional detail) · spend-based screening estimate"
+            head={['Category', 'kg CO₂-e / 2022 USD', 'kg CO₂-e / A$ spent', 'Representative EPA commodities (with margins)']}
+            rows={Object.entries(GOODS).map(([k, g]) => [g.label, g.usPerUsd.toFixed(3), goodsPerAud(k).toFixed(4), g.basis])}
+            source={GOODS_SOURCE}
+          />
+          <p className="fp-note">
+            Currency and inflation bridge: each per-2022-USD factor is multiplied by {GOODS_FX.audUsd} (USD per A$) and divided by {GOODS_FX.inflation} (US CPI-U, 2022 to reporting year) to price spend in current Australian dollars. {GOODS_FX.audUsdNote} {GOODS_FX.inflationNote} This block is a screening estimate for a US consumption basket applied to Australian spend; treat it as coarse and lower-confidence than the metered lines above.
+          </p>
         </div>
 
         <div className="fp-method-block fp-method-wide">

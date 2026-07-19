@@ -95,8 +95,8 @@ export const PLAN = {
 
 export const ONBOARD = {
   title: 'Calculate your footprint',
-  intro: 'Five quick steps. Rough answers are fine; you can put real bills in later. Everything stays in this browser.',
-  steps: ['You', 'Home energy', 'Getting around', 'Flights', 'Food & parcels'],
+  intro: 'Five quick steps, then an optional sixth. Rough answers are fine; you can put real bills in later. Everything stays in this browser.',
+  steps: ['You', 'Home energy', 'Getting around', 'Flights', 'Food & parcels', 'More detail'],
   you: {
     title: 'About you',
     sub: 'Where you live sets your power mix, and we split shared home energy across the people who live there.',
@@ -184,6 +184,21 @@ export const ONBOARD = {
     parcels: 'Parcels delivered per month',
     intlOrders: 'Overseas orders per month (the ones that arrive by air)',
   },
+  // The optional sixth step. Everything here is opt-in and starts at zero, so
+  // skipping it (or the whole step) leaves the result unchanged.
+  advanced: {
+    title: 'A little more detail',
+    sub: 'Optional. The quick survey leaves out the things you buy: clothes, gadgets, going out, health. Pop in rough monthly spend and we will estimate those too, or skip the lot.',
+    optional: 'Every field here starts at zero and is yours to skip. Leave it be and your result is exactly the same.',
+    clothing: 'Clothing and footwear, $ a month',
+    electronics: 'Electronics and tech, $ a month',
+    entertainment: 'Entertainment and going out, $ a month',
+    health: 'Health, out of pocket, $ a month',
+    other: 'Other goods and services, $ a month',
+    skip: 'Skip this step',
+    sourceSummary: 'How this is estimated',
+    sourceBody: 'These come from how much you spend, not a physical quantity: dollars times a published spend-based factor (US EPA supply-chain factors, converted to Australian dollars). It is a screening estimate for the wider basket the simple survey leaves out, deliberately rough, so treat it as a coarse addition rather than a precise number.',
+  },
   finish: 'See my footprint',
   back: 'Back',
   next: 'Next',
@@ -214,6 +229,7 @@ export const METHOD = {
     title: 'What it includes',
     paras: [
       'The calculator covers the things a person controls or pays for directly: home electricity and gas, personal travel on the ground, flights, parcel deliveries, and diet. It groups them the way companies do, translated to a person: Scope 1 is fuel you burn yourself (home gas, and petrol if you drive), Scope 2 is the electricity you buy, and Scope 3 is everything else your choices cause but that happens elsewhere.',
+      'An optional detail step adds the wider consumption basket the quick survey skips: clothing, electronics, entertainment, health, and other goods and services. These are estimated from how much you spend rather than a measured quantity, so they are labelled screening estimates and carry more uncertainty than a metered bill. They are off unless you fill them in, and count as Scope 3.',
       'Shared home energy is split evenly between the adults in the home: two adults means half of each bill counts as yours. Shared car trips are split the same way, by the average number of people in the car. Rideshare and public-transport factors are already per passenger, so they need no split.',
     ],
   },
@@ -228,7 +244,7 @@ export const METHOD = {
     title: 'Where the numbers come from',
     paras: [
       'Australian electricity, gas and road-fuel factors are from the Australian Government (DCCEEW) National Greenhouse Accounts Factors. Flights and freight use the UK Government conversion factors, published by DESNZ and still widely known as the DEFRA factors, because they are the most complete public source for aviation by distance and cabin.',
-      'Diet is an estimate, not a precise figure: it uses published per-day values by diet type, and the same direction shows up in Australian studies. Public transport uses a UK rail factor as a stand-in until a published NSW per-passenger figure is available. Every factor and its source is in the tables below.',
+      'Diet is an estimate, not a precise figure: it uses published per-day values by diet type, and the same direction shows up in Australian studies. Public transport uses a UK rail factor as a stand-in until a published NSW per-passenger figure is available. The optional goods and services detail is a spend-based screening estimate, from the US EPA Supply Chain factors converted to Australian dollars, so it is the coarsest number here and labelled that way. Every factor and its source is in the tables below.',
     ],
   },
   quality: {
@@ -242,7 +258,7 @@ export const METHOD = {
     title: 'How to read the result',
     paras: [
       'The total is compared against three published benchmarks: the Australian and world per-person averages, and a 1.5°C-aligned lifestyle benchmark of 2.5 t a person by 2030. The two averages are national figures that count whole economies, so they are broader than a personal footprint. The 2.5 t figure is a lifestyle benchmark of the same kind this calculator estimates.',
-      'Because this calculator leaves out the wider basket of goods and services (clothing, electronics, services), any total here understates a full consumption footprint. So the gap to the benchmark is if anything larger than it looks, not smaller.',
+      'By default this calculator leaves out the wider basket of goods and services, so a core total understates a full consumption footprint. The optional detail step adds a screening estimate of that basket (clothing, electronics, entertainment, health, other); even with it switched on a few things stay out, so the gap to the benchmark is if anything larger than it looks, not smaller.',
     ],
   },
   plan: {
@@ -262,7 +278,7 @@ export const METHOD = {
   factorsTitle: 'The factors it uses',
   factorsSub: 'These tables are the exact factors the calculator prices from.',
   exclusions: {
-    title: 'What it leaves out, and optional extras',
+    title: 'What it still leaves out',
     groups: [
       {
         head: 'Outside the boundary',
@@ -279,9 +295,11 @@ export const METHOD = {
         ],
       },
       {
-        head: 'Optional extras you could add',
+        head: 'Not counted, even with the optional detail on',
         items: [
-          'Goods and services (clothing, electronics, entertainment, health) and hotel nights are the biggest things not counted by default. They can be estimated with a few extra questions if you want a fuller picture; the simple calculator leaves them out to stay quick.',
+          'Hotel nights and other accommodation away from home.',
+          'Waste and water at home, and the emissions embodied in building or renovating, or in a big one-off purchase like a car.',
+          'Financial and professional services, and any spending the screening factors above do not cover. The goods estimate is a screening tool, so it catches the shape of the basket, not every dollar.',
         ],
       },
     ],

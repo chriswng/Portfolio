@@ -81,6 +81,15 @@ export function buildSeedProfile() {
 
     // Diet: typical week scaled to the year. Coarse by design.
     E({ id: 'seed-di1', quality: 'estimated', date: '2026-06-30', category: 'diet', label: 'Medium-meat diet, typical week scaled to the year', period_months: 12, meta: { dietType: 'medMeat', days: 365 }, notes: 'A year of transactions says 268 restaurant meals and 192 takeaways. Medium meat is the honest label.' }),
+
+    // Goods and services: the optional detail, from coarse monthly spend off a
+    // year of transactions. Spend-based screening estimates, and labelled: no
+    // merchants, no line items, just a rough monthly figure per category.
+    E({ id: 'seed-gd1', quality: 'estimated', date: '2026-06-30', category: 'goods', label: 'Clothing and footwear (est. spend)', period_months: 12, meta: { kind: 'clothing', spendAud: 840 }, notes: 'About $70 a month across the year, spend-based screening estimate.' }),
+    E({ id: 'seed-gd2', quality: 'estimated', date: '2026-06-30', category: 'goods', label: 'Electronics and tech (est. spend)', period_months: 12, meta: { kind: 'electronics', spendAud: 1080 }, notes: 'About $90 a month, gadgets and tech averaged over the year. Screening estimate.' }),
+    E({ id: 'seed-gd3', quality: 'estimated', date: '2026-06-30', category: 'goods', label: 'Entertainment and going out (est. spend)', period_months: 12, meta: { kind: 'entertainment', spendAud: 1440 }, notes: 'About $120 a month: streaming, events, the gym, a night out. Screening estimate.' }),
+    E({ id: 'seed-gd4', quality: 'estimated', date: '2026-06-30', category: 'goods', label: 'Health, out of pocket (est. spend)', period_months: 12, meta: { kind: 'health', spendAud: 720 }, notes: 'About $60 a month in gap payments and pharmacy. Screening estimate.' }),
+    E({ id: 'seed-gd5', quality: 'estimated', date: '2026-06-30', category: 'goods', label: 'Other goods and services (est. spend)', period_months: 12, meta: { kind: 'other', spendAud: 2160 }, notes: 'About $180 a month of everything else, general-merchandise screening factor.' }),
   ];
 
   return {
