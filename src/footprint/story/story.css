@@ -115,8 +115,8 @@
 .st-home {
   font-family: var(--mono); font-size: 1rem; font-weight: 500; color: var(--matcha);
   text-decoration: none; background: rgba(23, 28, 19, 0.82); backdrop-filter: blur(8px);
-  padding: 0.3rem 0.65rem; border-radius: 999px; border: 1px solid rgba(244, 246, 238, 0.14);
-  transition: opacity 0.25s;
+  padding: 0.4rem 0.6rem; border-radius: 999px; border: 1px solid rgba(244, 246, 238, 0.14);
+  transition: opacity 0.25s; display: inline-flex; align-items: center;
 }
 .st-home:hover { opacity: 0.7; }
 .st-skip {

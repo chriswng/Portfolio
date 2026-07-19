@@ -8,6 +8,7 @@ import {
   Cover, YearTicker, ReferencePoints, TotalReveal, Scopes, Hotspots, WorstMonth, Bench, Needle, Outro,
 } from './moments';
 import CharacterMoment from './CharacterMoment';
+import Mark from '../../components/Mark';
 
 const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -221,7 +222,7 @@ export default function Story({ profile, agg, macc, voice, onStart, onSkip, onEn
     <div className="st-root" ref={rootRef}>
       {chromeOn && (
         <div className="st-chrome">
-          <a href="../" className="st-home" aria-label="Back to the profile">{CHROME.home}</a>
+          <a href="../" className="st-home" aria-label="Back to the profile"><Mark /></a>
           <div className="st-chrome-right">
             <button type="button" className="st-skip" onClick={onSkip}>{CHROME.skip} ↓</button>
           </div>
