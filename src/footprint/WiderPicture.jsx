@@ -92,7 +92,7 @@ function HotelReadout({ rows }) {
       {rows.map((r) => (
         <div className="fp-wider-line" key={r.country}>
           <span className="fp-wider-line-n"><Icon name="bed" size={14} className="ob-label-i" />{r.label}</span>
-          <span className="fp-wider-line-a">{r.nights} {r.nights === 1 ? 'night' : 'nights'}</span>
+          <span className="fp-wider-line-a">{r.nights} {r.nights === 1 ? WIDER.nightUnit : WIDER.nightsUnit}</span>
           <span className="fp-wider-line-t">{fmtT(r.t, 2)} t</span>
         </div>
       ))}
@@ -167,7 +167,7 @@ export default function WiderPicture({ wider, estimate, coreTotal, coreBand, isE
                   </div>
                   <div className="fp-wider-split-item">
                     <span className="fp-wider-split-l">{WIDER.hotelsResult}</span>
-                    <span className="fp-wider-split-v">{fmtT(estimate.hotels.t, 2)} t <em>{estimate.hotels.nights} nights</em></span>
+                    <span className="fp-wider-split-v">{fmtT(estimate.hotels.t, 2)} t <em>{estimate.hotels.nights} {estimate.hotels.nights === 1 ? WIDER.nightUnit : WIDER.nightsUnit}</em></span>
                   </div>
                 </div>
 

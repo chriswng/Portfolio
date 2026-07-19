@@ -95,6 +95,7 @@ export const PLAN = {
     evens: 'roughly cost-neutral over the year',
   },
   // The cost curve view: each change alone, cheapest abatement first.
+  chartViewLabel: 'Chart view',
   costTab: 'Cost curve',
   pathTab: 'Pathway',
   costTitle: 'What each change costs',
@@ -116,6 +117,8 @@ export const WIDER = {
   removeHotel: 'Remove',
   country: 'Country',
   nights: 'Nights',
+  nightUnit: 'night',
+  nightsUnit: 'nights',
   hotelsNone: 'No hotel nights yet. Stayed in a hotel this year? Add the country and the nights.',
   resultTitle: 'Your wider basket',
   goodsResult: 'Goods & services',
@@ -299,7 +302,7 @@ export const METHOD = {
   wider: {
     title: 'A fuller picture: the wider basket',
     paras: [
-      'The audit counts what a person controls most directly: home energy, personal travel, flights, freight and diet. It leaves out the wider basket of goods and services (clothing, electronics, furniture, personal care, health, recreation) and hotel nights. Those are the biggest things a personal footprint usually misses, so the page offers an optional screening panel that estimates them and shows them next to the audited number, never inside it.',
+      'The audit counts what a person controls most directly: home energy, personal travel, flights, freight and diet. It leaves out the wider basket of goods and services (clothing, electronics, appliances, furniture, personal care, health, recreation) and hotel nights. Those are the biggest things a personal footprint usually misses, so the page offers an optional screening panel that estimates them and shows them next to the audited number, never inside it.',
       'Goods and services are priced from spend. Rough annual dollars in each category are converted to US dollars at an indicative market rate (about 65 US cents to the Australian dollar, the 2025 average: a market price, not the RBA or ATO published figure and not an emission factor) and multiplied by the US EPA Supply Chain emission factors, version 1.3.0, which give kilograms of CO2-e per 2022 US dollar of purchaser-price spend including retail margins. Each category maps to one named US industry code rather than an average across a broad group, because the spread inside a group can be large. Food, groceries, electricity, gas and ground transport are deliberately left out of the panel: they are already in the audit, and pricing them again from spend would double count.',
       'Hotel nights are priced from the UK Government (DESNZ / DEFRA) hotel-stay factors, kilograms of CO2-e per room-night by country, 2024 edition (identical back to 2022; the 2025 and 2026 editions were not reachable to confirm). Nights with friends or family count for nothing. DEFRA publishes no rest-of-world row, so an unlisted country uses a stated tool-chosen mid value, labelled as such rather than as a DEFRA figure.',
       'This whole panel is screening, not measurement, and is labelled that way wherever it appears. Spend-based factors carry the industry-average and price assumptions of an input-output model; US factors on Australian dollars are an approximation; and the change in the US dollar’s own buying power since 2022 is not adjusted for. Read the wider basket as order of magnitude. Because it is only screened and still leaves some things out, the real gap to the 1.5°C benchmark is if anything larger than the audit alone shows, never smaller. No offsets are subtracted anywhere.',
@@ -334,7 +337,7 @@ export const METHOD = {
       {
         head: 'Now available as an optional screening add-on',
         items: [
-          'Goods and services (clothing, electronics, furniture, personal care, health, recreation) and hotel nights are the biggest things the core leaves out. The "A fuller picture" panel now estimates them, from spend at US EPA supply-chain factors and from room-nights at the UK Government hotel factors, and shows them alongside the audited total without folding them in. Screening, not measurement, and labelled that way.',
+          'Goods and services (clothing, electronics, appliances, furniture, personal care, health, recreation) and hotel nights are the biggest things the core leaves out. The "A fuller picture" panel now estimates them, from spend at US EPA supply-chain factors and from room-nights at the UK Government hotel factors, and shows them alongside the audited total without folding them in. Screening, not measurement, and labelled that way.',
           'Household waste to landfill is still left out. The Australian landfill factors and a published per-person to-landfill tonnage could not be verified to this page’s standard in this edition, so it stays out rather than shipping an unchecked number. It is queued for the next factor refresh.',
         ],
       },
