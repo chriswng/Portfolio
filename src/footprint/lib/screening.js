@@ -11,7 +11,7 @@
 
 import {
   GOODS, goodsById, FX, HOTEL_COUNTRIES, HOTEL_FALLBACK,
-  hotelFactorFor, hotelCountryLabel, SCREENING_BANDS,
+  hotelFactorFor, hotelCountryLabel, SCREENING_BANDS, WASTE,
 } from '../data/screening';
 
 const round = (v, dp = 4) => Math.round(v * 10 ** dp) / 10 ** dp;
@@ -50,24 +50,39 @@ function priceHotels(hotels) {
   return { rows, t: round(t), nights };
 }
 
+// Waste: a self-estimated weekly weight of household rubbish to landfill, times
+// the published per-kilogram factor, to tonnes a year. A single number, not a
+// list, so it is priced inline here.
+function priceWaste(kgPerWeek) {
+  const kg = Math.max(0, Number(kgPerWeek) || 0);
+  const t = round((kg * 52 * WASTE.perKg) / 1000);
+  return { kgPerWeek: kg, t, hasAny: kg > 0 };
+}
+
 // The whole wider estimate for a profile. `hasAny` gates the panel's result
 // state so an untouched panel invites input rather than asserting a zero.
 export function widerEstimate(profile) {
   const w = (profile && profile.wider) || {};
   const goods = priceGoods(w.goods);
   const hotels = priceHotels(w.hotels);
-  const total = round(goods.t + hotels.t);
+  const waste = priceWaste(w.waste);
+  const total = round(goods.t + hotels.t + waste.t);
   // Screening-grade band: each part's half-width summed with no correlation
   // credit, matching how the core sizes its own uncertainty.
-  const band = round(goods.t * SCREENING_BANDS.goods + hotels.t * SCREENING_BANDS.hotels);
+  const band = round(
+    goods.t * SCREENING_BANDS.goods
+    + hotels.t * SCREENING_BANDS.hotels
+    + waste.t * SCREENING_BANDS.waste,
+  );
   return {
     goods,
     hotels,
+    waste,
     total,
     band,
     low: round(Math.max(0, total - band)),
     high: round(total + band),
-    hasAny: goods.rows.length > 0 || hotels.rows.length > 0,
+    hasAny: goods.rows.length > 0 || hotels.rows.length > 0 || waste.hasAny,
   };
 }
 
