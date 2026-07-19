@@ -100,17 +100,32 @@ function HotelReadout({ rows }) {
   );
 }
 
+function WasteReadout({ waste }) {
+  if (!waste || !waste.hasAny) return <p className="fp-empty">{WIDER.wasteNone}</p>;
+  return (
+    <div className="fp-wider-readout">
+      <div className="fp-wider-line">
+        <span className="fp-wider-line-n"><Icon name="bin" size={14} className="ob-label-i" />{WIDER.wasteResult}</span>
+        <span className="fp-wider-line-a">{waste.kgPerWeek} {WIDER.wasteUnit}</span>
+        <span className="fp-wider-line-t">{fmtT(waste.t, 2)} t</span>
+      </div>
+    </div>
+  );
+}
+
 // A screening panel for the wider basket. Editable in an own audit (onChange
 // persists); a read-only worked example otherwise. The audited total is never
 // touched: this shows alongside it, clearly labelled screening.
 export default function WiderPicture({ wider, estimate, coreTotal, coreBand, isExample, onChange, onStart }) {
   const goods = (wider && wider.goods) || {};
   const hotels = (wider && wider.hotels) || [];
+  const waste = (wider && wider.waste) || 0;
   const editable = !isExample && typeof onChange === 'function';
   const fuller = useMemo(() => fullerPicture(coreTotal, coreBand, estimate), [coreTotal, coreBand, estimate]);
 
-  const setGood = (id, v) => onChange({ goods: { ...goods, [id]: v }, hotels });
-  const setHotels = (next) => onChange({ goods, hotels: next });
+  const setGood = (id, v) => onChange({ goods: { ...goods, [id]: v }, hotels, waste });
+  const setHotels = (next) => onChange({ goods, hotels: next, waste });
+  const setWaste = (v) => onChange({ goods, hotels, waste: v });
 
   return (
     <section id="fp-wider">
@@ -141,6 +156,25 @@ export default function WiderPicture({ wider, estimate, coreTotal, coreBand, isE
               <HotelReadout rows={estimate.hotels.rows} />
             )}
 
+            <div className="fp-card-head fp-wider-subhead"><Icon name="bin" size={14} className="ob-label-i" />{WIDER.wasteTitle}</div>
+            <div className="fp-card-sub">{WIDER.wasteSub}</div>
+            {editable ? (
+              <div className="fp-hotel-row fp-waste-row">
+                <label className="fp-field fp-field-nights">
+                  <span>{WIDER.wasteLabel}</span>
+                  <input
+                    type="number" min={0} max={200} step={1} inputMode="numeric"
+                    value={waste || ''} placeholder="0"
+                    aria-label={WIDER.wasteLabel}
+                    onChange={(e) => setWaste(Math.max(0, Math.round(Number(e.target.value) || 0)))}
+                  />
+                </label>
+                <span className="fp-waste-unit">{WIDER.wasteUnit}</span>
+              </div>
+            ) : (
+              <WasteReadout waste={estimate.waste} />
+            )}
+
             {!editable && (
               <div className="fp-wider-examplenote">
                 <p>{WIDER.exampleNote}</p>
@@ -169,6 +203,12 @@ export default function WiderPicture({ wider, estimate, coreTotal, coreBand, isE
                     <span className="fp-wider-split-l">{WIDER.hotelsResult}</span>
                     <span className="fp-wider-split-v">{fmtT(estimate.hotels.t, 2)} t <em>{estimate.hotels.nights} {estimate.hotels.nights === 1 ? WIDER.nightUnit : WIDER.nightsUnit}</em></span>
                   </div>
+                  {estimate.waste.hasAny && (
+                    <div className="fp-wider-split-item">
+                      <span className="fp-wider-split-l">{WIDER.wasteResult}</span>
+                      <span className="fp-wider-split-v">{fmtT(estimate.waste.t, 2)} t <em>{WIDER.screeningTag.toLowerCase()}</em></span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="fp-wider-combined">

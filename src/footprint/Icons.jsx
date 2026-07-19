@@ -242,6 +242,18 @@ const coins = (
   </>
 );
 
+// A rubbish bin with a matcha handle on the lid.
+const bin = (
+  <>
+    <path className="fpi-fill" d="M13 8 H19 V10.4 H13 Z" />
+    <path d="M7.5 10.6 H24.5" />
+    <path d="M9.4 10.6 L10.8 26 H21.2 L22.6 10.6" />
+    <path d="M13.4 14.6 V22.4" />
+    <path d="M16 14.6 V22.4" />
+    <path d="M18.6 14.6 V22.4" />
+  </>
+);
+
 // --- Section-header glyphs -------------------------------------------------
 
 // A small bar chart; tallest bar filled matcha.
@@ -287,7 +299,7 @@ const book = (
 const GLYPHS = {
   house, bolt, car, plane, bowl, spark,
   pin, people, building, flame, leaf, fuel, phone, bus, fork, box, globe, clock,
-  bag, bed, coins,
+  bag, bed, coins, bin,
   chart, target, list, book,
 };
 
