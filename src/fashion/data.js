@@ -62,13 +62,103 @@ export function ftiBand(score) {
 }
 
 // ---------------------------------------------------------------------------
-// BRAND MONOGRAMS — the "woven care-label" logo system.
+// BRAND LOGOS.
 //
-// We do not ship third-party logo artwork. Instead every brand carries a
-// self-derived monogram rendered as a fabric-label tile, in the page's own
-// visual language. This means the mark is honest (nothing borrowed), fully
-// self-contained (no external assets), and, most usefully, AUTOMATIC: any
-// brand added to RAW_BRANDS below gets a mark with no extra work.
+// Each brand shows its REAL logo, loaded at runtime from a logo CDN keyed by
+// the company's web domain (BRAND_DOMAIN below). If a domain is not on file, or
+// the logo fails to load, the brand falls back to a generated "woven care-label"
+// monogram (deriveMonogram + SEGMENT_STYLE) so every brand always has a mark.
+//
+// LOGO_CDN is a single swap-point. logo.clearbit.com needs no API key; to move
+// to a keyed provider later (e.g. Logo.dev) only this line changes.
+// ---------------------------------------------------------------------------
+export const LOGO_CDN = 'https://logo.clearbit.com/';
+
+export function logoUrl(domain) {
+  return domain ? `${LOGO_CDN}${domain}` : null;
+}
+
+// Primary web domain per brand, used to fetch the logo. Kept as a flat map so
+// adding a brand to RAW_BRANDS stays a one-liner; add its domain here too.
+export const BRAND_DOMAIN = {
+  Nike: 'nike.com',
+  Adidas: 'adidas.com',
+  Puma: 'puma.com',
+  ASICS: 'asics.com',
+  'New Balance': 'newbalance.com',
+  'Under Armour': 'underarmour.com',
+  lululemon: 'lululemon.com',
+  'Louis Vuitton': 'louisvuitton.com',
+  Dior: 'dior.com',
+  Loewe: 'loewe.com',
+  Fendi: 'fendi.com',
+  Celine: 'celine.com',
+  Gucci: 'gucci.com',
+  'Saint Laurent': 'ysl.com',
+  Balenciaga: 'balenciaga.com',
+  'Bottega Veneta': 'bottegaveneta.com',
+  Hermès: 'hermes.com',
+  Chanel: 'chanel.com',
+  Prada: 'prada.com',
+  'Miu Miu': 'miumiu.com',
+  Burberry: 'burberry.com',
+  Moncler: 'moncler.com',
+  'Ralph Lauren': 'ralphlauren.com',
+  Zara: 'zara.com',
+  'Pull&Bear': 'pullandbear.com',
+  Bershka: 'bershka.com',
+  'H&M': 'hm.com',
+  COS: 'cosstores.com',
+  Uniqlo: 'uniqlo.com',
+  GU: 'gu-global.com',
+  Shein: 'shein.com',
+  Temu: 'temu.com',
+  Primark: 'primark.com',
+  Boohoo: 'boohoo.com',
+  ASOS: 'asos.com',
+  Zalando: 'zalando.com',
+  Next: 'next.co.uk',
+  'Levi Strauss': 'levi.com',
+  Gap: 'gap.com',
+  'Calvin Klein': 'calvinklein.com',
+  'Tommy Hilfiger': 'tommy.com',
+  'The North Face': 'thenorthface.com',
+  Vans: 'vans.com',
+  Timberland: 'timberland.com',
+  Patagonia: 'patagonia.com',
+  Coach: 'coach.com',
+  'Kate Spade': 'katespade.com',
+  'TK Maxx': 'tkmaxx.com',
+  'Ross Stores': 'rossstores.com',
+  'JD Sports': 'jdsports.co.uk',
+  'Kmart Australia': 'kmart.com.au',
+  'Target Australia': 'target.com.au',
+  'Big W': 'bigw.com.au',
+  'Cotton On': 'cottonon.com',
+  'Country Road': 'countryroad.com.au',
+  'The Iconic': 'theiconic.com.au',
+};
+
+// Corporate-parent domains, for the real logo shown on each group card.
+export const GROUP_DOMAIN = {
+  LVMH: 'lvmh.com',
+  Kering: 'kering.com',
+  Inditex: 'inditex.com',
+  'VF Corporation': 'vfc.com',
+  'Fast Retailing': 'fastretailing.com',
+  'H&M Group': 'hmgroup.com',
+  'Prada Group': 'pradagroup.com',
+  'PVH Corp.': 'pvh.com',
+  'Tapestry, Inc.': 'tapestry.com',
+  Wesfarmers: 'wesfarmers.com.au',
+};
+
+// ---------------------------------------------------------------------------
+// BRAND MONOGRAMS — the fallback mark when no real logo resolves.
+//
+// A self-derived monogram rendered as a fabric-label tile in the page's own
+// visual language. It guarantees every brand (present or future) has a mark
+// even with no domain on file or a CDN miss.
 //
 // A short override map is kept only for houses whose established lettermark is
 // not what the plain derivation would produce (Gucci's double-G, YSL, and so
@@ -251,6 +341,7 @@ function buildBrand(raw) {
     id: slug(raw.name),
     name: raw.name,
     mono: deriveMonogram(raw.name),
+    domain: BRAND_DOMAIN[raw.name] || null,
     aliases: raw.aliases || [],
     parent: raw.parent,
     group: raw.group || raw.parent,

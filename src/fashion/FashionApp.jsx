@@ -16,6 +16,7 @@ import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import {
   BRANDS, BRAND_BY_ID, SEGMENTS, SIGNAL_FIELDS, STATUS, COPY, SOURCES,
   MULTI_GROUPS, segmentCount, ftiBand, groupFamily, deriveMonogram, segmentStyle,
+  logoUrl, GROUP_DOMAIN,
 } from './data';
 import { prefersReducedMotion } from '../utils/media';
 
@@ -115,25 +116,45 @@ function ftiText(brand) {
 }
 
 // =========================================================================
-// Brand logo — the woven care-label monogram.
+// Brand logo — the real logo, with a woven care-label monogram fallback.
 //
-// A self-contained mark: the monogram (from data), set in the segment's
-// typeface, on a fabric-label tile with a segment-coloured stitch. No external
-// artwork. Purely a visual reinforcement of the adjacent brand name, so it is
-// aria-hidden. Pass a `brand` (preferred) or an explicit `name`/`segment`
-// (used for corporate parents, which are not brand records).
+// Shows the company's actual logo, loaded from a logo CDN by domain. If no
+// domain is on file or the image fails to load, it falls back to a generated
+// monogram tile (from brand data), set in the segment's typeface with a
+// segment-coloured stitch, so every brand always has a mark. Purely a visual
+// reinforcement of the adjacent brand name, so it is aria-hidden. Pass a
+// `brand` (preferred) or an explicit `name`/`segment`/`domain` (used for
+// corporate parents, which are not brand records).
 // =========================================================================
-function BrandLogo({ brand, name, segment, size = 'md', className = '' }) {
+function BrandLogo({ brand, name, segment, domain, size = 'md', className = '' }) {
+  const [loaded, setLoaded] = useState(false);
+  const [failed, setFailed] = useState(false);
   const mark = brand ? brand.mono : deriveMonogram(name || '');
   const seg = brand ? brand.segment : segment;
+  const dom = domain || (brand ? brand.domain : null);
   const style = segmentStyle(seg);
+  const src = !failed ? logoUrl(dom) : null;
+  // The monogram is always rendered as the base. When a real logo exists it
+  // fades in on top once it has actually loaded, so there is never an empty
+  // tile: a missing or failed logo simply leaves the monogram showing.
   return (
     <span
-      className={`ow-logo s-${size} t-${style.type} l-${mark.length} ${className}`}
+      className={`ow-logo s-${size} t-${style.type} l-${mark.length} ${loaded ? 'img-on' : ''} ${className}`}
       style={{ '--lc': style.accent }}
       aria-hidden="true"
     >
       <span className="mk">{mark}</span>
+      {src && (
+        <img
+          className="ow-logo-img"
+          src={src}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          onLoad={() => setLoaded(true)}
+          onError={() => setFailed(true)}
+        />
+      )}
     </span>
   );
 }
@@ -599,7 +620,7 @@ function GroupCard({ group, focus, onSelect, cardRef }) {
     <div className={`ow-group ${focus ? 'focus' : ''}`} ref={cardRef}>
       <div className="ow-group-head">
         <div className="ow-group-id">
-          <BrandLogo name={group.parent} segment={group.brands[0] && group.brands[0].segment} size="md" />
+          <BrandLogo name={group.parent} domain={GROUP_DOMAIN[group.parent]} segment={group.brands[0] && group.brands[0].segment} size="md" />
           <div>
             <h3>{group.parent}</h3>
             <span className="ct">{COPY.directory.groupBrandsTemplate.replace('{n}', group.count)}</span>

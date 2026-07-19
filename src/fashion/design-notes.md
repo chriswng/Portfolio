@@ -53,17 +53,23 @@ calico ground, vat indigo accent, madder for section indices.
 
 ## Brand logos
 
-Every company shows a **woven-label monogram**, not its real logo. We ship no
-third-party logo artwork: the mark is generated from the brand's own data
-(`deriveMonogram()` in `data.js`), set in a segment-specific typeface with a
-segment-coloured stitch line (`SEGMENT_STYLE`), and rendered as a small
-care-label tile by the `BrandLogo` component. This keeps the marks honest
-(nothing borrowed), self-contained (no external assets), inside the calico /
-indigo / madder palette, and automatic: any brand added to `RAW_BRANDS` gets a
-mark for free. A short `MONO_OVERRIDES` map covers houses whose established
-lettermark differs from the plain initials (Gucci GG, Saint Laurent YSL, and so
-on). The marks appear on the directory tags, the lookup card, the compare
-table, the corporate-group cards, the autocomplete, and the hero swing tags.
+Every company shows its **real logo**, loaded at runtime from a logo CDN
+(`LOGO_CDN`) keyed by the brand's web domain (`BRAND_DOMAIN` in `data.js`), and
+framed in a small care-label tile by the `BrandLogo` component. Corporate-group
+cards show the real parent logo via `GROUP_DOMAIN`.
+
+Where no domain is on file, or a logo fails to load, the tile falls back to a
+generated **woven-label monogram**: derived from the brand's own data
+(`deriveMonogram()`), set in a segment-specific typeface with a segment-coloured
+stitch line (`SEGMENT_STYLE`). This guarantees every brand (present or future)
+always has a mark, and keeps the fallback inside the calico / indigo / madder
+palette. A short `MONO_OVERRIDES` map covers houses whose established lettermark
+differs from the plain initials (Gucci GG, Saint Laurent YSL, and so on).
+
+`LOGO_CDN` is a single swap-point: `logo.clearbit.com` needs no API key; moving
+to a keyed provider later changes only that line. The marks appear on the
+directory tags, the lookup card, the compare table, the corporate-group cards,
+the autocomplete, and the hero swing tags.
 
 ## Interaction and access
 
