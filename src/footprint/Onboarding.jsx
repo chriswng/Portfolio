@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
-  ELECTRICITY, ROAD_FUELS, DIET_TYPES,
+  ELECTRICITY, ROAD_FUELS, DIET_TYPES, GOODS,
   AIRPORTS, airportByCode, greatCircleKm, flightBandForKm, HOME_AIRPORT, PT_FARE_CAPS,
 } from './data/factors';
 import { CONVERSIONS } from './data/vendorMap';
@@ -162,6 +162,23 @@ export function buildProfileFromOnboarding(a) {
     notes: 'From the guided audit: typical week, scaled to the year. Coarse by design.',
   }));
 
+  // Optional detail: goods and services from a monthly spend figure. Each field
+  // defaults to zero, so an untouched or skipped step adds nothing here.
+  [
+    ['clothing', a.clothingMonth],
+    ['electronics', a.electronicsMonth],
+    ['entertainment', a.entertainmentMonth],
+    ['health', a.healthMonth],
+    ['other', a.otherGoodsMonth],
+  ].forEach(([kind, monthly]) => {
+    if (!(monthly > 0)) return;
+    entries.push(E({
+      category: 'goods', date: period.end, period_months: 12, label: GOODS[kind].label + ' (onboarding)',
+      meta: { kind, spendAud: Math.round(monthly * 12) },
+      notes: 'From the optional detail: about $' + monthly + ' a month, a spend-based screening estimate.',
+    }));
+  });
+
   return {
     schema: 'cw-footprint/2',
     kind: 'own',
@@ -171,6 +188,12 @@ export function buildProfileFromOnboarding(a) {
   };
 }
 
+// The optional "More detail" step. Every field defaults to zero, so skipping
+// it (or finishing without touching it) adds exactly nothing to the audit.
+const ADVANCED_DEFAULTS = {
+  clothingMonth: 0, electronicsMonth: 0, entertainmentMonth: 0, healthMonth: 0, otherGoodsMonth: 0,
+};
+
 const DEFAULTS = {
   state: 'NSW', householdSize: 2, dwelling: 'apartment', dietType: 'medMeat', fuelType: 'petrol',
   // gpChoice is the picked chip; greenpowerPct is what the engine prices from.
@@ -178,6 +201,7 @@ const DEFAULTS = {
   gpChoice: 'no', greenpowerPct: 0, energyPreset: null, kwhQuarter: 1000, mjQuarter: 3000, carKmWeek: 0, carOccupancy: 1,
   rideshareWeek: 0, ptWeek: 0, ptCapOverride: false,
   parcelsMonth: 2, intlOrdersMonth: 0, flights: [],
+  ...ADVANCED_DEFAULTS,
 };
 
 // Airports grouped by region for the From/To dropdowns, order preserved.
@@ -374,7 +398,13 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
     return next;
   });
 
-  const doneProfile = useMemo(() => (step === 5 ? buildProfileFromOnboarding(a) : null), [step, a]);
+  // Step 5 is the optional detail; step 6 is the done pane where the profile is
+  // built and saved.
+  const doneProfile = useMemo(() => (step === 6 ? buildProfileFromOnboarding(a) : null), [step, a]);
+
+  // Skipping the optional step clears anything typed into it, so "Skip" always
+  // means "add nothing", then jumps to the done pane.
+  const skipAdvanced = () => setA((s) => ({ ...s, ...ADVANCED_DEFAULTS }));
 
   // The done pane says the audit is saved, so save it as the pane appears;
   // closing with Escape or the cross after that point loses nothing.
@@ -582,6 +612,28 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
       <Stepper icon="globe" label={ONBOARD.food.intlOrders} value={a.intlOrdersMonth} min={0} max={100}
         onChange={(v) => set('intlOrdersMonth', v)} />
     </div>,
+    <div key="advanced">
+      <div className="ob-stephead">
+        <span className="ob-stephead-i" aria-hidden="true"><Icon name="box" size={26} /></span>
+        <h3 ref={headRef} tabIndex={-1}>{ONBOARD.advanced.title}</h3>
+      </div>
+      <p>{ONBOARD.advanced.sub}</p>
+      <p className="ob-optnote"><Icon name="spark" size={14} className="ob-label-i" />{ONBOARD.advanced.optional}</p>
+      <SliderField icon="box" label={ONBOARD.advanced.clothing} value={a.clothingMonth} min={0} max={800} step={10} unit="$ / mo"
+        onChange={(v) => set('clothingMonth', v)} />
+      <SliderField icon="phone" label={ONBOARD.advanced.electronics} value={a.electronicsMonth} min={0} max={800} step={10} unit="$ / mo"
+        onChange={(v) => set('electronicsMonth', v)} />
+      <SliderField icon="book" label={ONBOARD.advanced.entertainment} value={a.entertainmentMonth} min={0} max={800} step={10} unit="$ / mo"
+        onChange={(v) => set('entertainmentMonth', v)} />
+      <SliderField icon="leaf" label={ONBOARD.advanced.health} value={a.healthMonth} min={0} max={800} step={10} unit="$ / mo"
+        onChange={(v) => set('healthMonth', v)} />
+      <SliderField icon="globe" label={ONBOARD.advanced.other} value={a.otherGoodsMonth} min={0} max={1500} step={10} unit="$ / mo"
+        onChange={(v) => set('otherGoodsMonth', v)} />
+      <details className="ob-disclose">
+        <summary>{ONBOARD.advanced.sourceSummary}</summary>
+        <p>{ONBOARD.advanced.sourceBody}</p>
+      </details>
+    </div>,
     <div key="done" className="ob-done">
       {/* Deliberately spoiler-free: no number here. The total, its shape and
           its context all belong to the reveal below. */}
@@ -606,6 +658,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
     OB.progress.travel,
     flightsReady ? fill(OB.progress.flights.some, { n: flightsReady, s: flightsReady > 1 ? 's' : '' }) : OB.progress.flights.none,
     OB.progress.food,
+    OB.progress.advanced,
   ][step];
 
   const stepMotion = prefersReducedMotion()
@@ -628,7 +681,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
             ))}
           </span>
           <span className="sr-only" role="status">
-            {step === 5 ? OB.done.title : fill(OB.stepOf, { n: step + 1, total: OB.stepLabels.length }) + ': ' + OB.stepLabels[step]}
+            {step === 6 ? OB.done.title : fill(OB.stepOf, { n: step + 1, total: OB.stepLabels.length }) + ': ' + OB.stepLabels[step]}
           </span>
         </div>
         <button type="button" className="ob-close" aria-label="Close" onClick={onCancel}>×</button>
@@ -643,7 +696,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         </AnimatePresence>
       </div>
 
-      {step < 5 && (
+      {step < 6 && (
         <div className="ob-foot">
           <div className="canvas ob-foot-inner">
             <div className="ob-foot-status">
@@ -655,9 +708,22 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
               <button type="button" className="fp-linkbtn" onClick={() => (step === 0 ? onCancel() : setStep(step - 1))}>
                 {step === 0 ? ONBOARD.cancel : ONBOARD.back}
               </button>
-              <button type="button" className="btn btn-primary fp-btn" onClick={() => setStep(step + 1)}>
-                {step === 4 ? ONBOARD.finish : ONBOARD.next} →
-              </button>
+              {step === 5 ? (
+                // The optional step: a prominent Skip that adds nothing, and a
+                // primary that carries any detail entered into the reveal.
+                <>
+                  <button type="button" className="btn btn-secondary ob-skip" onClick={() => { skipAdvanced(); setStep(6); }}>
+                    {ONBOARD.advanced.skip}
+                  </button>
+                  <button type="button" className="btn btn-primary fp-btn" onClick={() => setStep(6)}>
+                    {ONBOARD.finish} →
+                  </button>
+                </>
+              ) : (
+                <button type="button" className="btn btn-primary fp-btn" onClick={() => setStep(step + 1)}>
+                  {ONBOARD.next} →
+                </button>
+              )}
             </div>
           </div>
         </div>

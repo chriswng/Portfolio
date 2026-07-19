@@ -150,6 +150,8 @@ export const CATEGORY_QUIPS = {
   gas: { example: 'Hot water and the cooktop.', own: 'Hot water and the cooktop.' },
   road: { example: 'Trains, buses and rideshare.', own: 'Wheels on the ground.' },
   other: { example: 'Everything else.', own: 'Everything else.' },
+  goods: { example: 'The stuff, tallied up.', own: 'Clothes, gadgets and the rest.' },
+  hotel: { example: 'Nights away from home.', own: 'Nights away from home.' },
 };
 
 export const MONTHS_ST = {
@@ -191,7 +193,7 @@ export const BENCH_ST = {
     },
     within: 'You stayed inside the 2.5 t benchmark all year. That almost never happens.',
   },
-  caveat: 'The national and world averages count more than this calculator does (clothes, gadgets, services), so the real gap is bigger, not smaller.',
+  caveat: 'The national and world averages count a wider basket than the core survey does. The optional detail step adds some of it back (clothes, gadgets, services, hotel nights); even then a few things stay out, so the real gap is if anything bigger, not smaller.',
 };
 
 export const NEEDLE = {
@@ -323,7 +325,7 @@ export const CHARACTER_ST = {
 
 export const OB = {
   title: 'Your footprint',
-  intro: 'Five short steps. Rough answers now, real bills whenever you like. Everything stays in this browser, and we keep the final total for the reveal.',
+  intro: 'Five short steps, then an optional sixth. Rough answers now, real bills whenever you like. Everything stays in this browser, and we keep the final total for the reveal.',
   // Neutral, spoiler-free footer line. The running total is deliberately not
   // shown: seeing it here would spoil the reveal that follows.
   keepForReveal: 'We add it all up at the reveal, not here',
@@ -335,8 +337,9 @@ export const OB = {
     travel: 'Getting-around added',
     flights: { none: 'No flights yet', some: '{n} flight{s} added' },
     food: 'Food and parcels added',
+    advanced: 'Optional detail (skip any time)',
   },
-  stepLabels: ['You', 'Home energy', 'Getting around', 'Flights', 'Food & parcels'],
+  stepLabels: ['You', 'Home energy', 'Getting around', 'Flights', 'Food & parcels', 'More detail'],
   done: {
     title: 'That is everything',
     sub: 'Your footprint is saved to this browser. Now the fun part: your reveal walks you through what it all adds up to, where it lands, and how to cut it down.',

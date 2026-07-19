@@ -109,6 +109,75 @@ correction replacing COVID-era load factors (passenger factors down 16-42%);
   (IGES / Aalto / D-mat 1.5-Degree Lifestyles 2019; Hot or Cool Institute
   2021 update).
 
+## Goods and services: spend-based screening (US EPA Supply Chain Factors v1.3.0)
+
+Optional opt-in module (idea 8 in `improvement-scoring.md`), shipped July 2026.
+Base factors: US EPA "Supply Chain GHG Emission Factors v1.3.0 by NAICS-6",
+"with margins" column, kg CO2e per 2022 USD of purchaser-price spend, all GHGs
+at AR5 GWP-100. File `SupplyChainGHGEmissionFactors_v1.3.0_NAICS_CO2e_USD2022.csv`,
+DOI 10.23719/1531143 (pasteur.epa.gov; catalog.data.gov landing page).
+
+Verification: EPA/data.gov and every factor mirror are 403-blocked at the build
+environment's egress proxy, but the full 1,016-row CSV was pulled from public
+GitHub mirrors and the target rows were cross-checked byte-for-byte across three
+independently-hosted copies (all agreed to 3 dp; base + margins = with-margins
+held for every row). Rows used (with-margins, kg CO2e/2022 USD):
+
+- Clothing 0.12 = apparel manufacturing NAICS 315 (315220/315240/315280/315990
+  all 0.12; USEEIO 315000). Single uniform sector.
+- Electronics 0.102 = mean of 334111 computers 0.058, 334220 phones/comms
+  0.111, 334310 audio-video 0.081, 335210 small appliances 0.157.
+- Entertainment 0.112 = mean of 713940 recreation/gyms 0.235, 512131 cinema
+  0.052, 515210 subscription/streaming 0.094, 711211 events/sport 0.067.
+- Health 0.094 = mean of 621111 physicians 0.083, 621210 dentists 0.056,
+  621300 allied practitioners 0.105, 446110 pharmacy 0.13.
+- Other 0.164 = general-merchandise retail NAICS 452 (452311/452210/452319 all
+  0.164; USEEIO 452000). Retail-trade sector, so the margins column is 0.
+
+Heterogeneous baskets (electronics, entertainment, health) use an equal-weighted
+mean of the named representative commodities, a stated screening assumption;
+clothing and other are single uniform sectors. USEEIO is a US model applied to
+Australian spend, itself a screening approximation noted on the method page.
+
+Currency and inflation bridge (a 2022-USD factor priced against current-AUD
+spend), `GOODS_FX` in `factors.js`:
+- AUD/USD 0.645 USD per 1 AUD (calendar-2025 average, market/RBA daily series,
+  used as the FY2026 proxy; corroborated x-rates 0.6446, exchangerates.org.uk
+  0.6449). A full FY2026 average trends higher (~0.66-0.68) as the AUD
+  strengthened through H1-2026; 0.645 is the conservative, well-corroborated
+  figure. **Flag:** swap for the ATO/RBA published FY2026 average at refresh.
+- US CPI-U 2022 to 2026 = 1.141 (2022 annual average 292.655; June 2026 =
+  333.952; BLS CPI-U all items, 1982-84=100). ~14% cumulative.
+- Effective per-AUD factor = usPerUsd x 0.645 / 1.141 (= usPerUsd x 0.5653).
+
+Uncertainty tier: `estimated` (±30%). Labelled screening throughout; folded into
+the audit total as scope 3 only when the visitor opts in.
+
+### Category palette additions (dataviz CVD checks)
+
+Two identity colours for the optional module: goods `#8E2D6E` (deep plum),
+hotel `#1F5F6E` (dark teal). Chosen by a Lab ΔE search over normal plus
+deuteranopia/protanopia/tritanopia (Machado matrices) as the two most distinct
+additions to the existing seven; both clear white-on-fill contrast (WCAG 7.6
+and 7.2). The one soft spot is goods/hotel convergence under deuteranopia
+(ΔE ~5.6), no worse than the palette's existing collisions and mitigated by the
+legend labels and white segment borders. A gold candidate scored highest on CVD
+separation but was rejected for failing white-text contrast (2.25).
+
+## Hotel nights (idea 7): still queued, environment-blocked
+
+DEFRA/Greenview per-room-night country factors could NOT be obtained here:
+gov.uk, its asset CDN, climatiq, openco2, emissions.dev and every mirror return
+403 at the egress proxy, and search summaries will not reproduce table cells.
+Verified from page prose only: UK 10.4 kg/room-night (stable across 2022-2024
+editions, three mirrors); Singapore 37.3 (2024 edition) revised to 24.5 (2025);
+global/default fallback 21.2. Australia, Japan, South Korea and Philippines were
+NOT obtainable and must not be shipped from the 21.2 placeholder (Australia's
+coal grid means its true factor sits well above the global average). Complete
+from the DEFRA full-set "Hotel stay" worksheet (2024 condensed set:
+assets.publishing.service.gov.uk/media/6722566a3758e4604742aa1e/) read from an
+unrestricted network, then wire the hotel category/engine case/survey field.
+
 ## Data quality tiers and uncertainty bands (July 2026 addition)
 
 `QUALITY_TIERS` in `factors.js`: metered/billed ±5%, forecast ±15%,
@@ -121,6 +190,12 @@ never move a central estimate. Change them freely with the method note; no
 external value depends on them.
 
 ## July 2026 session: verification-blocked queue
+
+**Update (later July 2026):** the spend-screening block (idea 8) is now
+verified and shipped, see "Goods and services" above; the full EPA CSV was
+recovered from public GitHub mirrors and cross-checked three ways. Hotels
+(idea 7) remain blocked in this environment, see "Hotel nights" above. Waste
+(idea 9) is still queued.
 
 Three additions were designed, scored and then withheld because the build
 environment could not verify their values against any source (egress proxy

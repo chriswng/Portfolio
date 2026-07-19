@@ -27,9 +27,16 @@ export const CATEGORIES = [
   { id: 'gas', label: 'Gas', color: 'var(--fp-gas)', hex: '#C7274A' },
   { id: 'diet', label: 'Diet', color: 'var(--fp-diet)', hex: '#8A4FBE' },
   { id: 'other', label: 'Other', color: 'var(--fp-other)', hex: '#6E7469' },
+  // Optional goods-and-services module (spend-based screening) and hotel
+  // nights. Appended so identity/stack order stays stable for the core seven;
+  // colours are the two most CVD-distinct additions to the palette (deep plum
+  // and dark teal, both dark enough for white-on-fill labels).
+  { id: 'goods', label: 'Goods & services', color: 'var(--fp-goods)', hex: '#8E2D6E' },
+  { id: 'hotel', label: 'Hotel nights', color: 'var(--fp-hotel)', hex: '#1F5F6E' },
 ];
 
-export const categoryById = (id) => CATEGORIES.find((c) => c.id === id) || CATEGORIES[6];
+export const categoryById = (id) =>
+  CATEGORIES.find((c) => c.id === id) || CATEGORIES.find((c) => c.id === 'other');
 
 // ---------------------------------------------------------------------------
 // Electricity: DCCEEW National Greenhouse Accounts Factors 2025, Table 1.
@@ -321,6 +328,78 @@ export const FOOD_PER_KG = {
 };
 
 // ---------------------------------------------------------------------------
+// Goods and services: the optional spend-based screening module. These are the
+// categories the core calculator leaves out (clothing, electronics,
+// entertainment, health, other), estimated from how much you spend rather than
+// a physical quantity. Deliberately opt-in and clearly labelled an estimate:
+// spend-based (environmentally extended input-output) factors are the right
+// tool for screening a consumption basket, not a precise measurement.
+//
+// Base factors are the US EPA Supply Chain GHG Emission Factors v1.3.0 by
+// NAICS-6, "with margins" column (kg CO2e per 2022 US dollar of purchaser-price
+// spend, all GHGs at AR5 GWP-100). Every value below was read from the official
+// dataset and cross-checked byte-for-byte across three independent mirrors of
+// the EPA CSV. Because the factor is priced per 2022 US dollar and the audit is
+// in current Australian dollars, each entry is converted AUD -> USD and
+// deflated to 2022 USD before pricing; the conversion is stated in GOODS_FX and
+// on the method page. USEEIO is a US model, so applying it to Australian spend
+// is itself a screening approximation, noted as such.
+// Research notes: docs/footprint-research/factor-sources.md.
+// ---------------------------------------------------------------------------
+export const GOODS_SOURCE = {
+  name: 'US EPA Supply Chain GHG Emission Factors v1.3.0 (NAICS-6, with margins), spend-based screening',
+  detail: 'kg CO2e per 2022 USD of purchaser-price spend, all GHGs (AR5 GWP-100). Converted to Australian dollars in the reporting year via the AUD to USD rate and US consumer-price inflation to 2022 (see below). A screening estimate for a US consumption basket applied to Australian spend, not a measurement.',
+  url: 'https://catalog.data.gov/dataset/supply-chain-greenhouse-gas-emission-factors-v1-3-by-naics-6',
+};
+
+// Currency and inflation bridge from a 2022-USD factor to spend logged in
+// current Australian dollars. audUsd is USD per 1 AUD; inflation is the US
+// CPI-U ratio from the 2022 annual average to the reporting year. The combined
+// multiplier applied to every base factor is audUsd / inflation.
+export const GOODS_FX = {
+  audUsd: 0.645,
+  audUsdNote: 'Calendar-2025 average, USD per 1 AUD (market average, in line with the RBA daily series), used as the FY2026 proxy.',
+  inflation: 1.141,
+  inflationNote: 'US CPI-U (all items) rose about 14% from the 2022 annual average (292.7) to mid-2026 (334.0), per the US Bureau of Labor Statistics.',
+};
+
+// Per sub-category: usPerUsd is the EPA v1.3.0 with-margins factor (kg CO2e per
+// 2022 USD). Where a household category spans several commodities its factor is
+// the equal-weighted mean of the representative EPA rows named in `basis`, a
+// stated screening assumption. Clothing and Other are single, uniform sectors.
+export const GOODS = {
+  clothing: {
+    label: 'Clothing & footwear', usPerUsd: 0.12,
+    basis: 'Apparel manufacturing, NAICS 315 (315220/315240/315280/315990 all 0.12 with margins).',
+  },
+  electronics: {
+    label: 'Electronics & tech', usPerUsd: 0.102,
+    basis: 'Mean of computers 334111 (0.058), phones and comms 334220 (0.111), audio and video 334310 (0.081), small appliances 335210 (0.157).',
+  },
+  entertainment: {
+    label: 'Entertainment & recreation', usPerUsd: 0.112,
+    basis: 'Mean of recreation and gyms 713940 (0.235), cinema 512131 (0.052), subscription and streaming 515210 (0.094), events and sport 711211 (0.067).',
+  },
+  health: {
+    label: 'Health, out of pocket', usPerUsd: 0.094,
+    basis: 'Mean of physicians 621111 (0.083), dentists 621210 (0.056), allied health 621300 (0.105), pharmacy 446110 (0.13).',
+  },
+  other: {
+    label: 'Other goods & services', usPerUsd: 0.164,
+    basis: 'General-merchandise retail, NAICS 452 (452311/452210/452319 all 0.164 with margins).',
+  },
+};
+
+// kg CO2e per Australian dollar of spend, ready for the engine: the EPA
+// per-2022-USD factor bridged into current AUD. round to 4 dp so the method
+// table and pricing agree exactly.
+export const goodsPerAud = (kind) => {
+  const g = GOODS[kind] || GOODS.other;
+  const v = (g.usPerUsd * GOODS_FX.audUsd) / GOODS_FX.inflation;
+  return Math.round(v * 10000) / 10000;
+};
+
+// ---------------------------------------------------------------------------
 // Data quality tiers and the uncertainty band each carries. The central
 // estimate never moves; the tiers only set the width of the range shown
 // around the total. Band percentages are stated assumptions of this method
@@ -358,6 +437,8 @@ export const QUALITY_TIERS = {
 export const DEFAULT_QUALITY = {
   electricity: 'metered', gas: 'metered', flight: 'metered', other: 'metered',
   road: 'estimated', freight: 'estimated', diet: 'estimated',
+  // Spend-based goods and hotel nights are always screening estimates.
+  goods: 'estimated', hotel: 'estimated',
 };
 
 export const qualityOf = (entry) =>
