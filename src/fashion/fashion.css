@@ -263,6 +263,13 @@ input { font: inherit; color: inherit; }
   background: var(--paper-2); border: 1.5px solid var(--ink);
   box-shadow: 6px 6px 0 var(--ink); position: relative;
 }
+/* sewn edge: a faint dashed inner stitch line, so the card reads as a woven
+   care label rather than a generic box (Madam Speaker: consistent artefact) */
+.ow-card::after {
+  content: ''; position: absolute; inset: 5px; border: 1px dashed var(--line);
+  pointer-events: none; z-index: 0;
+}
+.ow-card > * { position: relative; z-index: 1; }
 .ow-card-head { padding: 1.4rem 1.5rem 1.2rem; border-bottom: 1.5px solid var(--ink); position: relative; }
 .ow-card-tagcode { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); }
 .ow-card-name { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; line-height: 1; letter-spacing: -0.02em; margin: 0.4rem 0 0.5rem; }
@@ -415,15 +422,53 @@ input { font: inherit; color: inherit; }
   z-index: calc(var(--z-chrome) - 5); display: flex; flex-direction: column; gap: 0.25rem;
 }
 @media (max-width: 1120px) { .ow-rail { display: none; } }
-.ow-rail a { display: flex; align-items: center; justify-content: flex-end; gap: 0.6rem; padding: 0.35rem 0; }
+.ow-rail-progress { display: block; text-align: right; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; color: var(--ink); margin-bottom: 0.7rem; padding-right: 2px; }
+.ow-rail-progress i { color: var(--faint); font-style: normal; }
+.ow-rail a { display: flex; align-items: center; justify-content: flex-end; gap: 0.5rem; padding: 0.32rem 0; }
+.ow-rail .num { font-family: var(--mono); font-size: 9px; letter-spacing: 0.06em; color: var(--faint); opacity: 0; transform: translateX(6px); transition: all 0.2s var(--ease); }
 .ow-rail .dot { width: 8px; height: 8px; border: 1px solid var(--faint); border-radius: 50%; transition: all 0.2s var(--ease); flex: none; }
 .ow-rail .lbl { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); opacity: 0; transform: translateX(6px); transition: all 0.2s var(--ease); }
-.ow-rail a:hover .lbl { opacity: 1; transform: none; }
+.ow-rail a:hover .lbl, .ow-rail a:hover .num { opacity: 1; transform: none; }
 .ow-rail a.on .dot { background: var(--indigo); border-color: var(--indigo); transform: scale(1.25); }
-.ow-rail a.on .lbl { opacity: 1; transform: none; color: var(--indigo); }
+.ow-rail a.on .lbl, .ow-rail a.on .num { opacity: 1; transform: none; color: var(--indigo); }
+
+/* ---------------------------------------------------- provenance + stamp -- */
+.ow-provenance { margin-top: 0.9rem; padding-top: 0.8rem; border-top: 1px dashed var(--line); font-size: 0.92rem; color: var(--ink-soft); max-width: 62ch; }
+.ow-provenance .k { display: inline-block; font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--madder); margin-right: 0.5rem; }
+.ow-stamp { padding: 0.8rem 1.5rem 1.3rem; font-family: var(--mono); font-size: 10px; letter-spacing: 0.04em; color: var(--faint); border-top: 1px solid var(--line-soft); }
+
+/* --------------------------------------------------------- claim markup --- */
+.ow-marked { font-family: var(--serif); font-size: 1.25rem; line-height: 1.45; color: var(--ink); padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 1px solid var(--line); }
+.ow-mark { background: none; color: var(--madder); box-shadow: inset 0 -0.5em 0 rgba(166,80,63,0.14); padding: 0 1px; font-style: italic; }
+.ow-method { margin-top: 1rem; border-top: 1px solid var(--line-soft); padding-top: 0.7rem; }
+.ow-method summary { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--indigo); cursor: pointer; }
+.ow-method p { font-size: 0.9rem; color: var(--ink-soft); margin-top: 0.6rem; max-width: 70ch; }
+
+/* --------------------------------------------- signals sub-blocks (certs) - */
+.ow-subblock { margin-top: 2.6rem; padding-top: 2rem; border-top: 1px solid var(--line-soft); }
+.ow-subhead { font-size: clamp(1.2rem, 2.4vw, 1.6rem); font-weight: 700; letter-spacing: -0.01em; margin-bottom: 0.5rem; }
+.ow-sublede { color: var(--ink-soft); max-width: 64ch; margin-bottom: 1.4rem; }
+.ow-certs { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 0.8rem; }
+.ow-cert { border: 1px solid var(--line); background: var(--paper-2); padding: 0.95rem 1.1rem; }
+.ow-cert-name { font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; font-weight: 500; margin-bottom: 0.6rem; }
+.ow-cert-row { font-size: 0.9rem; color: var(--ink-soft); padding: 0.35rem 0; }
+.ow-cert-row.edge { color: var(--madder-deep); }
+.ow-cert-row .cl { display: block; font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); margin-bottom: 0.15rem; }
+
+/* -------------------------------------------------------- regulation radar */
+.ow-reg { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.9rem; }
+.ow-regitem { border: 1.5px solid var(--ink); background: var(--paper-2); padding: 1.1rem 1.2rem; }
+.ow-reg-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.6rem; margin-bottom: 0.3rem; }
+.ow-reg-name { font-weight: 700; font-size: 1.02rem; line-height: 1.15; }
+.ow-reg-tag { flex: none; font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.2rem 0.45rem; border: 1px solid var(--indigo); color: var(--indigo); }
+.ow-reg-when { font-family: var(--mono); font-size: 11px; color: var(--madder); margin-bottom: 0.6rem; }
+.ow-reg-what { font-size: 0.9rem; color: var(--ink-soft); }
 
 /* --------------------------------------------------------- scroll reveal -- */
-.ow-reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s var(--ease), transform 0.7s var(--ease); }
+/* One calm settle curve used everywhere (2-TIMES: premium is one curve, not
+   more motion). Longer duration, small rise. */
+:root { --settle-in: cubic-bezier(0.16, 1, 0.3, 1); }
+.ow-reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.75s var(--settle-in), transform 0.75s var(--settle-in); }
 .ow-reveal.in { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) { .ow-reveal { opacity: 1 !important; transform: none !important; transition: none; } }
 
