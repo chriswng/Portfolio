@@ -90,7 +90,54 @@ export const PLAN = {
     line: '{n} change{s} on. By 2030 you land at {at2030} t, down {pct}% from the {bau2030} t you reach if nothing changes',
     over: '{gap} t over the 2.5 t benchmark',
     within: 'inside the 2.5 t benchmark',
+    saves: 'about ${n} a year back in your pocket',
+    costs: 'about ${n} a year net, upfront costs spread out',
+    evens: 'roughly cost-neutral over the year',
   },
+  // The cost curve view: each change alone, cheapest abatement first.
+  chartViewLabel: 'Chart view',
+  costTab: 'Cost curve',
+  pathTab: 'Pathway',
+  costTitle: 'What each change costs',
+  costSub: 'Every change on its own, cheapest first. Bar width is the tonnes it saves a year; height is the cost per tonne, and anything below the line pays for itself. The pathway view sequences them; this ranks them by value.',
+  costMoneyNote: 'Indicative net annual figure across your chosen changes, savings and outlays combined. Upfront costs (an EV, solar, a heat pump) are spread over their life; the basis for each is on its card.',
+};
+
+// "A fuller picture": the optional wider-basket screening panel. Goods and
+// services (spend-based) plus hotel nights, kept outside the audited total.
+export const WIDER = {
+  tag: 'The wider basket',
+  title: ['A fuller', 'picture'],
+  sub: 'The audit above counts what a person controls most directly: energy, travel, freight and food. It leaves out the wider basket of goods and services, and hotel nights, which are the biggest things a personal footprint usually misses. Add a few rough figures and they are priced separately and shown next to your audited number. This is a screening estimate, not a measurement, so it stays out of your headline total on purpose.',
+  goodsTitle: 'Goods & services',
+  goodsSub: 'Rough spend over the year, in dollars. Each line is priced with US EPA supply-chain factors (emissions per dollar spent) converted at about 65 US cents to the dollar. Food, groceries, power and ground transport are left out here because they are already counted in your audit.',
+  hotelsTitle: 'Hotel nights',
+  hotelsSub: 'Nights paid for in a hotel over the year, by country, at the UK Government per-room-night factors. Nights with friends or family count for nothing here, which is rather the point.',
+  addHotel: 'Add a country',
+  removeHotel: 'Remove',
+  country: 'Country',
+  nights: 'Nights',
+  nightUnit: 'night',
+  nightsUnit: 'nights',
+  hotelsNone: 'No hotel nights yet. Stayed in a hotel this year? Add the country and the nights.',
+  resultTitle: 'Your wider basket',
+  goodsResult: 'Goods & services',
+  hotelsResult: 'Hotel nights',
+  widerTotal: 'Wider basket, a year',
+  screeningTag: 'Screening',
+  estimatedTag: 'Estimated',
+  range: '{low} to {high} t, screening-grade',
+  combinedTitle: 'The fuller picture',
+  // {core}, {wider}, {full} filled in the component.
+  combinedLine: 'Your audited {core} t, plus a screening estimate of about {wider} t for the wider basket, is roughly {full} t all up.',
+  combinedNote: 'Because the wider basket is only screened, the real gap to the 1.5°C benchmark is if anything larger than the audit alone shows, never smaller.',
+  empty: 'Nothing added yet. Put in a rough figure or two and the wider basket appears, kept separate from your audited total.',
+  exampleNote: 'This is my basket, estimated from a year of card spending and the trips above. Calculate your own to add yours.',
+  startCta: 'Calculate your own',
+  perYear: '$ a year',
+  factorNote: 'Priced at {f} kg per dollar',
+  caveat: 'Screening, not measurement: US spend factors applied to Australian dollars at an indicative exchange rate, industry averages rather than the specific product, and no adjustment for how prices have moved since 2022. Order of magnitude, by design. No offsets are subtracted anywhere.',
+  methodCta: 'How the wider basket is priced',
 };
 
 export const ONBOARD = {
@@ -252,6 +299,15 @@ export const METHOD = {
       'The background grid keeps getting cleaner in both lines, because that happens whether or not you act. Offsets and green-power products are left out of the reductions on purpose: they retire certificates rather than remove the activity.',
     ],
   },
+  wider: {
+    title: 'A fuller picture: the wider basket',
+    paras: [
+      'The audit counts what a person controls most directly: home energy, personal travel, flights, freight and diet. It leaves out the wider basket of goods and services (clothing, electronics, appliances, furniture, personal care, health, recreation) and hotel nights. Those are the biggest things a personal footprint usually misses, so the page offers an optional screening panel that estimates them and shows them next to the audited number, never inside it.',
+      'Goods and services are priced from spend. Rough annual dollars in each category are converted to US dollars at an indicative market rate (about 65 US cents to the Australian dollar, the 2025 average: a market price, not the RBA or ATO published figure and not an emission factor) and multiplied by the US EPA Supply Chain emission factors, version 1.3.0, which give kilograms of CO2-e per 2022 US dollar of purchaser-price spend including retail margins. Each category maps to one named US industry code rather than an average across a broad group, because the spread inside a group can be large. Food, groceries, electricity, gas and ground transport are deliberately left out of the panel: they are already in the audit, and pricing them again from spend would double count.',
+      'Hotel nights are priced from the UK Government (DESNZ / DEFRA) hotel-stay factors, kilograms of CO2-e per room-night by country, 2024 edition (identical back to 2022; the 2025 and 2026 editions were not reachable to confirm). Nights with friends or family count for nothing. DEFRA publishes no rest-of-world row, so an unlisted country uses a stated tool-chosen mid value, labelled as such rather than as a DEFRA figure.',
+      'This whole panel is screening, not measurement, and is labelled that way wherever it appears. Spend-based factors carry the industry-average and price assumptions of an input-output model; US factors on Australian dollars are an approximation; and the change in the US dollar’s own buying power since 2022 is not adjusted for. Read the wider basket as order of magnitude. Because it is only screened and still leaves some things out, the real gap to the 1.5°C benchmark is if anything larger than the audit alone shows, never smaller. No offsets are subtracted anywhere.',
+    ],
+  },
   character: {
     title: 'How the "result" label is worked out',
     paras: [
@@ -279,9 +335,10 @@ export const METHOD = {
         ],
       },
       {
-        head: 'Optional extras you could add',
+        head: 'Now available as an optional screening add-on',
         items: [
-          'Goods and services (clothing, electronics, entertainment, health) and hotel nights are the biggest things not counted by default. They can be estimated with a few extra questions if you want a fuller picture; the simple calculator leaves them out to stay quick.',
+          'Goods and services (clothing, electronics, appliances, furniture, personal care, health, recreation) and hotel nights are the biggest things the core leaves out. The "A fuller picture" panel now estimates them, from spend at US EPA supply-chain factors and from room-nights at the UK Government hotel factors, and shows them alongside the audited total without folding them in. Screening, not measurement, and labelled that way.',
+          'Household waste to landfill is still left out. The Australian landfill factors and a published per-person to-landfill tonnage could not be verified to this page’s standard in this edition, so it stays out rather than shipping an unchecked number. It is queued for the next factor refresh.',
         ],
       },
     ],
