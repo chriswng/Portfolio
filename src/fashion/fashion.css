@@ -205,7 +205,7 @@ input { font: inherit; color: inherit; }
 }
 .ow-ac-item:last-child { border-bottom: 0; }
 .ow-ac-item:hover, .ow-ac-item[aria-selected='true'] { background: var(--calico-2); }
-.ow-ac-name { font-weight: 600; }
+.ow-ac-name { font-weight: 600; flex: 1; min-width: 0; }
 .ow-ac-name mark { background: rgba(51, 72, 122, 0.16); color: inherit; padding: 0 1px; }
 .ow-ac-meta { font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); text-align: right; }
 .ow-ac-empty { padding: 0.9rem 1rem; color: var(--faint); font-size: 0.92rem; }
@@ -219,6 +219,7 @@ input { font: inherit; color: inherit; }
 }
 .ow-chip:hover { border-color: var(--ink); background: var(--ink); color: var(--calico); }
 .ow-chip[aria-pressed='true'] { border-color: var(--indigo); background: var(--indigo); color: var(--paper); }
+.ow-chip-brand { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.24rem 0.6rem 0.24rem 0.26rem; }
 
 .ow-hero-count { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; color: var(--faint); margin-top: 2rem; }
 
@@ -239,7 +240,9 @@ input { font: inherit; color: inherit; }
   border: 1.5px solid var(--ink); border-radius: 50%; transform: translateX(-50%);
   background: var(--calico);
 }
-.ow-swing .tag-brand { font-weight: 800; font-size: 1.25rem; letter-spacing: -0.01em; margin: 1.1rem 0 0.15rem; }
+.ow-swing .tag-top { display: flex; align-items: center; gap: 0.6rem; margin-top: 1.1rem; }
+.ow-swing .tag-top > div { min-width: 0; }
+.ow-swing .tag-brand { font-weight: 800; font-size: 1.25rem; letter-spacing: -0.01em; line-height: 1.05; }
 .ow-swing .tag-parent { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); }
 .ow-swing .tag-rule { height: 1px; background: var(--line); margin: 0.7rem 0; }
 .ow-swing .tag-row { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.04em; margin: 0.28rem 0; }
@@ -257,13 +260,71 @@ input { font: inherit; color: inherit; }
 .ow-swing.s2 { --r1: 4.5deg; --r2: 0.5deg; }
 .ow-swing.s3 { --r1: -2.5deg; --r2: 1.5deg; }
 
+/* ----------------------------------------------- brand logo (woven label) - */
+/* A self-contained monogram mark. The tile reads as a small fabric care label:
+   hard ink border, faint woven-thread texture, the monogram set in the
+   segment's typeface, and a segment-coloured stitch line along the foot.
+   No external logo artwork ships; every mark is generated from brand data. */
+.ow-logo {
+  --lc: var(--ink);
+  flex: none;
+  display: grid;
+  place-items: center;
+  position: relative;
+  width: 42px;
+  aspect-ratio: 1 / 1;
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  overflow: hidden;
+}
+.ow-logo::before { /* woven threads */
+  content: '';
+  position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(36, 34, 28, 0.05) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgba(36, 34, 28, 0.035) 0 1px, transparent 1px 3px);
+}
+.ow-logo::after { /* segment stitch */
+  content: '';
+  position: absolute; left: 0; right: 0; bottom: 0; height: 3px;
+  background: var(--lc);
+}
+.ow-logo .mk {
+  position: relative;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--ink);
+  font-family: var(--disp);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  font-size: 16px;
+}
+.ow-logo.t-serif .mk { font-family: var(--serif); font-weight: 400; letter-spacing: 0.01em; }
+.ow-logo.t-mono .mk { font-family: var(--mono); font-weight: 500; letter-spacing: -0.03em; }
+.ow-logo.l-3 .mk { font-size: 0.72em; }
+
+/* sizes: xs 20 · sm 26 · md 42 · lg 64 */
+.ow-logo.s-xs { width: 20px; border-width: 1px; }
+.ow-logo.s-sm { width: 26px; border-width: 1.25px; }
+.ow-logo.s-md { width: 42px; }
+.ow-logo.s-lg { width: 64px; }
+.ow-logo.s-xs::after { height: 2px; }
+.ow-logo.s-sm::after { height: 2px; }
+.ow-logo.s-lg::after { height: 4px; }
+.ow-logo.s-xs .mk { font-size: 8.5px; letter-spacing: -0.05em; }
+.ow-logo.s-sm .mk { font-size: 11px; }
+.ow-logo.s-md .mk { font-size: 16px; }
+.ow-logo.s-lg .mk { font-size: 25px; }
+
 /* ---------------------------------------------------------- brand card --- */
 /* The care label. A tall bordered tag with monospace data rows. */
 .ow-card {
   background: var(--paper-2); border: 1.5px solid var(--ink);
   box-shadow: 6px 6px 0 var(--ink); position: relative;
 }
-.ow-card-head { padding: 1.4rem 1.5rem 1.2rem; border-bottom: 1.5px solid var(--ink); position: relative; }
+.ow-card-head { display: flex; align-items: flex-start; gap: 1.1rem; padding: 1.4rem 1.5rem 1.2rem; border-bottom: 1.5px solid var(--ink); position: relative; }
+.ow-card-logo { margin-top: 0.2rem; }
+.ow-card-headtext { min-width: 0; }
 .ow-card-tagcode { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); }
 .ow-card-name { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; line-height: 1; letter-spacing: -0.02em; margin: 0.4rem 0 0.5rem; }
 .ow-card-knownfor { font-family: var(--serif); font-style: italic; font-size: 1.1rem; color: var(--ink-soft); }
@@ -362,9 +423,9 @@ input { font: inherit; color: inherit; }
   display: flex; flex-direction: column; gap: 0.5rem; min-height: 118px;
 }
 .ow-tag:hover { transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--ink); }
-.ow-tag .top { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; }
-.ow-tag .name { font-weight: 700; font-size: 1.08rem; letter-spacing: -0.01em; line-height: 1.1; }
-.ow-tag .score { font-family: var(--mono); font-size: 0.95rem; font-weight: 500; }
+.ow-tag .top { display: flex; align-items: center; gap: 0.6rem; }
+.ow-tag .name { font-weight: 700; font-size: 1.08rem; letter-spacing: -0.01em; line-height: 1.1; flex: 1; min-width: 0; }
+.ow-tag .score { font-family: var(--mono); font-size: 0.95rem; font-weight: 500; align-self: flex-start; }
 .ow-tag .score.na { color: var(--faint); font-size: 0.75rem; }
 .ow-tag .parent { font-family: var(--mono); font-size: 10px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--faint); margin-top: auto; }
 .ow-tag .seg { font-family: var(--mono); font-size: 10px; letter-spacing: 0.05em; color: var(--indigo); }
@@ -451,7 +512,7 @@ input { font: inherit; color: inherit; }
 .ow-family-h { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 0.7rem; }
 .ow-family-h span { color: var(--faint); text-transform: none; letter-spacing: 0.02em; font-style: normal; }
 .ow-family-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-.ow-familychip { display: inline-flex; align-items: center; gap: 0.5rem; border: 1px solid var(--line); background: var(--paper); padding: 0.4rem 0.4rem 0.4rem 0.7rem; font-size: 0.92rem; font-weight: 500; transition: all 0.15s var(--ease); }
+.ow-familychip { display: inline-flex; align-items: center; gap: 0.45rem; border: 1px solid var(--line); background: var(--paper); padding: 0.35rem 0.4rem 0.35rem 0.4rem; font-size: 0.92rem; font-weight: 500; transition: all 0.15s var(--ease); }
 .ow-familychip:hover { border-color: var(--ink); transform: translateY(-1px); }
 .ow-familychip .s { font-family: var(--mono); font-size: 10px; background: var(--calico-2); border: 1px solid var(--line); padding: 0.1rem 0.35rem; color: var(--ink-soft); }
 
@@ -465,6 +526,7 @@ input { font: inherit; color: inherit; }
 .ow-ctable { display: grid; min-width: 480px; }
 .ow-ct-corner { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); padding: 1rem 1rem 0.8rem; border-bottom: 1.5px solid var(--ink); display: flex; align-items: flex-end; }
 .ow-ct-head { position: relative; padding: 1rem 1rem 0.8rem; border-bottom: 1.5px solid var(--ink); border-left: 1px solid var(--line); }
+.ow-ct-logo { margin-bottom: 0.6rem; }
 .ow-ct-name { font-weight: 800; font-size: 1.15rem; letter-spacing: -0.01em; text-align: left; display: block; padding-right: 1.1rem; line-height: 1.05; }
 .ow-ct-name:hover { color: var(--indigo); }
 .ow-ct-x { position: absolute; top: 0.7rem; right: 0.7rem; font-family: var(--mono); font-size: 12px; color: var(--faint); line-height: 1; }
@@ -485,13 +547,15 @@ input { font: inherit; color: inherit; }
 .ow-group { border: 1.5px solid var(--ink); background: var(--paper-2); padding: 1.2rem 1.3rem 1.3rem; transition: box-shadow 0.25s var(--ease); }
 .ow-group.focus { box-shadow: 6px 6px 0 var(--indigo); border-color: var(--indigo); }
 .ow-group-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; padding-bottom: 0.9rem; margin-bottom: 0.9rem; border-bottom: 1px solid var(--line); }
+.ow-group-id { display: flex; align-items: flex-start; gap: 0.7rem; min-width: 0; }
+.ow-group-id h3 { margin-top: -0.1rem; }
 .ow-group-head h3 { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.01em; line-height: 1.05; }
 .ow-group-head .ct { font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); }
 .ow-group-avg { text-align: right; flex: none; }
 .ow-group-avg .n { font-family: var(--mono); font-weight: 500; font-size: 1.5rem; line-height: 1; color: var(--indigo); display: block; }
 .ow-group-avg .l { font-size: 9px; font-family: var(--mono); letter-spacing: 0.05em; text-transform: uppercase; color: var(--faint); }
 .ow-group-brands { display: flex; flex-wrap: wrap; gap: 0.45rem; }
-.ow-groupchip { display: inline-flex; align-items: center; gap: 0.45rem; border: 1px solid var(--line); background: var(--paper); padding: 0.35rem 0.35rem 0.35rem 0.65rem; font-size: 0.9rem; font-weight: 500; transition: all 0.14s var(--ease); }
+.ow-groupchip { display: inline-flex; align-items: center; gap: 0.4rem; border: 1px solid var(--line); background: var(--paper); padding: 0.3rem 0.35rem 0.3rem 0.35rem; font-size: 0.9rem; font-weight: 500; transition: all 0.14s var(--ease); }
 .ow-groupchip:hover { border-color: var(--ink); transform: translateY(-1px); }
 .ow-groupchip .bs { font-family: var(--mono); font-size: 10px; background: var(--indigo); color: var(--paper); padding: 0.1rem 0.35rem; }
 .ow-groupchip .bs.na { background: var(--calico-2); color: var(--faint); border: 1px solid var(--line); }

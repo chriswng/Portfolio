@@ -62,6 +62,67 @@ export function ftiBand(score) {
 }
 
 // ---------------------------------------------------------------------------
+// BRAND MONOGRAMS — the "woven care-label" logo system.
+//
+// We do not ship third-party logo artwork. Instead every brand carries a
+// self-derived monogram rendered as a fabric-label tile, in the page's own
+// visual language. This means the mark is honest (nothing borrowed), fully
+// self-contained (no external assets), and, most usefully, AUTOMATIC: any
+// brand added to RAW_BRANDS below gets a mark with no extra work.
+//
+// A short override map is kept only for houses whose established lettermark is
+// not what the plain derivation would produce (Gucci's double-G, YSL, and so
+// on). Everything else falls through to deriveMonogram().
+// ---------------------------------------------------------------------------
+export const MONO_OVERRIDES = {
+  Gucci: 'GG',
+  'Saint Laurent': 'YSL',
+  Dior: 'CD',
+  Chanel: 'CC',
+  Fendi: 'FF',
+  'The North Face': 'TNF',
+};
+
+// Words we skip when taking initials, so "The North Face" reads NF not TN.
+const MONO_STOPWORDS = new Set(['the', 'a', 'an', 'of', 'and', 'for']);
+
+export function deriveMonogram(name) {
+  if (!name) return '—';
+  if (MONO_OVERRIDES[name]) return MONO_OVERRIDES[name];
+  const words = name
+    .replace(/&/g, ' ')
+    .split(/[\s\-–—/]+/)
+    .filter(Boolean)
+    .filter((w) => !MONO_STOPWORDS.has(w.toLowerCase()));
+  if (words.length === 0) return name.slice(0, 2).toUpperCase();
+  if (words.length >= 2) return (words[0][0] + words[1][0]).toUpperCase();
+  const w = words[0];
+  if (w.length <= 3) return w.toUpperCase();
+  return w.slice(0, 2).toUpperCase();
+}
+
+// Per-segment identity: which typeface the monogram is set in, and the colour
+// of the label's stitch line. Drawn only from the existing palette tokens so
+// the marks stay inside the calico/indigo/madder world of the page. This is
+// also a quiet legend: once you learn the colours, the directory reads as a
+// segment map. type is 'serif' (couture), 'sans' (athletic) or 'mono' (retail).
+export const SEGMENT_STYLE = {
+  sportswear:  { type: 'sans',  accent: 'var(--ink)' },
+  luxury:      { type: 'serif', accent: 'var(--indigo)' },
+  fastfashion: { type: 'mono',  accent: 'var(--madder)' },
+  department:  { type: 'mono',  accent: 'var(--faint)' },
+  outdoor:     { type: 'sans',  accent: 'var(--sage)' },
+  denim:       { type: 'sans',  accent: 'var(--indigo-deep)' },
+  footwear:    { type: 'sans',  accent: 'var(--ink-soft)' },
+  online:      { type: 'mono',  accent: 'var(--weld)' },
+  basics:      { type: 'mono',  accent: 'var(--ink-soft)' },
+};
+
+export function segmentStyle(id) {
+  return SEGMENT_STYLE[id] || { type: 'sans', accent: 'var(--ink)' };
+}
+
+// ---------------------------------------------------------------------------
 // THE BRAND UNIVERSE.
 //
 // Each entry carries only facts we can stand behind:
@@ -189,6 +250,7 @@ function buildBrand(raw) {
   return {
     id: slug(raw.name),
     name: raw.name,
+    mono: deriveMonogram(raw.name),
     aliases: raw.aliases || [],
     parent: raw.parent,
     group: raw.group || raw.parent,
