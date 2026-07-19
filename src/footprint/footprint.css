@@ -554,6 +554,8 @@
 .fp-hotel-row .fp-field{ min-width:0; }
 .fp-field-nights{ flex:0 0 auto; max-width:96px; }
 .fp-wider-add{ align-self:flex-start; margin-top:0.35rem; }
+.fp-waste-row{ align-items:flex-end; }
+.fp-waste-unit{ font-size:0.8rem; color:var(--mid); padding-bottom:0.55rem; }
 
 /* Read-only breakdown for the worked example. */
 .fp-wider-readout{ display:flex; flex-direction:column; margin-top:0.3rem; }

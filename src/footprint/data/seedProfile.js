@@ -101,6 +101,7 @@ export function buildSeedProfile() {
       goods: {
         clothing: 1400, electronics: 1200, appliances: 300,
         furniture: 600, personalCare: 500, health: 400, recreation: 1800,
+        finance: 2600, education: 900, homeImprove: 1500,
       },
       hotels: [
         { country: 'KR', nights: 8 },
@@ -109,6 +110,8 @@ export function buildSeedProfile() {
         { country: 'SG', nights: 5 },
         { country: 'AU', nights: 3 },
       ],
+      // Roughly my share of the red bin, in kilograms a week.
+      waste: 4,
     },
   };
 }

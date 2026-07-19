@@ -110,9 +110,15 @@ export const WIDER = {
   title: ['A fuller', 'picture'],
   sub: 'The audit above counts what a person controls most directly: energy, travel, freight and food. It leaves out the wider basket of goods and services, and hotel nights, which are the biggest things a personal footprint usually misses. Add a few rough figures and they are priced separately and shown next to your audited number. This is a screening estimate, not a measurement, so it stays out of your headline total on purpose.',
   goodsTitle: 'Goods & services',
-  goodsSub: 'Rough spend over the year, in dollars. Each line is priced with US EPA supply-chain factors (emissions per dollar spent) converted at about 65 US cents to the dollar. Food, groceries, power and ground transport are left out here because they are already counted in your audit.',
+  goodsSub: 'Rough spend over the year, in dollars. Each line is priced with US EPA supply-chain factors (emissions per dollar spent) converted at the Reserve Bank of Australia 2025 average of about 64 US cents to the dollar. Food, groceries, power and ground transport are left out here because they are already counted in your audit.',
   hotelsTitle: 'Hotel nights',
   hotelsSub: 'Nights paid for in a hotel over the year, by country, at the UK Government per-room-night factors. Nights with friends or family count for nothing here, which is rather the point.',
+  wasteTitle: 'Rubbish to landfill',
+  wasteSub: 'Roughly how much household rubbish you send to landfill in a week, your share of the red bin. Recycling and garden or food organics are not landfill, so leave those out. The average Australian is around 4 kg a week.',
+  wasteLabel: 'Rubbish to landfill',
+  wasteUnit: 'kg a week',
+  wasteResult: 'Rubbish to landfill',
+  wasteNone: 'No rubbish added yet. Put in a rough weekly weight and it is priced at the published landfill factor.',
   addHotel: 'Add a country',
   removeHotel: 'Remove',
   country: 'Country',
@@ -136,7 +142,7 @@ export const WIDER = {
   startCta: 'Calculate your own',
   perYear: '$ a year',
   factorNote: 'Priced at {f} kg per dollar',
-  caveat: 'Screening, not measurement: US spend factors applied to Australian dollars at an indicative exchange rate, industry averages rather than the specific product, and no adjustment for how prices have moved since 2022. Order of magnitude, by design. No offsets are subtracted anywhere.',
+  caveat: 'Screening, not measurement: US spend factors applied to Australian dollars at the Reserve Bank 2025 average rate, industry averages rather than the specific product, and no adjustment for how prices have moved since 2022. Waste and hotels use UK Government factors as a stated proxy. Order of magnitude, by design. No offsets are subtracted anywhere.',
   methodCta: 'How the wider basket is priced',
 };
 
@@ -274,8 +280,8 @@ export const METHOD = {
   sources: {
     title: 'Where the numbers come from',
     paras: [
-      'Australian electricity, gas and road-fuel factors are from the Australian Government (DCCEEW) National Greenhouse Accounts Factors. Flights and freight use the UK Government conversion factors, published by DESNZ and still widely known as the DEFRA factors, because they are the most complete public source for aviation by distance and cabin.',
-      'Diet is an estimate, not a precise figure: it uses published per-day values by diet type, and the same direction shows up in Australian studies. Public transport uses a UK rail factor as a stand-in until a published NSW per-passenger figure is available. Every factor and its source is in the tables below.',
+      'Australian electricity, gas and road-fuel factors are from the Australian Government (DCCEEW) National Greenhouse Accounts Factors. Flights and freight use the UK Government conversion factors 2025 edition, published by DESNZ and still widely known as the DEFRA factors, because they are the most complete public source for aviation by distance and cabin. The flight numbers here match that workbook cell for cell; the June 2026 edition could not be reached to check, so the page cites the edition it can stand behind.',
+      'Diet is an estimate, not a precise figure: it uses published UK per-day values by diet type, chosen because they separate the six diet patterns cleanly. Australian studies find the same direction (CSIRO and Ridoutt), but on different accounting boundaries, so they anchor the size rather than replace the numbers. Public transport uses a UK rail factor as a stand-in until a published Australian per-passenger figure is available. On the physical NSW grid the real rail figure is higher than this proxy, because the grid is coal-heavy; measured against Sydney Trains renewable electricity contracts it is close to zero. Public transport is a small line, so the choice barely moves a total. Every factor and its source is in the tables below.',
     ],
   },
   quality: {
@@ -302,9 +308,10 @@ export const METHOD = {
   wider: {
     title: 'A fuller picture: the wider basket',
     paras: [
-      'The audit counts what a person controls most directly: home energy, personal travel, flights, freight and diet. It leaves out the wider basket of goods and services (clothing, electronics, appliances, furniture, personal care, health, recreation) and hotel nights. Those are the biggest things a personal footprint usually misses, so the page offers an optional screening panel that estimates them and shows them next to the audited number, never inside it.',
-      'Goods and services are priced from spend. Rough annual dollars in each category are converted to US dollars at an indicative market rate (about 65 US cents to the Australian dollar, the 2025 average: a market price, not the RBA or ATO published figure and not an emission factor) and multiplied by the US EPA Supply Chain emission factors, version 1.3.0, which give kilograms of CO2-e per 2022 US dollar of purchaser-price spend including retail margins. Each category maps to one named US industry code rather than an average across a broad group, because the spread inside a group can be large. Food, groceries, electricity, gas and ground transport are deliberately left out of the panel: they are already in the audit, and pricing them again from spend would double count.',
-      'Hotel nights are priced from the UK Government (DESNZ / DEFRA) hotel-stay factors, kilograms of CO2-e per room-night by country, 2024 edition (identical back to 2022; the 2025 and 2026 editions were not reachable to confirm). Nights with friends or family count for nothing. DEFRA publishes no rest-of-world row, so an unlisted country uses a stated tool-chosen mid value, labelled as such rather than as a DEFRA figure.',
+      'The audit counts what a person controls most directly: home energy, personal travel, flights, freight and diet. It leaves out the wider basket of goods and services (clothing, electronics, appliances, furniture, personal care, health, recreation, banking and insurance, education, and home improvements), hotel nights, and household rubbish sent to landfill. Those are the biggest things a personal footprint usually misses, so the page offers an optional screening panel that estimates them and shows them next to the audited number, never inside it.',
+      'Goods and services are priced from spend. Rough annual dollars in each category are converted to US dollars at the Reserve Bank of Australia calendar-2025 average rate (0.6449 US dollars to the Australian dollar, from the RBA daily series, a market rate rather than an emission factor) and multiplied by the US EPA Supply Chain emission factors, version 1.3.0, which give kilograms of CO2-e per 2022 US dollar of purchaser-price spend including retail margins. Each category maps to one named US industry code rather than an average across a broad group, because the spread inside a group can be large. Food, groceries, electricity, gas and ground transport are deliberately left out of the panel: they are already in the audit, and pricing them again from spend would double count. An Australian input-output equivalent (the University of Sydney and IELab spend-based factors used by the Climate Active scheme) would remove the currency step altogether and is the preferred future replacement, noted in the research trail.',
+      'Hotel nights are priced from the UK Government (DESNZ / DEFRA) hotel-stay factors, kilograms of CO2-e per room-night by country, 2025 edition, read straight from the source workbook and unchanged from the 2022 to 2024 editions. The country list covers the destinations this page can fly you to. Nights with friends or family count for nothing. DEFRA publishes no rest-of-world row, so an unlisted country uses a stated tool-chosen mid value, labelled as such rather than as a DEFRA figure.',
+      'Household rubbish to landfill is priced from the UK Government (DESNZ / DEFRA) waste-disposal factor for household residual waste, 497 kilograms of CO2-e per tonne (about half a kilogram per kilogram of rubbish), 2025 edition. Only what actually goes to landfill counts, so kerbside recycling and food or garden organics are left out. This is a proxy: the Australian DCCEEW National Greenhouse Accounts waste tables are the better source because they carry Australian landfill-gas-capture assumptions, but they could not be reached to verify, so DEFRA stands in and is labelled that way, and swapping in the Australian factor is queued for a future refresh.',
       'This whole panel is screening, not measurement, and is labelled that way wherever it appears. Spend-based factors carry the industry-average and price assumptions of an input-output model; US factors on Australian dollars are an approximation; and the change in the US dollar’s own buying power since 2022 is not adjusted for. Read the wider basket as order of magnitude. Because it is only screened and still leaves some things out, the real gap to the 1.5°C benchmark is if anything larger than the audit alone shows, never smaller. No offsets are subtracted anywhere.',
     ],
   },
@@ -337,8 +344,9 @@ export const METHOD = {
       {
         head: 'Now available as an optional screening add-on',
         items: [
-          'Goods and services (clothing, electronics, appliances, furniture, personal care, health, recreation) and hotel nights are the biggest things the core leaves out. The "A fuller picture" panel now estimates them, from spend at US EPA supply-chain factors and from room-nights at the UK Government hotel factors, and shows them alongside the audited total without folding them in. Screening, not measurement, and labelled that way.',
-          'Household waste to landfill is still left out. The Australian landfill factors and a published per-person to-landfill tonnage could not be verified to this page’s standard in this edition, so it stays out rather than shipping an unchecked number. It is queued for the next factor refresh.',
+          'Goods and services are the biggest thing the core leaves out. The "A fuller picture" panel estimates them from spend at US EPA supply-chain factors: clothing, electronics, appliances, furniture, personal care, health, recreation, and now banking and insurance, education, and home improvements. It shows them alongside the audited total without folding them in. Screening, not measurement, and labelled that way.',
+          'Hotel nights and household rubbish to landfill are also in the panel now, priced from the UK Government room-night and landfill factors as a stated proxy. Waste counts only what actually goes to landfill, not recycling or organics.',
+          'Still queued, because the numbers could not be verified to this page’s standard in this edition: pets (dog and cat food), the embodied emissions of building or buying a car and a home, mains water supply, an Australian spend-based factor set to replace the US one, and a published Australian rail figure to replace the UK proxy. Each stays out rather than shipping an unchecked number, and is recorded in the research trail for the next refresh.',
         ],
       },
     ],
