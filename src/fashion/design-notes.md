@@ -186,6 +186,29 @@ verified figures read straight from source.
   they read as partial/in-progress data, not an authoritative index. Preferring
   "Needs research" over a confident-looking guess is the whole point.
 - Sources are filed and documented in `docs/data-sources/README.md`.
+
+## Wider universe + airtight attribution (v7)
+
+- **97 brands, 87 with verified FTI 2023 scores.** Expanded from 61 with a batch
+  of household names read from the same FTI 2023 report (Converse, UGG, Dr.
+  Martens, Marks & Spencer, Michael Kors, Versace, Diesel, Guess, Mango,
+  Superdry, Decathlon, Champion, Reebok, Kathmandu, Armani, Hugo Boss, OVS and
+  more), each with a verified parent and, where confirmed, SBTi and Fashion Pact
+  status. Only 8 brands remain "Needs research".
+- **Attribution, because facts must be credited, not claimed.** A "Data and
+  attribution" block in the footer states plainly that Openweave reproduces
+  published figures with attribution and claims none as its own (FTI © Fashion
+  Revolution CIC; SBTi © SBTi; marks belong to The Fashion Pact, B Lab and the
+  brands), that it is independent and non-commercial, and that every figure
+  links to its source. Each score also carries its source inline, and the CSV
+  tracker has an attribution header.
+- **No redistribution of copyrighted reports.** The full FTI, What Fuels
+  Fashion and Baptist World Aid report PDFs are deliberately NOT stored in the
+  repo, only cited and linked; `docs/data-sources/README.md` records where each
+  figure came from and where to download the originals. Only the openly
+  published SBTi company dataset is kept as working provenance.
+- Search ranking fixed so exact aliases win (e.g. "m&s" resolves to Marks &
+  Spencer, not a substring match on Hermès).
 - **Form, reference-led and restrained.** A numbered section rail with `04 / 07`
   progress (Your Creative); one settle curve `cubic-bezier(0.16,1,0.3,1)` on all
   reveals (2-TIMES); a dashed sewn-edge on the brand card so it reads as a woven

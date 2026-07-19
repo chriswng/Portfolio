@@ -41,9 +41,10 @@ function searchBrands(query, limit = 8) {
     const group = normalise(b.group);
     let score = 0;
     if (name === q) score = 100;
+    else if (b.aliases.some((a) => normalise(a) === q)) score = 92; // exact alias (e.g. "m&s")
     else if (name.startsWith(q)) score = 85;
+    else if (b.aliases.some((a) => normalise(a).startsWith(q))) score = 78;
     else if (name.includes(q)) score = 70;
-    else if (b.aliases.some((a) => normalise(a).startsWith(q))) score = 65;
     else if (aliasHit) score = 55;
     else if (parent.startsWith(q) || group.startsWith(q)) score = 45;
     else if (parent.includes(q) || group.includes(q)) score = 35;
@@ -1049,6 +1050,10 @@ function Footer() {
               <a className="src" key={s.url} href={s.url} target="_blank" rel="noopener noreferrer">{s.label} ↗</a>
             ))}
           </div>
+        </div>
+        <div className="ow-attribution">
+          <h4>{COPY.footer.attributionLabel}</h4>
+          <p>{COPY.footer.attribution}</p>
         </div>
         <div className="ow-footer-base">
           <span>{COPY.footer.made}</span>
