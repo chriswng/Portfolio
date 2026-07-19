@@ -209,7 +209,7 @@
 
 /* ---- Year ticker ---- */
 .st-year .st-center { text-align: center; }
-.st-ticker { margin-top: 2.4rem; display: flex; flex-direction: column; gap: 0.7rem; width: 100vw; align-self: center; margin-left: calc(-1 * var(--gut)); margin-right: calc(-1 * var(--gut)); }
+.st-ticker { margin-top: 2.4rem; display: flex; flex-direction: column; gap: 0.7rem; width: 100vw; max-width: 100vw; overflow: hidden; align-self: center; margin-left: calc(-1 * var(--gut)); margin-right: calc(-1 * var(--gut)); }
 .st-ticker-row { display: flex; gap: 0.7rem; white-space: nowrap; will-change: transform; padding-left: 2vw; }
 .st-tick-chip {
   display: inline-flex; align-items: center; gap: 0.5rem;
