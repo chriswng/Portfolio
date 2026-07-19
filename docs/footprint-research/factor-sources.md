@@ -109,6 +109,49 @@ correction replacing COVID-era load factors (passenger factors down 16-42%);
   (IGES / Aalto / D-mat 1.5-Degree Lifestyles 2019; Hot or Cool Institute
   2021 update).
 
+## Wider basket (screening): goods & services and hotel nights (July 2026 follow-up)
+
+Shipped as the optional "A fuller picture" panel (`src/footprint/data/screening.js`,
+set id `epa-scv1.3-defra2024`), kept outside the audited total and labelled
+screening throughout. Re-verified in a follow-up session where egress reached
+search and package mirrors but the EPA host, gov.uk and the RBA/ATO were all
+403; values came from faithful hash-matched mirrors and were confirmed by
+independent parses agreeing to the cent (three sourcing agents plus an
+adversarial reconciler per target).
+
+Goods & services: US EPA Supply Chain GHG Emission Factors v1.3.0, NAICS-6,
+2022 USD, "with margins" column, kg CO2-e per USD (DOI 10.23719/1531143). One
+named subsector each, never a group average:
+- Clothing & footwear (apparel 315) 0.12; footwear/leather 316 is 0.282, noted
+- Electronics & gadgets (audio/video 3343) 0.081; computers 334111 0.058 and
+  semiconductors 334413 0.215 differ widely, so not averaged into one
+- Household appliances (3352) 0.172
+- Furniture & homewares (337) 0.188
+- Personal care & cosmetics (325620) 0.194; soap/detergent 0.355 kept out
+- Health & medical (health services 621) 0.083; pharma prep 325412 is 0.099
+- Recreation & entertainment (arts/recreation 71) 0.086
+Food services 722 (0.194) is deliberately excluded: diet already prices food,
+and spend-pricing it again would double count. Two independent parses agreed to
+0.001 kg; a single authoritative dataset lineage (the GitHub mirrors are
+byte-identical copies of the one EPA file, counted as one source, not many).
+
+Currency: 1 AUD ~ 0.65 USD, indicative calendar-2025 market average (Exchange
+Rates UK 0.6449, corroborated by exchange-rates.org 0.6451). A market price,
+not an emission factor, and NOT the RBA F11.1 or ATO figure (both 403), so it
+is labelled indicative. The 2022-USD-versus-current-AUD price change is not
+adjusted for (screening). Re-source from RBA F11.1 or ATO at the next refresh.
+
+Hotels: UK Government (DESNZ / DEFRA) hotel-stay set, kg CO2-e per room-night by
+country, 2024 edition. Confirmed across three independent transcriptions
+(carbonr R `sysdata`, greenlang `business_travels.csv`, nzi-pro Standard UK
+template) and identical across the 2022 to 2024 editions; UK also witnessed by
+Circular Ecology (10.4). Values: AU 35, JP 39, KR 55.8, SG 24.5, PH 54.3,
+UK 10.4 (a UK London row of 11.5 also exists). DEFRA publishes no rest-of-world
+row, so "Somewhere else" uses a tool-chosen mid of 40, labelled non-DEFRA. The
+2025 and 2026 workbooks were unreachable (403), so 2024 is the stated vintage;
+confirm at refresh, since the older ~2019 vintage was far higher (values do
+move between methodology revisions).
+
 ## Data quality tiers and uncertainty bands (July 2026 addition)
 
 `QUALITY_TIERS` in `factors.js`: metered/billed ±5%, forecast ±15%,
@@ -128,6 +171,15 @@ allows package registries and search snippets only; gov.uk, dcceew.gov.au,
 epa.gov and all factor mirrors returned 403). Dataset identities verified;
 values not retrieved; nothing shipped from memory. Details and scores in
 `improvement-scoring.md`. The unblock list:
+
+**Update, July 2026 follow-up: two of the three are now unblocked and shipped.**
+Hotel stay and spend screening were re-verified against multiple independent
+mirrors (see the wider-basket section above) and shipped as the optional
+"A fuller picture" panel. Waste was re-attempted and stays blocked: every
+DCCEEW, EPA and ABS PDF returned 403, only the qualitative landfill method
+basis corroborated across two sources, and not one per-stream landfill factor
+or a published per-capita to-landfill tonnage could be confirmed. It remains
+queued.
 
 - **Hotel stay** (UK Gov conversion factors, hotel stay tab): AU, JP, KR,
   SG, PH per room-night + fallback row label. Basis verified: room-night,
@@ -155,8 +207,13 @@ values not retrieved; nothing shipped from memory. Details and scores in
 2. UK conversion factors (new edition ~June): flights (all bands/cabins),
    freight air/sea/HGV.
 3. Re-check the flagged single-mirror values against the primary workbooks.
-4. Work the verification-blocked queue above: hotels, spend screening,
-   waste. Each is design-complete and waiting on numbers.
+4. Waste to landfill is the remaining queued item (hotels and spend shipped in
+   the July 2026 follow-up). Re-verify in a session with dcceew.gov.au,
+   epa.nsw.gov.au and abs.gov.au egress: the NGA Factors waste tables
+   (per-stream landfill factors, with scope and gas-capture basis) plus an ABS
+   Waste Account per-capita to-landfill tonnage, each confirmed against a
+   second lineage. Also re-source the wider-basket AUD/USD rate from RBA F11.1
+   or ATO, and spot-check one EPA spend factor against the EPA primary host.
 5. Refresh seed profile with the new financial year's bills and itineraries.
 6. Benchmarks: EDGAR annual report, DCCEEW quarterly inventory.
 7. Entries pin their factor set id (`factor_set`); closed years are never

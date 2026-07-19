@@ -9,6 +9,7 @@ import {
   ROAD_FUELS, ROAD_MODES, ROAD_SOURCE, FLIGHT_FACTORS, FLIGHT_SOURCE, FLIGHT_RF_MULTIPLIER,
   FREIGHT_MODES, FREIGHT_SOURCE, DIET_TYPES, DIET_SOURCE, FOOD_PER_KG, GRID_DECLINE,
 } from './data/factors';
+import { GOODS, HOTEL_COUNTRIES, HOTEL_FALLBACK, EPA_SOURCE, HOTEL_SOURCE, FX } from './data/screening';
 import { METHOD } from './data/copy';
 import Icon from './Icons';
 
@@ -135,6 +136,27 @@ export default function Method() {
             head={['Food', 'kg CO₂-e per kg']}
             rows={FOOD_PER_KG.rows.map(([f, v]) => [f, v.toFixed(1)])}
             source={{ name: FOOD_PER_KG.source, detail: '' }}
+          />
+        </div>
+
+        <div className="fp-method-block fp-method-wide" id="fp-wider-method">
+          <h3>{METHOD.wider.title}</h3>
+          {METHOD.wider.paras.map((p, i) => <p key={i}>{p}</p>)}
+          <FTable
+            caption="Goods & services · kg CO₂-e per 2022 US dollar of spend, with margins"
+            head={['Category', 'US industry code (NAICS)', 'kg CO₂-e / USD']}
+            rows={GOODS.map((g) => [g.label, g.naics, g.factor.toFixed(3)])}
+            source={EPA_SOURCE}
+          />
+          <p className="fp-ftable-src">Currency conversion: 1 AUD ≈ {FX.usdPerAud} USD. {FX.basis}</p>
+          <FTable
+            caption="Hotel nights · kg CO₂-e per room-night, by country"
+            head={['Country', 'kg CO₂-e / room-night']}
+            rows={[
+              ...HOTEL_COUNTRIES.map((c) => [c.label, c.perNight.toFixed(1)]),
+              [HOTEL_FALLBACK.label + ' (tool proxy, not a DEFRA figure)', HOTEL_FALLBACK.perNight.toFixed(1)],
+            ]}
+            source={HOTEL_SOURCE}
           />
         </div>
 
