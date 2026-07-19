@@ -170,8 +170,11 @@ section { position:relative; }
    ============================================================================ */
 .nav{ position:sticky; top:0; z-index:var(--z-nav); background:rgba(248,250,252,0.82); backdrop-filter:blur(10px); border-bottom:1px solid var(--rule-dk); }
 .nav-inner{ display:flex; justify-content:space-between; align-items:center; min-height:52px; gap:0.5rem; padding-top:0.3rem; padding-bottom:0.3rem; flex-wrap:wrap; }
-.nav-logo{ font-family:var(--mono); font-size:1rem; font-weight:500; color:var(--matcha); text-decoration:none; letter-spacing:-0.02em; flex-shrink:0; transition:opacity 0.25s; order:1; }
+.nav-logo{ font-family:var(--mono); font-size:1rem; font-weight:500; color:var(--matcha); text-decoration:none; letter-spacing:-0.02em; flex-shrink:0; transition:opacity 0.25s; order:1; display:inline-flex; align-items:center; }
 .nav-logo:hover{ opacity:0.55; }
+/* The site mark ("The Segmented Split"): a square ring cut into two hemispheres.
+   Sized in em so it tracks each host link's font-size; colour via currentColor. */
+.nav-logo svg, .footer-mark svg, .fp-footer-home svg, .st-home svg{ width:1.3em; height:1.3em; display:block; }
 .nav-links{ display:flex; flex-wrap:wrap; justify-content:flex-end; gap:0.1rem 0.2rem; order:2; }
 .nav-links a{ position:relative; font-family:var(--mono); font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--mid); text-decoration:none; padding:0.45rem 0.7rem; transition:color 0.3s var(--ease); white-space:nowrap; }
 .nav-links a:hover, .nav-links a.active{ color:var(--matcha); }
@@ -603,7 +606,7 @@ section { position:relative; }
   display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;
   margin-top:clamp(2rem,4.5vw,3rem); padding-top:1.2rem; border-top:1px solid rgba(33,48,15,0.18);
 }
-.footer-mark{ font-family:var(--mono); font-size:1.1rem; font-weight:600; color:var(--forest); text-decoration:none; transition:opacity 0.2s; margin-right:auto; }
+.footer-mark{ font-family:var(--mono); font-size:1.1rem; font-weight:600; color:var(--forest); text-decoration:none; transition:opacity 0.2s; margin-right:auto; display:inline-flex; align-items:center; }
 .footer-mark:hover{ opacity:0.6; }
 .footer-tagline{ font-family:var(--mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--forest-2); }
 @media(max-width:559px){ .footer-tagline{ display:none; } }

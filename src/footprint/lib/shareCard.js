@@ -6,7 +6,7 @@
 
 import { SHARE_ST, CARD_TEXT, NEEDLE } from '../data/storyCopy';
 import { BADGE } from '../data/characters';
-import { drawEmblemDots, lighten } from './emblem';
+import { drawEmblemDots, drawMark, lighten } from './emblem';
 
 const W = 1080;
 const H = 1350;
@@ -59,10 +59,8 @@ function frame(ctx, title, fy) {
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, W, H);
 
-  ctx.fillStyle = MATCHA;
-  ctx.font = `500 34px ${MONO}`;
   ctx.textBaseline = 'alphabetic';
-  ctx.fillText('./', 84, 118);
+  drawMark(ctx, 97, 106, 13, MATCHA, 3.5);
   ctx.fillStyle = MID;
   ctx.font = `500 27px ${MONO}`;
   ctx.textAlign = 'right';
@@ -319,9 +317,7 @@ export async function drawStoryCard(kind, data) {
   ctx.restore();
 
   ctx.textBaseline = 'alphabetic';
-  ctx.fillStyle = MATCHA;
-  ctx.font = `500 34px ${MONO}`;
-  ctx.fillText('./', margin, top - 44);
+  drawMark(ctx, margin + 13, top - 56, 13, MATCHA, 3.5);
   ctx.fillStyle = MID;
   ctx.font = `500 26px ${MONO}`;
   ctx.textAlign = 'right';
@@ -354,9 +350,7 @@ export async function drawLinkedInCard(d) {
   ctx.fillRect(0, 0, LW, LH);
 
   ctx.textBaseline = 'alphabetic';
-  ctx.fillStyle = MATCHA;
-  ctx.font = `500 26px ${MONO}`;
-  ctx.fillText('./', 72, 64);
+  drawMark(ctx, 82, 55, 10, MATCHA, 2.7);
   ctx.letterSpacing = '5px';
   ctx.fillStyle = INK;
   ctx.font = `500 22px ${MONO}`;
