@@ -214,6 +214,50 @@ function commitmentsFor(id) {
   return { fashionPact, bCorp: B_CORP_IDS.has(id) };
 }
 
+// The date the structural facts (ownership, provenance, memberships) were last
+// checked. Shown as a freshness stamp: the one thing no competitor exposes.
+export const VERIFIED_AS_OF = 'July 2026';
+
+// ---------------------------------------------------------------------------
+// Ownership provenance. The white space in this whole category: every rival
+// tool rates a brand as an island. Who actually owns it, who owned it before,
+// and whether the owner is a listed company or a private-equity firm is often
+// the most decision-relevant fact, and the hardest to find. Verifiable facts
+// only; brands without a confirmed note simply do not show this line.
+// ---------------------------------------------------------------------------
+const PROVENANCE = {
+  gucci: 'Italian house, part of French group Kering since 1999.',
+  'saint-laurent': 'French house, part of Kering since 1999.',
+  balenciaga: 'Spanish-founded house, acquired by Kering in 2001.',
+  'bottega-veneta': 'Italian house, acquired by Kering in 2001.',
+  'louis-vuitton': 'The founding house of French group LVMH.',
+  dior: 'French house, brought under the LVMH umbrella; Christian Dior SE is the Arnault family holding.',
+  loewe: 'Spanish house, owned by LVMH since 1996.',
+  fendi: 'Italian house, LVMH-controlled since 2001.',
+  celine: 'French house, owned by LVMH.',
+  'miu-miu': 'Sister label to Prada within the Prada Group.',
+  moncler: 'Italian brand; acquired Stone Island in 2021.',
+  'the-north-face': 'Part of US group VF Corporation.',
+  vans: 'Part of US group VF Corporation.',
+  timberland: 'Part of US group VF Corporation.',
+  'calvin-klein': 'Owned by US group PVH Corp.',
+  'tommy-hilfiger': 'Owned by US group PVH Corp.',
+  coach: 'Part of US group Tapestry.',
+  'kate-spade': 'Acquired by Tapestry in 2017.',
+  gap: 'US group; also owns Old Navy, Banana Republic and Athleta.',
+  boohoo: 'UK group that also owns PrettyLittleThing, Nasty Gal and Debenhams.',
+  shein: 'Founded in China in 2012; now headquartered in Singapore.',
+  temu: 'Owned by PDD Holdings, the group behind China’s Pinduoduo.',
+  'kmart-australia': 'Owned by ASX-listed Wesfarmers. A separate company from US Kmart.',
+  'target-australia': 'Owned by ASX-listed Wesfarmers. A separate company from US Target.',
+  'country-road': 'Owned by Country Road Group, part of South Africa’s Woolworths Holdings, unrelated to Australian Woolworths.',
+  'the-iconic': 'Owned by Global Fashion Group, a Berlin-listed e-commerce group.',
+  zimmermann: 'Founded 1991 in Sydney; private-equity firm Advent International took a majority stake in 2023.',
+  bonds: 'Australian icon founded 1915; owned by US-based Hanesbrands, which Gildan agreed to acquire in 2025.',
+  'r-m-williams': 'Founded 1932 in South Australia; passed through L Catterton before Tattarang, the Forrests’ private group, bought it in 2020.',
+  patagonia: 'Founder Yvon Chouinard transferred ownership to the Holdfast Collective and a purpose trust in 2022.',
+};
+
 function buildBrand(raw) {
   const band = ftiBand(raw.fti);
   const id = slug(raw.name);
@@ -247,6 +291,7 @@ function buildBrand(raw) {
       circularity: raw.circularity || STATUS.research.id,
     },
     commitments: commitmentsFor(id),
+    provenance: PROVENANCE[id] || raw.provenance || '',
     notes: raw.notes || '',
     needsResearch: raw.fti == null && raw.ftiScope !== 'outside',
   };
@@ -337,6 +382,46 @@ export const FIBRES = [
 ];
 
 // ---------------------------------------------------------------------------
+// What certifications and indices actually verify. The other thing no rival
+// tool does: decode the label. A certificate proves a specific, bounded thing.
+// Knowing its edge is how you avoid reading it as a blanket "this is good".
+// ---------------------------------------------------------------------------
+export const CERTS = [
+  { name: 'GOTS', verifies: 'Organic fibre content and processing standards for textiles, including some chemical and social criteria.', edge: 'Covers the certified product’s supply chain, not a whole brand.' },
+  { name: 'GRS', verifies: 'Recycled content and chain of custody, plus some social and environmental criteria at certified facilities.', edge: 'Proves the recycled percentage, not that the garment is low-impact overall.' },
+  { name: 'OEKO-TEX Standard 100', verifies: 'That the tested article is free of certain harmful substances above set limits.', edge: 'A chemical-safety test for the buyer, not a measure of environmental footprint.' },
+  { name: 'B Corp', verifies: 'Independently assessed overall social and environmental performance and accountability of the company.', edge: 'A company-wide score, not a guarantee about any single product.' },
+  { name: 'The Fashion Pact', verifies: 'That a CEO signed up to shared climate, biodiversity and ocean goals.', edge: 'A commitment to act, not evidence of results.' },
+  { name: 'Fashion Transparency Index', verifies: 'How much a brand discloses publicly, scored 0 to 100.', edge: 'Measures disclosure, not performance. The signal this tool leans on, with that caveat.' },
+];
+
+// ---------------------------------------------------------------------------
+// Regulation radar. Forward-looking, deliberately non-speculative about any
+// one brand: these are the new rules that will change what brands must tell
+// you. Sourced to their instruments; dates are the real phase-in dates.
+// ---------------------------------------------------------------------------
+export const REGULATION = [
+  {
+    name: 'EU Digital Product Passport',
+    when: 'Textiles from ~2027 to 2028',
+    what: 'A scannable passport per garment: fibre composition, recycled content, durability, repair and recycling instructions, and country of origin. The biggest structural change coming, though no per-garment passports exist yet.',
+    tag: "What's coming",
+  },
+  {
+    name: 'EU Empowering Consumers Directive',
+    when: 'Applies 27 September 2026',
+    what: 'Bans generic green claims like "eco-friendly" without proof, bans offset-based "carbon neutral" claims, and bans self-made sustainability labels across the EU. It sharpens the claim check above.',
+    tag: 'In force',
+  },
+  {
+    name: 'France · Coût Environnemental',
+    when: 'Voluntary from Oct 2025',
+    what: 'A single environmental-cost score per garment, using the open Ecobalyse method, with factors for microfibre release and fast-fashion overproduction. Third parties may publish a brand’s score from Oct 2026. The methodology is itself debated.',
+    tag: 'Phasing in',
+  },
+];
+
+// ---------------------------------------------------------------------------
 // "Dig deeper" — reliable link-outs to richer per-brand data on other
 // services. Openweave is a launchpad, not the last word: these send you to
 // independent ratings and the primary sources so you can judge for yourself.
@@ -364,6 +449,7 @@ export function digLinks(brand) {
   }
   links.push({ label: 'Good On You rating', url: goodOnYouUrl(brand), note: 'Independent people, planet and animal score' });
   links.push({ label: 'Baptist World Aid (AU)', url: 'https://baptistworldaid.org.au/resources/ethical-fashion-guide/', note: 'Australian worker-rights and environment score out of 100' });
+  links.push({ label: 'SBTi climate targets', url: 'https://sciencebasedtargets.org/target-dashboard', note: 'Check for a validated science-based emissions target' });
   links.push({ label: 'Fashion Transparency Index', url: 'https://www.fashionrevolution.org/about/transparency/', note: 'The source of the disclosure score above' });
   return links;
 }
@@ -384,10 +470,13 @@ export const SIGNAL_FIELDS = [
 //
 // Grounded in the ACCC's guidance "Making environmental claims: a guide for
 // business" (the eight principles), with the same direction of travel as the
-// EU Green Claims and Empowering Consumers Directives, the UK CMA Green Claims
-// Code and the US FTC Green Guides. It flags the vague and absolute terms
-// regulators single out, and the qualifiers each one demands. It reads what
-// YOU paste. It makes no claim about any real brand.
+// EU Empowering Consumers Directive (in force, applies 27 Sept 2026, which
+// bans generic claims like "eco-friendly", bans offset-based "carbon neutral"
+// claims, and bans self-made sustainability labels), the UK CMA Green Claims
+// Code and the US FTC Green Guides. (The separate EU Green Claims Directive
+// was shelved in 2025, so it is not treated as law here.) It flags the vague
+// and absolute terms regulators single out, and the qualifiers each one
+// demands. It reads what YOU paste. It makes no claim about any real brand.
 // ===========================================================================
 
 // The eight ACCC principles, shown as the standard the checker applies.
@@ -434,7 +523,7 @@ export const QUALIFIER_TERMS = [
   { re: /\bbiodegradable\b/gi, term: 'biodegradable', demand: 'Under what conditions, and in how long? A landfill is not a compost heap.' },
   { re: /\bcompostable\b/gi, term: 'compostable', demand: 'Home or industrial composting? Name the standard.' },
   { re: /\brecycled\b/gi, term: 'recycled', demand: 'What percentage, of which component, certified by whom?' },
-  { re: /\bcarbon[- ]neutral\b/gi, term: 'carbon neutral', demand: 'Reduced or offset? Which scopes, whose offsets, what vintage?' },
+  { re: /\bcarbon[- ]neutral\b/gi, term: 'carbon neutral', demand: 'Reduced or offset? From 2026 the EU bans offset-based neutrality claims. Which scopes, whose offsets, what vintage?' },
   { re: /\borganic\b/gi, term: 'organic', demand: 'Certified to which scheme, and what share of the fibre?' },
   { re: /\brenewable\b/gi, term: 'renewable', demand: 'What share of energy, contracted how, over what period?' },
   { re: /\bplastic[- ]free\b/gi, term: 'plastic-free', demand: 'Product, packaging or both? Polyester is plastic.' },
@@ -550,6 +639,8 @@ export const COPY = {
     commitmentsLabel: 'Commitments and memberships',
     commitmentsHint: 'Industry pledges this brand has signed. A commitment, not a result.',
     commitmentsNone: 'No memberships confirmed on file yet.',
+    provenanceLabel: 'Ownership',
+    freshnessTemplate: 'Ownership and memberships verified as of {d}. Transparency score: Fashion Transparency Index 2023.',
   },
 
   compare: {
@@ -648,6 +739,12 @@ export const COPY = {
       },
     ],
     disclaimer: 'Transparency is not the same as performance. A brand can disclose a lot and still have significant impacts. This tool tracks what can be found publicly, not a moral ranking.',
+    certTitle: 'What the certifications actually verify',
+    certLede: 'A certificate proves one specific, bounded thing. Knowing its edge is how you avoid reading a single label as a blanket "this is good".',
+    certVerifies: 'Verifies',
+    certEdge: 'Its edge',
+    regTitle: 'Regulation radar',
+    regLede: 'The rules that will change what brands must tell you. Forward-looking, and deliberately not a claim about any one brand.',
   },
 
   backlog: {

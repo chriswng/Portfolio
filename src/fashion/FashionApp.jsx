@@ -17,7 +17,7 @@ import {
   BRANDS, BRAND_BY_ID, SEGMENTS, SIGNAL_FIELDS, STATUS, COPY, SOURCES,
   MULTI_GROUPS, segmentCount, ftiBand, groupFamily,
   digLinks, analyseClaim, SPECIMEN_CLAIMS, ACCC_PRINCIPLES, CLAIM_VERDICTS,
-  COMMITMENT_INFO, FIBRES,
+  COMMITMENT_INFO, FIBRES, CERTS, REGULATION, VERIFIED_AS_OF,
 } from './data';
 import { prefersReducedMotion } from '../utils/media';
 
@@ -191,12 +191,18 @@ function SectionRail() {
     secs.forEach((s) => io.observe(s));
     return () => io.disconnect();
   }, []);
+  const total = COPY.rail.length;
+  const activeIdx = COPY.rail.findIndex((r) => r.id === active);
   return (
     <nav className="ow-rail" aria-label="Sections">
-      {COPY.rail.map((r) => (
+      <span className="ow-rail-progress" aria-hidden="true">
+        {String(activeIdx + 1).padStart(2, '0')} <i>/</i> {String(total).padStart(2, '0')}
+      </span>
+      {COPY.rail.map((r, i) => (
         <a key={r.id} href={`#${r.id}`} className={active === r.id ? 'on' : ''}>
-          <span className="dot" aria-hidden="true" />
+          <span className="num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
           <span className="lbl">{r.label}</span>
+          <span className="dot" aria-hidden="true" />
         </a>
       ))}
     </nav>
@@ -396,6 +402,12 @@ function BrandCard({ brand, inCompare, onToggleCompare, onSelect, onOpenGroup })
         <div className="ow-card-tagcode">{brand.segmentLabel} · {brand.au ? 'Australian relevant' : brand.country}</div>
         <h3 className="ow-card-name">{brand.name}</h3>
         <div className="ow-card-knownfor">{brand.knownFor}</div>
+        {brand.provenance && (
+          <div className="ow-provenance">
+            <span className="k">{COPY.lookup.provenanceLabel}</span>
+            {brand.provenance}
+          </div>
+        )}
       </div>
 
       <div className="ow-card-facts">
@@ -493,6 +505,8 @@ function BrandCard({ brand, inCompare, onToggleCompare, onSelect, onOpenGroup })
         </button>
         <button className="ow-btn" onClick={copyLink}>{copied ? `✓ ${COPY.lookup.shareDone}` : COPY.lookup.shareLabel}</button>
       </div>
+
+      <div className="ow-stamp">{COPY.lookup.freshnessTemplate.replace('{d}', VERIFIED_AS_OF)}</div>
     </article>
   );
 }
@@ -798,6 +812,25 @@ function FlagList({ title, items, noteKey }) {
   );
 }
 
+// Render the submitted claim with flagged words marker-underlined, like an
+// auditor marking up a record (Madam Speaker mechanic).
+function MarkedClaim({ text, result }) {
+  const words = [...result.absolute, ...result.vague, ...result.qualifier].map((f) => f.word);
+  if (!words.length) return <span>{text}</span>;
+  const trimmed = [...new Set(words.map((w) => w.trim()))].filter(Boolean);
+  const flagSet = new Set(trimmed.map((w) => w.toLowerCase()));
+  const escaped = trimmed.sort((a, b) => b.length - a.length)
+    .map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  const parts = text.split(new RegExp(`(${escaped.join('|')})`, 'gi'));
+  return (
+    <span>
+      {parts.map((p, i) => (p && flagSet.has(p.toLowerCase())
+        ? <mark key={i} className="ow-mark">{p}</mark>
+        : <span key={i}>{p}</span>))}
+    </span>
+  );
+}
+
 function ClaimCheck() {
   const [text, setText] = useState('');
   const [submitted, setSubmitted] = useState('');
@@ -836,6 +869,7 @@ function ClaimCheck() {
 
             {result ? (
               <div className={`ow-claim-result ${verdictClass}`}>
+                <div className="ow-marked">“<MarkedClaim text={submitted} result={result} />”</div>
                 <div className="ow-verdict">
                   <span className="stamp">{result.verdict.label}</span>
                   <span className="line">{result.verdict.line}</span>
@@ -844,6 +878,10 @@ function ClaimCheck() {
                 <FlagList title={COPY.claim.flaggedVague} items={result.vague} noteKey="note" />
                 <FlagList title={COPY.claim.flaggedQualifier} items={result.qualifier} noteKey="note" />
                 <div className="ow-evidence">{COPY.claim.evidenceLabel}: <b>{result.evidence}</b></div>
+                <details className="ow-method">
+                  <summary>How this verdict was reached</summary>
+                  <p>The claim is scanned for vague terms with no fixed meaning, for absolute terms that fail on the first exception, and for terms that are legitimate only with a specific qualifier. It then looks for evidence signals: a number, a recognised certification, a third-party audit, a year, or a stated comparison. A claim with flagged terms and no evidence reads as vague; an absolute claim, or two or more flags with no evidence, reads as high risk. It is a heuristic, not a ruling.</p>
+                </details>
               </div>
             ) : (
               <div className="ow-claim-result empty"><p>{COPY.claim.emptyResult}</p></div>
@@ -916,6 +954,37 @@ function SignalsExplainer() {
           ))}
         </div>
         <p className="ow-note"><b>Read this first.</b> {COPY.signals.disclaimer}</p>
+
+        <div className="ow-subblock">
+          <h3 className="ow-subhead">{COPY.signals.certTitle}</h3>
+          <p className="ow-sublede">{COPY.signals.certLede}</p>
+          <div className="ow-certs">
+            {CERTS.map((c) => (
+              <div className="ow-cert" key={c.name}>
+                <div className="ow-cert-name">{c.name}</div>
+                <div className="ow-cert-row"><span className="cl">{COPY.signals.certVerifies}</span>{c.verifies}</div>
+                <div className="ow-cert-row edge"><span className="cl">{COPY.signals.certEdge}</span>{c.edge}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="ow-subblock">
+          <h3 className="ow-subhead">{COPY.signals.regTitle}</h3>
+          <p className="ow-sublede">{COPY.signals.regLede}</p>
+          <div className="ow-reg">
+            {REGULATION.map((r) => (
+              <div className="ow-regitem" key={r.name}>
+                <div className="ow-reg-top">
+                  <span className="ow-reg-name">{r.name}</span>
+                  <span className="ow-reg-tag">{r.tag}</span>
+                </div>
+                <div className="ow-reg-when">{r.when}</div>
+                <p className="ow-reg-what">{r.what}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );

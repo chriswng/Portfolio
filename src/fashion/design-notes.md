@@ -135,3 +135,38 @@ directory, Good On You's method, Baptist World Aid, and the Higg MSI debate):
   ranking.
 - **Sources.** Good On You, Baptist World Aid, The Fashion Pact, B Lab and the
   ACCC guide are now cited in the footer.
+
+## Owning the white space + reference-led form (v5)
+
+A competitor teardown (Good On You, Remake, Fashion Checker, Wikirate, Ethical
+Consumer, Project Cece) found the same gap in every rival: none of them lead
+with honest, dated corporate-ownership provenance, and none expose their own
+data freshness. Plus a design study of the seven reference sites (Madam
+Speaker, GO-SEE, Synthesis Capital, 2-TIMES, Your Creative, CoLabs, House of
+Gucci) for transferable mechanics, not visuals.
+
+- **Ownership provenance.** Brand cards now carry a verified ownership line
+  (who owns it, who owned it before, when it changed hands, listed vs
+  private-equity). This is the category's white space, and the tool's ownership
+  lens is built to own it. Facts only; brands without a confirmed note omit
+  the line.
+- **Freshness stamp.** Every card states "Ownership and memberships verified as
+  of {date}" — the one thing no competitor exposes.
+- **Regulation radar + certification decoder.** In the signals section: a
+  forward-looking radar of the rules that will change what brands must disclose
+  (EU Digital Product Passport ~2027-28, EU Empowering Consumers Directive from
+  Sept 2026, France's Coût Environnemental), and a decoder of what common
+  certifications actually verify (and their edge). Note: the EU Green Claims
+  Directive was shelled in 2025, so the claim-check copy no longer treats it as
+  live; EmpCo (offset-based "carbon neutral" and self-made labels become red
+  flags) is referenced instead.
+- **SBTi link-out.** "Dig deeper" now includes the SBTi Target Dashboard so a
+  brand's science-based-target status can be checked at source (we link, we do
+  not assert a status we cannot verify).
+- **Form, reference-led and restrained.** A numbered section rail with `04 / 07`
+  progress (Your Creative); one settle curve `cubic-bezier(0.16,1,0.3,1)` on all
+  reveals (2-TIMES); a dashed sewn-edge on the brand card so it reads as a woven
+  care label (Madam Speaker); claim verdicts render the pasted claim marked up
+  like an annotated record, disputed phrases underlined in madder (Madam
+  Speaker); and native `<details>` for the claim methodology (CoLabs). No
+  WebGL, no gradients, all motion reduced-motion-gated.
