@@ -178,6 +178,55 @@ const RAW_BRANDS = [
   { name: 'Camilla', aliases: ['camilla', 'camilla franks'], parent: 'Camilla (private)', segment: 'luxury', country: 'Australia', au: true, recognition: 'medium', knownFor: 'Prints and resort wear', fti: null, reportUrl: null, notes: 'Certified B Corporation (2024).' },
   { name: 'Lorna Jane', aliases: ['lorna jane'], parent: 'Lorna Jane (private)', segment: 'sportswear', country: 'Australia', au: true, recognition: 'medium', knownFor: 'Womenswear activewear', fti: null, reportUrl: null },
   { name: 'Bonds', aliases: ['bonds'], parent: 'Hanesbrands', group: 'Hanesbrands (acquired by Gildan, 2025)', segment: 'basics', country: 'Australia', au: true, recognition: 'high', knownFor: 'Underwear and basics', fti: null, reportUrl: null },
+
+  // ---- Expansion: recognisable brands scored in FTI 2023 ------------------
+  // Sportswear & footwear
+  { name: 'Converse', aliases: ['converse'], parent: 'Nike, Inc.', segment: 'footwear', country: 'United States', recognition: 'high', knownFor: 'Sneakers', reportUrl: null },
+  { name: 'Jordan', aliases: ['jordan', 'air jordan'], parent: 'Nike, Inc.', segment: 'sportswear', country: 'United States', recognition: 'high', knownFor: 'Basketball footwear and apparel', reportUrl: null },
+  { name: 'Champion', aliases: ['champion'], parent: 'Hanesbrands', segment: 'sportswear', country: 'United States', recognition: 'high', knownFor: 'Athletic and casual wear', reportUrl: null },
+  { name: 'Reebok', aliases: ['reebok'], parent: 'Authentic Brands Group', segment: 'sportswear', country: 'United States', recognition: 'high', knownFor: 'Sportswear and footwear', reportUrl: null },
+  { name: 'Fila', aliases: ['fila'], parent: 'Fila Holdings', segment: 'sportswear', country: 'South Korea', recognition: 'medium', knownFor: 'Sportswear and footwear', reportUrl: null },
+  { name: 'Skechers', aliases: ['skechers'], parent: 'Skechers U.S.A., Inc.', segment: 'footwear', country: 'United States', recognition: 'high', knownFor: 'Comfort footwear', reportUrl: null },
+  { name: 'Speedo', aliases: ['speedo'], parent: 'Pentland Brands', segment: 'sportswear', country: 'United Kingdom', recognition: 'high', knownFor: 'Swimwear', reportUrl: null },
+  { name: 'Gymshark', aliases: ['gymshark'], parent: 'Gymshark Ltd', segment: 'sportswear', country: 'United Kingdom', recognition: 'medium', knownFor: 'Gym and fitness apparel', reportUrl: null },
+  { name: 'Lacoste', aliases: ['lacoste'], parent: 'Maus Frères', segment: 'sportswear', country: 'France', recognition: 'high', knownFor: 'Polo shirts and tennis wear', reportUrl: null },
+  { name: 'Decathlon', aliases: ['decathlon'], parent: 'Decathlon', segment: 'sportswear', country: 'France', recognition: 'high', knownFor: 'Value sporting goods', reportUrl: null },
+
+  // Footwear & outdoor
+  { name: 'UGG', aliases: ['ugg', 'uggs'], parent: 'Deckers Brands', segment: 'footwear', country: 'United States', recognition: 'high', knownFor: 'Sheepskin boots', reportUrl: null },
+  { name: 'Dr. Martens', aliases: ['dr martens', 'dr. martens', 'doc martens', 'docs'], parent: 'Dr. Martens plc', segment: 'footwear', country: 'United Kingdom', recognition: 'high', knownFor: 'Leather boots', reportUrl: null },
+  { name: 'Columbia Sportswear', aliases: ['columbia', 'columbia sportswear'], parent: 'Columbia Sportswear Company', segment: 'outdoor', country: 'United States', recognition: 'high', knownFor: 'Outdoor apparel', reportUrl: null },
+  { name: 'Kathmandu', aliases: ['kathmandu'], parent: 'KMD Brands', group: 'KMD Brands (also Rip Curl, Oboz)', segment: 'outdoor', country: 'New Zealand', au: true, recognition: 'high', knownFor: 'Outdoor and travel gear', reportUrl: null },
+
+  // Denim
+  { name: 'Guess', aliases: ['guess'], parent: 'Guess?, Inc.', segment: 'denim', country: 'United States', recognition: 'high', knownFor: 'Denim and fashion', reportUrl: null },
+  { name: 'G-Star RAW', aliases: ['g-star', 'g star', 'gstar', 'g-star raw'], parent: 'G-Star', segment: 'denim', country: 'Netherlands', recognition: 'medium', knownFor: 'Denim', reportUrl: null },
+  { name: 'Diesel', aliases: ['diesel'], parent: 'OTB Group', segment: 'denim', country: 'Italy', recognition: 'high', knownFor: 'Denim and fashion', reportUrl: null },
+  { name: 'Wrangler', aliases: ['wrangler'], parent: 'Kontoor Brands', segment: 'denim', country: 'United States', recognition: 'high', knownFor: 'Denim workwear', reportUrl: null },
+
+  // Fast fashion & high street
+  { name: 'C&A', aliases: ['c&a', 'c and a', 'c a'], parent: 'Cofra Holding', segment: 'fastfashion', country: 'Belgium', recognition: 'medium', knownFor: 'Value high-street fashion', reportUrl: null },
+  { name: 'United Colors of Benetton', aliases: ['benetton', 'united colors of benetton'], parent: 'Benetton Group', segment: 'fastfashion', country: 'Italy', recognition: 'medium', knownFor: 'Colourful knitwear and basics', reportUrl: null },
+  { name: 'Mango', aliases: ['mango'], parent: 'Punto Fa (Mango)', segment: 'fastfashion', country: 'Spain', recognition: 'high', knownFor: 'High-street fashion', reportUrl: null },
+  { name: 'Massimo Dutti', aliases: ['massimo dutti'], parent: 'Inditex', segment: 'fastfashion', country: 'Spain', recognition: 'medium', knownFor: 'Smart-casual fashion', reportUrl: null },
+  { name: 'Stradivarius', aliases: ['stradivarius'], parent: 'Inditex', segment: 'fastfashion', country: 'Spain', recognition: 'medium', knownFor: 'Youth fast fashion', reportUrl: null },
+  { name: 'Superdry', aliases: ['superdry'], parent: 'Superdry plc', segment: 'fastfashion', country: 'United Kingdom', recognition: 'high', knownFor: 'Graphic casualwear', reportUrl: null },
+  { name: 'River Island', aliases: ['river island'], parent: 'River Island', segment: 'fastfashion', country: 'United Kingdom', recognition: 'medium', knownFor: 'High-street fashion', reportUrl: null },
+  { name: 'Abercrombie & Fitch', aliases: ['abercrombie', 'abercrombie & fitch', 'a&f'], parent: 'Abercrombie & Fitch Co.', segment: 'fastfashion', country: 'United States', recognition: 'high', knownFor: 'Casual American apparel', reportUrl: null },
+  { name: 'OVS', aliases: ['ovs'], parent: 'OVS S.p.A.', segment: 'fastfashion', country: 'Italy', recognition: 'medium', knownFor: 'Value family fashion', reportUrl: null },
+  { name: 'PrettyLittleThing', aliases: ['prettylittlething', 'plt', 'pretty little thing'], parent: 'Boohoo Group', segment: 'online', country: 'United Kingdom', recognition: 'high', knownFor: 'Online fast fashion', reportUrl: null },
+
+  // Department, basics & value
+  { name: 'Marks & Spencer', aliases: ['marks and spencer', 'marks & spencer', 'm&s'], parent: 'Marks & Spencer Group', segment: 'department', country: 'United Kingdom', recognition: 'high', knownFor: 'Clothing, food and home', reportUrl: null },
+  { name: 'Old Navy', aliases: ['old navy'], parent: 'Gap Inc.', segment: 'basics', country: 'United States', recognition: 'high', knownFor: 'Value family basics', reportUrl: null },
+  { name: 'Victoria’s Secret', aliases: ['victorias secret', 'victoria secret', 'victoria’s secret'], parent: 'Victoria’s Secret & Co.', segment: 'basics', country: 'United States', recognition: 'high', knownFor: 'Lingerie and beauty', reportUrl: null },
+
+  // Luxury & premium
+  { name: 'Hugo Boss', aliases: ['hugo boss', 'boss'], parent: 'Hugo Boss AG', segment: 'luxury', country: 'Germany', recognition: 'high', knownFor: 'Tailoring and ready-to-wear', reportUrl: null },
+  { name: 'Armani', aliases: ['armani', 'giorgio armani', 'emporio armani'], parent: 'Giorgio Armani S.p.A.', segment: 'luxury', country: 'Italy', recognition: 'high', knownFor: 'Tailoring and ready-to-wear', reportUrl: null },
+  { name: 'Michael Kors', aliases: ['michael kors', 'mk'], parent: 'Capri Holdings', segment: 'luxury', country: 'United States', recognition: 'high', knownFor: 'Accessories and ready-to-wear', reportUrl: null },
+  { name: 'Versace', aliases: ['versace'], parent: 'Capri Holdings', segment: 'luxury', country: 'Italy', recognition: 'high', knownFor: 'Ready-to-wear and accessories', reportUrl: null },
+  { name: 'Salvatore Ferragamo', aliases: ['ferragamo', 'salvatore ferragamo'], parent: 'Salvatore Ferragamo Group', segment: 'luxury', country: 'Italy', recognition: 'medium', knownFor: 'Footwear and leather goods', reportUrl: null },
 ];
 
 // ---------------------------------------------------------------------------
@@ -205,6 +254,8 @@ const FASHION_PACT_IDS = new Set([
   'ralph-lauren', 'gucci', 'saint-laurent', 'balenciaga', 'bottega-veneta',
   'zara', 'pullandbear', 'bershka', 'handm', 'cos', 'gap', 'calvin-klein',
   'tommy-hilfiger', 'coach', 'kate-spade',
+  // expansion (founding / group signatories)
+  'armani', 'michael-kors', 'versace', 'salvatore-ferragamo',
 ]);
 const FASHION_PACT_FORMER = new Set(['herm-s']); // slug('Hermès') === 'herm-s'
 const B_CORP_IDS = new Set(['patagonia', 'r-m-williams', 'camilla']);
@@ -220,6 +271,10 @@ const SBTI_BRAND = new Set([
   'nike', 'adidas', 'puma', 'asics', 'new-balance', 'under-armour', 'lululemon',
   'herm-s', 'chanel', 'burberry', 'moncler', 'ralph-lauren', 'levi-strauss', 'gap',
   'patagonia', 'asos', 'zalando', 'next', 'jd-sports', 'zimmermann', 'handm',
+  // expansion (own company validated)
+  'gymshark', 'canda', 'mango', 'superdry', 'marks-and-spencer', 'guess',
+  'g-star-raw', 'hugo-boss', 'ovs', 'decathlon', 'salvatore-ferragamo',
+  'abercrombie-and-fitch', 'victoria-s-secret',
 ]);
 const SBTI_PARENT = new Set([
   'louis-vuitton', 'dior', 'loewe', 'fendi', 'celine', 'gucci', 'saint-laurent',
@@ -227,6 +282,10 @@ const SBTI_PARENT = new Set([
   'cos', 'calvin-klein', 'tommy-hilfiger', 'the-north-face', 'vans', 'timberland',
   'coach', 'kate-spade', 'prada', 'miu-miu', 'bonds', 'big-w', 'country-road',
   'the-iconic', 'shein',
+  // expansion (parent/group validated)
+  'converse', 'jordan', 'champion', 'ugg', 'kathmandu', 'speedo', 'massimo-dutti',
+  'stradivarius', 'diesel', 'wrangler', 'michael-kors', 'versace', 'old-navy',
+  'united-colors-of-benetton',
 ]);
 function sbtiLevelFor(id) {
   if (SBTI_BRAND.has(id)) return 'brand';
@@ -281,6 +340,19 @@ const PROVENANCE = {
   bonds: 'Australian icon founded 1915; owned by US-based Hanesbrands, which Gildan agreed to acquire in 2025.',
   'r-m-williams': 'Founded 1932 in South Australia; passed through L Catterton before Tattarang, the Forrests’ private group, bought it in 2020.',
   patagonia: 'Founder Yvon Chouinard transferred ownership to the Holdfast Collective and a purpose trust in 2022.',
+  converse: 'Owned by Nike since 2003.',
+  jordan: 'A Nike brand, built around Michael Jordan.',
+  reebok: 'Sold by Adidas to Authentic Brands Group in 2021.',
+  ugg: 'A brand of US group Deckers, which also owns Hoka.',
+  diesel: 'Part of Italian group OTB, alongside Maison Margiela, Marni and Jil Sander.',
+  wrangler: 'Spun out of VF Corporation into Kontoor Brands in 2019.',
+  'michael-kors': 'Part of Capri Holdings, which also owns Versace and Jimmy Choo.',
+  versace: 'Owned by Capri Holdings (formerly Michael Kors Holdings); a sale to Prada Group was agreed in 2025.',
+  'old-navy': 'Part of Gap Inc.',
+  'massimo-dutti': 'Part of Inditex, the group behind Zara.',
+  stradivarius: 'Part of Inditex, the group behind Zara.',
+  kathmandu: 'Part of KMD Brands, which also owns Rip Curl and Oboz.',
+  champion: 'A Hanesbrands label; Hanesbrands agreed to a Gildan takeover in 2025.',
 };
 
 // ---------------------------------------------------------------------------
@@ -301,6 +373,15 @@ const FTI_2023 = {
   boohoo: 14, asos: 50, zalando: 40, next: 36, 'levi-strauss': 60, gap: 48,
   'calvin-klein': 48, 'tommy-hilfiger': 50, patagonia: 40, coach: 42, 'kate-spade': 41,
   'jd-sports': 29, 'big-w': 39, 'cotton-on': 22, 'tk-maxx': 13, 'ross-stores': 6,
+  // expansion batch
+  converse: 50, jordan: 50, champion: 38, reebok: 1, fila: 15, skechers: 7,
+  speedo: 47, gymshark: 27, lacoste: 38, decathlon: 26, ugg: 57, 'dr-martens': 35,
+  'columbia-sportswear': 37, kathmandu: 29, guess: 31, 'g-star-raw': 49, diesel: 19,
+  wrangler: 33, canda: 68, 'united-colors-of-benetton': 73, mango: 49,
+  'massimo-dutti': 50, stradivarius: 50, superdry: 49, 'river-island': 32,
+  'abercrombie-and-fitch': 33, ovs: 83, prettylittlething: 24, 'marks-and-spencer': 38,
+  'old-navy': 48, 'victoria-s-secret': 19, 'hugo-boss': 55, armani: 38,
+  'michael-kors': 23, versace: 24, 'salvatore-ferragamo': 24,
 };
 // Score-specific context where the FTI listing name differs from ours.
 const FTI_2023_NOTE = {
@@ -827,7 +908,9 @@ export const COPY = {
   },
 
   footer: {
-    method: 'Method: brand ownership from corporate filings and official brand pages. The transparency score is the Fashion Transparency Index 2023 from Fashion Revolution, which rates public disclosure only. Per-field disclosure statuses are tracked in the repository and marked "Needs research" until a source is confirmed. Nothing here is assured reporting, a product footprint, or advice about a real brand.',
+    method: 'Method: brand ownership from corporate filings and official brand pages. Transparency scores are the Fashion Transparency Index 2023, published by Fashion Revolution, which rates public disclosure only. Climate-target status is drawn from the Science Based Targets initiative dashboard; memberships from The Fashion Pact and B Lab. Per-field disclosure statuses are tracked in the repository and marked "Needs research" until a source is confirmed. Nothing here is assured reporting, a product footprint, or advice about a real brand.',
+    attributionLabel: 'Data and attribution',
+    attribution: 'This tool reproduces published figures with attribution, and claims none of them as its own. Fashion Transparency Index scores are © Fashion Revolution CIC, used for reference under their public research. Science Based Targets initiative data © SBTi. Certification and membership marks belong to their owners: The Fashion Pact, B Lab (B Corp), and the brands named. Company ownership is a matter of public record. Openweave is an independent, non-commercial reference tool and is not affiliated with, or endorsed by, any brand or organisation named. Every figure links to its source so you can check it. If you own a listing and something is wrong, it can be corrected.',
     sourcesLabel: 'Sources',
     made: 'Built by Christopher Wang in Melbourne.',
     top: 'Back to the top',
@@ -851,6 +934,7 @@ export const COPY = {
 export const SOURCES = [
   { label: 'Fashion Revolution · Fashion Transparency Index 2023', url: 'https://www.fashionrevolution.org/about/transparency/' },
   { label: 'Fashion Revolution · What Fuels Fashion 2024', url: 'https://www.fashionrevolution.org/what-fuels-fashion/' },
+  { label: 'Science Based Targets initiative · Target dashboard', url: 'https://sciencebasedtargets.org/target-dashboard' },
   { label: 'Good On You · Brand ratings directory', url: 'https://directory.goodonyou.eco/' },
   { label: 'Baptist World Aid · Ethical Fashion Guide (AU)', url: 'https://baptistworldaid.org.au/resources/ethical-fashion-guide/' },
   { label: 'The Fashion Pact · Signatories', url: 'https://www.thefashionpact.org/' },
