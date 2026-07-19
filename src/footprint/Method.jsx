@@ -9,7 +9,7 @@ import {
   ROAD_FUELS, ROAD_MODES, ROAD_SOURCE, FLIGHT_FACTORS, FLIGHT_SOURCE, FLIGHT_RF_MULTIPLIER,
   FREIGHT_MODES, FREIGHT_SOURCE, DIET_TYPES, DIET_SOURCE, FOOD_PER_KG, GRID_DECLINE,
 } from './data/factors';
-import { GOODS, HOTEL_COUNTRIES, HOTEL_FALLBACK, EPA_SOURCE, HOTEL_SOURCE, FX } from './data/screening';
+import { GOODS, HOTEL_COUNTRIES, HOTEL_FALLBACK, EPA_SOURCE, HOTEL_SOURCE, WASTE, WASTE_SOURCE, FX } from './data/screening';
 import { METHOD } from './data/copy';
 import Icon from './Icons';
 
@@ -157,6 +157,15 @@ export default function Method() {
               [HOTEL_FALLBACK.label + ' (tool proxy, not a DEFRA figure)', HOTEL_FALLBACK.perNight.toFixed(1)],
             ]}
             source={HOTEL_SOURCE}
+          />
+          <FTable
+            caption="Household waste to landfill · kg CO₂-e"
+            head={['Item', 'Factor', 'Unit']}
+            rows={[
+              ['Household residual waste to landfill', WASTE.perKg.toFixed(3), 'per kg'],
+              ['Same, per tonne', (WASTE.perKg * 1000).toFixed(0), 'per tonne'],
+            ]}
+            source={WASTE_SOURCE}
           />
         </div>
 
