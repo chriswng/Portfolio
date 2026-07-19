@@ -218,6 +218,15 @@ epa.gov and all factor mirrors returned 403). Dataset identities verified;
 values not retrieved; nothing shipped from memory. Details and scores in
 `improvement-scoring.md`. The unblock list:
 
+**Update, July 2026 follow-up: two of the three are now unblocked and shipped.**
+Hotel stay and spend screening were re-verified against multiple independent
+mirrors (see the wider-basket section above) and shipped as the optional
+"A fuller picture" panel. Waste was re-attempted and stays blocked: every
+DCCEEW, EPA and ABS PDF returned 403, only the qualitative landfill method
+basis corroborated across two sources, and not one per-stream landfill factor
+or a published per-capita to-landfill tonnage could be confirmed. It remains
+queued.
+
 - **Hotel stay** (UK Gov conversion factors, hotel stay tab): AU, JP, KR,
   SG, PH per room-night + fallback row label. Basis verified: room-night,
   Cornell Hotel Sustainability Benchmarking Index via the Hotel
@@ -244,8 +253,13 @@ values not retrieved; nothing shipped from memory. Details and scores in
 2. UK conversion factors (new edition ~June): flights (all bands/cabins),
    freight air/sea/HGV.
 3. Re-check the flagged single-mirror values against the primary workbooks.
-4. Work the verification-blocked queue above: hotels, spend screening,
-   waste. Each is design-complete and waiting on numbers.
+4. Waste to landfill is the remaining queued item (hotels and spend shipped in
+   the July 2026 follow-up). Re-verify in a session with dcceew.gov.au,
+   epa.nsw.gov.au and abs.gov.au egress: the NGA Factors waste tables
+   (per-stream landfill factors, with scope and gas-capture basis) plus an ABS
+   Waste Account per-capita to-landfill tonnage, each confirmed against a
+   second lineage. Also re-source the wider-basket AUD/USD rate from RBA F11.1
+   or ATO, and spot-check one EPA spend factor against the EPA primary host.
 5. Refresh seed profile with the new financial year's bills and itineraries.
 6. Benchmarks: EDGAR annual report, DCCEEW quarterly inventory.
 7. Entries pin their factor set id (`factor_set`); closed years are never

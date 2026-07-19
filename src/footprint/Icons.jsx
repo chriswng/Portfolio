@@ -209,6 +209,39 @@ const clock = (
   </>
 );
 
+// A shopping bag with a matcha tag.
+const bag = (
+  <>
+    <path d="M8.5 12 H23.5 L24.6 25.4 Q24.7 26 24.1 26 H7.9 Q7.3 26 7.4 25.4 Z" />
+    <path d="M12 12 V10 Q12 6.5 16 6.5 Q20 6.5 20 10 V12" />
+    <rect className="fpi-fill" x="14.2" y="15.4" width="3.6" height="3.6" rx="0.7" />
+  </>
+);
+
+// A bed with a matcha pillow.
+const bed = (
+  <>
+    <path d="M5 12 V25" />
+    <path d="M5 15.6 H23.4 Q26.5 15.6 26.5 18.7 V25" />
+    <path d="M5 20.6 H26.5" />
+    <path className="fpi-fill" d="M7.6 12.9 H13.2 Q13.8 12.9 13.8 13.5 V15.6 H7 V13.5 Q7 12.9 7.6 12.9 Z" />
+    <path d="M5 25 V26.7" />
+    <path d="M26.5 25 V26.7" />
+  </>
+);
+
+// A coin stack with a matcha dollar face.
+const coins = (
+  <>
+    <ellipse cx="12.5" cy="10.5" rx="6.4" ry="2.8" />
+    <path d="M6.1 10.5 V14 Q6.1 16.8 12.5 16.8 Q18.9 16.8 18.9 14 V10.5" />
+    <circle className="fpi-fill" cx="21" cy="20.6" r="6" />
+    <path d="M21 17.7 V23.5" stroke="var(--slate,#1f2a1e)" strokeWidth="1.5" />
+    <path d="M19.2 19.3 H22.8" stroke="var(--slate,#1f2a1e)" strokeWidth="1.2" />
+    <path d="M19.2 21.9 H22.8" stroke="var(--slate,#1f2a1e)" strokeWidth="1.2" />
+  </>
+);
+
 // --- Section-header glyphs -------------------------------------------------
 
 // A small bar chart; tallest bar filled matcha.
@@ -254,6 +287,7 @@ const book = (
 const GLYPHS = {
   house, bolt, car, plane, bowl, spark,
   pin, people, building, flame, leaf, fuel, phone, bus, fork, box, globe, clock,
+  bag, bed, coins,
   chart, target, list, book,
 };
 

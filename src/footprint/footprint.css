@@ -194,8 +194,15 @@
 .fp-impact-line em{ font-style:normal; font-weight:700; }
 .fp-impact-line em.over{ color:#FFB3C2; }
 .fp-impact-line em.within{ color:var(--matcha); }
+.fp-impact-line em.money{ color:#DCE3A8; }
 .fp-takeaway{ font-size:0.95rem; font-weight:500; color:var(--slate); line-height:1.7; margin-top:1rem; border-top:1px solid var(--rule-lt); padding-top:1rem; }
 .fp-takeaway em{ font-style:normal; color:#75821D; font-weight:700; }
+/* Chart-view toggle in the scenario card (pathway vs cost curve). */
+.fp-viewtabs{ display:inline-flex; border:1px solid var(--rule-dk); border-radius:999px; overflow:hidden; flex-shrink:0; }
+.fp-viewtab{ font-family:var(--mono); font-size:9.5px; letter-spacing:0.06em; text-transform:uppercase; font-weight:700; background:var(--bg); color:var(--mid); border:none; padding:0.4rem 0.75rem; cursor:pointer; transition:all 0.2s var(--ease); min-height:34px; }
+.fp-viewtab + .fp-viewtab{ border-left:1px solid var(--rule-dk); }
+.fp-viewtab.on{ background:var(--matcha); color:var(--slate); }
+.fp-viewtab:hover:not(.on){ color:#75821D; }
 
 /* ---- Tables ---- */
 .fp-scroll-x{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
@@ -412,7 +419,7 @@
 /* ---- Footer ---- */
 .fp-footer{ border-top:1px solid var(--rule-dk); background:var(--bg); padding:1.6rem 0; }
 .fp-footer-inner{ display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
-.fp-footer-home{ color:var(--matcha); font-family:var(--mono); font-size:0.9rem; text-decoration:none; opacity:0.85; }
+.fp-footer-home{ color:var(--matcha); font-family:var(--mono); font-size:0.9rem; text-decoration:none; opacity:0.85; display:inline-flex; align-items:center; }
 .fp-footer-name{ font-family:var(--mono); font-size:10px; letter-spacing:0.06em; color:var(--mid); }
 .fp-footer-back{ font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--mid); text-decoration:none; font-weight:600; }
 .fp-footer-back:hover{ color:var(--matcha); }
@@ -528,3 +535,4 @@
 .fp-excl-group{ margin-top:1.4rem; }
 .fp-excl-group:first-of-type{ margin-top:0.6rem; }
 .fp-excl-group .fp-card-head{ margin-bottom:0.6rem; }
+

@@ -64,6 +64,26 @@ export function drawEmblemDots(ctx, stencil, { x, y, size, color, alpha = 1 }) {
   ctx.restore();
 }
 
+// The site mark ("The Segmented Split") on a 2D canvas: an outer ring cut
+// through by a horizontal slot into two mirrored hemispheres. The React twin
+// lives in components/Mark.jsx; keep the proportions (slot ~= 0.2 of radius) in
+// sync. (cx, cy) is the ring centre, r its stroke-centreline radius.
+export function drawMark(ctx, cx, cy, r, color, lineWidth) {
+  const g = r * 0.2; // half-height of the slot, matched to the SVG mask
+  const a = Math.asin(g / r);
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = lineWidth;
+  ctx.lineCap = 'butt';
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, -a, -(Math.PI - a), true); // top hemisphere, over the top
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, a, Math.PI - a, false); // bottom hemisphere, under the base
+  ctx.stroke();
+  ctx.restore();
+}
+
 // Lighten a hex colour toward white; the dark story scenes need brighter
 // steps than the light-surface palette.
 export function lighten(hex, amount) {

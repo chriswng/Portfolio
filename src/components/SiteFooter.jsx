@@ -1,4 +1,5 @@
 import { FOOTER } from '../data/content';
+import Mark from './Mark';
 
 // LinkedIn wordmark, inlined so it inherits currentColor and needs no request.
 function LinkedInIcon() {
@@ -57,7 +58,7 @@ export default function SiteFooter({ base = '' }) {
         </nav>
 
         <div className="footer-baseline">
-          <a href={base || '#about'} className="footer-mark">./</a>
+          <a href={base || '#about'} className="footer-mark" aria-label="Christopher Wang, home"><Mark /></a>
           <span className="footer-legal">{FOOTER.rights}</span>
         </div>
       </div>

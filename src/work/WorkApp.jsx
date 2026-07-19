@@ -11,6 +11,7 @@ import {
 import Baseline from './Baseline';
 import CaseStudy from './CaseStudy';
 import SiteFooter from '../components/SiteFooter';
+import Mark from '../components/Mark';
 
 function WorkNav() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -18,7 +19,7 @@ function WorkNav() {
   return (
     <nav className="nav" aria-label="Primary">
       <div className="nav-inner canvas">
-        <a href="../" className="nav-logo">./</a>
+        <a href="../" className="nav-logo"><Mark label="Christopher Wang, home" /></a>
         <div className={`nav-links${menuOpen ? ' open' : ''}`} role="navigation">
           {NAV_LINKS.map((l) => {
             // Self-link stays './'; every other target (anchors on the main
