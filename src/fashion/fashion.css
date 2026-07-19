@@ -617,6 +617,7 @@ input { font: inherit; color: inherit; }
 .ow-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 .ow-badge.fp { color: var(--indigo); border-color: var(--indigo); background: rgba(51,72,122,0.07); }
 .ow-badge.bc { color: var(--sage); border-color: var(--sage); background: rgba(91,107,78,0.08); }
+.ow-badge.sbti { color: var(--weld); border-color: var(--weld); background: rgba(154,126,36,0.08); }
 .ow-badge.former { color: var(--faint); border-color: var(--line); background: var(--calico-2); }
 .ow-badge.former::before { background: var(--faint); }
 a.ow-badge { transition: transform 0.14s var(--ease); }
