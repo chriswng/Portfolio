@@ -209,6 +209,23 @@ verified figures read straight from source.
   published SBTi company dataset is kept as working provenance.
 - Search ranking fixed so exact aliases win (e.g. "m&s" resolves to Marks &
   Spencer, not a substring match on Hermès).
+
+## Full FTI 2023 coverage (v8)
+
+- **258 brands, 248 with a verified FTI 2023 score.** Extended to the near-full
+  Fashion Transparency Index 2023 universe (all 250 ranked brands and retailers
+  bar a couple of name-clash duplicates), read from the report's "Final Scores"
+  table. Names and parents come from the report's A-Z; segment, HQ and
+  recognition are classified from public knowledge (facts, not invented
+  metrics). Only 8 private/unscored labels remain "Needs research".
+- **Commitments extended honestly.** SBTi status added for the new batch only
+  where the company name matched the SBTi export exactly (fuzzy matches were
+  discarded, so no false positives): 111 brands now carry an SBTi target, 29 the
+  Fashion Pact, 4 a B Corp (adding Chloé). Grocery and department retailers that
+  FTI assesses for apparel (Walmart, Carrefour, Kohl's, Nordstrom, etc.) are
+  included and filterable under "Department & value".
+- The source stays cited, never redistributed: the FTI report PDF was pulled
+  from git history only to read the scores, and is not committed back.
 - **Form, reference-led and restrained.** A numbered section rail with `04 / 07`
   progress (Your Creative); one settle curve `cubic-bezier(0.16,1,0.3,1)` on all
   reveals (2-TIMES); a dashed sewn-edge on the brand card so it reads as a woven
