@@ -51,6 +51,20 @@ string, hard ink borders with offset shadows, no rounded cards, no gradient
 blobs. Archivo for display, Instrument Serif for editorial asides. Palette is
 calico ground, vat indigo accent, madder for section indices.
 
+## Brand logos
+
+Every company shows a **woven-label monogram**, not its real logo. We ship no
+third-party logo artwork: the mark is generated from the brand's own data
+(`deriveMonogram()` in `data.js`), set in a segment-specific typeface with a
+segment-coloured stitch line (`SEGMENT_STYLE`), and rendered as a small
+care-label tile by the `BrandLogo` component. This keeps the marks honest
+(nothing borrowed), self-contained (no external assets), inside the calico /
+indigo / madder palette, and automatic: any brand added to `RAW_BRANDS` gets a
+mark for free. A short `MONO_OVERRIDES` map covers houses whose established
+lettermark differs from the plain initials (Gucci GG, Saint Laurent YSL, and so
+on). The marks appear on the directory tags, the lookup card, the compare
+table, the corporate-group cards, the autocomplete, and the hero swing tags.
+
 ## Interaction and access
 
 - Search is forgiving: partial, lowercase, alias and parent-company aware, with
