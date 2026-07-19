@@ -178,6 +178,13 @@ export function buildProfileFromOnboarding(a) {
       notes: 'From the optional detail: about $' + monthly + ' a month, a spend-based screening estimate.',
     }));
   });
+  if (a.hotelNights > 0) {
+    entries.push(E({
+      category: 'hotel', date: period.end, period_months: 12, label: 'Hotel nights (onboarding)',
+      meta: { nights: Math.round(a.hotelNights), country: 'AU' },
+      notes: 'From the optional detail: ' + Math.round(a.hotelNights) + ' nights, priced at the Australian per-room-night factor.',
+    }));
+  }
 
   return {
     schema: 'cw-footprint/2',
@@ -192,6 +199,7 @@ export function buildProfileFromOnboarding(a) {
 // it (or finishing without touching it) adds exactly nothing to the audit.
 const ADVANCED_DEFAULTS = {
   clothingMonth: 0, electronicsMonth: 0, entertainmentMonth: 0, healthMonth: 0, otherGoodsMonth: 0,
+  hotelNights: 0,
 };
 
 const DEFAULTS = {
@@ -629,6 +637,9 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         onChange={(v) => set('healthMonth', v)} />
       <SliderField icon="globe" label={ONBOARD.advanced.other} value={a.otherGoodsMonth} min={0} max={1500} step={10} unit="$ / mo"
         onChange={(v) => set('otherGoodsMonth', v)} />
+      <Stepper icon="building" label={ONBOARD.advanced.hotel} value={a.hotelNights} min={0} max={365}
+        onChange={(v) => set('hotelNights', v)} />
+      <p className="ob-note">{ONBOARD.advanced.hotelNote}</p>
       <details className="ob-disclose">
         <summary>{ONBOARD.advanced.sourceSummary}</summary>
         <p>{ONBOARD.advanced.sourceBody}</p>

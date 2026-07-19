@@ -9,6 +9,7 @@ import {
   ROAD_FUELS, ROAD_MODES, ROAD_SOURCE, FLIGHT_FACTORS, FLIGHT_SOURCE, FLIGHT_RF_MULTIPLIER,
   FREIGHT_MODES, FREIGHT_SOURCE, DIET_TYPES, DIET_SOURCE, FOOD_PER_KG, GRID_DECLINE,
   GOODS, GOODS_SOURCE, GOODS_FX, goodsPerAud,
+  HOTEL, HOTEL_SOURCE,
 } from './data/factors';
 import { METHOD } from './data/copy';
 import Icon from './Icons';
@@ -146,6 +147,12 @@ export default function Method() {
           <p className="fp-note">
             Currency and inflation bridge: each per-2022-USD factor is multiplied by {GOODS_FX.audUsd} (USD per A$) and divided by {GOODS_FX.inflation} (US CPI-U, 2022 to reporting year) to price spend in current Australian dollars. {GOODS_FX.audUsdNote} {GOODS_FX.inflationNote} This block is a screening estimate for a US consumption basket applied to Australian spend; treat it as coarse and lower-confidence than the metered lines above.
           </p>
+          <FTable
+            caption="Hotel nights (optional detail) · kg CO₂-e per occupied room-night, by country"
+            head={['Country', 'kg CO₂-e / room-night']}
+            rows={Object.values(HOTEL.countries).map((h) => [h.label, h.perNight.toFixed(1)])}
+            source={HOTEL_SOURCE}
+          />
         </div>
 
         <div className="fp-method-block fp-method-wide">

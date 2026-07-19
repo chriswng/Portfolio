@@ -357,10 +357,10 @@ export const GOODS_SOURCE = {
 // CPI-U ratio from the 2022 annual average to the reporting year. The combined
 // multiplier applied to every base factor is audUsd / inflation.
 export const GOODS_FX = {
-  audUsd: 0.645,
-  audUsdNote: 'Calendar-2025 average, USD per 1 AUD (market average, in line with the RBA daily series), used as the FY2026 proxy.',
-  inflation: 1.141,
-  inflationNote: 'US CPI-U (all items) rose about 14% from the 2022 annual average (292.7) to mid-2026 (334.0), per the US Bureau of Labor Statistics.',
+  audUsd: 0.6785,
+  audUsdNote: 'FY2026 average (July 2025 to June 2026), USD per 1 AUD, from the RBA daily exchange-rate series (Statistical Table F11.1, mean of the 251 trading days).',
+  inflation: 1.120,
+  inflationNote: 'US CPI-U (all items) rose about 12% from the 2022 annual average (292.7) to the FY2026 average (327.7), per the US Bureau of Labor Statistics series CUUR0000SA0.',
 };
 
 // Per sub-category: usPerUsd is the EPA v1.3.0 with-margins factor (kg CO2e per
@@ -397,6 +397,58 @@ export const goodsPerAud = (kind) => {
   const g = GOODS[kind] || GOODS.other;
   const v = (g.usPerUsd * GOODS_FX.audUsd) / GOODS_FX.inflation;
   return Math.round(v * 10000) / 10000;
+};
+
+// ---------------------------------------------------------------------------
+// Hotel nights: the other half of the optional detail. Per occupied room-night
+// by country, UK Government (DESNZ / DEFRA) GHG Conversion Factors 2025, "Hotel
+// stay" tab. The figures come from the Greenview Hotel Footprinting Tool, built
+// on the Cornell Hotel Sustainability Benchmarking Index, so a night is priced
+// at the country average rather than the specific hotel: an estimate, labelled.
+// Country keys match the ISO codes used in AIRPORTS. The guided audit prices at
+// the home-country (Australia) figure; the worked example uses the country
+// figure for each trip. `default` covers a country not carried here.
+// Research notes: docs/footprint-research/factor-sources.md.
+// ---------------------------------------------------------------------------
+export const HOTEL_SOURCE = {
+  name: 'UK Government (DESNZ / DEFRA) GHG Conversion Factors 2025, hotel stay',
+  detail: 'kg CO2e per occupied room-night by country, from the "Hotel stay" tab (Greenview Hotel Footprinting Tool, built on the Cornell Hotel Sustainability Benchmarking Index). An estimate priced at the country average, not the specific hotel; the guided audit uses the Australian figure as a home-country default.',
+  url: 'https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2025',
+};
+
+// Per occupied room-night, kg CO2e. `default` is the Australian figure, applied
+// when a country is not carried here (for example New Zealand or Taiwan, which
+// the DEFRA table does not list).
+export const HOTEL = {
+  default: 35,
+  countries: {
+    AU: { label: 'Australia', perNight: 35 },
+    JP: { label: 'Japan', perNight: 39 },
+    KR: { label: 'South Korea', perNight: 55.8 },
+    SG: { label: 'Singapore', perNight: 24.5 },
+    PH: { label: 'Philippines', perNight: 54.3 },
+    ID: { label: 'Indonesia', perNight: 62.7 },
+    TH: { label: 'Thailand', perNight: 43.4 },
+    VN: { label: 'Vietnam', perNight: 38.5 },
+    MY: { label: 'Malaysia', perNight: 61.5 },
+    HK: { label: 'Hong Kong', perNight: 51.5 },
+    CN: { label: 'China', perNight: 53.5 },
+    IN: { label: 'India', perNight: 58.9 },
+    AE: { label: 'United Arab Emirates', perNight: 63.8 },
+    QA: { label: 'Qatar', perNight: 86.2 },
+    US: { label: 'United States', perNight: 16.1 },
+    CA: { label: 'Canada', perNight: 7.4 },
+    GB: { label: 'United Kingdom', perNight: 10.4 },
+    FR: { label: 'France', perNight: 6.7 },
+    NL: { label: 'Netherlands', perNight: 14.8 },
+    DE: { label: 'Germany', perNight: 13.2 },
+    IT: { label: 'Italy', perNight: 14.3 },
+  },
+};
+
+export const hotelPerNight = (country) => {
+  const c = HOTEL.countries[country];
+  return c ? c.perNight : HOTEL.default;
 };
 
 // ---------------------------------------------------------------------------
