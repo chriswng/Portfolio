@@ -90,6 +90,15 @@ export function buildSeedProfile() {
     E({ id: 'seed-gd3', quality: 'estimated', date: '2026-06-30', category: 'goods', label: 'Entertainment and going out (est. spend)', period_months: 12, meta: { kind: 'entertainment', spendAud: 1440 }, notes: 'About $120 a month: streaming, events, the gym, a night out. Screening estimate.' }),
     E({ id: 'seed-gd4', quality: 'estimated', date: '2026-06-30', category: 'goods', label: 'Health, out of pocket (est. spend)', period_months: 12, meta: { kind: 'health', spendAud: 720 }, notes: 'About $60 a month in gap payments and pharmacy. Screening estimate.' }),
     E({ id: 'seed-gd5', quality: 'estimated', date: '2026-06-30', category: 'goods', label: 'Other goods and services (est. spend)', period_months: 12, meta: { kind: 'other', spendAud: 2160 }, notes: 'About $180 a month of everything else, general-merchandise screening factor.' }),
+
+    // Hotel nights: the same trips as the flights above, at the DEFRA
+    // per-room-night country factors. Coarse night counts, labelled estimates.
+    E({ id: 'seed-ht1', quality: 'estimated', date: '2026-06-30', category: 'hotel', label: 'Hotel nights, South Korea (Seoul)', period_months: 12, meta: { nights: 6, country: 'KR' }, notes: 'July and the January circuit, priced at the DEFRA per-room-night factor. Estimate.' }),
+    E({ id: 'seed-ht2', quality: 'estimated', date: '2026-06-30', category: 'hotel', label: 'Hotel nights, Japan (Tokyo)', period_months: 12, meta: { nights: 3, country: 'JP' }, notes: 'January circuit. Estimate.' }),
+    E({ id: 'seed-ht3', quality: 'estimated', date: '2026-06-30', category: 'hotel', label: 'Hotel nights, China (Shanghai)', period_months: 12, meta: { nights: 2, country: 'CN' }, notes: 'January circuit. Estimate.' }),
+    E({ id: 'seed-ht4', quality: 'estimated', date: '2026-06-30', category: 'hotel', label: 'Hotel nights, Philippines (Manila, Cebu)', period_months: 12, meta: { nights: 5, country: 'PH' }, notes: 'January trip. Estimate.' }),
+    E({ id: 'seed-ht5', quality: 'estimated', date: '2026-06-30', category: 'hotel', label: 'Hotel nights, Singapore', period_months: 12, meta: { nights: 3, country: 'SG' }, notes: 'April trip. Estimate.' }),
+    E({ id: 'seed-ht6', quality: 'estimated', date: '2026-06-30', category: 'hotel', label: 'Hotel nights, Australia (Uluru)', period_months: 12, meta: { nights: 2, country: 'AU' }, notes: 'August trip. Estimate.' }),
   ];
 
   return {

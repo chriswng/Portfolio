@@ -12,6 +12,7 @@ import {
   DIET_TYPES, DIET_SOURCE,
   OTHER_FUELS, OTHER_SOURCE,
   GOODS, GOODS_SOURCE, goodsPerAud,
+  HOTEL, HOTEL_SOURCE, hotelPerNight,
   QUALITY_TIERS, qualityOf,
 } from '../data/factors';
 import { ABATEMENT_OPTIONS, APPLY_ORDER } from '../data/abatement';
@@ -146,6 +147,19 @@ export function priceEntry(draft, settings) {
       components = [{ scope: '3', tco2e: activity * goodsPerAud(kind) / 1000 }];
       scope = '3';
       source = GOODS_SOURCE.name + ' (' + GOODS[kind].label.toLowerCase() + ', spend-based screening)';
+      break;
+    }
+    case 'hotel': {
+      // Per occupied room-night at the country factor. Scope 3 (accommodation
+      // energy bought on your behalf elsewhere). The guided audit defaults the
+      // country to Australia; the worked example sets it per trip.
+      const country = meta.country || 'AU';
+      const perNight = hotelPerNight(country);
+      activity = meta.nights || 0; unit = 'nights';
+      components = [{ scope: '3', tco2e: activity * perNight / 1000 }];
+      scope = '3';
+      const c = HOTEL.countries[country];
+      source = HOTEL_SOURCE.name + ' (' + (c ? c.label : 'home-country default') + ', per room-night)';
       break;
     }
     default:

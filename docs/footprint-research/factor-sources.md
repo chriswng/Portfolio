@@ -140,15 +140,15 @@ clothing and other are single uniform sectors. USEEIO is a US model applied to
 Australian spend, itself a screening approximation noted on the method page.
 
 Currency and inflation bridge (a 2022-USD factor priced against current-AUD
-spend), `GOODS_FX` in `factors.js`:
-- AUD/USD 0.645 USD per 1 AUD (calendar-2025 average, market/RBA daily series,
-  used as the FY2026 proxy; corroborated x-rates 0.6446, exchangerates.org.uk
-  0.6449). A full FY2026 average trends higher (~0.66-0.68) as the AUD
-  strengthened through H1-2026; 0.645 is the conservative, well-corroborated
-  figure. **Flag:** swap for the ATO/RBA published FY2026 average at refresh.
-- US CPI-U 2022 to 2026 = 1.141 (2022 annual average 292.655; June 2026 =
-  333.952; BLS CPI-U all items, 1982-84=100). ~14% cumulative.
-- Effective per-AUD factor = usPerUsd x 0.645 / 1.141 (= usPerUsd x 0.5653).
+spend), `GOODS_FX` in `factors.js`. Both sides are now FY2026-based from the
+primary sources uploaded to this directory:
+- AUD/USD 0.6785 USD per 1 AUD = FY2026 average (1 Jul 2025 to 30 Jun 2026),
+  RBA Statistical Table F11.1 daily series (`f11.1-data.csv`), mean of the 251
+  trading days; monthly F11 (`f11-data.csv`) cross-checks at 0.6792.
+- US CPI-U 2022 to FY2026 = 1.120 (2022 annual average 292.655; FY2026 average
+  327.67 over the 11 available months, Oct-2025 absent in the appropriations
+  lapse; BLS CPI-U all items series CUUR0000SA0, `SeriesReport-*.xlsx`).
+- Effective per-AUD factor = usPerUsd x 0.6785 / 1.120 (= usPerUsd x 0.6058).
 
 Uncertainty tier: `estimated` (±30%). Labelled screening throughout; folded into
 the audit total as scope 3 only when the visitor opts in.
@@ -164,19 +164,32 @@ and 7.2). The one soft spot is goods/hotel convergence under deuteranopia
 legend labels and white segment borders. A gold candidate scored highest on CVD
 separation but was rejected for failing white-text contrast (2.25).
 
-## Hotel nights (idea 7): still queued, environment-blocked
+## Hotel nights (idea 7): shipped
 
-DEFRA/Greenview per-room-night country factors could NOT be obtained here:
-gov.uk, its asset CDN, climatiq, openco2, emissions.dev and every mirror return
-403 at the egress proxy, and search summaries will not reproduce table cells.
-Verified from page prose only: UK 10.4 kg/room-night (stable across 2022-2024
-editions, three mirrors); Singapore 37.3 (2024 edition) revised to 24.5 (2025);
-global/default fallback 21.2. Australia, Japan, South Korea and Philippines were
-NOT obtainable and must not be shipped from the 21.2 placeholder (Australia's
-coal grid means its true factor sits well above the global average). Complete
-from the DEFRA full-set "Hotel stay" worksheet (2024 condensed set:
-assets.publishing.service.gov.uk/media/6722566a3758e4604742aa1e/) read from an
-unrestricted network, then wire the hotel category/engine case/survey field.
+`HOTEL` in `factors.js`. Per occupied room-night, kg CO2e, by country, read
+directly from the DEFRA 2025 full-set "Hotel stay" worksheet
+(`ghg-conversion-factors-2025-full-set.xlsx`, uploaded to this directory). The
+figures derive from the Greenview Hotel Footprinting Tool / Cornell HSBI. UK
+10.4 matches the value corroborated earlier from public prose, so the sheet is
+the same lineage. Values used (kg/room-night): Australia 35, Japan 39, South
+Korea (DEFRA "Korea") 55.8, Singapore 24.5, Philippines 54.3, Indonesia 62.7,
+Thailand 43.4, Vietnam 38.5, Malaysia 61.5, Hong Kong 51.5, China 53.5, India
+58.9, UAE 63.8, Qatar 86.2, United States 16.1, Canada 7.4, UK 10.4, France
+6.7, Netherlands 14.8, Germany 13.2, Italy 14.3. Full DEFRA range runs Costa
+Rica 4.7 to Maldives 152.2 across 38 countries.
+
+The DEFRA "Hotel stay" tab carries no global/average row, so `HOTEL.default`
+uses the Australian figure (35, near the table median 32.1) for a country not
+listed (e.g. New Zealand, Taiwan). The guided audit prices hotel nights at the
+Australian factor as a home-country default; the worked example sets the country
+per trip. Edition note: this is the DEFRA 2025 hotel set (Singapore 24.5),
+consistent with the 2025 revision; do not mix with 2024 (Singapore 37.3).
+Uncertainty tier: `estimated` (±30%).
+
+Note on the earlier block: the environment's egress proxy hard-blocks gov.uk,
+its asset CDN and every hotel mirror (403 on CONNECT), and search will not
+reproduce individual table cells, so these values could only be obtained once
+the DEFRA workbook was uploaded to the repo directly.
 
 ## Data quality tiers and uncertainty bands (July 2026 addition)
 
@@ -191,11 +204,12 @@ external value depends on them.
 
 ## July 2026 session: verification-blocked queue
 
-**Update (later July 2026):** the spend-screening block (idea 8) is now
-verified and shipped, see "Goods and services" above; the full EPA CSV was
-recovered from public GitHub mirrors and cross-checked three ways. Hotels
-(idea 7) remain blocked in this environment, see "Hotel nights" above. Waste
-(idea 9) is still queued.
+**Update (later July 2026):** the spend-screening block (idea 8) and the
+hotel-nights factor (idea 7) are both now verified and shipped, see "Goods and
+services" and "Hotel nights" above. The EPA CSV was recovered from public
+GitHub mirrors and cross-checked three ways; the DEFRA hotel workbook, RBA F11
+exchange rates and BLS CPI series were uploaded to `docs/footprint-research/`
+and read directly. Waste (idea 9) is still queued.
 
 Three additions were designed, scored and then withheld because the build
 environment could not verify their values against any source (egress proxy
