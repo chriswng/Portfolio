@@ -110,9 +110,9 @@ export default function Plan({ macc, pathway, plan, onToggle }) {
           <div className="fp-card fp-scenario">
             <div className="fp-card-toprow">
               <div className="fp-card-head">{view === 'cost' ? PLAN.costTitle : PLAN.scenarioTitle}</div>
-              <div className="fp-viewtabs" role="tablist" aria-label="Chart view">
-                <button type="button" role="tab" aria-selected={view === 'pathway'} className={'fp-viewtab' + (view === 'pathway' ? ' on' : '')} onClick={() => setView('pathway')}>{PLAN.pathTab}</button>
-                <button type="button" role="tab" aria-selected={view === 'cost'} className={'fp-viewtab' + (view === 'cost' ? ' on' : '')} onClick={() => setView('cost')}>{PLAN.costTab}</button>
+              <div className="fp-viewtabs" role="group" aria-label={PLAN.chartViewLabel}>
+                <button type="button" aria-pressed={view === 'pathway'} className={'fp-viewtab' + (view === 'pathway' ? ' on' : '')} onClick={() => setView('pathway')}>{PLAN.pathTab}</button>
+                <button type="button" aria-pressed={view === 'cost'} className={'fp-viewtab' + (view === 'cost' ? ' on' : '')} onClick={() => setView('cost')}>{PLAN.costTab}</button>
               </div>
             </div>
             <div className="fp-card-sub">{view === 'cost' ? PLAN.costSub : PLAN.scenarioSub}</div>
