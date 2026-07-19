@@ -7,7 +7,7 @@
    old cool-blue hex values — the green lean is deliberate.
    ============================================================================ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: clip; }
 
 :root {
   /* Corporate Vibrant — SaaS Design System */
@@ -81,7 +81,7 @@ body {
   font-family:var(--sans); font-weight:300; font-size:0.92rem;
   color:var(--slate); background:var(--bg); line-height:1.7;
   -webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
+  overflow-x:clip;
 }
 
 a { color:inherit; }
