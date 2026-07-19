@@ -209,9 +209,34 @@ const FASHION_PACT_IDS = new Set([
 const FASHION_PACT_FORMER = new Set(['herm-s']); // slug('Hermès') === 'herm-s'
 const B_CORP_IDS = new Set(['patagonia', 'r-m-williams', 'camilla']);
 
+// Science Based Targets initiative status, read from the SBTi "Companies
+// Taking Action" export. Every id below has a near-term target with SBTi
+// status "Targets set" (validated). Split by whether the validated entity is
+// the brand's own company ('brand') or its corporate parent/group ('parent'),
+// so the climate-target signal can be honest about the level. Parents not in
+// the SBTi dataset (Wesfarmers, ABF, TJX, Ross, Cotton On, Boohoo, Tattarang,
+// PDD) are absent and stay "Needs research".
+const SBTI_BRAND = new Set([
+  'nike', 'adidas', 'puma', 'asics', 'new-balance', 'under-armour', 'lululemon',
+  'herm-s', 'chanel', 'burberry', 'moncler', 'ralph-lauren', 'levi-strauss', 'gap',
+  'patagonia', 'asos', 'zalando', 'next', 'jd-sports', 'zimmermann', 'handm',
+]);
+const SBTI_PARENT = new Set([
+  'louis-vuitton', 'dior', 'loewe', 'fendi', 'celine', 'gucci', 'saint-laurent',
+  'balenciaga', 'bottega-veneta', 'zara', 'pullandbear', 'bershka', 'uniqlo', 'gu',
+  'cos', 'calvin-klein', 'tommy-hilfiger', 'the-north-face', 'vans', 'timberland',
+  'coach', 'kate-spade', 'prada', 'miu-miu', 'bonds', 'big-w', 'country-road',
+  'the-iconic', 'shein',
+]);
+function sbtiLevelFor(id) {
+  if (SBTI_BRAND.has(id)) return 'brand';
+  if (SBTI_PARENT.has(id)) return 'parent';
+  return null;
+}
+
 function commitmentsFor(id) {
   const fashionPact = FASHION_PACT_IDS.has(id) ? 'yes' : (FASHION_PACT_FORMER.has(id) ? 'former' : 'no');
-  return { fashionPact, bCorp: B_CORP_IDS.has(id) };
+  return { fashionPact, bCorp: B_CORP_IDS.has(id), sbti: sbtiLevelFor(id) };
 }
 
 // The date the structural facts (ownership, provenance, memberships) were last
@@ -258,9 +283,37 @@ const PROVENANCE = {
   patagonia: 'Founder Yvon Chouinard transferred ownership to the Holdfast Collective and a purpose trust in 2022.',
 };
 
+// ---------------------------------------------------------------------------
+// Fashion Transparency Index 2023 scores, read directly from the published
+// report's "Final Scores" table (Fashion Revolution, 2023 edition; 250 brands
+// ranked by score out of 250, shown as a rounded-up percentage). These are the
+// authoritative figures, keyed by our brand id. Brands Fashion Revolution did
+// not score individually are absent here and stay "Needs research". A handful
+// of raw entries carry the score inline already (with richer notes); those
+// take precedence, so they are not repeated here.
+// ---------------------------------------------------------------------------
+const FTI_2023 = {
+  nike: 50, adidas: 56, puma: 66, asics: 45, 'new-balance': 46, 'under-armour': 28,
+  lululemon: 52, 'louis-vuitton': 29, dior: 29, fendi: 58, celine: 30,
+  'saint-laurent': 51, balenciaga: 51, 'bottega-veneta': 51, 'herm-s': 28,
+  chanel: 11, prada: 34, 'miu-miu': 34, burberry: 38, moncler: 27, 'ralph-lauren': 54,
+  zara: 50, pullandbear: 50, bershka: 50, uniqlo: 51, gu: 51, shein: 7, primark: 40,
+  boohoo: 14, asos: 50, zalando: 40, next: 36, 'levi-strauss': 60, gap: 48,
+  'calvin-klein': 48, 'tommy-hilfiger': 50, patagonia: 40, coach: 42, 'kate-spade': 41,
+  'jd-sports': 29, 'big-w': 39, 'cotton-on': 22, 'tk-maxx': 13, 'ross-stores': 6,
+};
+// Score-specific context where the FTI listing name differs from ours.
+const FTI_2023_NOTE = {
+  'tk-maxx': 'Fashion Transparency Index 2023. FTI listed the TJX banner as "TJ Maxx"; TK Maxx is the same company.',
+  'ross-stores': 'Fashion Transparency Index 2023, scored under its "Ross Dress for Less" banner.',
+};
+
 function buildBrand(raw) {
-  const band = ftiBand(raw.fti);
   const id = slug(raw.name);
+  const fti = raw.fti != null ? raw.fti : (FTI_2023[id] != null ? FTI_2023[id] : null);
+  const band = ftiBand(fti);
+  const ftiNote = raw.ftiNote || FTI_2023_NOTE[id]
+    || (FTI_2023[id] != null ? 'Fashion Transparency Index 2023, published by Fashion Revolution.' : '');
   return {
     id,
     name: raw.name,
@@ -273,17 +326,22 @@ function buildBrand(raw) {
     au: !!raw.au,
     recognition: raw.recognition || 'medium',
     knownFor: raw.knownFor || '',
-    fti: raw.fti ?? null,
+    fti,
     ftiBand: band,
-    ftiNote: raw.ftiNote || '',
+    ftiNote,
     // 'scored' = a verified FTI number; 'outside' = confirmed not assessed by
     // FTI; 'research' = in scope but the exact figure is still unverified.
-    ftiScope: raw.ftiScope || (raw.fti != null ? 'scored' : 'research'),
+    ftiScope: raw.ftiScope || (fti != null ? 'scored' : 'research'),
     reportUrl: raw.reportUrl || null,
     // Per-field disclosure statuses. These are the research surface: filled in
     // over time from the CSV tracker, never invented here.
     signals: {
-      climateTarget: raw.climateTarget || STATUS.research.id,
+      // A validated SBTi near-term target is a public, dated emissions target.
+      // Brand-level validation reads as disclosed; group-level as parent-only.
+      climateTarget: raw.climateTarget
+        || (sbtiLevelFor(id) === 'brand' ? STATUS.disclosed.id
+          : sbtiLevelFor(id) === 'parent' ? STATUS.parent.id
+            : STATUS.research.id),
       scope12: raw.scope12 || STATUS.research.id,
       scope3: raw.scope3 || STATUS.research.id,
       materials: raw.materials || STATUS.research.id,
@@ -293,7 +351,7 @@ function buildBrand(raw) {
     commitments: commitmentsFor(id),
     provenance: PROVENANCE[id] || raw.provenance || '',
     notes: raw.notes || '',
-    needsResearch: raw.fti == null && raw.ftiScope !== 'outside',
+    needsResearch: fti == null && raw.ftiScope !== 'outside',
   };
 }
 
@@ -347,12 +405,20 @@ export const COMMITMENT_INFO = {
     help: 'Independently verified social and environmental performance, certified by B Lab.',
     url: 'https://www.bcorporation.net/',
   },
+  sbti: {
+    label: 'SBTi near-term target',
+    parentLabel: 'SBTi target · group',
+    help: 'Has a near-term emissions target validated by the Science Based Targets initiative.',
+    parentHelp: 'The corporate parent has an SBTi-validated near-term target; brand-level detail may differ.',
+    url: 'https://sciencebasedtargets.org/target-dashboard',
+  },
 };
 
 export function commitmentCounts() {
   return {
     fashionPact: BRANDS.filter((b) => b.commitments.fashionPact === 'yes').length,
     bCorp: BRANDS.filter((b) => b.commitments.bCorp).length,
+    sbti: BRANDS.filter((b) => b.commitments.sbti).length,
   };
 }
 

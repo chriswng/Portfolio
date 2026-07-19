@@ -163,6 +163,29 @@ Gucci) for transferable mechanics, not visuals.
 - **SBTi link-out.** "Dig deeper" now includes the SBTi Target Dashboard so a
   brand's science-based-target status can be checked at source (we link, we do
   not assert a status we cannot verify).
+
+## Real numbers, ingested from primary sources (v6)
+
+Christopher supplied the primary documents (in `docs/data-sources/`), which
+unlocked the biggest honesty upgrade yet: replacing "Needs research" with
+verified figures read straight from source.
+
+- **FTI 2023 scores for 51 of 61 brands.** Read from the Fashion Transparency
+  Index 2023 report's own "Final Scores" table (Fashion Revolution). The top of
+  the table matched the seven scores already verified, confirming the read.
+  Brands Fashion Revolution did not score individually (Loewe, COS, and several
+  private Australian labels) stay "Needs research". The research backlog fell
+  from ~54 brands to 8.
+- **SBTi climate targets for 50 brands.** Read from the SBTi "Companies Taking
+  Action" export. A validated near-term target upgrades the climate-target
+  signal to Disclosed (brand-level) or Parent-level only (group-level), and
+  shows an "SBTi near-term target" badge. Honest nuance preserved: Gucci's
+  target is Kering's; Shein has a validated target but a transparency score of 7.
+- **Deliberately NOT used.** The Wikirate "FTI 2025" CSVs were left out: their
+  values are on an ambiguous scale and contradict the published 2023 figures, so
+  they read as partial/in-progress data, not an authoritative index. Preferring
+  "Needs research" over a confident-looking guess is the whole point.
+- Sources are filed and documented in `docs/data-sources/README.md`.
 - **Form, reference-led and restrained.** A numbered section rail with `04 / 07`
   progress (Your Creative); one settle curve `cubic-bezier(0.16,1,0.3,1)` on all
   reveals (2-TIMES); a dashed sewn-edge on the brand card so it reads as a woven

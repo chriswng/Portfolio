@@ -120,9 +120,10 @@ function ftiText(brand) {
 // No invented metrics: it uses ownership, the FTI score and general guidance.
 function beforeYouBuy(brand, family) {
   const items = [];
+  const parentClean = brand.parent.replace(/\.$/, '');
   items.push(family.length
-    ? `Owned by ${brand.parent}, which runs ${family.length} other label${family.length > 1 ? 's' : ''} on this page. Its group targets can differ from what the brand says.`
-    : `Owned by ${brand.parent}. Read the parent's reporting, not just the brand's marketing.`);
+    ? `Owned by ${parentClean}, which runs ${family.length} other label${family.length > 1 ? 's' : ''} on this page. Its group targets can differ from what the brand says.`
+    : `Owned by ${parentClean}. Read the parent's reporting, not just the brand's marketing.`);
   if (brand.fti != null) {
     const band = (brand.ftiBand || ftiBand(brand.fti));
     items.push(`Its transparency score is ${brand.fti}/100 (${band ? band.label.toLowerCase() : 'disclosure'}). Publishing a lot is not the same as low impact.`);
@@ -298,7 +299,7 @@ function SearchField({ onSelect, id = 'ow-search-input', label }) {
 // =========================================================================
 function SwingTagStack() {
   const tags = [
-    { cls: 's1', name: 'Uniqlo', parent: 'Fast Retailing', rows: [['Parent', 'Fast Retailing'], ['Segment', 'Basics'], ['FTI 2023', 'Needs research']] },
+    { cls: 's1', name: 'Uniqlo', parent: 'Fast Retailing', rows: [['Parent', 'Fast Retailing'], ['Segment', 'Basics'], ['FTI 2023', '51 / 100']] },
     { cls: 's2', name: 'Gucci', parent: 'Kering', rows: [['Parent', 'Kering'], ['Segment', 'Luxury'], ['FTI 2023', '80 / 100']] },
     { cls: 's3', name: 'Kmart', parent: 'Wesfarmers', rows: [['Parent', 'Wesfarmers'], ['Segment', 'Value'], ['FTI 2023', '76 / 100']] },
   ];
@@ -451,6 +452,10 @@ function BrandCard({ brand, inCompare, onToggleCompare, onSelect, onOpenGroup })
           {(() => {
             const badges = [];
             const c = brand.commitments;
+            if (c.sbti) {
+              const meta = COMMITMENT_INFO.sbti;
+              badges.push(<a key="sbti" className="ow-badge sbti" href={meta.url} target="_blank" rel="noopener noreferrer" title={c.sbti === 'parent' ? meta.parentHelp : meta.help}>{c.sbti === 'parent' ? meta.parentLabel : meta.label}</a>);
+            }
             if (c.fashionPact === 'yes') badges.push(<a key="fp" className="ow-badge fp" href={COMMITMENT_INFO.fashionPact.url} target="_blank" rel="noopener noreferrer" title={COMMITMENT_INFO.fashionPact.help}>{COMMITMENT_INFO.fashionPact.label}</a>);
             else if (c.fashionPact === 'former') badges.push(<span key="fp" className="ow-badge former" title={COMMITMENT_INFO.fashionPact.help}>{COMMITMENT_INFO.fashionPact.former}</span>);
             if (c.bCorp) badges.push(<a key="bc" className="ow-badge bc" href={COMMITMENT_INFO.bCorp.url} target="_blank" rel="noopener noreferrer" title={COMMITMENT_INFO.bCorp.help}>{COMMITMENT_INFO.bCorp.label}</a>);
