@@ -6,7 +6,6 @@
 export const CHROME = {
   skip: 'Skip to the dashboard',
   replay: 'Replay the reveal',
-  home: './',
   progressLabel: 'Story progress',
   next: 'Next:',
   keepScrolling: 'Keep scrolling',

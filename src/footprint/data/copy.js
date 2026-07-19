@@ -90,7 +90,17 @@ export const PLAN = {
     line: '{n} change{s} on. By 2030 you land at {at2030} t, down {pct}% from the {bau2030} t you reach if nothing changes',
     over: '{gap} t over the 2.5 t benchmark',
     within: 'inside the 2.5 t benchmark',
+    saves: 'about ${n} a year back in your pocket',
+    costs: 'about ${n} a year net, upfront costs spread out',
+    evens: 'roughly cost-neutral over the year',
   },
+  // The cost curve view: each change alone, cheapest abatement first.
+  chartViewLabel: 'Chart view',
+  costTab: 'Cost curve',
+  pathTab: 'Pathway',
+  costTitle: 'What each change costs',
+  costSub: 'Every change on its own, cheapest first. Bar width is the tonnes it saves a year; height is the cost per tonne, and anything below the line pays for itself. The pathway view sequences them; this ranks them by value.',
+  costMoneyNote: 'Indicative net annual figure across your chosen changes, savings and outlays combined. Upfront costs (an EV, solar, a heat pump) are spread over their life; the basis for each is on its card.',
 };
 
 export const ONBOARD = {
@@ -300,8 +310,9 @@ export const METHOD = {
         head: 'Not counted, even with the optional detail on',
         items: [
           'Accommodation other than hotels (short-stay rentals, hostels, staying with friends). Hotel nights are counted, but at a country-average factor, not the specific place.',
-          'Waste and water at home, and the emissions embodied in building or renovating, or in a big one-off purchase like a car.',
+          'Water at home, and the emissions embodied in building or renovating, or in a big one-off purchase like a car.',
           'Financial and professional services, and any spending the screening factors above do not cover. The goods estimate is a screening tool, so it catches the shape of the basket, not every dollar.',
+          'Household waste to landfill. The Australian landfill factors could not be verified to this page\'s standard in this edition, so it stays out rather than ship an unchecked number, and is queued for the next factor refresh.',
         ],
       },
     ],
