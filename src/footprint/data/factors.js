@@ -12,9 +12,9 @@
 // never silently re-prices old entries. It is a data key, not a brand: the
 // UI shows the plain source list below, never this string.
 export const FACTOR_SET = {
-  id: 'nga2025-ukghg2026',
+  id: 'nga2025-ukghg2025',
   updated: 'July 2026',
-  note: 'Australian electricity, gas and transport fuels use the DCCEEW National Greenhouse Accounts Factors (2025). Flights and freight use the UK Government conversion factors (2026), published by DESNZ and still widely known as the DEFRA factors. Updated when new editions are published.',
+  note: 'Australian electricity, gas and transport fuels use the DCCEEW National Greenhouse Accounts Factors (2025). Flights and freight use the UK Government conversion factors (2025 edition), published by DESNZ and still widely known as the DEFRA factors. Updated when new editions are published and verified against the source workbook.',
 };
 
 // Canonical category order: identity colours and stack order everywhere.
@@ -119,22 +119,25 @@ export const ROAD_MODES = {
   pt: {
     label: 'Public transport (rail, indicative)',
     perKm: 0.035,
-    source: 'UK Government GHG Conversion Factors, national rail per passenger-km. Indicative for Sydney electric rail; TfNSW renewable procurement likely lowers the real figure.',
+    source: 'UK Government GHG Conversion Factors 2025, national rail per passenger-km, used as an indicative proxy pending a published Australian per-passenger-km figure. The honest range is wide and depends on how you count the grid. On a location-based (physical grid) basis the real Sydney figure is higher than this, roughly twice, because the NSW grid is far more coal-heavy than the UK one. On a market-based basis it is close to zero, because Sydney Trains has bought 100 per cent renewable electricity since 2021. This proxy sits between the two. Public transport is a small line for most people, so the choice moves the total very little.',
   },
 };
 
 // ---------------------------------------------------------------------------
 // Flights: distance-based, per passenger-km. UK Government (DESNZ/DEFRA)
-// GHG Conversion Factors 2026 (June 2026), business travel: air, WITH
-// radiative forcing at the AR6-based 1.7 multiplier. Without-RF figures are
-// shown in the method as with-RF divided by 1.7 and labelled derived.
+// GHG Conversion Factors 2025 edition, business travel: air, WITH radiative
+// forcing. Values below match the 2025 workbook cell-for-cell (verified
+// against the full-set spreadsheet in docs/footprint-research). The 2026
+// edition (published June 2026) was not reachable to verify, so the tool
+// cites the edition it can substantiate. Without-RF figures are shown in the
+// method as with-RF divided by 1.7 and labelled derived.
 // Cross-check methodology: ICAO Carbon Emissions Calculator (CO2 only, no RF,
 // route-specific fuel burn), which reads materially lower.
 // ---------------------------------------------------------------------------
 export const FLIGHT_SOURCE = {
-  name: 'UK Government (DESNZ / DEFRA) GHG Conversion Factors 2026, business travel: air',
-  detail: 'Per passenger-km by haul and cabin, radiative forcing included (1.7 multiplier per the 2025-26 methodology). Great-circle distance uplifted 8% per the DEFRA method. Domestic band applied to Australian domestic sectors as a stated proxy; ICAO calculator used as cross-check.',
-  url: 'https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2026',
+  name: 'UK Government (DESNZ / DEFRA) GHG Conversion Factors 2025, business travel: air',
+  detail: 'Per passenger-km by haul and cabin, radiative forcing included (the 2025 workbook carries about a 1.69 uplift; the method shows the without-RF view as the total divided by 1.7). Great-circle distance uplifted 8% per the DEFRA method. The domestic band is applied to Australian domestic sectors as a stated proxy: a BITRE-derived Australian figure (about 0.156 kg CO2-e per passenger-km, CO2 only, from 2018-19 domestic aviation emissions over revenue passenger-km) lands close to this once radiative forcing is added, so the DEFRA-with-RF value is a defensible stand-in. ICAO calculator used as a further cross-check.',
+  url: 'https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2025',
 };
 
 // Bands: domestic (within Australia, DEFRA domestic average-passenger proxy),

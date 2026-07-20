@@ -30,6 +30,9 @@ over time, from checked sources, without touching the app code.
 | `segment` | Market segment |
 | `country_or_region` | Headquarters |
 | `user_recognition_level` | `high` / `medium`, rough familiarity |
+| `ownership_provenance` | Short verified ownership history (who owns it, when it changed hands) |
+| `fashion_pact` | Fashion Pact signatory / former signatory (verified) |
+| `certified_b_corp` | Certified B Corporation (verified) |
 | `sustainability_report_url` | Official sustainability/ESG landing page |
 | `annual_report_url` | Annual/financial report (to research) |
 | `transparency_source` | Where the transparency score comes from |
