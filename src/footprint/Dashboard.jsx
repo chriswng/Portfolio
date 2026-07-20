@@ -84,11 +84,9 @@ export default function Dashboard({ agg, period, compareAgg, comparePeriod, isEx
               <>
                 <div className="fp-card-sub">{DASH.trendSub}</div>
                 <TrendChart agg={agg} />
-                <div className="fp-legend" aria-hidden="true">
-                  {cats.map((c) => (
-                    <span className="fp-leg-item" key={c.id}><span className="fp-leg-dot" style={{ background: c.hex }} />{c.label}</span>
-                  ))}
-                </div>
+                {/* No legend here: the "By category" card directly below
+                    carries the same dot, name and value for every series,
+                    so repeating them under the chart was pure duplication. */}
                 {agg.worstMonth && agg.worstMonth.total > meanMonth * 1.35 && (
                   <div className="fp-worst">
                     <span className="fp-worst-tag">{DASH.worstLabel}</span>

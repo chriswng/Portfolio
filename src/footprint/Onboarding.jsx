@@ -127,6 +127,9 @@ export function buildProfileFromOnboarding(a) {
   // A flight given a month lands in that month as a real point event; one
   // left open carries no invented date and spreads evenly across the year
   // (like the other typical-year entries) until a dated trip replaces it.
+  // Hotel nights ride with their trip: priced at the destination country's
+  // per-room-night factor and dated to the same month, so the trip's stay
+  // uses the trip's own data instead of a generic home-country count.
   a.flights.forEach((fl) => {
     const meta = flightMeta(fl);
     if (!meta) return;
@@ -141,7 +144,26 @@ export function buildProfileFromOnboarding(a) {
         ? 'From the guided audit, dated to the month you gave. Swap in the exact itinerary when you have it.'
         : 'From the guided audit: a typical-year itinerary, spread across the year. Log the real trip with its date to replace it.',
     }));
+    if (fl.nights > 0) {
+      const to = airportByCode(fl.to);
+      entries.push(E({
+        category: 'hotel',
+        date: dated ? fl.month : period.end,
+        ...(dated ? {} : { period_months: 12 }),
+        label: 'Hotel nights, ' + to.city + ' (onboarding)',
+        meta: { nights: Math.round(fl.nights), country: to.country, ...(dated ? { synthetic: false } : {}) },
+        notes: 'From the guided audit: ' + Math.round(fl.nights) + ' night' + (fl.nights > 1 ? 's' : '')
+          + ' on the ' + to.city + ' trip, priced at the ' + to.country + ' per-room-night factor.',
+      }));
+    }
   });
+  if (a.hotelNightsOther > 0) {
+    entries.push(E({
+      category: 'hotel', date: period.end, period_months: 12, label: 'Hotel nights, no flight (onboarding)',
+      meta: { nights: Math.round(a.hotelNightsOther), country: 'AU' },
+      notes: 'From the guided audit: nights with no flight attached, priced at the Australian per-room-night factor.',
+    }));
+  }
   if (a.parcelsMonth > 0) {
     entries.push(E({
       category: 'freight', date: period.end, period_months: 12, label: 'Parcels, typical year (onboarding)',
@@ -178,14 +200,6 @@ export function buildProfileFromOnboarding(a) {
       notes: 'From the optional detail: about $' + monthly + ' a month, a spend-based screening estimate.',
     }));
   });
-  if (a.hotelNights > 0) {
-    entries.push(E({
-      category: 'hotel', date: period.end, period_months: 12, label: 'Hotel nights (onboarding)',
-      meta: { nights: Math.round(a.hotelNights), country: 'AU' },
-      notes: 'From the optional detail: ' + Math.round(a.hotelNights) + ' nights, priced at the Australian per-room-night factor.',
-    }));
-  }
-
   return {
     schema: 'cw-footprint/2',
     kind: 'own',
@@ -196,10 +210,10 @@ export function buildProfileFromOnboarding(a) {
 }
 
 // The optional "More detail" step. Every field defaults to zero, so skipping
-// it (or finishing without touching it) adds exactly nothing to the audit.
+// it (or finishing without touching it) adds exactly nothing to the audit:
+// no average-person spending is ever substituted in.
 const ADVANCED_DEFAULTS = {
   clothingMonth: 0, electronicsMonth: 0, entertainmentMonth: 0, healthMonth: 0, otherGoodsMonth: 0,
-  hotelNights: 0,
 };
 
 const DEFAULTS = {
@@ -208,7 +222,7 @@ const DEFAULTS = {
   // 'no' and 'unsure' are distinct choices that both price at 0% renewable.
   gpChoice: 'no', greenpowerPct: 0, energyPreset: null, kwhQuarter: 1000, mjQuarter: 3000, carKmWeek: 0, carOccupancy: 1,
   rideshareWeek: 0, ptWeek: 0, ptCapOverride: false,
-  parcelsMonth: 2, intlOrdersMonth: 0, flights: [],
+  parcelsMonth: 2, intlOrdersMonth: 0, flights: [], hotelNightsOther: 0,
   ...ADVANCED_DEFAULTS,
 };
 
@@ -270,7 +284,7 @@ function Stepper({ label, value, onChange, min = 0, max = 99, step = 1, icon, co
 // Slide it, or type it. The number beside the label is a real input, so a
 // visitor who knows their exact bill can enter it instead of hunting for the
 // right slider position. The two stay in sync; typing clamps to the range.
-function SliderField({ label, value, onChange, min, max, step, unit, icon }) {
+function SliderField({ label, value, onChange, min, max, step, unit, icon, note }) {
   const [text, setText] = useState(String(value));
   // Reflect slider drags (and any external change) back into the input.
   useEffect(() => { setText(String(value)); }, [value]);
@@ -307,6 +321,7 @@ function SliderField({ label, value, onChange, min, max, step, unit, icon }) {
         aria-valuetext={value.toLocaleString() + ' ' + unit}
         onChange={(e) => onChange(Number(e.target.value))}
       />
+      {note && <span className="ob-note">{note}</span>}
     </div>
   );
 }
@@ -368,6 +383,8 @@ function FlightCard({ fl, index, monthOptions, onChange, onRemove }) {
           </select>
         </label>
         <Stepper compact icon="people" label={ONBOARD.flights.passengers} value={fl.pax} min={1} max={9} onChange={(v) => set('pax', v)} />
+        {/* Nights belong to the trip: the destination country prices them. */}
+        <Stepper compact icon="building" label={ONBOARD.flights.nights} value={fl.nights || 0} min={0} max={90} onChange={(v) => set('nights', v)} />
       </div>
       <p className="ob-fcard-dist">{distText}</p>
     </div>
@@ -443,7 +460,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
   const addFlight = () => {
     setA((s) => ({
       ...s,
-      flights: [...s.flights, { from: homeAirportFor(s.state), to: '', ret: true, cabin: 'economy', month: '', pax: 1 }],
+      flights: [...s.flights, { from: homeAirportFor(s.state), to: '', ret: true, cabin: 'economy', month: '', pax: 1, nights: 0 }],
     }));
   };
   const updateFlight = (i, next) => setA((s) => ({ ...s, flights: s.flights.map((f, j) => (j === i ? next : f)) }));
@@ -607,6 +624,10 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         + {a.flights.length ? ONBOARD.flights.addAnother : ONBOARD.flights.add}
       </button>
 
+      <Stepper icon="building" label={ONBOARD.flights.otherNights} value={a.hotelNightsOther} min={0} max={365}
+        onChange={(v) => set('hotelNightsOther', v)} />
+      <p className="ob-note">{ONBOARD.flights.otherNightsNote}</p>
+
       <details className="ob-disclose">
         <summary>{ONBOARD.flights.sourceSummary}</summary>
         <p>{ONBOARD.flights.sourceBody}</p>
@@ -632,18 +653,15 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
       <p>{ONBOARD.advanced.sub}</p>
       <p className="ob-optnote"><Icon name="spark" size={14} className="ob-label-i" />{ONBOARD.advanced.optional}</p>
       <SliderField icon="box" label={ONBOARD.advanced.clothing} value={a.clothingMonth} min={0} max={800} step={10} unit="$ / mo"
-        onChange={(v) => set('clothingMonth', v)} />
+        note={ONBOARD.advanced.clothingNote} onChange={(v) => set('clothingMonth', v)} />
       <SliderField icon="phone" label={ONBOARD.advanced.electronics} value={a.electronicsMonth} min={0} max={800} step={10} unit="$ / mo"
-        onChange={(v) => set('electronicsMonth', v)} />
+        note={ONBOARD.advanced.electronicsNote} onChange={(v) => set('electronicsMonth', v)} />
       <SliderField icon="book" label={ONBOARD.advanced.entertainment} value={a.entertainmentMonth} min={0} max={800} step={10} unit="$ / mo"
-        onChange={(v) => set('entertainmentMonth', v)} />
+        note={ONBOARD.advanced.entertainmentNote} onChange={(v) => set('entertainmentMonth', v)} />
       <SliderField icon="leaf" label={ONBOARD.advanced.health} value={a.healthMonth} min={0} max={800} step={10} unit="$ / mo"
-        onChange={(v) => set('healthMonth', v)} />
+        note={ONBOARD.advanced.healthNote} onChange={(v) => set('healthMonth', v)} />
       <SliderField icon="globe" label={ONBOARD.advanced.other} value={a.otherGoodsMonth} min={0} max={1500} step={10} unit="$ / mo"
-        onChange={(v) => set('otherGoodsMonth', v)} />
-      <Stepper icon="building" label={ONBOARD.advanced.hotel} value={a.hotelNights} min={0} max={365}
-        onChange={(v) => set('hotelNights', v)} />
-      <p className="ob-note">{ONBOARD.advanced.hotelNote}</p>
+        note={ONBOARD.advanced.otherNote} onChange={(v) => set('otherGoodsMonth', v)} />
       <details className="ob-disclose">
         <summary>{ONBOARD.advanced.sourceSummary}</summary>
         <p>{ONBOARD.advanced.sourceBody}</p>

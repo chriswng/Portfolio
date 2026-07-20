@@ -28,7 +28,7 @@ export const CHAPTERS = [
 export const COVER = {
   tag: 'Your Carbon Footprint',
   eyebrow: 'A carbon footprint calculator',
-  h1a: { example: 'My year of', own: 'Your year of' },
+  h1a: { example: 'Calculate your year of', own: 'Your year of' },
   h1b: 'carbon emissions',
   sub: {
     example:
@@ -36,22 +36,27 @@ export const COVER = {
     own:
       'Your year, measured in carbon: flights, power, food and deliveries. It stays in this browser and nowhere else.',
   },
-  // Sets the expectation the home page never does: this is a scroll-through,
-  // not another landing page. Every dot behind the words is ten kilograms.
-  meta: '{n} chapters · scroll or tap through · every dot is 10 kg of carbon',
+  // Sets the expectation the home page never does: this is a Wrapped-style
+  // scroll-through of the audited year, not another landing page.
+  meta: {
+    example: 'My {fy} carbon emissions, wrapped',
+    own: 'Your {fy} carbon emissions, wrapped',
+  },
   start: 'Calculate your own',
-  startNote: 'About ten minutes, your bills, no account.',
+  // The field behind the words, explained: one dot is ten kilograms.
+  startNote: 'Every dot is 10 kg of carbon',
   scrollCue: 'Scroll to begin',
 };
 
 export const YEAR = {
   tag: '01 · The year',
-  headline: { example: 'Twelve months', own: 'Your twelve months' },
+  headline: { example: 'Twelve months, itemised', own: 'Your twelve months, itemised' },
+  // Shown beside the big count: what the number actually counts.
+  countLabel: 'priced line items',
   sub: {
-    example: 'trips, bills and meals, each with its own number.',
-    own: 'items built from your answers, each with its own number.',
+    example: 'A year of real bills, tickets and receipts, each priced on a published factor. Here they come.',
+    own: 'Your answers, turned into priced line items: power, travel, flights, food and freight. Here they come.',
   },
-  // Suffixes for the streaming ticker rows.
   tickerAria: 'A stream of the individual items behind this footprint.',
 };
 
@@ -75,8 +80,8 @@ export const GUESS = {
 
 export const TOTAL = {
   tag: '03 · The number',
-  chipsLabel: 'Tap a category to see its share light up in the field behind the number',
-  chipsHint: 'Tap a category: the glowing dots are its share of the total.',
+  chipsLabel: 'Tap a category to see its share of the dots gather into its shape',
+  chipsHint: 'Tap a category: its share of the dots gathers into its shape.',
   kicker: { example: 'My FY2026 carbon emissions', own: 'Your year in carbon' },
   unit: 'tonnes CO₂-e',
   // Cute, accurate aside explaining the "-e" the first time it appears.
@@ -192,7 +197,7 @@ export const BENCH_ST = {
     },
     within: 'You stayed inside the 2.5 t benchmark all year. That almost never happens.',
   },
-  caveat: 'The national and world averages count a wider basket than the core survey does. The optional detail step adds some of it back (clothes, gadgets, services, hotel nights); even then a few things stay out, so the real gap is if anything bigger, not smaller.',
+  caveat: 'The national and world averages count a wider basket than the core survey does. The optional detail step adds some of it back (clothes, gadgets, services), and hotel nights ride along with your trips; even then a few things stay out, so the real gap is if anything bigger, not smaller.',
 };
 
 export const NEEDLE = {
@@ -268,15 +273,14 @@ export const SHARE_ST = {
 export const CHARACTER_ST = {
   tag: '08 · Your result',
   kicker: { example: 'My year in carbon is', own: 'Your year in carbon is' },
-  // Leads straight with the named result; {name} is filled in the component.
-  headline: 'My year in carbon is {name}',
-  headlineOwn: 'Your year in carbon is {name}',
+  // The reveal leads; the workings follow under this small heading.
+  howTitle: 'How this was read',
   sub: {
     example: 'A playful label for the shape of the year, read from three things: how big it is, how much sits in one category, and whether it came in spikes or evenly.',
     own: 'A playful label for the shape of your year, read from three things: how big it is, how much sits in one category, and whether it came in spikes or evenly.',
   },
-  // The three meters, shown filling before the emblem forms. Each axis has a
-  // label, a plain-words gloss, a name per level, and a reading template.
+  // The three meters that produced the verdict. Each axis has a label, a
+  // plain-words gloss, a name per level, and a reading template.
   axes: {
     weight: {
       label: 'Size',

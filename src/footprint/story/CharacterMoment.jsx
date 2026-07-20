@@ -59,11 +59,11 @@ function AxisMeter({ axisKey, level, frac, reading, ticks, accent, i }) {
   );
 }
 
-// The character reveal, Wrapped-style: the three meters that decide the
-// classification fill first, then the audit's particles pull into the emblem
-// of the cell they landed on. The full 3 x 4 taxonomy sits below with the
-// visitor's cell lit, because a grid you can locate yourself in is half
-// the fun.
+// The character reveal, Wrapped-style: the reveal itself leads (the audit's
+// particles pull into the character's emblem beside the name), the three
+// meters that produced the verdict follow as the workings, and the full
+// 3 x 4 taxonomy sits last with the visitor's cell lit, because a grid you
+// can locate yourself in is half the fun.
 export default function CharacterMoment({ d, voice, character }) {
   const accent = lighten(character.hex, 0.25);
   const ax = character.axes;
@@ -102,18 +102,8 @@ export default function CharacterMoment({ d, voice, character }) {
     <section className="st-moment st-character" id="st-character" aria-label="Your carbon character">
       <motion.div className="st-center st-wide" initial="hidden" whileInView="visible" viewport={inView}>
         <motion.div className="sec-tag" data-idx="" variants={rise}>{CHARACTER_ST.tag}</motion.div>
-        <motion.h2 className="st-h2 display" variants={rise} custom={1}>
-          {fill(voice === 'example' ? CHARACTER_ST.headline : CHARACTER_ST.headlineOwn, { name: character.name })}
-        </motion.h2>
-        <motion.p className="st-line" variants={rise} custom={2}>{CHARACTER_ST.sub[voice]}</motion.p>
 
-        <div className="st-axes" role="img" aria-label={metersAria}>
-          {meters.map((m, i) => (
-            <AxisMeter key={m.axisKey} {...m} accent={accent} i={3 + i} />
-          ))}
-        </div>
-
-        <motion.div className="st-char-stage" variants={rise} custom={6}>
+        <motion.div className="st-char-stage" variants={rise} custom={1}>
           <div className="st-char-field">
             <CarbonField
               mode="emblem"
@@ -126,7 +116,7 @@ export default function CharacterMoment({ d, voice, character }) {
           </div>
           <div className="st-char-copy">
             <div className="st-kicker">{CHARACTER_ST.kicker[voice]}</div>
-            <div className="st-char-name display" style={{ color: accent }}>{character.name}</div>
+            <h2 className="st-char-name display" style={{ color: accent }}>{character.name}</h2>
             <div className="st-char-tagline">{character.tagline}</div>
             <div className="st-char-verdict" style={{ color: accent }}>{verdict}</div>
             <p className="st-char-line">{character.line} {character.flavour}</p>
@@ -144,6 +134,16 @@ export default function CharacterMoment({ d, voice, character }) {
                 </span>
               </div>
             )}
+          </div>
+        </motion.div>
+
+        <motion.div className="st-char-how" variants={rise} custom={3}>
+          <div className="st-kicker">{CHARACTER_ST.howTitle}</div>
+          <p className="st-line">{CHARACTER_ST.sub[voice]}</p>
+          <div className="st-axes" role="img" aria-label={metersAria}>
+            {meters.map((m, i) => (
+              <AxisMeter key={m.axisKey} {...m} accent={accent} i={4 + i} />
+            ))}
           </div>
         </motion.div>
 
