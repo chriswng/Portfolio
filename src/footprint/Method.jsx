@@ -44,32 +44,32 @@ export default function Method() {
 
         <div className="fp-method-grid">
           <div className="fp-method-block">
-            <h3>{METHOD.boundary.title}</h3>
+            <h3><Icon name="globe" size={16} className="fpi-lead" />{METHOD.boundary.title}</h3>
             {METHOD.boundary.paras.map((p, i) => <p key={i}>{p}</p>)}
           </div>
           <div className="fp-method-block">
-            <h3>{METHOD.period.title}</h3>
+            <h3><Icon name="clock" size={16} className="fpi-lead" />{METHOD.period.title}</h3>
             {METHOD.period.paras.map((p, i) => <p key={i}>{p}</p>)}
           </div>
           <div className="fp-method-block">
-            <h3>{METHOD.sources.title}</h3>
+            <h3><Icon name="list" size={16} className="fpi-lead" />{METHOD.sources.title}</h3>
             {METHOD.sources.paras.map((p, i) => <p key={i}>{p}</p>)}
           </div>
           <div className="fp-method-block">
-            <h3>{METHOD.quality.title}</h3>
+            <h3><Icon name="target" size={16} className="fpi-lead" />{METHOD.quality.title}</h3>
             {METHOD.quality.paras.map((p, i) => <p key={i}>{p}</p>)}
           </div>
           <div className="fp-method-block">
-            <h3>{METHOD.interpret.title}</h3>
+            <h3><Icon name="book" size={16} className="fpi-lead" />{METHOD.interpret.title}</h3>
             {METHOD.interpret.paras.map((p, i) => <p key={i}>{p}</p>)}
           </div>
           <div className="fp-method-block">
-            <h3>{METHOD.plan.title}</h3>
+            <h3><Icon name="chart" size={16} className="fpi-lead" />{METHOD.plan.title}</h3>
             {METHOD.plan.paras.map((p, i) => <p key={i}>{p}</p>)}
             <p className="fp-note">Grid trajectory used in the chart: the electricity factor declines about {Math.round((1 - GRID_DECLINE.ratePerYear) * 100)}% a year toward a floor, {GRID_DECLINE.source}</p>
           </div>
           <div className="fp-method-block fp-method-wide">
-            <h3>{METHOD.character.title}</h3>
+            <h3><Icon name="people" size={16} className="fpi-lead" />{METHOD.character.title}</h3>
             {METHOD.character.paras.map((p, i) => <p key={i}>{p}</p>)}
           </div>
         </div>
@@ -156,7 +156,7 @@ export default function Method() {
         </div>
 
         <div className="fp-method-block fp-method-wide">
-          <h3>{METHOD.exclusions.title}</h3>
+          <h3><Icon name="bin" size={16} className="fpi-lead" />{METHOD.exclusions.title}</h3>
           {METHOD.exclusions.groups.map((g, gi) => (
             <div key={gi} className="fp-excl-group">
               <div className="fp-card-head">{g.head}</div>

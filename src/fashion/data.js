@@ -1521,10 +1521,10 @@ export const COPY = {
 
   // At-a-glance stat band under the hero.
   stats: [
-    { k: 'brands and companies', from: 'brands' },
-    { k: 'corporate groups own them', from: 'groups' },
-    { k: 'transparency scores verified', from: 'scored' },
-    { k: 'segments, from luxury to value', from: 'segments' },
+    { k: 'brands and companies', from: 'brands', icon: 'tag' },
+    { k: 'corporate groups own them', from: 'groups', icon: 'building' },
+    { k: 'transparency scores verified', from: 'scored', icon: 'chart' },
+    { k: 'segments, from luxury to value', from: 'segments', icon: 'list' },
   ],
 
   lookup: {
@@ -1642,11 +1642,11 @@ export const COPY = {
       pinHint: 'Pin fibres from the shelf. Three at a time.',
       useThis: 'Cut the garment from this',
       rows: {
-        ef: { label: 'Carbon to make', unit: 'kg CO2e / kg fibre' },
-        waterL: { label: 'Water to grow', unit: 'litres / kg fibre' },
-        microMg: { label: 'Sheds in the wash', unit: 'mg / wash' },
-        wears: { label: 'Life expectancy', unit: 'relative to cotton' },
-        decayYr: { label: 'Buried breakdown', unit: 'years to break down' },
+        ef: { label: 'Carbon to make', unit: 'kg CO2e / kg fibre', icon: 'flame' },
+        waterL: { label: 'Water to grow', unit: 'litres / kg fibre', icon: 'drop' },
+        microMg: { label: 'Sheds in the wash', unit: 'mg / wash', icon: 'spark' },
+        wears: { label: 'Life expectancy', unit: 'relative to cotton', icon: 'clock' },
+        decayYr: { label: 'Buried breakdown', unit: 'years to break down', icon: 'bin' },
       },
       decayCapNote: '500 means it effectively never leaves; polyester survives centuries.',
     },
@@ -1665,7 +1665,7 @@ export const COPY = {
     },
     loop: {
       idx: '07',
-      icon: 'target',
+      icon: 'loop',
       title: 'Circularity scorecard',
       sub: 'Design its second life',
       lede: 'Eight years from now this garment is worn. Whether its loop closes, jams or snaps was decided today, at the bench. Score the design you built above, then change it.',

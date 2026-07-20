@@ -40,7 +40,7 @@ export const OUTCOMES = [
 
 export const PIPELINE = [
   {
-    step: 'raw', n: '01', label: 'Raw Data', color: 'var(--step-raw)',
+    step: 'raw', n: '01', label: 'Raw Data', icon: 'box', color: 'var(--step-raw)',
     desc: 'Design pre-configured data collection systems, automated upload pipelines, and systematic review frameworks that eliminate manual effort and embed audit trails at the data layer.',
     examples: [
       { title: 'Subcontractor Diesel Reporting Templates', body: 'Pre-configured Excel templates with embedded calculation logic and automated Envizi upload generation. Eliminated manual data collection across three Downer business units, replacing a recurring per-quarter effort.', outcome: 'Outcome: manual collection eliminated across 3 BUs, Downer EDI' },
@@ -48,7 +48,7 @@ export const PIPELINE = [
     ],
   },
   {
-    step: 'calc', n: '02', label: 'Calculation', color: 'var(--step-calc)',
+    step: 'calc', n: '02', label: 'Calculation', icon: 'spark', color: 'var(--step-calc)',
     desc: 'GHG inventory preparation and Scope 1-3 accounting aligned to GHG Protocol and NGER. Methodology documented for external assurance and reuse across reporting cycles.',
     examples: [
       { title: 'GHG Recalculation Module', body: 'Independent recalculation module with operational control boundary filtering, built to reconcile Group-level emissions calculations against Envizi outputs. Documented logic for ongoing internal verification without advisory dependency.', outcome: 'Outcome: delivered external assurance readiness for Group-level Scope 1 and 2, Downer EDI' },
@@ -56,7 +56,7 @@ export const PIPELINE = [
     ],
   },
   {
-    step: 'report', n: '03', label: 'Reporting', color: 'var(--step-report)',
+    step: 'report', n: '03', label: 'Reporting', icon: 'chart', color: 'var(--step-report)',
     desc: 'Regulatory disclosure for NGER, AASB S2/ISSB, GRESB, and CDP. Full submission management, methodology documentation, and external assurance preparation structured for internal handover.',
     examples: [
       { title: 'GRESB Infrastructure Assessment: 35% Improvement', body: 'Led the full assessment cycle for a major Australian energy distributor: gap analysis, data collection reform, targeted disclosure uplift across management, performance, and stakeholder engagement components. Methodology documented for handover and independently operable from year two.', outcome: 'Outcome: 35% score improvement in year one, handed back as an internally operable process' },
@@ -65,7 +65,7 @@ export const PIPELINE = [
     ],
   },
   {
-    step: 'strategy', n: '04', label: 'Strategy', color: 'var(--step-strategy)',
+    step: 'strategy', n: '04', label: 'Strategy', icon: 'target', color: 'var(--step-strategy)',
     desc: 'Scenario-driven decarbonisation models with traceable lever assumptions drawn from published sources, structured for non-specialist interrogation and owned internally, not dependent on the analyst who built them.',
     examples: [
       { title: 'Net Zero Pathway Model: Board Presentation', body: "Toggle-based net zero pathway model incorporating DCCEEW 2025 grid emission factor projections, NVES Act 2024 fleet trajectories, and BU-level pathway curves. Built for internal operation without ongoing advisory support. Presented to the board by senior leadership as part of the Group's climate strategy, and became the internal reference tool for tracking BU abatement progress.", outcome: 'Outcome: board-level presentation; ongoing internal reference tool, Downer EDI' },
@@ -74,7 +74,7 @@ export const PIPELINE = [
     cta: { href: '#scenario', label: '→ See the live scenario model below' },
   },
   {
-    step: 'comms', n: '05', label: 'Communication', color: 'var(--step-comms)',
+    step: 'comms', n: '05', label: 'Communication', icon: 'people', color: 'var(--step-comms)',
     desc: 'Technical analysis translated into stakeholder-ready outputs: from board presentations and all-employee training to public disclosure frameworks that teams can operate independently.',
     examples: [
       { title: 'Climate Change eLearning Module: Company-wide Deployment', body: 'Co-developed with an external learning design provider across three role clusters and two delivery formats. Content designed from scratch through to company-wide launch, covering GHG accounting fundamentals, decarbonisation levers, and role-specific action pathways.', outcome: 'Outcome: deployed across all-employee cohort company-wide, Downer EDI' },
@@ -84,9 +84,9 @@ export const PIPELINE = [
 ];
 
 export const PRINCIPLES = [
-  { num: '01', title: 'Data integrity precedes narrative.', body: 'Every net zero commitment is a claim. Its credibility depends on what sits behind it: a defensible, independently verifiable inventory documented before the narrative, not after.' },
-  { num: '02', title: 'Reusable infrastructure compounds value.', body: "Advisory that lives in a consultant's head has a short shelf life. I build models and processes designed to be owned internally, so the team can run the next reporting cycle without calling back in." },
-  { num: '03', title: 'Ambition grounded in evidence, with gaps named.', body: 'The science sets the pace. Pathway models need lever assumptions grounded in published data, with uncertainty disclosed alongside figures. Carbon credits belong on residual hard-to-abate emissions, not as a substitute for near-term reduction.' },
+  { num: '01', icon: 'list', title: 'Data integrity precedes narrative.', body: 'Every net zero commitment is a claim. Its credibility depends on what sits behind it: a defensible, independently verifiable inventory documented before the narrative, not after.' },
+  { num: '02', icon: 'spark', title: 'Reusable infrastructure compounds value.', body: "Advisory that lives in a consultant's head has a short shelf life. I build models and processes designed to be owned internally, so the team can run the next reporting cycle without calling back in." },
+  { num: '03', icon: 'target', title: 'Ambition grounded in evidence, with gaps named.', body: 'The science sets the pace. Pathway models need lever assumptions grounded in published data, with uncertainty disclosed alongside figures. Carbon credits belong on residual hard-to-abate emissions, not as a substitute for near-term reduction.' },
 ];
 
 export const TICKER_TERMS = [
@@ -189,7 +189,7 @@ export const FOOTER = {
   // page base at render time so the footer works from the root and /work/.
   columns: [
     {
-      head: 'Profile',
+      head: 'Profile', icon: 'people',
       links: [
         { label: 'About', href: '#about' },
         { label: 'Capabilities', href: '#bio' },
@@ -198,7 +198,7 @@ export const FOOTER = {
       ],
     },
     {
-      head: 'Work',
+      head: 'Work', icon: 'chart',
       links: [
         { label: 'Decarb Model', href: '#scenario' },
         { label: 'Work Samples', href: 'work/' },
