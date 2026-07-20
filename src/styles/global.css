@@ -478,8 +478,8 @@ section { position:relative; }
 .scn-foot p{ font-size:0.82rem; color:var(--mid); max-width:520px; line-height:1.6; }
 
 /* Buttons — base is shared with the footprint pages, so its look is left as the
-   original. The soft-pill Firmus treatment is scoped to the home + work pages
-   at the bottom of this file (see PAGE-SCOPED ELEVATION). */
+   original. The soft-pill treatment is scoped to the home + work pages at the
+   bottom of this file (see PAGE-SCOPED ELEVATION). */
 .btn{ display:inline-flex; padding:0.75rem 1.75rem; font-family:var(--sans); font-size:0.85rem; font-weight:600; text-decoration:none; cursor:pointer; transition:background 0.3s var(--ease),border-color 0.3s var(--ease),color 0.3s var(--ease); min-height:44px; align-items:center; }
 .btn-primary{ background:var(--matcha); color:var(--slate); border:1px solid var(--matcha); }
 .btn-primary:hover{ background:#8BAD1F; border-color:#8BAD1F; }
@@ -628,8 +628,8 @@ section { position:relative; }
    work-samples pages. Scoped under .page-home / .page-work so the footprint
    pages (which share this stylesheet and the .btn base) are untouched.
    ============================================================================ */
-/* Firmus-style pill buttons. The forest primary carries lime type; the
-   secondary is an outlined pill that fills with a lime wash on hover. */
+/* Soft pill buttons. The forest primary carries lime type; the secondary is
+   an outlined pill that fills with a lime wash on hover. */
 .page-home .btn, .page-work .btn{
   border-radius:var(--r-pill); padding:0.8rem 1.7rem; letter-spacing:-0.01em;
   transition:background 0.3s var(--ease),border-color 0.3s var(--ease),color 0.3s var(--ease),transform 0.25s var(--ease),box-shadow 0.3s var(--ease);
