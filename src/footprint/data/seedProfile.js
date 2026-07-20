@@ -81,6 +81,24 @@ export function buildSeedProfile() {
 
     // Diet: typical week scaled to the year. Coarse by design.
     E({ id: 'seed-di1', quality: 'estimated', date: '2026-06-30', category: 'diet', label: 'Medium-meat diet, typical week scaled to the year', period_months: 12, meta: { dietType: 'medMeat', days: 365 }, notes: 'A year of transactions says 268 restaurant meals and 192 takeaways. Medium meat is the honest label.' }),
+
+    // Goods and services: the optional detail, from coarse monthly spend off a
+    // year of transactions. Spend-based screening estimates, and labelled: no
+    // merchants, no line items, just a rough monthly figure per category.
+    E({ id: 'seed-gd1', quality: 'estimated', date: '2026-06-30', category: 'goods', label: 'Clothing and footwear (est. spend)', period_months: 12, meta: { kind: 'clothing', spendAud: 840 }, notes: 'About $70 a month across the year, spend-based screening estimate.' }),
+    E({ id: 'seed-gd2', quality: 'estimated', date: '2026-06-30', category: 'goods', label: 'Electronics and tech (est. spend)', period_months: 12, meta: { kind: 'electronics', spendAud: 1080 }, notes: 'About $90 a month, gadgets and tech averaged over the year. Screening estimate.' }),
+    E({ id: 'seed-gd3', quality: 'estimated', date: '2026-06-30', category: 'goods', label: 'Entertainment and going out (est. spend)', period_months: 12, meta: { kind: 'entertainment', spendAud: 1440 }, notes: 'About $120 a month: streaming, events, the gym, a night out. Screening estimate.' }),
+    E({ id: 'seed-gd4', quality: 'estimated', date: '2026-06-30', category: 'goods', label: 'Health, out of pocket (est. spend)', period_months: 12, meta: { kind: 'health', spendAud: 720 }, notes: 'About $60 a month in gap payments and pharmacy. Screening estimate.' }),
+    E({ id: 'seed-gd5', quality: 'estimated', date: '2026-06-30', category: 'goods', label: 'Other goods and services (est. spend)', period_months: 12, meta: { kind: 'other', spendAud: 2160 }, notes: 'About $180 a month of everything else, general-merchandise screening factor.' }),
+
+    // Hotel nights: the same trips as the flights above, at the DEFRA
+    // per-room-night country factors. Coarse night counts, labelled estimates.
+    E({ id: 'seed-ht1', quality: 'estimated', date: '2026-06-30', category: 'hotel', label: 'Hotel nights, South Korea (Seoul)', period_months: 12, meta: { nights: 6, country: 'KR' }, notes: 'July and the January circuit, priced at the DEFRA per-room-night factor. Estimate.' }),
+    E({ id: 'seed-ht2', quality: 'estimated', date: '2026-06-30', category: 'hotel', label: 'Hotel nights, Japan (Tokyo)', period_months: 12, meta: { nights: 3, country: 'JP' }, notes: 'January circuit. Estimate.' }),
+    E({ id: 'seed-ht3', quality: 'estimated', date: '2026-06-30', category: 'hotel', label: 'Hotel nights, China (Shanghai)', period_months: 12, meta: { nights: 2, country: 'CN' }, notes: 'January circuit. Estimate.' }),
+    E({ id: 'seed-ht4', quality: 'estimated', date: '2026-06-30', category: 'hotel', label: 'Hotel nights, Philippines (Manila, Cebu)', period_months: 12, meta: { nights: 5, country: 'PH' }, notes: 'January trip. Estimate.' }),
+    E({ id: 'seed-ht5', quality: 'estimated', date: '2026-06-30', category: 'hotel', label: 'Hotel nights, Singapore', period_months: 12, meta: { nights: 3, country: 'SG' }, notes: 'April trip. Estimate.' }),
+    E({ id: 'seed-ht6', quality: 'estimated', date: '2026-06-30', category: 'hotel', label: 'Hotel nights, Australia (Uluru)', period_months: 12, meta: { nights: 2, country: 'AU' }, notes: 'August trip. Estimate.' }),
   ];
 
   return {
@@ -92,26 +110,6 @@ export function buildSeedProfile() {
     plan: {
       enabled: ['sea-not-air', 'diet-low', 'uber-to-pt'],
       note: 'The changes I have actually committed to. The flight ones are still off, and the gap between my line and the benchmark is that decision.',
-    },
-    // The wider basket the core leaves out, estimated from a year of card
-    // spending and the trips above: goods and services at screening-grade EPA
-    // factors, and hotel nights per country at the DEFRA factors. Kept outside
-    // the audited total, exactly as the panel presents it.
-    wider: {
-      goods: {
-        clothing: 1400, electronics: 1200, appliances: 300,
-        furniture: 600, personalCare: 500, health: 400, recreation: 1800,
-        finance: 2600, education: 900, homeImprove: 1500,
-      },
-      hotels: [
-        { country: 'KR', nights: 8 },
-        { country: 'JP', nights: 4 },
-        { country: 'PH', nights: 7 },
-        { country: 'SG', nights: 5 },
-        { country: 'AU', nights: 3 },
-      ],
-      // Roughly my share of the red bin, in kilograms a week.
-      waste: 4,
     },
   };
 }
