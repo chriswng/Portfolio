@@ -170,7 +170,7 @@ export default function Scenario() {
           <div className="scn-controls">
             {/* Step 01 */}
             <div className="scn-step">
-              <span className="scn-step-num">Step 01</span>
+              <span className="scn-step-num"><Icon name="building" size={14} className="fpi-lead" />Step 01</span>
               <h3 className="scn-step-title">Choose an operating profile</h3>
               <p className="scn-step-sub">Each profile loads a different emissions mix and its own set of abatement levers.</p>
               <div className="seg-profiles" role="group" aria-label="Operating profile">
@@ -183,7 +183,7 @@ export default function Scenario() {
 
             {/* Step 02 */}
             <div className="scn-step">
-              <span className="scn-step-num">Step 02</span>
+              <span className="scn-step-num"><Icon name="bolt" size={14} className="fpi-lead" />Step 02</span>
               <h3 className="scn-step-title">Set the abatement levers</h3>
               <p className="scn-step-sub">Every lever traces to a published source. Card colours match the wedges in the chart.</p>
               <div className="lever-deck">
@@ -206,7 +206,7 @@ export default function Scenario() {
           {/* Step 03 */}
           <div className="scn-results">
             <div className="scn-step">
-              <span className="scn-step-num">Step 03</span>
+              <span className="scn-step-num"><Icon name="chart" size={14} className="fpi-lead" />Step 03</span>
               <h3 className="scn-step-title">Read the result</h3>
               <p className="scn-step-sub">The headline rewrites itself as you move the levers, the way a board slide should.</p>
               <p className="takeaway" aria-live="polite">

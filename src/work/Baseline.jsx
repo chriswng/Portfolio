@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
+import Icon from '../components/Icons';
 import { BASELINE_SECTORS, buildSankey } from './workData';
 
 const SECTORS = Object.keys(BASELINE_SECTORS);
@@ -50,9 +51,9 @@ export default function Baseline() {
           <div className="bl-meta">{d.meta}</div>
         </div>
         <div className="scope-grid">
-          <div className="scope-cell"><div className="scope-tag">Scope 1: Direct</div><div className="scope-pct">{d.s1}</div><div className="scope-body">{d.s1b}</div></div>
-          <div className="scope-cell"><div className="scope-tag">Scope 2: Electricity</div><div className="scope-pct">{d.s2}</div><div className="scope-body">{d.s2b}</div></div>
-          <div className="scope-cell"><div className="scope-tag">Scope 3: Value chain</div><div className="scope-pct">{d.s3}</div><div className="scope-body">{d.s3b}</div></div>
+          <div className="scope-cell"><div className="scope-tag"><Icon name="flame" size={15} className="fpi-lead" />Scope 1: Direct</div><div className="scope-pct">{d.s1}</div><div className="scope-body">{d.s1b}</div></div>
+          <div className="scope-cell"><div className="scope-tag"><Icon name="bolt" size={15} className="fpi-lead" />Scope 2: Electricity</div><div className="scope-pct">{d.s2}</div><div className="scope-body">{d.s2b}</div></div>
+          <div className="scope-cell"><div className="scope-tag"><Icon name="globe" size={15} className="fpi-lead" />Scope 3: Value chain</div><div className="scope-pct">{d.s3}</div><div className="scope-body">{d.s3b}</div></div>
         </div>
       </div>
       <div className="sankey-band">

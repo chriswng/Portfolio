@@ -137,6 +137,8 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
 .fpi-fill{ fill:var(--matcha); }
 /* An icon tucked inside a sec-tag sits on the text baseline politely. */
 .sec-tag .fpi{ margin-right:0.15rem; }
+/* An icon leading a label or heading. */
+.fpi-lead{ margin-right:0.45rem; }
 
 /* Oversized section index marks + micro labels */
 .sec-tag {

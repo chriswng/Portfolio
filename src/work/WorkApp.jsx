@@ -204,7 +204,7 @@ export default function WorkApp() {
                 aria-selected={tab === t.id}
                 onClick={() => setTab(t.id)}
               >
-                <span className="tab-lt">{t.letter}&nbsp;</span>{t.label}
+                {t.icon && <Icon name={t.icon} size={15} className="fpi-lead" />}<span className="tab-lt">{t.letter}&nbsp;</span>{t.label}
               </button>
             ))}
           </div>
