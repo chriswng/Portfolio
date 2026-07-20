@@ -306,6 +306,16 @@ type, this section supersedes them.
   swing sway are CSS, gated on the same preference. The map pins are real
   keyboard-operable buttons; the dropdown is the accessible twin of the map.
 
+### v9.1 — site-wide pass touching this page
+
+- The hero gains the site's aurora and contour backdrops behind the search.
+- Every section head carries a hand-drawn glyph from the shared icon set
+  (`src/components/Icons.jsx`), including three cut for this page: the swing
+  tag, the tee and the tailor's scissors.
+- On phones the hero hugs its content instead of reserving a near-full
+  viewport; the swing tags are hidden there, so the old min-height left a
+  blank band.
+
 ## The lookup owns the page (v10)
 
 The Garment Studio is retired. Building a hypothetical garment read as a

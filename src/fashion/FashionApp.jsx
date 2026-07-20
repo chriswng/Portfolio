@@ -29,6 +29,9 @@ import {
 import { NAV_LINKS } from '../data/content';
 import { Grain } from '../components/Chrome';
 import Mark from '../components/Mark';
+import Icon from '../components/Icons';
+import Aurora from '../components/Aurora';
+import ContourField from '../components/ContourField';
 import { prefersReducedMotion } from '../utils/media';
 
 const MAX_COMPARE = 3;
@@ -305,7 +308,9 @@ function SectionRail() {
 function SecHead({ c }) {
   return (
     <div className="ow-sechead">
-      <div className="sec-tag" data-idx={`${c.idx} / `}>{c.sub}</div>
+      <div className="sec-tag" data-idx={`${c.idx} / `}>
+        {c.icon && <Icon name={c.icon} size={15} />}{c.sub}
+      </div>
       <h2 className="display ow-h2">{c.title}</h2>
     </div>
   );
@@ -419,6 +424,13 @@ function SwingTagStack() {
 function Hero({ onSelect, recent }) {
   return (
     <section className="ow-hero" id="top">
+      <Aurora
+        colorStops={['#635BFF', '#B5C42B', '#FF9500', '#FF3B60']}
+        amplitude={0.6}
+        blend={0.5}
+        opacity={0.2}
+      />
+      <ContourField />
       <div className="ow-wrap ow-hero-grid">
         <div>
           <span className="ow-kicker"><b>{COPY.brand}</b> · {COPY.hero.kicker}</span>
