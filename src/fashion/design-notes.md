@@ -253,3 +253,55 @@ verified figures read straight from source.
   like an annotated record, disputed phrases underlined in madder (Madam
   Speaker); and native `<details>` for the claim methodology (CoLabs). No
   WebGL, no gradients, all motion reduced-motion-gated.
+
+## One site, one language + the Garment Studio (v9)
+
+The calico / vat indigo / madder world described above is retired. It read as
+its own product, not as a page of Christopher's site, so v9 rebuilds the form
+on the portfolio's shared system while keeping everything fashion-coded that
+earned its place. Where earlier sections above describe the old palette and
+type, this section supersedes them.
+
+- **Shared chrome, actually shared.** The page now imports `global.css` first
+  (exactly as the footprint pages do) and uses the real site nav (`NAV_LINKS`
+  + the Segmented Split mark, Openweave active), the shared grain, and the
+  `.canvas` / `.sec-tag` / `.display` section language. Fonts are the site's:
+  Space Grotesk display, Inter body, JetBrains Mono data. Palette is the
+  chartreuse/forest/matcha system; data accents are the same chart-grade hues
+  the footprint dashboard validated (`#75821D`, `#635BFF`, `#B56A00`,
+  `#C7274A`), so status pills, streams and stitches read as one family across
+  the site.
+- **Kept, recoloured, because they are the page's own.** The hero swing tags
+  (string, punched hole, sway), the care-label brand card with its sewn dashed
+  edge, the woven monogram tiles with segment-coloured stitches, the numbered
+  section rail, and the claim markup. Hard ink offsets became the site's soft
+  radii and layered shadows; buttons became the soft pills of the home and
+  work pages; the directory view toggle became the work page's segmented pill
+  control.
+- **The Garment Studio.** The speciality is back: four working tools over one
+  shared garment, reviving the old Sevenfold instruments inside Openweave's
+  honest, real-data frame.
+  1. *Carbon footprint estimator* — cut, size, cloth weight, a real blend
+     builder (main fibre + second fibre + percentage split), and origin chosen
+     from a dropdown or the dot-matrix world map. A live particle field
+     accumulates CO2e around the garment silhouette: fibre, dyeing, assembly
+     and transport each emit their own coloured stream, one mote per 50 g.
+  2. *Fabric comparator* — pin three fibres, same five questions at the same
+     time (carbon, water, shedding, life, burial), log-scaled where honesty
+     demands it, with a one-click path back into the estimator.
+  3. *Supply chain mapper* — the same garment traced on the map to Melbourne
+     with a sea/air freight toggle; six stage cards; the dye house highlighted
+     as the hotspot.
+  4. *Circularity scorecard* — a transparent 100-point rubric over the built
+     garment plus four design choices; every point explained, half of them
+     earned or lost back in the estimator.
+- **Honesty holds.** Studio factors are indicative estimates assembled from
+  published LCA literature ranges, freight factors and public grid intensity
+  data, rounded to move live. The estimator says so in-line, once, plainly;
+  the footer method repeats it. No real brand is attached to any studio
+  figure.
+- **Motion rules hold.** The particle canvas pauses off-screen via
+  IntersectionObserver, renders a static scatter under
+  `prefers-reduced-motion`, and cleans up on unmount. The route dash and
+  swing sway are CSS, gated on the same preference. The map pins are real
+  keyboard-operable buttons; the dropdown is the accessible twin of the map.

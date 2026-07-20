@@ -192,24 +192,25 @@ export function deriveMonogram(name) {
 }
 
 // Per-segment identity: which typeface the monogram is set in, and the colour
-// of the label's stitch line. Drawn only from the existing palette tokens so
-// the marks stay inside the calico/indigo/madder world of the page. This is
-// also a quiet legend: once you learn the colours, the directory reads as a
-// segment map. type is 'serif' (couture), 'sans' (athletic) or 'mono' (retail).
+// of the label's stitch line. The accents are the site's chart-grade hues (the
+// same darker steps the footprint dashboard validated for contrast and CVD
+// separation), so the marks read as one family with the rest of the site. This
+// is also a quiet legend: once you learn the colours, the directory reads as a
+// segment map. type is 'disp' (couture display), 'sans' or 'mono' (retail).
 export const SEGMENT_STYLE = {
-  sportswear:  { type: 'sans',  accent: 'var(--ink)' },
-  luxury:      { type: 'serif', accent: 'var(--indigo)' },
-  fastfashion: { type: 'mono',  accent: 'var(--madder)' },
-  department:  { type: 'mono',  accent: 'var(--faint)' },
-  outdoor:     { type: 'sans',  accent: 'var(--sage)' },
-  denim:       { type: 'sans',  accent: 'var(--indigo-deep)' },
-  footwear:    { type: 'sans',  accent: 'var(--ink-soft)' },
-  online:      { type: 'mono',  accent: 'var(--weld)' },
-  basics:      { type: 'mono',  accent: 'var(--ink-soft)' },
+  sportswear:  { type: 'sans', accent: 'var(--slate)' },
+  luxury:      { type: 'disp', accent: '#635BFF' },
+  fastfashion: { type: 'mono', accent: '#C7274A' },
+  department:  { type: 'mono', accent: 'var(--subtle)' },
+  outdoor:     { type: 'sans', accent: '#75821D' },
+  denim:       { type: 'sans', accent: '#0891B2' },
+  footwear:    { type: 'sans', accent: 'var(--mid)' },
+  online:      { type: 'mono', accent: '#B56A00' },
+  basics:      { type: 'mono', accent: '#8A4FBE' },
 };
 
 export function segmentStyle(id) {
-  return SEGMENT_STYLE[id] || { type: 'sans', accent: 'var(--ink)' };
+  return SEGMENT_STYLE[id] || { type: 'sans', accent: 'var(--slate)' };
 }
 
 // ---------------------------------------------------------------------------
@@ -1216,6 +1217,287 @@ export function analyseClaim(text) {
 // ---------------------------------------------------------------------------
 // Editorial copy. Australian English, plain, active. No em dashes.
 // ---------------------------------------------------------------------------
+// ===========================================================================
+// THE GARMENT STUDIO — model factors for the four working tools: the carbon
+// footprint estimator, the fabric comparator, the supply chain mapper and the
+// circularity scorecard.
+//
+// HONESTY NOTE, load-bearing: every physical factor below is an indicative
+// estimate assembled from published life cycle assessment literature ranges
+// (fibre LCAs, mill energy studies, IMO/ICAO freight factors, public grid
+// intensity data), rounded hard and simplified so they can be manipulated
+// live. They support decisions and intuition. They are not an audit, and the
+// UI says so in plain sight, once.
+// ===========================================================================
+
+// Fibres the estimator and comparator share. One row per fibre:
+//   ef        kg CO2e per kg of finished fibre, cradle to spinning gate
+//   waterL    litres per kg of fibre (irrigated where relevant)
+//   microMg   microfibre shed, mg per wash, indicative machine-wash figure
+//   wearsMod  multiplier on garment life expectancy
+//   decayYr   years to substantially break down buried in active soil
+//   loop      'mono' closes a fibre recycling loop, 'jam' blocks it,
+//             'hard' is technically possible but rarely done at scale
+export const STUDIO_FIBRES = [
+  { id: 'cotton', name: 'Cotton', kind: 'natural, conventional',
+    ef: 5.0, waterL: 7000, microMg: 10, wearsMod: 1.0, decayYr: 0.6, loop: 'mono',
+    read: 'Thirsty in the field, honest at end of life. Irrigation is the swing factor.' },
+  { id: 'orgcotton', name: 'Organic cotton', kind: 'natural, certified growing',
+    ef: 3.2, waterL: 5500, microMg: 10, wearsMod: 1.0, decayYr: 0.6, loop: 'mono',
+    read: 'Lower-input growing, similar thirst. The certificate is about the field, not the factory.' },
+  { id: 'linen', name: 'Linen', kind: 'natural, bast fibre',
+    ef: 2.1, waterL: 650, microMg: 6, wearsMod: 1.15, decayYr: 0.4, loop: 'mono',
+    read: 'Rain-fed flax, small footprint, creases with pride and outlives trends.' },
+  { id: 'hemp', name: 'Hemp', kind: 'natural, bast fibre',
+    ef: 1.9, waterL: 500, microMg: 6, wearsMod: 1.2, decayYr: 0.4, loop: 'mono',
+    read: 'The quiet achiever. Low water, low input, gets softer for a decade.' },
+  { id: 'wool', name: 'Merino wool', kind: 'natural, protein fibre',
+    ef: 21.0, waterL: 1250, microMg: 12, wearsMod: 1.25, decayYr: 1.5, loop: 'hard',
+    read: 'Heavy at the farm gate, then repays it: fewer washes, long life, full breakdown.' },
+  { id: 'poly', name: 'Polyester', kind: 'synthetic, virgin',
+    ef: 5.4, waterL: 60, microMg: 260, wearsMod: 1.1, decayYr: 500, loop: 'mono',
+    read: 'Cheap, strong, nearly waterless to make, and it never really leaves.' },
+  { id: 'rpet', name: 'Recycled polyester', kind: 'synthetic, bottle-derived',
+    ef: 2.4, waterL: 45, microMg: 260, wearsMod: 1.05, decayYr: 500, loop: 'hard',
+    read: 'Half the carbon of virgin, same shedding, and bottles only recycle once this way.' },
+  { id: 'lyocell', name: 'Lyocell', kind: 'regenerated cellulose',
+    ef: 2.6, waterL: 320, microMg: 9, wearsMod: 0.95, decayYr: 0.8, loop: 'mono',
+    read: 'Wood pulp spun in a closed solvent loop. Gentle drape, honest ending.' },
+];
+
+export const FIBRE_BY_ID = Object.fromEntries(STUDIO_FIBRES.map((f) => [f.id, f]));
+
+// Garment cuts. Area is fabric consumed in m² including cutting-loss allowance
+// at size M; gsm bounds are the realistic cloth-weight range for the cut.
+export const GARMENT_TYPES = [
+  { id: 'tee', name: 'Tee', area: 0.85, gsmMin: 120, gsmMax: 280, gsmDefault: 180, wearsBase: 90 },
+  { id: 'shirt', name: 'Shirt', area: 1.1, gsmMin: 100, gsmMax: 220, gsmDefault: 140, wearsBase: 110 },
+  { id: 'hoodie', name: 'Hoodie', area: 1.7, gsmMin: 240, gsmMax: 520, gsmDefault: 340, wearsBase: 150 },
+  { id: 'jeans', name: 'Jeans', area: 1.6, gsmMin: 280, gsmMax: 480, gsmDefault: 400, wearsBase: 230 },
+  { id: 'dress', name: 'Dress', area: 1.4, gsmMin: 110, gsmMax: 320, gsmDefault: 190, wearsBase: 60 },
+];
+
+// Size grades the pattern up or down; multipliers on fabric area.
+export const SIZES = [
+  { id: 'xs', label: 'XS', mult: 0.86 },
+  { id: 's', label: 'S', mult: 0.93 },
+  { id: 'm', label: 'M', mult: 1.0 },
+  { id: 'l', label: 'L', mult: 1.08 },
+  { id: 'xl', label: 'XL', mult: 1.17 },
+  { id: 'xxl', label: 'XXL', mult: 1.27 },
+];
+
+// Making origins. Grid intensity is an indicative national average in
+// kg CO2e per kWh; km is a rough freight distance to Melbourne. cell indexes
+// into WORLD_MASK below as [col, row].
+export const ORIGINS = [
+  { id: 'vn', name: 'Vietnam', grid: 0.68, km: 7900, cell: [51, 12],
+    note: 'Coal-heavy grid, deep garment expertise, short sea leg to Australia.' },
+  { id: 'cn', name: 'China', grid: 0.64, km: 9200, cell: [52, 10],
+    note: 'The full supply chain in one country, on a grid decarbonising unevenly.' },
+  { id: 'bd', name: 'Bangladesh', grid: 0.74, km: 9300, cell: [48, 10],
+    note: 'Gas and coal power most mills. Labour cost pressure is the industry story here.' },
+  { id: 'in', name: 'India', grid: 0.77, km: 9800, cell: [45, 11],
+    note: 'Cotton at the doorstep, one of the most carbon-intense grids in the trade.' },
+  { id: 'tr', name: 'Türkiye', grid: 0.44, km: 14600, cell: [38, 7],
+    note: 'Closer to European buyers than to you. Mid-intensity grid, strong denim craft.' },
+  { id: 'pt', name: 'Portugal', grid: 0.17, km: 17600, cell: [30, 7],
+    note: 'Wind and hydro do the wet processing. The distance is the price you pay.' },
+  { id: 'au', name: 'Australia', grid: 0.63, km: 600, cell: [56, 19],
+    note: 'Almost no freight, honest labour law, a grid still burning coal for now.' },
+];
+
+export const ORIGIN_BY_ID = Object.fromEntries(ORIGINS.map((o) => [o.id, o]));
+
+// Destination pin for the freight route.
+export const DEST = { name: 'Melbourne', cell: [57, 20] };
+
+// A coarse dot map of the world, 64 columns by 23 rows, equirectangular-ish.
+// '#' is land. It is a stylised chart, not cartography; hubs index into it.
+export const WORLD_MASK = [
+  '................................................................',
+  '.......###.........#####..........##############................',
+  '..#######*#........######......###################.#............',
+  '.##########.........####.....######################..##.........',
+  '..#########..........##....#..######################.###........',
+  '...########...............###.#####################..##.........',
+  '....######.................####.####################.##.........',
+  '.....####.....................#######..####..######..#..........',
+  '......##.......................######..#####.#####..............',
+  '.......#........................#####...#######.##..............',
+  '................#....................#...######..##.#............',
+  '...............####..............####....#####...#.##...........',
+  '...............######............#####....##....##..#...........',
+  '................#######..........#####.....#....##.###..........',
+  '................######...........####..........####..##.........',
+  '.................####............###..........#######...........',
+  '.................###.............##...........########..........',
+  '..................##.............#............########..........',
+  '..................##..........................#######...........',
+  '..................#............................#####.#..........',
+  '..................#.................................#...........',
+  '...................................................#............',
+  '................................................................',
+];
+
+// Process constants. Rounded, indicative, and labelled as such in the UI.
+export const STUDIO_FACTORS = {
+  spinKwhPerKg: 3.4,      // yarn prep, spinning, knitting or weaving
+  dyeThermalPerKg: 2.2,   // kg CO2e per kg, boiler fuel for hot wet processing
+  dyeElecKwhPerKg: 3.2,   // pumps, jets, drying, grid powered
+  dyeWaterLPerKg: 120,    // process water for dye and finish
+  makeKwhPerKg: 1.6,      // cut, sew, press
+  trimsKg: 0.25,          // threads, labels, zips, buttons, flat allowance
+  seaPerKgKm: 0.000012,   // container sea freight, kg CO2e per kg per km
+  airPerKgKm: 0.00085,    // long-haul air freight, kg CO2e per kg per km
+  roadKm: 300,            // domestic road leg to the store
+  roadPerKgKm: 0.00011,   // road freight, kg CO2e per kg per km
+  retailKg: 0.28,         // packaging, DC and store overhead allowance
+  cutLoss: 0.85,          // 15 per cent of cloth becomes offcut
+  carKgPerKm: 0.17,       // average petrol car, for the equivalence line
+};
+
+// The four streams the particle field renders, in the same chart-grade hues
+// the footprint dashboard uses for its categories.
+export const STREAMS = [
+  { id: 'fibre', label: 'Fibre', color: '#75821D',
+    note: 'Growing or extruding the raw fibre, cradle to spinning gate.' },
+  { id: 'dyeing', label: 'Dyeing', color: '#635BFF',
+    note: 'The dye house: tonnes of water heated to a simmer to fix colour. The hotspot.' },
+  { id: 'assembly', label: 'Assembly', color: '#B56A00',
+    note: 'Spinning, knitting, cutting and sewing, on the making country’s grid.' },
+  { id: 'transport', label: 'Transport', color: '#C7274A',
+    note: 'Sea freight to Melbourne, the road leg, and the retail allowance.' },
+];
+
+// Supply chain stages for the mapper. share() splits the four streams into six
+// physical stops so the route reads as a journey, not an accounting table.
+export const CHAIN_STAGES = [
+  { id: 'fibre', name: 'Fibre', from: 'fibre', frac: 1,
+    hud: 'Grown or extruded. For cotton, the irrigation decision starts here and never stops mattering.' },
+  { id: 'spin', name: 'Spinning and knitting', from: 'assembly', frac: 0.68,
+    hud: 'Fibre becomes yarn becomes cloth. Steady electricity, all grid, runs the mill.' },
+  { id: 'dye', name: 'The dye house', from: 'dyeing', frac: 1,
+    hud: 'Most of the energy your garment will ever use in production is spent in this shed.' },
+  { id: 'make', name: 'Cut and sew', from: 'assembly', frac: 0.32,
+    hud: 'Hands and machines. Modest energy, most of the labour story, all of the craft.' },
+  { id: 'freight', name: 'Freight', from: 'transport', frac: null, // computed live
+    hud: 'Sea freight barely registers per garment. Put the same box on a plane and watch.' },
+  { id: 'retail', name: 'Retail', from: 'transport', frac: null,
+    hud: 'Packed, trucked, lit and shelved. The last kilometres are short but never free.' },
+];
+
+// ---------------------------------------------------------------------------
+// The garment model. One function the estimator, mapper and scorecard share.
+// blend: { a: fibreId, b: fibreId|null, pctA: 50..100 }
+// Returns per-stream kg CO2e, water, mass and life expectancy.
+// ---------------------------------------------------------------------------
+export function buildGarment({ typeId, sizeId, gsm, blend, originId, freight = 'sea' }) {
+  const F = STUDIO_FACTORS;
+  const type = GARMENT_TYPES.find((t) => t.id === typeId) || GARMENT_TYPES[0];
+  const size = SIZES.find((s) => s.id === sizeId) || SIZES[2];
+  const origin = ORIGIN_BY_ID[originId] || ORIGINS[0];
+  const a = FIBRE_BY_ID[blend.a] || STUDIO_FIBRES[0];
+  const b = blend.b ? FIBRE_BY_ID[blend.b] : null;
+  const wA = b ? Math.min(Math.max(blend.pctA, 50), 100) / 100 : 1;
+  const mix = (k) => a[k] * wA + (b ? b[k] * (1 - wA) : 0);
+
+  const clothKg = (type.area * size.mult * gsm) / 1000;
+  const fibreKg = clothKg / F.cutLoss; // offcuts still had to be grown
+  const massKg = clothKg + F.trimsKg;
+
+  const fibre = fibreKg * mix('ef');
+  const dyeing = clothKg * (F.dyeThermalPerKg + F.dyeElecKwhPerKg * origin.grid);
+  const spin = fibreKg * F.spinKwhPerKg * origin.grid;
+  const make = clothKg * F.makeKwhPerKg * origin.grid;
+  const assembly = spin + make;
+  const perKgKm = freight === 'air' ? F.airPerKgKm : F.seaPerKgKm;
+  const freightKg = massKg * (origin.km * perKgKm + F.roadKm * F.roadPerKgKm);
+  const transport = freightKg + F.retailKg;
+
+  const total = fibre + dyeing + assembly + transport;
+  const waterL = fibreKg * mix('waterL') + clothKg * F.dyeWaterLPerKg;
+  const wears = Math.round(type.wearsBase * mix('wearsMod'));
+  const microMg = mix('microMg');
+  const isBlend = Boolean(b) && wA < 0.95;
+  // Recycling loop of the finished cloth: a true blend jams the shredder line
+  // regardless of what each fibre could do alone.
+  const loop = isBlend ? 'jam' : a.loop;
+  const decayYr = Math.max(a.decayYr, b ? b.decayYr : 0);
+
+  return {
+    type, size, origin, fibreA: a, fibreB: b, pctA: Math.round(wA * 100),
+    clothKg, massKg, total, waterL, wears, microMg, isBlend, loop, decayYr,
+    streams: { fibre, dyeing, assembly, transport },
+    chain: { fibre, spin, dye: dyeing, make, freight: freightKg, retail: F.retailKg },
+    carKm: Math.round(total / F.carKgPerKm),
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Circularity scorecard. A transparent rubric over the built garment plus
+// design choices; a heuristic for intuition, not a certification, and the UI
+// says so. Each row returns earned points, its ceiling, and a plain reason.
+// ---------------------------------------------------------------------------
+export const LOOP_CHOICES = [
+  { id: 'spares', label: 'Repair spares in the hem',
+    blurb: 'Buttons, patch cloth and thread sewn inside, so repair is the easy choice.' },
+  { id: 'seams', label: 'Unpickable seams',
+    blurb: 'Designed for disassembly: trims come off clean, panels part without shredding.' },
+  { id: 'takeback', label: 'Take-back programme',
+    blurb: 'The maker collects it at end of life and has somewhere real to send it.' },
+  { id: 'resale', label: 'Built for resale',
+    blurb: 'Construction and cloth chosen to survive a second owner, not just a season.' },
+];
+
+export function scoreCircularity(g, choices) {
+  const rows = [];
+
+  if (!g.isBlend && g.loop === 'mono') {
+    rows.push({ id: 'mono', label: 'One-fibre construction', pts: 25, max: 25,
+      why: 'A single fibre means a recycler can actually take it.' });
+  } else if (!g.isBlend) {
+    rows.push({ id: 'mono', label: 'One-fibre construction', pts: 15, max: 25,
+      why: `${g.fibreA.name} recycles in theory, rarely in practice. Points for possibility.` });
+  } else {
+    rows.push({ id: 'mono', label: 'One-fibre construction', pts: 0, max: 25,
+      why: `A ${g.pctA}/${100 - g.pctA} blend jams the shredder line. No recycler will divorce these fibres.` });
+  }
+
+  if (g.decayYr <= 2) {
+    rows.push({ id: 'eol', label: 'End of life', pts: 20, max: 20,
+      why: `Buried, it substantially breaks down in about ${g.decayYr < 1 ? 'a year' : Math.round(g.decayYr) + ' years'}.` });
+  } else if (g.loop !== 'jam') {
+    rows.push({ id: 'eol', label: 'End of life', pts: 10, max: 20,
+      why: 'It will not break down, so its only honest exit is the recycling loop.' });
+  } else {
+    rows.push({ id: 'eol', label: 'End of life', pts: 0, max: 20,
+      why: `Recognisable in landfill for centuries, and the blend blocks recycling.` });
+  }
+
+  const durPts = Math.round(Math.min(1, g.wears / 250) * 20);
+  rows.push({ id: 'durability', label: 'Durability', pts: durPts, max: 20,
+    why: `Expected life of about ${g.wears} wears for this cut and cloth.` });
+
+  const spares = choices.includes('spares') ? 8 : 0;
+  const seams = choices.includes('seams') ? 7 : 0;
+  rows.push({ id: 'repair', label: 'Repair and disassembly', pts: spares + seams, max: 15,
+    why: spares + seams ? 'Designed to be fixed and taken apart, not just worn out.' : 'No repair spares, no unpickable seams. Repair is left to the owner’s stubbornness.' });
+
+  rows.push({ id: 'takeback', label: 'Take-back', pts: choices.includes('takeback') ? 10 : 0, max: 10,
+    why: choices.includes('takeback') ? 'Collection with a real destination beats a bin at the door.' : 'No take-back programme. The bin at the store is a bin.' });
+
+  rows.push({ id: 'resale', label: 'Resale value', pts: choices.includes('resale') ? 10 : 0, max: 10,
+    why: choices.includes('resale') ? 'Built well enough to sell twice. The loop closes wide.' : 'Not specified for a second owner.' });
+
+  const score = rows.reduce((n, r) => n + r.pts, 0);
+  const band = score >= 80 ? { id: 'closed', label: 'Closes the loop' }
+    : score >= 60 ? { id: 'near', label: 'Nearly circular' }
+      : score >= 40 ? { id: 'half', label: 'Half-way there' }
+        : { id: 'linear', label: 'Linear by design' };
+  return { rows, score, band };
+}
+
 export const COPY = {
   brand: 'OPENWEAVE',
   strap: 'Fashion brand transparency, in plain English',
@@ -1319,8 +1601,76 @@ export const COPY = {
     sub: 'Which is why Openweave shows you the owner first',
   },
 
+  // The Garment Studio: four working tools that show the speciality, not just
+  // the directory. All figures downstream of buildGarment().
+  studio: {
+    kicker: 'The garment studio',
+    lede: 'The lookup tells you what a brand says. The studio shows you what a garment costs the world, and where. Build one, follow it, then design its second life.',
+    estimator: {
+      idx: '04',
+      title: 'Carbon footprint estimator',
+      sub: 'Build a garment, watch it cost',
+      lede: 'Pick the cut, the size, the cloth and where it is made. Carbon dioxide equivalent gathers around the garment as you work: fibre, dyeing, assembly and transport each emit their own stream.',
+      disclaimer: 'Figures are indicative estimates from published life cycle assessment factors, rounded and simplified so they move live. They support intuition, not audits.',
+      typeLabel: 'The cut',
+      sizeLabel: 'Size',
+      gsmLabel: 'Cloth weight',
+      blendLabel: 'The cloth',
+      blendALabel: 'Main fibre',
+      blendBLabel: 'Second fibre',
+      blendNone: 'None, single fibre',
+      pctTemplate: '{a}% {an} / {b}% {bn}',
+      originLabel: 'Made in',
+      originHint: 'Pick a port on the map, or use the list.',
+      totalLabel: 'Cradle to shop floor',
+      unit: 'kg CO2e',
+      waterLabel: 'Water, cradle to gate',
+      carTemplate: 'About the same as driving {n} km in an average petrol car.',
+      wearsTemplate: 'Expected life around {n} wears.',
+      srField: 'Decorative particle field showing the estimate as drifting motes; the figures are in the readout beside it.',
+    },
+    fabrics: {
+      idx: '05',
+      title: 'Fabric comparator',
+      sub: 'Three cloths on the bench',
+      lede: 'Pin up to three fibres and put them through the same questions at the same time: carbon to make, water to grow, what sheds in the wash, how long it lives, and what happens when you bury it.',
+      pinHint: 'Pin fibres from the shelf. Three at a time.',
+      useThis: 'Cut the garment from this',
+      rows: {
+        ef: { label: 'Carbon to make', unit: 'kg CO2e / kg fibre' },
+        waterL: { label: 'Water to grow', unit: 'litres / kg fibre' },
+        microMg: { label: 'Sheds in the wash', unit: 'mg / wash' },
+        wears: { label: 'Life expectancy', unit: 'relative to cotton' },
+        decayYr: { label: 'Buried breakdown', unit: 'years to break down' },
+      },
+      decayCapNote: '500 means it effectively never leaves; polyester survives centuries.',
+    },
+    chain: {
+      idx: '06',
+      title: 'Supply chain mapper',
+      sub: 'Follow the garment you just built',
+      lede: 'The same garment, traced from fibre to a Melbourne shop floor. Each stop shows what it adds. Switch the freight to air to see why the boat matters.',
+      routeTemplate: '{origin} to {dest}, about {km} km',
+      seaLabel: 'By sea',
+      airLabel: 'By air',
+      stageLabel: 'Stage',
+      hotspotNote: 'The dye house is the hotspot: heating water to fix colour spends more energy than any other step in the making.',
+      airWarnTemplate: 'Air freight multiplies the transport stream by roughly {n}×. Nothing else you choose moves the number this hard, this fast.',
+    },
+    loop: {
+      idx: '07',
+      title: 'Circularity scorecard',
+      sub: 'Design its second life',
+      lede: 'Eight years from now this garment is worn. Whether its loop closes, jams or snaps was decided today, at the bench. Score the design you built above, then change it.',
+      choicesLabel: 'Design choices',
+      scoreLabel: 'Circularity score',
+      rubricNote: 'A transparent design heuristic scored out of 100, not a certification. Every point is explained, and half of them were earned or lost back in the estimator.',
+      maxLabel: 'of {n}',
+    },
+  },
+
   claim: {
-    idx: '04',
+    idx: '08',
     title: 'Claim check',
     sub: 'Paste a green claim, see what holds up',
     lede: 'Marketing is where a brand chooses its words. Paste any sustainability claim and this checks it against the way regulators read it: flagging vague and absolute terms, and the qualifiers each one demands. It reads what you paste. It makes no judgement about any real brand.',
@@ -1338,7 +1688,7 @@ export const COPY = {
   },
 
   materials: {
-    idx: '05',
+    idx: '09',
     title: 'Materials',
     sub: 'What the fabric is telling you',
     lede: 'Half of a garment’s story is the fibre it is cut from. This is a plain read of the common ones, and their trade-offs. It is not a ranking, on purpose.',
@@ -1350,7 +1700,7 @@ export const COPY = {
   },
 
   signals: {
-    idx: '06',
+    idx: '10',
     title: 'What the signals mean',
     sub: 'Disclosure is not the same as doing well',
     lede: 'Openweave measures what a brand tells the public, not whether the brand is good. Read these before you draw a conclusion.',
@@ -1382,7 +1732,7 @@ export const COPY = {
   },
 
   backlog: {
-    idx: '07',
+    idx: '11',
     title: 'Research backlog',
     sub: 'What still needs a human',
     lede: 'This tool is honest about its gaps. Structural facts, parent, segment, headquarters, are verified. Quantified disclosure fields are being filled in over time. Anything marked "Needs research" below is waiting for a checked source.',
@@ -1395,7 +1745,7 @@ export const COPY = {
   },
 
   footer: {
-    method: 'Method: brand ownership from corporate filings and official brand pages. Transparency scores are the Fashion Transparency Index 2023, published by Fashion Revolution, which rates public disclosure only. Climate-target status is drawn from the Science Based Targets initiative dashboard; memberships from The Fashion Pact and B Lab. Per-field disclosure statuses are tracked in the repository and marked "Needs research" until a source is confirmed. Nothing here is assured reporting, a product footprint, or advice about a real brand.',
+    method: 'Method: brand ownership from corporate filings and official brand pages. Transparency scores are the Fashion Transparency Index 2023, published by Fashion Revolution, which rates public disclosure only. Climate-target status is drawn from the Science Based Targets initiative dashboard; memberships from The Fashion Pact and B Lab. Per-field disclosure statuses are tracked in the repository and marked "Needs research" until a source is confirmed. Garment studio figures are indicative estimates assembled from published life cycle assessment literature, freight factors and public grid intensity data, rounded and simplified so they can be manipulated live. Nothing here is assured reporting, a product footprint, or advice about a real brand.',
     attributionLabel: 'Data and attribution',
     attribution: 'This tool reproduces published figures with attribution, and claims none of them as its own. Fashion Transparency Index scores are © Fashion Revolution CIC, used for reference under their public research. Science Based Targets initiative data © SBTi. Certification and membership marks belong to their owners: The Fashion Pact, B Lab (B Corp), and the brands named. Company ownership is a matter of public record. Openweave is an independent, non-commercial reference tool and is not affiliated with, or endorsed by, any brand or organisation named. Every figure links to its source so you can check it. If you own a listing and something is wrong, it can be corrected.',
     sourcesLabel: 'Sources',
@@ -1408,6 +1758,10 @@ export const COPY = {
     { label: 'Lookup', id: 'lookup' },
     { label: 'Compare', id: 'compare' },
     { label: 'Directory', id: 'directory' },
+    { label: 'Estimator', id: 'estimator' },
+    { label: 'Fabrics', id: 'fabrics' },
+    { label: 'Supply chain', id: 'chain' },
+    { label: 'Circularity', id: 'loop' },
     { label: 'Claim check', id: 'claim' },
     { label: 'Materials', id: 'materials' },
     { label: 'Signals', id: 'signals' },
