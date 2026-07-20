@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   ELECTRICITY, ROAD_FUELS, DIET_TYPES, GOODS,
-  AIRPORTS, airportByCode, greatCircleKm, flightBandForKm, HOME_AIRPORT, PT_FARE_CAPS,
+  AIRPORTS, airportByCode, greatCircleKm, flightBandForKm, HOME_AIRPORT, PT_FARE_CAPS, PT_FARE_CAPS_ASOF,
 } from './data/factors';
 import { CONVERSIONS } from './data/vendorMap';
 import { ONBOARD, ENERGY_PRESETS } from './data/copy';
@@ -121,7 +121,7 @@ export function buildProfileFromOnboarding(a) {
       category: 'road', date: period.end, period_months: 12, label: 'Public transport, typical year (onboarding)',
       meta: { mode: 'pt', km: Math.round((ptWeekEff * 52) / CONVERSIONS.ptPerKm.value) },
       notes: 'Fares converted at about ' + Math.round(CONVERSIONS.ptPerKm.value * 100) + 'c per km. Indicative rail factor.'
-        + (capped ? ' Capped at the ' + a.state + ' weekly fare cap of $' + cap.weekly + '.' : ''),
+        + (capped ? ' Weekly spend capped at the ' + a.state + (cap.approx ? ' effective fare ceiling of about $' : ' weekly fare cap of $') + cap.weekly + '.' : ''),
     }));
   }
   // A flight given a month lands in that month as a real point event; one
@@ -557,7 +557,9 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         <div className="ob-ptcap">
           <p className="ob-note ob-ptcap-note">
             <Icon name="leaf" size={14} className="ob-label-i" />
-            {fill(ONBOARD.travel.ptCapNote, { state: a.state, label: ptCap.label, cap: ptCap.weekly })}
+            {ptCap.approx
+              ? fill(ONBOARD.travel.ptCapNoteApprox, { state: a.state, label: ptCap.label, cap: ptCap.weekly, asOf: PT_FARE_CAPS_ASOF })
+              : fill(ONBOARD.travel.ptCapNoteExact, { state: a.state, label: ptCap.label, cap: ptCap.weekly })}
           </p>
           {a.ptWeek > ptCap.weekly && (
             <div className="ob-ptcap-row">
@@ -570,7 +572,9 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
                 {ONBOARD.travel.ptOverride}
               </button>
               {!a.ptCapOverride && (
-                <span className="ob-ptcap-applied">{fill(ONBOARD.travel.ptCapApplied, { cap: ptCap.weekly })}</span>
+                <span className="ob-ptcap-applied">
+                  {fill(ptCap.approx ? ONBOARD.travel.ptCapAppliedApprox : ONBOARD.travel.ptCapApplied, { cap: ptCap.weekly })}
+                </span>
               )}
             </div>
           )}
