@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { PRINCIPLES } from '../data/content';
+import Icon from './Icons';
 import SplitText from './SplitText';
 
 const reveal = {
@@ -11,7 +12,7 @@ export default function Principles() {
   return (
     <section id="principles">
       <div className="canvas">
-        <div className="sec-tag" data-idx="01 / ">My Practice</div>
+        <div className="sec-tag" data-idx="01 / "><Icon name="leaf" size={15} />My Practice</div>
         <h2 className="display princ-headline">
           <SplitText text="How I work" accentIndex={1} />
         </h2>

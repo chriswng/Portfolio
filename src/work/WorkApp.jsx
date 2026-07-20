@@ -12,6 +12,9 @@ import Baseline from './Baseline';
 import CaseStudy from './CaseStudy';
 import SiteFooter from '../components/SiteFooter';
 import Mark from '../components/Mark';
+import Icon from '../components/Icons';
+import Aurora from '../components/Aurora';
+import ContourField from '../components/ContourField';
 
 function WorkNav() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -175,8 +178,15 @@ export default function WorkApp() {
       <main id="main-content" className="page-work">
       <section id="work-intro">
         <div className="bloom-wrap" aria-hidden="true"><div className="bloom bloom-a" /><div className="bloom bloom-b" /><div className="bloom bloom-c" /></div>
+        <Aurora
+          colorStops={['#635BFF', '#B5C42B', '#FF9500', '#FF3B60']}
+          amplitude={0.6}
+          blend={0.5}
+          opacity={0.2}
+        />
+        <ContourField />
         <div className="canvas" style={{ position: 'relative', zIndex: 1 }}>
-          <div className="sec-tag" data-idx="01 / ">Work Samples</div>
+          <div className="sec-tag" data-idx="01 / "><Icon name="chart" size={15} />Work Samples</div>
           <h1 className="wi-title display"><SplitText text="Frameworks" /> <SplitText text="in practice." accentIndex={1} /></h1>
           <p className="wi-sub">Four analytical frameworks, each shown as a live working example drawn from production engagements across infrastructure, built environment, and government. Select a tab to explore the methodology.</p>
           <a href="../" className="wi-back"><span>←</span>&nbsp;Back to profile</a>
@@ -214,7 +224,7 @@ export default function WorkApp() {
 
       <section id="casestudy">
         <div className="canvas">
-          <div className="sec-tag" data-idx="02 / ">Case Study · Baseline to Boardroom</div>
+          <div className="sec-tag" data-idx="02 / "><Icon name="book" size={15} />Case Study · Baseline to Boardroom</div>
           <h2 className="display" style={{ fontSize: 'clamp(1.8rem,5vw,3.5rem)', marginTop: '1.2rem', marginBottom: '1rem' }}>
             <SplitText text="Baseline to boardroom" accentIndex={2} />
           </h2>

@@ -315,8 +315,7 @@
 /* One visual language across the page: round line art with a single matcha
    accent shape. Stroke inherits its context colour; the accent is painted
    from the brand token, so every glyph re-tints from one place. */
-.fpi{ display:inline-block; vertical-align:middle; flex-shrink:0; }
-.fpi-fill{ fill:var(--matcha); }
+/* .fpi / .fpi-fill live in global.css now that every page draws them. */
 
 /* A step heading wears its category glyph in a soft matcha badge. */
 .ob-stephead{ display:flex; align-items:center; gap:0.75rem; margin-bottom:0.5rem; }

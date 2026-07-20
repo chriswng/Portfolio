@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { EXPERIENCE, EDUCATION } from '../data/content';
 import SplitText from './SplitText';
+import Icon from './Icons';
 import { prefersReducedMotion } from '../utils/media';
 
 export default function Experience() {
@@ -64,7 +65,7 @@ export default function Experience() {
   return (
     <section id="experience">
       <div className="canvas">
-        <div className="sec-tag" data-idx="03 / ">Experience</div>
+        <div className="sec-tag" data-idx="03 / "><Icon name="building" size={15} />Experience</div>
         <h2 className="display" style={{ fontSize: 'clamp(2rem,6vw,4.5rem)', marginTop: '1.2rem' }}>
           <SplitText text="Track record" accentIndex={1} />
         </h2>
