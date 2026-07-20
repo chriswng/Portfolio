@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { NAV_LINKS } from '../data/content';
 import { prefersReducedMotion } from '../utils/media';
+import Mark from './Mark';
 
 export function Grain() {
   return <div className="grain-overlay" aria-hidden="true" />;
@@ -57,7 +58,7 @@ export function Nav() {
   return (
     <nav className="nav" aria-label="Primary" ref={navRef}>
       <div className="nav-inner canvas">
-        <a href="#about" className="nav-logo" onClick={(e) => onClick(e, '#about')}>./</a>
+        <a href="#about" className="nav-logo" onClick={(e) => onClick(e, '#about')}><Mark label="Christopher Wang, home" /></a>
         <div className={`nav-links${menuOpen ? ' open' : ''}`} role="navigation">
           {NAV_LINKS.map((l) => {
             const isActive = !l.external && active === l.href.slice(1);

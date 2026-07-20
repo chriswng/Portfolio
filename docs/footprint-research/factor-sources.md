@@ -48,14 +48,33 @@ Derived modes in the tool:
 - Rideshare/taxi 0.232 kg/km = petrol car at 8.0 L/100km fleet average,
   fuel cycle included; deadheading excluded (understates, noted on page).
 - Public transport 0.035 kg/pkm = UK Government national rail factor,
-  indicative proxy pending a published NSW per-pkm figure.
+  indicative proxy pending a published NSW per-pkm figure. **July 2026: note
+  corrected.** The old note claimed TfNSW renewable procurement "lowers the real
+  figure"; that is a market-based argument inside an otherwise location-based
+  tool and points the wrong way for the physical grid. On the NSW grid
+  (coal-heavy, 0.67 kg/kWh incl scope 3) the real Sydney rail figure is about
+  twice this proxy, roughly 0.074 to 0.079 kg/pkm (Sydney Trains / NSW TrainLink
+  2018-19 operational data via Leon Arundell's analysis, secondary source). On a
+  market-based basis (Sydney Trains 100% renewable electricity contracts from
+  2021, $1.9bn PPA from 2027) it is near zero. The note now states both bases;
+  the factor stays 0.035 because the best AU number is secondary-source and PT is
+  a small, fare-capped line. A published TfNSW/BITRE per-pkm figure remains
+  queued.
 
-## Flights: UK Government (DESNZ/DEFRA) GHG Conversion Factors 2026 (June 2026)
+## Flights: UK Government (DESNZ/DEFRA) GHG Conversion Factors 2025 edition
 
-Per passenger-km, WITH radiative forcing (1.7 multiplier, AR6-based; reduced
-from 1.9 in the 2025 methodology). The 2025 edition carried a large one-off
-correction replacing COVID-era load factors (passenger factors down 16-42%);
-2026 carries those forward essentially unchanged.
+Per passenger-km, WITH radiative forcing. **July 2026 correction:** the code
+previously cited the "2026" edition, but every shipped value matches the
+**2025** full-set workbook (saved as
+`docs/footprint-research/ghg-conversion-factors-2025-full-set.xlsx`,
+"Business travel- air" tab) cell for cell: domestic average 0.22928, short-haul
+economy 0.12576 and business 0.18863, long-haul economy 0.11704, premium
+0.18726, business 0.33940, first 0.46814. The workbook is stamped Year 2025,
+next publication June 2026. The 2026 edition was not reachable (gov.uk 403), so
+the page now cites the edition it can verify. The with-RF to without-RF ratio in
+the 2025 workbook is about 1.69 (domestic 0.22928 with, 0.13552 without); the
+method still shows the without-RF view as the total divided by 1.7 and labels
+it derived.
 
 | Band | Economy | Premium | Business | First |
 |---|---|---|---|---|
@@ -94,6 +113,18 @@ correction replacing COVID-era load factors (passenger factors down 16-42%);
   open-access paper.
 - Scarborough et al. 2023 (Nature Food 4:565-574) confirms the gradient on
   Poore & Nemecek LCA data (vegans ~25% of high meat-eaters).
+- **July 2026 Australian cross-check (documented, not shipped as numbers).** No
+  Australian source gives a by-diet-type gradient to replace Scarborough. The
+  two headline AU figures use different boundaries and are not comparable to
+  Scarborough or each other: Hendrie et al. 2014 (Nutrients 6(1):289,
+  doi 10.3390/nu6010289) reports the average AU diet at 14.5 kg CO2-e/day on a
+  top-down EEIO boundary (red meat 8.0/day); Ridoutt et al. 2021 (Nutrients
+  13(4):1122, doi 10.3390/nu13041122) reports 3.4 kg CO2-e/day on the GWP*
+  metric (ADG-consistent diet -42%). Both anchor size and direction only. All
+  snippet-verified (full text 403). The method note now says the AU studies
+  agree on direction but sit on different boundaries, so they anchor rather than
+  replace. Re-basing on AU data stays queued and, on current evidence, cannot be
+  done without mixing metrics.
 - Per-kg reference (Poore & Nemecek 2018 via OWID, GWP100 incl. land use):
   beef (beef herd) 99.5, lamb 39.7, cheese 23.9, pork 12.3, poultry 9.9,
   eggs 4.7, rice 4.5, tofu 3.2. Note: the widely quoted "beef ~60" is the
@@ -108,6 +139,77 @@ correction replacing COVID-era load factors (passenger factors down 16-42%);
 - 1.5°C lifestyle budget: 2.5 t by 2030, 1.4 by 2040, 0.7 by 2050
   (IGES / Aalto / D-mat 1.5-Degree Lifestyles 2019; Hot or Cool Institute
   2021 update).
+
+## Wider basket (screening): goods & services, hotels, waste (updated July 2026)
+
+Shipped as the optional "A fuller picture" panel (`src/footprint/data/screening.js`,
+set id `epa-scv1.3-defra2025`), kept outside the audited total and labelled
+screening throughout.
+
+**July 2026 accuracy-audit update:**
+- **FX bridge to RBA.** The AUD/USD rate is now 0.6449, the RBA F11.1 daily
+  series averaged over calendar 2025 (read from the RBA workbook saved here,
+  251 trading days, low 0.598, high 0.672), replacing the earlier "indicative
+  market, not RBA" figure of 0.65.
+- **Hotels to DEFRA 2025.** Vintage confirmed against the local 2025 full-set
+  workbook; AU 35, JP 39, KR 55.8, SG 24.5, PH 54.3, GB 10.4 are unchanged. The
+  country list expanded from 6 to 14 to match the flight picker: ID 62.7,
+  TH 43.4, VN 38.5, MY 61.5, CN 53.5, HK 51.5, IN 58.9, US 16.1 added, all read
+  from the workbook.
+- **Three new goods spend lines**, each read from the EPA v1.3.0 CSV held here,
+  "with margins" column, one named NAICS subsector each (the same rule as the
+  original seven): banking & insurance 522110 commercial banking 0.059
+  (insurance carriers 524126 0.033, noted lower); education 611310 colleges &
+  universities 0.14 (schools 611110 0.186, noted higher); home improvements
+  236118 residential remodelers 0.211.
+- **Waste to landfill line** (new, activity-based like hotels): DEFRA 2025
+  "Refuse: household residual waste", landfill column, 497 kg CO2-e/tonne =
+  0.497 kg/kg, read from the local workbook. A stated proxy for the preferred
+  DCCEEW NGA waste factors (still gov-blocked). Survey asks kg/week to landfill;
+  the National Waste Report (~512 kg municipal waste per capita/yr, ~1/3
+  landfilled) is the Australian anchor for the hint, not a shipped factor.
+- **AU input-output replacement queued.** The University of Sydney / IELab
+  spend-based factors (kg CO2-e per AUD, ISAPC, the Climate Active set) would
+  replace the US EPA factors and remove the FX bridge. Free CC-BY-SA 2019 basic-
+  price version at Zenodo 15524908; current-year purchaser-price via
+  FootprintLab. Per-category values not readable this session (all hosts 403). Re-verified in a follow-up session where egress reached
+search and package mirrors but the EPA host, gov.uk and the RBA/ATO were all
+403; values came from faithful hash-matched mirrors and were confirmed by
+independent parses agreeing to the cent (three sourcing agents plus an
+adversarial reconciler per target).
+
+Goods & services: US EPA Supply Chain GHG Emission Factors v1.3.0, NAICS-6,
+2022 USD, "with margins" column, kg CO2-e per USD (DOI 10.23719/1531143). One
+named subsector each, never a group average:
+- Clothing & footwear (apparel 315) 0.12; footwear/leather 316 is 0.282, noted
+- Electronics & gadgets (audio/video 3343) 0.081; computers 334111 0.058 and
+  semiconductors 334413 0.215 differ widely, so not averaged into one
+- Household appliances (3352) 0.172
+- Furniture & homewares (337) 0.188
+- Personal care & cosmetics (325620) 0.194; soap/detergent 0.355 kept out
+- Health & medical (health services 621) 0.083; pharma prep 325412 is 0.099
+- Recreation & entertainment (arts/recreation 71) 0.086
+Food services 722 (0.194) is deliberately excluded: diet already prices food,
+and spend-pricing it again would double count. Two independent parses agreed to
+0.001 kg; a single authoritative dataset lineage (the GitHub mirrors are
+byte-identical copies of the one EPA file, counted as one source, not many).
+
+Currency: 1 AUD ~ 0.65 USD, indicative calendar-2025 market average (Exchange
+Rates UK 0.6449, corroborated by exchange-rates.org 0.6451). A market price,
+not an emission factor, and NOT the RBA F11.1 or ATO figure (both 403), so it
+is labelled indicative. The 2022-USD-versus-current-AUD price change is not
+adjusted for (screening). Re-source from RBA F11.1 or ATO at the next refresh.
+
+Hotels: UK Government (DESNZ / DEFRA) hotel-stay set, kg CO2-e per room-night by
+country, 2024 edition. Confirmed across three independent transcriptions
+(carbonr R `sysdata`, greenlang `business_travels.csv`, nzi-pro Standard UK
+template) and identical across the 2022 to 2024 editions; UK also witnessed by
+Circular Ecology (10.4). Values: AU 35, JP 39, KR 55.8, SG 24.5, PH 54.3,
+UK 10.4 (a UK London row of 11.5 also exists). DEFRA publishes no rest-of-world
+row, so "Somewhere else" uses a tool-chosen mid of 40, labelled non-DEFRA. The
+2025 and 2026 workbooks were unreachable (403), so 2024 is the stated vintage;
+confirm at refresh, since the older ~2019 vintage was far higher (values do
+move between methodology revisions).
 
 ## Data quality tiers and uncertainty bands (July 2026 addition)
 
@@ -128,6 +230,27 @@ allows package registries and search snippets only; gov.uk, dcceew.gov.au,
 epa.gov and all factor mirrors returned 403). Dataset identities verified;
 values not retrieved; nothing shipped from memory. Details and scores in
 `improvement-scoring.md`. The unblock list:
+
+**Update, July 2026 accuracy audit: waste now shipped (DEFRA proxy).** The
+DEFRA 2025 full-set workbook is now saved in this folder, so the household
+residual-waste landfill factor (497 kg CO2-e/t) is read directly and shipped as
+a stated proxy, the same way flights and hotels use DEFRA. The preferred
+Australian DCCEEW NGA per-stream landfill factors are still gov-blocked and
+remain queued to swap in at the next reachable session. See
+`accuracy-audit-2026.md` for the full audit and scored shortlist.
+
+**Still queued after the July 2026 audit** (see `accuracy-audit-2026.md`):
+- **AU IELab spend factors** to replace US EPA and drop the FX bridge (Zenodo
+  15524908 / FootprintLab; per-category values not readable this session).
+- **AU rail per-pkm** to replace the UK proxy (TfNSW/Sydney Trains report or
+  BITRE; only secondary-source ~0.074-0.079 kg/pkm surfaced).
+- **DCCEEW NGA waste factors** to replace the DEFRA waste proxy.
+- **Pets** (dog ~770, cat ~310 kg CO2-e/yr, Berners-Lee / Okin 2017): ship as
+  indicative once a primary can be held.
+- **Vehicle embodied** amortised (ICE ~6-8 t, EV ~10-14 t; Ricardo, Polestar
+  LCAs): snippet-only, heavier survey.
+- **Mains water** (DEFRA 0.362 kg/kL, held locally): verifiable but tiny
+  (~0.07 t/household); deferred on survey-friction grounds, not verification.
 
 - **Hotel stay** (UK Gov conversion factors, hotel stay tab): AU, JP, KR,
   SG, PH per room-night + fallback row label. Basis verified: room-night,
@@ -155,8 +278,13 @@ values not retrieved; nothing shipped from memory. Details and scores in
 2. UK conversion factors (new edition ~June): flights (all bands/cabins),
    freight air/sea/HGV.
 3. Re-check the flagged single-mirror values against the primary workbooks.
-4. Work the verification-blocked queue above: hotels, spend screening,
-   waste. Each is design-complete and waiting on numbers.
+4. In a session with dcceew.gov.au, epa.nsw.gov.au and abs.gov.au egress: swap
+   the DEFRA waste proxy for the NGA Factors waste tables (per-stream landfill
+   factors, scope and gas-capture basis) plus an ABS Waste Account per-capita
+   to-landfill tonnage. The wider-basket AUD/USD rate is now RBA F11.1
+   (cal-2025 average 0.6449, read from the local workbook); refresh it each
+   year. Highest-value queued swap: the AU IELab/Climate Active spend factors
+   (Zenodo 15524908 / FootprintLab) to replace US EPA and remove the FX step.
 5. Refresh seed profile with the new financial year's bills and itineraries.
 6. Benchmarks: EDGAR annual report, DCCEEW quarterly inventory.
 7. Entries pin their factor set id (`factor_set`); closed years are never

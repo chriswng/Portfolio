@@ -7,6 +7,7 @@ import { INTRO, MODE, SHARE, DATA_CTRL, TOASTS, YEARS, METHOD_LINK, fmtT } from 
 import { DASH_EXTRA, fill } from './data/storyCopy';
 import { categoryById } from './data/factors';
 import { aggregate, projectPathway, maccData, rolloverProfile } from './lib/engine';
+import { widerEstimate } from './lib/screening';
 import {
   loadOwnProfile, saveOwnProfile, clearOwnProfile, exportProfile, parseImported,
   encodeSnapshot, decodeSnapshot, storySeen, markStorySeen,
@@ -14,6 +15,7 @@ import {
 import { prefersReducedMotion } from '../utils/media';
 import Story from './story/Story';
 import Dashboard from './Dashboard';
+import WiderPicture from './WiderPicture';
 import Plan from './Plan';
 import Onboarding from './Onboarding';
 import { FootprintNav, FootprintFooter } from './Nav';
@@ -123,6 +125,9 @@ export default function FootprintApp() {
   const agg = useMemo(() => aggregate(profile), [profile]);
   const macc = useMemo(() => maccData(profile, agg), [profile, agg]);
   const pathway = useMemo(() => projectPathway(profile, agg), [profile, agg]);
+  // The optional wider basket (goods and services, hotel nights): screening
+  // grade, priced outside the audited aggregate above.
+  const wider = useMemo(() => widerEstimate(profile), [profile]);
   // The audit not currently on screen, aggregated for the comparison overlay.
   // A closed year compares against the open one (year over year); the open
   // year compares against the worked example, and vice versa.
@@ -152,6 +157,8 @@ export default function FootprintApp() {
       }));
     }
   };
+
+  const onWiderChange = (nextWider) => updateOwn((p) => ({ ...p, wider: nextWider }));
 
   const onExport = () => { exportProfile(own); };
   const onImportFile = (imported) => {
@@ -404,6 +411,17 @@ export default function FootprintApp() {
         )}
 
         <Dashboard agg={agg} period={profile.period} compareAgg={compareAgg} comparePeriod={comparePeriod} isExample={isExample} />
+        {!archived && (
+          <WiderPicture
+            wider={profile.wider}
+            estimate={wider}
+            coreTotal={agg.total}
+            coreBand={agg.uncertainty ? agg.uncertainty.band : 0}
+            isExample={isExample}
+            onChange={isExample ? undefined : onWiderChange}
+            onStart={onStart}
+          />
+        )}
         {!archived && <Plan macc={macc} pathway={pathway} plan={profile.plan} onToggle={onToggle} />}
         {!isExample && !archived && (
           <DataControls onExport={onExport} onImportFile={onImportFile} onReset={onReset} onShare={onShare} />
