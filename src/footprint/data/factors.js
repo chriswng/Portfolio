@@ -268,17 +268,60 @@ export function flightBandForKm(km, international) {
 }
 
 // ---------------------------------------------------------------------------
-// Weekly public-transport fare caps by state. Spend above the cap buys no
-// extra travel, so annualising uncapped weekly spend overstates both the money
-// and the kilometres. Only capped where a single, published, easy-to-maintain
-// figure exists; everywhere else the survey leaves spend uncapped and says so.
+// Effective weekly public-transport spend ceiling by state. Spend above the
+// ceiling buys no extra travel, so annualising uncapped weekly spend overstates
+// both the money and the kilometres. Only NSW publishes a true adult weekly
+// travel cap; every other network caps differently (daily caps, flat fares, or
+// fare-free periods), so those ceilings are DERIVED and approximate, marked
+// `approx`. Public-transport spend is a screening input (±30% tier) regardless,
+// so an approximate ceiling is honest here; the point is to avoid absurd
+// annualisation, not to price a fare to the cent. Figures move with fare
+// policy, so they carry an as-at date and the note says so.
 // ---------------------------------------------------------------------------
+export const PT_FARE_CAPS_ASOF = 'July 2026';
+
 export const PT_FARE_CAPS = {
   NSW: {
-    weekly: 50,
-    label: 'Adult Opal weekly travel cap',
+    weekly: 50, approx: false,
+    label: 'the $50 Adult Opal weekly travel cap',
     source: 'Transport for NSW, Opal fares: Adult weekly travel capped at $50 (plus separate daily and Sunday caps).',
     url: 'https://transportnsw.info/tickets-opal/opal/fares-payments/adult-fares',
+  },
+  VIC: {
+    weekly: 75, approx: true,
+    label: 'myki daily fare caps',
+    source: 'Public Transport Victoria: full-fare myki daily cap about $11.40 (weekday), $8.00 (weekend); a heavy week is bounded near $75. Victorian fares were half price from mid-2026, so this is the undiscounted ceiling.',
+    url: 'https://www.ptv.vic.gov.au/tickets/myki/myki-money/',
+  },
+  QLD: {
+    weekly: 10, approx: true,
+    label: 'the flat 50c Translink fare',
+    source: 'Translink: a permanent flat 50c fare per trip statewide (since February 2025), so even heavy weekly use stays around $10.',
+    url: 'https://translink.com.au/tickets-and-fares/50-cent-fares',
+  },
+  WA: {
+    weekly: 50, approx: true,
+    label: 'Transperth daily and capped fares',
+    source: 'Transperth: $7 DayRider and the capped "Go Anywhere" fares (from January 2026) bound a heavy week near $50.',
+    url: 'https://www.transperth.wa.gov.au/tickets-fares/fares',
+  },
+  SA: {
+    weekly: 50, approx: true,
+    label: 'the Adelaide Metro daily two-trip cap',
+    source: 'Adelaide Metro: fares are capped at two trips a day (about $8 full fare), bounding a heavy week near $50.',
+    url: 'https://www.adelaidemetro.com.au/fares-and-passes/adelaide-metro-fares',
+  },
+  TAS: {
+    weekly: 15, approx: true,
+    label: 'fare-free Metro buses',
+    source: 'Metro Tasmania: urban bus travel is fare-free until 30 June 2027, so most weekly spend is nil; the small ceiling covers regional coach travel.',
+    url: 'https://www.metrotas.com.au/fares/',
+  },
+  NT: {
+    weekly: 20, approx: true,
+    label: 'flat Darwinbus fares',
+    source: 'Darwinbus: low flat fares (about $3 for three hours, day and weekly tickets), bounding a heavy week near $20.',
+    url: 'https://nt.gov.au/driving/public-transport-cycling/public-buses',
   },
 };
 
