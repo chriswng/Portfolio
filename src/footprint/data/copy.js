@@ -255,8 +255,8 @@ export const METHOD = {
   sources: {
     title: 'Where the numbers come from',
     paras: [
-      'Australian electricity, gas and road-fuel factors are from the Australian Government (DCCEEW) National Greenhouse Accounts Factors. Flights and freight use the UK Government conversion factors, published by DESNZ and still widely known as the DEFRA factors, because they are the most complete public source for aviation by distance and cabin.',
-      'Diet is an estimate, not a precise figure: it uses published per-day values by diet type, and the same direction shows up in Australian studies. Public transport uses a UK rail factor as a stand-in until a published NSW per-passenger figure is available. The optional detail is the coarsest part: goods and services are a spend-based screening estimate from the US EPA Supply Chain factors converted to Australian dollars, and hotel nights use the UK Government (DEFRA) per-room-night factors by country. Both are labelled that way. Every factor and its source is in the tables below.',
+      'Australian electricity, gas and road-fuel factors are from the Australian Government (DCCEEW) National Greenhouse Accounts Factors. Flights and freight use the UK Government conversion factors 2025 edition, published by DESNZ and still widely known as the DEFRA factors, because they are the most complete public source for aviation by distance and cabin. The flight numbers here match that workbook cell for cell; the June 2026 edition could not be reached to check, so the page cites the edition it can stand behind.',
+      'Diet is an estimate, not a precise figure: it uses published UK per-day values by diet type, chosen because they separate the six diet patterns cleanly. Australian studies find the same direction (CSIRO and Ridoutt), but on different accounting boundaries, so they anchor the size rather than replace the numbers. Public transport uses a UK rail factor as a stand-in until a published Australian per-passenger figure is available. On the physical NSW grid the real rail figure is higher than this proxy, because the grid is coal-heavy; measured against Sydney Trains renewable electricity contracts it is close to zero. Public transport is a small line, so the choice barely moves a total. The optional detail is the coarsest part: goods and services are a spend-based screening estimate from the US EPA Supply Chain factors converted to Australian dollars, and hotel nights use the UK Government (DEFRA) per-room-night factors by country. Both are labelled that way. Every factor and its source is in the tables below.',
     ],
   },
   quality: {
@@ -310,9 +310,8 @@ export const METHOD = {
         head: 'Not counted, even with the optional detail on',
         items: [
           'Accommodation other than hotels (short-stay rentals, hostels, staying with friends). Hotel nights are counted, but at a country-average factor, not the specific place.',
-          'Water at home, and the emissions embodied in building or renovating, or in a big one-off purchase like a car.',
           'Financial and professional services, and any spending the screening factors above do not cover. The goods estimate is a screening tool, so it catches the shape of the basket, not every dollar.',
-          'Household waste to landfill. The Australian landfill factors could not be verified to this page\'s standard in this edition, so it stays out rather than ship an unchecked number, and is queued for the next factor refresh.',
+          'Still queued, because the numbers could not be verified to this page’s standard in this edition: household waste to landfill, pets (dog and cat food), the embodied emissions of building or buying a car or a home, mains water supply, an Australian spend-based factor set to replace the US one, and a published Australian rail figure to replace the UK proxy. Each stays out rather than ship an unchecked number, and is recorded in the research trail for the next refresh.',
         ],
       },
     ],
