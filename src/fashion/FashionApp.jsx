@@ -7,11 +7,12 @@
 // The one quantified signal is the Fashion Transparency Index 2023 score; the
 // rest is honestly marked "Needs research" until a source is confirmed.
 //
-// Structure: Hero (search) -> Lookup -> Compare -> Directory (brands +
-// corporate groups) -> Garment studio (estimator, fabrics, chain, loop) ->
-// Claim check -> Materials -> What the signals mean -> Research backlog ->
-// Footer. State (selected brand + compare set) is deep-linked into the URL
-// hash, so any lookup is shareable and the back button works.
+// Structure: Hero (search) -> Lookup -> Compare -> Lens (what you can't
+// know) -> Directory (brands + corporate groups) -> Spotlight + ownership
+// map -> Field guide (materials, certifications, regulation, claim check as
+// tabs) -> What the signals mean -> Research backlog + change log -> Footer.
+// State (selected brand + compare set) is deep-linked into the URL hash, so
+// any lookup is shareable and the back button works.
 //
 // Chrome is the site's own: the shared nav (NAV_LINKS + Mark), grain and
 // design tokens come from global.css, exactly as the footprint pages do.
@@ -22,6 +23,7 @@ import {
   MULTI_GROUPS, segmentCount, ftiBand, groupFamily,
   digLinks, analyseClaim, SPECIMEN_CLAIMS, ACCC_PRINCIPLES, CLAIM_VERDICTS,
   COMMITMENT_INFO, FIBRES, CERTS, REGULATION, VERIFIED_AS_OF,
+  LENS_CONCERNS, LENS_READING, CHANGELOG,
   deriveMonogram, segmentStyle, logoUrl, GROUP_DOMAIN,
 } from './data';
 import { NAV_LINKS } from '../data/content';
@@ -30,7 +32,6 @@ import Mark from '../components/Mark';
 import Icon from '../components/Icons';
 import Aurora from '../components/Aurora';
 import ContourField from '../components/ContourField';
-import Studio from './Studio';
 import { prefersReducedMotion } from '../utils/media';
 
 const MAX_COMPARE = 3;
@@ -164,16 +165,28 @@ function beforeYouBuy(brand, family) {
 // corporate parents, which are not brand records).
 // =========================================================================
 function BrandLogo({ brand, name, segment, domain, size = 'md', className = '' }) {
+  const [source, setSource] = useState(0);
   const [loaded, setLoaded] = useState(false);
-  const [failed, setFailed] = useState(false);
   const mark = brand ? brand.mono : deriveMonogram(name || '');
   const seg = brand ? brand.segment : segment;
   const dom = domain || (brand ? brand.domain : null);
   const style = segmentStyle(seg);
-  const src = !failed ? logoUrl(dom) : null;
-  // The monogram is always rendered as the base. When a real logo exists it
-  // fades in on top once it has actually loaded, so there is never an empty
-  // tile: a missing or failed logo simply leaves the monogram showing.
+  const src = logoUrl(dom, source);
+
+  // A card can be re-used for a different brand (the lookup card), so the
+  // provider walk restarts whenever the domain changes.
+  useEffect(() => { setSource(0); setLoaded(false); }, [dom]);
+
+  // The monogram is always rendered as the base. Providers are tried in
+  // LOGO_SOURCES order: a load error moves to the next source, and so does a
+  // "success" that is really a placeholder (Google's s2 endpoint serves a
+  // tiny generic globe instead of a 404, so anything under 24px is a miss).
+  // Only a real icon fades in over the monogram; if every source misses, the
+  // monogram simply stays.
+  const onLoad = (e) => {
+    if (e.target.naturalWidth >= 24) setLoaded(true);
+    else setSource((s) => s + 1);
+  };
   return (
     <span
       className={`ow-logo s-${size} t-${style.type} l-${mark.length} ${loaded ? 'img-on' : ''} ${className}`}
@@ -188,8 +201,8 @@ function BrandLogo({ brand, name, segment, domain, size = 'md', className = '' }
           alt=""
           loading="lazy"
           decoding="async"
-          onLoad={() => setLoaded(true)}
-          onError={() => setFailed(true)}
+          onLoad={onLoad}
+          onError={() => setSource((s) => s + 1)}
         />
       )}
     </span>
@@ -720,6 +733,128 @@ function CompareSection({ compareIds, onRemove, onClear, onSelect }) {
 }
 
 // =========================================================================
+// The lens — "what you can't know". The decision aid that keeps the
+// no-ranking rule: the user picks what they care about, and the section
+// re-reads the selected brand's disclosure statuses against those concerns.
+// It scores the completeness of what a shopper can verify, never the brand.
+// =========================================================================
+const LENS_KEY = 'ow-lens-v1';
+
+// Reading -> status-pill palette (the same classes StatusPill uses).
+const LENS_PILL = { open: 'disclosed', part: 'partial', parent: 'parent', dark: 'notFound', unverified: 'research' };
+
+function LensSection({ selected }) {
+  const brand = selected ? BRAND_BY_ID[selected] : null;
+  const [picked, setPicked] = useState(() => {
+    try {
+      const raw = JSON.parse(localStorage.getItem(LENS_KEY) || 'null');
+      if (Array.isArray(raw)) {
+        const valid = raw.filter((id) => LENS_CONCERNS.some((c) => c.id === id));
+        if (valid.length) return valid;
+      }
+    } catch { /* ignore */ }
+    return ['climate', 'supply', 'ownership'];
+  });
+
+  const toggle = (id) => {
+    setPicked((prev) => {
+      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
+      try { localStorage.setItem(LENS_KEY, JSON.stringify(next)); } catch { /* ignore */ }
+      return next;
+    });
+  };
+
+  const concerns = LENS_CONCERNS.filter((c) => picked.includes(c.id));
+  const counts = { n: 0, open: 0, parent: 0, dark: 0, unverified: 0 };
+  const blocks = brand
+    ? concerns.map((c) => {
+      if (c.ownership) {
+        counts.n += 1; counts.open += 1;
+        const text = brand.provenance
+          || `Owned by ${brand.parent.replace(/\.$/, '')}. Verified as of ${VERIFIED_AS_OF}.`;
+        return { c, rows: [{ id: 'ownership', label: 'Ownership', text, reading: LENS_READING.disclosed }] };
+      }
+      const rows = c.signals.map((sid) => {
+        const field = SIGNAL_FIELDS.find((f) => f.id === sid);
+        const reading = LENS_READING[brand.signals[sid]] || LENS_READING.research;
+        counts.n += 1;
+        if (reading.id === 'open' || reading.id === 'part') counts.open += 1;
+        else if (reading.id === 'parent') counts.parent += 1;
+        else if (reading.id === 'dark') counts.dark += 1;
+        else counts.unverified += 1;
+        return { id: sid, label: field ? field.label : sid, help: field ? field.help : '', reading };
+      });
+      return { c, rows };
+    })
+    : [];
+
+  return (
+    <section className="ow-section ow-reveal" id="lens">
+      <div className="ow-wrap">
+        <SecHead c={COPY.lens} />
+        <p className="ow-lede">{COPY.lens.lede}</p>
+
+        <div className="ow-lens-pick">
+          <span className="lbl">{COPY.lens.pickLabel}</span>
+          {LENS_CONCERNS.map((c) => (
+            <button key={c.id} className="ow-chip alt" aria-pressed={picked.includes(c.id)} onClick={() => toggle(c.id)}>
+              {c.label}
+            </button>
+          ))}
+        </div>
+
+        {!brand ? (
+          <div className="ow-empty">
+            <h3>{COPY.lens.emptyTitle}</h3>
+            <p>{COPY.lens.emptyBody}</p>
+          </div>
+        ) : concerns.length === 0 ? (
+          <div className="ow-empty"><p>{COPY.lens.noneChecked}</p></div>
+        ) : (
+          <>
+            <div className="ow-lens-brand">
+              <BrandLogo brand={brand} size="md" />
+              <div>
+                <span className="bn">{brand.name}</span>
+                <span className="bp">{brand.parent}</span>
+              </div>
+            </div>
+            <div className="ow-lens-grid">
+              {blocks.map(({ c, rows }) => (
+                <div className="ow-lens-card ow-card-soft" key={c.id}>
+                  <h3>{c.label}</h3>
+                  <p className="why">{c.why}</p>
+                  <div className="rows">
+                    {rows.map((r) => (
+                      <div className="ow-lens-row" key={r.id}>
+                        <div>
+                          <span className="sname">{r.label}</span>
+                          <span className="shelp">{r.text || r.help}</span>
+                        </div>
+                        <span className={`ow-pill ${LENS_PILL[r.reading.id]}`}>{r.reading.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <p className="ow-lens-summary">
+              {COPY.lens.summaryTemplate
+                .replace('{n}', counts.n)
+                .replace('{open}', counts.open)
+                .replace('{parent}', counts.parent)
+                .replace('{dark}', counts.dark)
+                .replace('{unverified}', counts.unverified)}
+            </p>
+            <p className="ow-lens-note">{COPY.lens.note}</p>
+          </>
+        )}
+      </div>
+    </section>
+  );
+}
+
+// =========================================================================
 // Directory — brands view + corporate groups view
 // =========================================================================
 function DirTag({ brand, onSelect }) {
@@ -898,16 +1033,100 @@ function StatBand() {
 }
 
 // =========================================================================
-// Spotlight (form: a dark editorial band for pacing and emphasis)
+// Spotlight (a dark editorial band) + the ownership map: the concentration
+// fact made explorable. A squarified treemap of every multi-brand owner,
+// sized by brand count only (no invented metric), each tile opening the
+// group in the directory.
 // =========================================================================
-function Spotlight() {
+
+// Squarified treemap layout (Bruls et al.), kept plain enough to hand-check:
+// rows of tiles are laid along the shorter side of the remaining space,
+// keeping every tile near-square. Returns rects in the same units as w/h.
+function squarifyLayout(values, width, height) {
+  const total = values.reduce((n, v) => n + v, 0) || 1;
+  const scaled = values.map((v) => (v / total) * width * height);
+  const rects = [];
+  let x = 0; let y = 0; let w = width; let h = height;
+  let row = [];
+  const worst = (r, side) => {
+    const sum = r.reduce((n, v) => n + v, 0);
+    const s2 = sum * sum;
+    return Math.max((side * side * Math.max(...r)) / s2, s2 / (side * side * Math.min(...r)));
+  };
+  const layoutRow = () => {
+    const sum = row.reduce((n, v) => n + v, 0);
+    const horizontal = w < h; // the row runs along the shorter side
+    const thick = sum / (horizontal ? w : h);
+    let off = 0;
+    for (const v of row) {
+      const len = v / thick;
+      rects.push(horizontal
+        ? { x: x + off, y, w: len, h: thick }
+        : { x, y: y + off, w: thick, h: len });
+      off += len;
+    }
+    if (horizontal) { y += thick; h -= thick; } else { x += thick; w -= thick; }
+    row = [];
+  };
+  let i = 0;
+  while (i < scaled.length) {
+    const side = Math.min(w, h) || 1;
+    if (!row.length || worst([...row, scaled[i]], side) <= worst(row, side)) {
+      row.push(scaled[i]); i += 1;
+    } else {
+      layoutRow();
+    }
+  }
+  if (row.length) layoutRow();
+  return rects;
+}
+
+const TMAP_H = 46; // internal layout height; the box itself is aspect-ratio'd
+
+function OwnershipMap({ onOpenGroup }) {
+  const standalone = BRANDS.length - MULTI_GROUPS.reduce((n, g) => n + g.count, 0);
+  const tiles = useMemo(() => {
+    const rects = squarifyLayout(MULTI_GROUPS.map((g) => g.count), 100, TMAP_H);
+    return MULTI_GROUPS.map((g, i) => ({ group: g, r: rects[i] }));
+  }, []);
   return (
-    <aside className="ow-spotlight ow-dark" aria-label="Editorial note">
+    <div className="ow-tmap-wrap">
+      <p className="ow-tmap-lede">{COPY.spotlight.mapLede}</p>
+      <div className="ow-tmap" role="group" aria-label="Corporate owners, sized by brands on file">
+        {tiles.map(({ group, r }) => (
+          <button
+            key={group.parent}
+            className={`ow-tmap-tile ${r.w * r.h < 40 ? 'sm' : ''}`}
+            style={{
+              left: `${r.x}%`,
+              top: `${(r.y / TMAP_H) * 100}%`,
+              width: `${r.w}%`,
+              height: `${(r.h / TMAP_H) * 100}%`,
+            }}
+            onClick={() => onOpenGroup(group.parent)}
+            title={`${group.parent} · ${group.count} brands on file${group.avg != null ? ` · mean FTI ${group.avg}` : ''}`}
+          >
+            <span className="tn">{group.parent}</span>
+            <span className="tc">{group.count}</span>
+          </button>
+        ))}
+      </div>
+      <p className="ow-tmap-note">
+        {COPY.spotlight.mapNote} {COPY.spotlight.independentsTemplate.replace('{n}', standalone)}
+      </p>
+    </div>
+  );
+}
+
+function Spotlight({ onOpenGroup }) {
+  return (
+    <aside className="ow-spotlight ow-dark" aria-label="Ownership concentration">
       <div className="ow-wrap">
         <p className="ow-spotlight-line">
           <b>{COPY.spotlight.stat}</b> {COPY.spotlight.line}
         </p>
         <p className="ow-spotlight-sub">{COPY.spotlight.sub}</p>
+        <OwnershipMap onOpenGroup={onOpenGroup} />
       </div>
     </aside>
   );
@@ -950,7 +1169,7 @@ function MarkedClaim({ text, result }) {
   );
 }
 
-function ClaimCheck() {
+function ClaimCheckPanel() {
   const [text, setText] = useState('');
   const [submitted, setSubmitted] = useState('');
   const result = useMemo(() => analyseClaim(submitted), [submitted]);
@@ -960,10 +1179,8 @@ function ClaimCheck() {
   const verdictClass = result ? { sound: 'ok', vague: 'warn', risk: 'bad' }[result.verdict.id] : '';
 
   return (
-    <section className="ow-section ow-reveal" id="claim">
-      <div className="ow-wrap">
-        <SecHead c={COPY.claim} />
-        <p className="ow-lede">{COPY.claim.lede}</p>
+    <>
+        <p className="ow-sublede">{COPY.claim.lede}</p>
 
         <div className="ow-claim-grid">
           <div className="ow-claim-input">
@@ -1018,37 +1235,124 @@ function ClaimCheck() {
             <p className="ow-principles-note">{COPY.claim.principlesNote}</p>
           </aside>
         </div>
-      </div>
-    </section>
+    </>
   );
 }
 
 // =========================================================================
-// Materials guide (fibre-level "before you buy" context)
+// Field guide — the four explainers as one tabbed section: materials,
+// certifications, regulation and the claim check. The page's spine stays
+// the lookup; the working knowledge lives here, one tab at a time.
 // =========================================================================
-function MaterialsGuide() {
+function MaterialsPanel() {
   return (
-    <section className="ow-section ow-reveal" id="materials">
-      <div className="ow-wrap">
-        <SecHead c={COPY.materials} />
-        <p className="ow-lede">{COPY.materials.lede}</p>
-        <div className="ow-fibres">
-          {FIBRES.map((f) => (
-            <div className="ow-fibre" key={f.name}>
-              <div className="ow-fibre-head">
-                <span className="fn">{f.name}</span>
-                <span className="fk">{f.kind}</span>
-              </div>
-              <div className="ow-fibre-body">
-                <div className="ow-fibre-row good"><span className="fl">{COPY.materials.goodLabel}</span>{f.good}</div>
-                <div className="ow-fibre-row watch"><span className="fl">{COPY.materials.watchLabel}</span>{f.watch}</div>
-              </div>
+    <>
+      <p className="ow-sublede">{COPY.materials.lede}</p>
+      <div className="ow-fibres">
+        {FIBRES.map((f) => (
+          <div className="ow-fibre" key={f.name}>
+            <div className="ow-fibre-head">
+              <span className="fn">{f.name}</span>
+              <span className="fk">{f.kind}</span>
             </div>
+            <div className="ow-fibre-body">
+              <div className="ow-fibre-row good"><span className="fl">{COPY.materials.goodLabel}</span>{f.good}</div>
+              <div className="ow-fibre-row watch"><span className="fl">{COPY.materials.watchLabel}</span>{f.watch}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="ow-caveat">
+        <h3>{COPY.materials.caveatTitle}</h3>
+        <p>{COPY.materials.caveat}</p>
+      </div>
+    </>
+  );
+}
+
+function CertsPanel() {
+  return (
+    <>
+      <p className="ow-sublede">{COPY.guide.certLede}</p>
+      <div className="ow-certs">
+        {CERTS.map((c) => (
+          <div className="ow-cert" key={c.name}>
+            <div className="ow-cert-name">{c.name}</div>
+            <div className="ow-cert-row"><span className="cl">{COPY.guide.certVerifies}</span>{c.verifies}</div>
+            <div className="ow-cert-row edge"><span className="cl">{COPY.guide.certEdge}</span>{c.edge}</div>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
+
+function RegulationPanel() {
+  return (
+    <>
+      <p className="ow-sublede">{COPY.guide.regLede}</p>
+      <div className="ow-reg">
+        {REGULATION.map((r) => (
+          <div className="ow-regitem" key={r.name}>
+            <div className="ow-reg-top">
+              <span className="ow-reg-name">{r.name}</span>
+              <span className="ow-reg-tag">{r.tag}</span>
+            </div>
+            <div className="ow-reg-when">{r.when}</div>
+            <p className="ow-reg-what">{r.what}</p>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
+
+function FieldGuide() {
+  const [tab, setTab] = useState('materials');
+  const tabs = COPY.guide.tabs;
+
+  // Roving tabindex with arrow-key movement, per the ARIA tabs pattern.
+  const onKey = (e) => {
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    e.preventDefault();
+    const idx = tabs.findIndex((t) => t.id === tab);
+    const next = tabs[(idx + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+    setTab(next.id);
+    const el = document.getElementById(`ow-guidetab-${next.id}`);
+    if (el) el.focus();
+  };
+
+  return (
+    <section className="ow-section ow-reveal" id="guide">
+      <div className="ow-wrap">
+        <SecHead c={COPY.guide} />
+        <p className="ow-lede">{COPY.guide.lede}</p>
+        <div className="ow-viewtoggle ow-guidetabs" role="tablist" aria-label="Field guide topics" onKeyDown={onKey}>
+          {tabs.map((t) => (
+            <button
+              key={t.id}
+              id={`ow-guidetab-${t.id}`}
+              role="tab"
+              aria-selected={tab === t.id}
+              aria-controls={`ow-guidepanel-${t.id}`}
+              tabIndex={tab === t.id ? 0 : -1}
+              className={tab === t.id ? 'on' : ''}
+              onClick={() => setTab(t.id)}
+            >
+              {t.label}
+            </button>
           ))}
         </div>
-        <div className="ow-caveat">
-          <h3>{COPY.materials.caveatTitle}</h3>
-          <p>{COPY.materials.caveat}</p>
+        <div
+          className="ow-guidepanel"
+          id={`ow-guidepanel-${tab}`}
+          role="tabpanel"
+          aria-labelledby={`ow-guidetab-${tab}`}
+        >
+          {tab === 'materials' && <MaterialsPanel />}
+          {tab === 'certs' && <CertsPanel />}
+          {tab === 'regulation' && <RegulationPanel />}
+          {tab === 'claim' && <ClaimCheckPanel />}
         </div>
       </div>
     </section>
@@ -1073,37 +1377,6 @@ function SignalsExplainer() {
           ))}
         </div>
         <p className="ow-note"><b>Read this first.</b> {COPY.signals.disclaimer}</p>
-
-        <div className="ow-subblock">
-          <h3 className="ow-subhead">{COPY.signals.certTitle}</h3>
-          <p className="ow-sublede">{COPY.signals.certLede}</p>
-          <div className="ow-certs">
-            {CERTS.map((c) => (
-              <div className="ow-cert" key={c.name}>
-                <div className="ow-cert-name">{c.name}</div>
-                <div className="ow-cert-row"><span className="cl">{COPY.signals.certVerifies}</span>{c.verifies}</div>
-                <div className="ow-cert-row edge"><span className="cl">{COPY.signals.certEdge}</span>{c.edge}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="ow-subblock">
-          <h3 className="ow-subhead">{COPY.signals.regTitle}</h3>
-          <p className="ow-sublede">{COPY.signals.regLede}</p>
-          <div className="ow-reg">
-            {REGULATION.map((r) => (
-              <div className="ow-regitem" key={r.name}>
-                <div className="ow-reg-top">
-                  <span className="ow-reg-name">{r.name}</span>
-                  <span className="ow-reg-tag">{r.tag}</span>
-                </div>
-                <div className="ow-reg-when">{r.when}</div>
-                <p className="ow-reg-what">{r.what}</p>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
     </section>
   );
@@ -1139,6 +1412,19 @@ function Backlog() {
           <p>{COPY.backlog.fileNote}</p>
           <a className="path" href={COPY.backlog.fileHref} target="_blank" rel="noopener noreferrer">{COPY.backlog.filePath} ↗</a>
           <p>{COPY.backlog.howTo}</p>
+        </div>
+
+        <div className="ow-subblock">
+          <h3 className="ow-subhead">{COPY.backlog.logTitle}</h3>
+          <p className="ow-sublede">{COPY.backlog.logLede}</p>
+          <ol className="ow-log">
+            {CHANGELOG.map((e, i) => (
+              <li key={i}>
+                <span className="d">{e.date}</span>
+                <span className="t">{e.note}</span>
+              </li>
+            ))}
+          </ol>
         </div>
       </div>
     </section>
@@ -1315,11 +1601,10 @@ export default function FashionApp() {
           forwardRef={lookupRef}
         />
         <CompareSection compareIds={compareIds} onRemove={removeCompare} onClear={clearCompare} onSelect={select} />
+        <LensSection selected={selected} />
         <Directory onSelect={select} view={dirView} setView={setDirView} focusGroup={focusGroup} />
-        <Spotlight />
-        <Studio />
-        <ClaimCheck />
-        <MaterialsGuide />
+        <Spotlight onOpenGroup={openGroup} />
+        <FieldGuide />
         <SignalsExplainer />
         <Backlog />
       </main>
