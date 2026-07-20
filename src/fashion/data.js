@@ -1507,6 +1507,7 @@ export const COPY = {
 
   lookup: {
     idx: '01',
+    icon: 'tag',
     title: 'Brand lookup',
     sub: 'Search a label, read its tag',
     lede: 'Type a brand you recognise. You get its corporate parent, its market segment, and a plain reading of what it discloses. Where a figure has not been verified yet, it says so.',
@@ -1539,6 +1540,7 @@ export const COPY = {
 
   compare: {
     idx: '02',
+    icon: 'chart',
     title: 'Compare',
     sub: 'Two or three, signal by signal',
     lede: 'Line brands up in one table to see exactly where their disclosure differs. Add up to three from any lookup or from the directory.',
@@ -1549,6 +1551,7 @@ export const COPY = {
 
   lens: {
     idx: '03',
+    icon: 'target',
     title: 'What you can’t know',
     sub: 'Pick what you care about',
     lede: 'Most tools tell you which brands are good. This one tells you what you can and cannot verify. Choose the things you care about, and the lens reads the selected brand against them: what it publishes, what only its parent publishes, and what stays dark.',
@@ -1564,6 +1567,7 @@ export const COPY = {
 
   directory: {
     idx: '04',
+    icon: 'building',
     title: 'The directory',
     sub: 'Every brand, and every owner',
     lede: 'The full universe of tracked companies. Filter by segment, narrow by hand, sort by what matters, then tap any tag to pull it into the lookup. Switch to Groups to see who owns whom.',
@@ -1602,6 +1606,7 @@ export const COPY = {
   // regulation, claim check), collapsed so the page's spine stays the lookup.
   guide: {
     idx: '05',
+    icon: 'book',
     title: 'Field guide',
     sub: 'Materials, labels, rules and claims',
     lede: 'The working knowledge behind the lookup, in one place: what the common fibres trade off, what certifications actually verify, the rules about to change what brands must tell you, and a checker for the claims on the swing tag.',
@@ -1649,6 +1654,7 @@ export const COPY = {
 
   signals: {
     idx: '06',
+    icon: 'list',
     title: 'What the signals mean',
     sub: 'Disclosure is not the same as doing well',
     lede: 'Openweave measures what a brand tells the public, not whether the brand is good. Read these before you draw a conclusion.',
@@ -1675,6 +1681,7 @@ export const COPY = {
 
   backlog: {
     idx: '07',
+    icon: 'scissors',
     title: 'Research backlog',
     sub: 'What still needs a human',
     lede: 'This tool is honest about its gaps. Structural facts, parent, segment, headquarters, are verified. Quantified disclosure fields are being filled in over time. Anything marked "Needs research" below is waiting for a checked source. Next on the list: verified What Fuels Fashion 2024 scores, read from the primary report, to succeed the retired Transparency Index.',

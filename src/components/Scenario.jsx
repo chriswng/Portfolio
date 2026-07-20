@@ -6,6 +6,7 @@ import { Chart, LineController, LineElement, PointElement, LinearScale, Category
 Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale, Filler, Tooltip);
 import { runModel, chartLabels, LEVER_LABELS, SECTOR_OPTIONS, resolveSector } from '../data/scenario';
 import SplitText from './SplitText';
+import Icon from './Icons';
 import { prefersReducedMotion } from '../utils/media';
 
 const LEVERS = [
@@ -160,7 +161,7 @@ export default function Scenario() {
   return (
     <section id="scenario">
       <div className="canvas">
-        <div className="sec-tag" data-idx="02 / ">Decarbonisation Scenario Model</div>
+        <div className="sec-tag" data-idx="02 / "><Icon name="target" size={15} />Decarbonisation Scenario Model</div>
         <p className="tool-decl" style={{ marginTop: '1.5rem' }}>Every lever has a source. <strong>Set the levers, then read the story.</strong></p>
         <p className="tool-sub">{labels.sub}</p>
         <span className="tool-disc">Illustrative model · stylised numbers · not client data · FY30 used as the interim target year</span>

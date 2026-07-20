@@ -8,7 +8,7 @@ import { CONVERSIONS } from './data/vendorMap';
 import { ONBOARD, ENERGY_PRESETS } from './data/copy';
 import { OB, fill } from './data/storyCopy';
 import { priceEntry } from './lib/engine';
-import Icon from './Icons';
+import Icon from '../components/Icons';
 import { prefersReducedMotion } from '../utils/media';
 
 // Local-date formatter. toISOString converts to UTC, which in Australian
