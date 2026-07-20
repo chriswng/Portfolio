@@ -28,7 +28,7 @@ export const CHAPTERS = [
 export const COVER = {
   tag: 'Your Carbon Footprint',
   eyebrow: 'A carbon footprint calculator',
-  h1a: 'My year of',
+  h1a: { example: 'My year of', own: 'Your year of' },
   h1b: 'carbon emissions',
   sub: {
     example:
@@ -261,7 +261,7 @@ export const SHARE_ST = {
     hotspot: { example: 'BIGGEST SOURCE', own: 'BIGGEST SOURCE' },
     bench: { example: 'IN CONTEXT', own: 'IN CONTEXT' },
     needle: { example: 'BIGGEST CUTS', own: 'BIGGEST CUTS' },
-    character: { example: 'MY CARBON RESULT', own: 'MY CARBON RESULT' },
+    character: { example: 'MY CARBON RESULT', own: 'YOUR CARBON RESULT' },
   },
 };
 

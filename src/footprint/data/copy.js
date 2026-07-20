@@ -114,7 +114,7 @@ export const ONBOARD = {
     household: 'How many adults share your home? (counting you)',
     householdNote: 'We split shared home energy across the adults at home, so you are only counted for your share. Two adults means half of each bill is yours.',
     dwelling: 'Your place',
-    dwellingHouse: 'House I own or could put solar on',
+    dwellingHouse: 'House you own or could put solar on',
     dwellingApartment: 'Apartment or rental',
   },
   energy: {
@@ -148,7 +148,7 @@ export const ONBOARD = {
     // at all right now. {asOf} dates the approximate figures.
     ptCapNoteExact: 'In {state}, {label} applies, so we will not count more than ${cap} a week unless you override it. Spending past the cap does not buy more travel.',
     ptCapNoteApprox: 'In {state}, fares are capped ({label}), so we will not count more than about ${cap} a week unless you override it. A rough ceiling, current as at {asOf}.',
-    ptOverride: 'Count my full spend anyway',
+    ptOverride: 'Count your full spend anyway',
     ptCapApplied: 'Counting up to ${cap} a week',
     ptCapAppliedApprox: 'Counting up to about ${cap} a week',
   },
@@ -215,7 +215,7 @@ export const ONBOARD = {
     sourceSummary: 'How this is estimated',
     sourceBody: 'The spend fields come from how much you spend, not a physical quantity: dollars times a published spend-based factor (US EPA supply-chain factors, converted to Australian dollars). Hotel nights use the UK Government (DEFRA) per-room-night factor. Both are screening estimates for the wider basket the simple survey leaves out, deliberately rough, so treat them as coarse additions rather than precise numbers.',
   },
-  finish: 'See my footprint',
+  finish: 'See your footprint',
   back: 'Back',
   next: 'Next',
   cancel: 'Cancel',

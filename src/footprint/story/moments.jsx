@@ -84,7 +84,7 @@ export function Cover({ d, voice, onStart, reduced, chapterCount }) {
         </div>
         <div className="sec-tag" data-idx={d.fy + ' / '}>{COVER.tag}</div>
         <h1 className="st-h1 display">
-          <SplitText text={COVER.h1a} /> <SplitText text={COVER.h1b} accentIndex={1} />
+          <SplitText text={COVER.h1a[voice]} /> <SplitText text={COVER.h1b} accentIndex={1} />
         </h1>
         <p className="st-cover-sub">{COVER.sub[voice]}</p>
         <p className="st-cover-meta">{fill(COVER.meta, { n: chapterCount })}</p>
