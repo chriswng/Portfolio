@@ -446,6 +446,61 @@ export const goodsPerAud = (kind) => {
 };
 
 // ---------------------------------------------------------------------------
+// Clothing by item count: the physical alternative to the spend line above.
+// Spend-based factors weight dollars, not garments, so a fast-fashion haul
+// reads lighter than one boutique piece; counting items priced on published
+// per-garment life-cycle results fixes that. Base figures are the ADEME
+// consumer-products LCA study (2018), cradle-to-grave climate-change results
+// per product (report annex results table, p. 180), the study behind the
+// French Base Empreinte per-item factors and ADEME's national consumer
+// calculator. Each bucket is the equal-weighted mean of the named product
+// rows, a stated screening assumption in the same style as GOODS above.
+//
+// Two honesty notes, both stated on the method page: (1) ADEME's use phase
+// attributes the garment's full laundering to the garment, which overlaps
+// slightly with home electricity counted elsewhere here, so the line reads
+// conservative rather than hiding the seam; (2) inter-study variance in
+// garment LCA is real: Mistra Future Fashion (Sandin et al. 2019) spans
+// about 1 to 20 kg CO2e per garment life cycle across six garments, and the
+// WRAP UK aggregate works out near 23 kg CO2e per kg of clothing, so these
+// per-item figures sit at the top of the published range.
+// Research notes and extraction record: docs/footprint-research/factor-sources.md;
+// source PDFs in docs/footprint-research/clothing/.
+// ---------------------------------------------------------------------------
+export const CLOTHING_ITEMS_SOURCE = {
+  name: 'ADEME, Modélisation et évaluation des impacts environnementaux de produits de consommation et biens d\'équipement (2018), per-item LCA',
+  detail: 'kg CO2e per item, cradle-to-grave (climate-change results per product, report annex, p. 180); the study behind the French Base Empreinte per-item textile factors. Buckets are equal-weighted means of the named product rows. Includes the garment\'s laundering per the ADEME method, which overlaps slightly with home electricity counted elsewhere, so the line reads conservative. Cross-checks: Mistra Future Fashion (Sandin et al. 2019) spans about 1 to 20 kg CO2e per garment life cycle; the WRAP Valuing Our Clothes UK aggregate (26.2 Mt CO2e over 1.13 Mt of clothing, 2016) is about 23 kg CO2e per kg.',
+  url: 'https://librairie.ademe.fr/consommer-autrement/1189-modelisation-et-evaluation-des-impacts-environnementaux-de-produits-de-consommation-et-biens-d-equipement.html',
+};
+
+export const CLOTHING_ITEMS = {
+  tops: {
+    label: 'Tops, tees & shirts', perItem: 9.6,
+    basis: 'Mean of cotton T-shirt 7, polo 10, sport polyester T-shirt 6, cotton shirt 13, viscose shirt 12.',
+  },
+  jumpers: {
+    label: 'Jumpers & hoodies', perItem: 30.6,
+    basis: 'Mean of acrylic jumper 28, recycled-polyester fleece 26, cotton sweat 31, wool jumper 56, recycled-cotton jumper 12.',
+  },
+  trousers: {
+    label: 'Trousers & jeans', perItem: 25,
+    basis: 'Cotton jeans 25, the study\'s trouser row.',
+  },
+  dresses: {
+    label: 'Dresses', perItem: 54.3,
+    basis: 'Mean of polyester 56, cotton 56, viscose 51.',
+  },
+  coats: {
+    label: 'Coats & jackets', perItem: 51,
+    basis: 'Mean of average coat 89, rain jacket 39, imitation-leather jacket 25.',
+  },
+  shoes: {
+    label: 'Shoes (pairs)', perItem: 18,
+    basis: 'Mean of leather 15, fabric 19, sport 20.',
+  },
+};
+
+// ---------------------------------------------------------------------------
 // Hotel nights: the other half of the optional detail. Per occupied room-night
 // by country, UK Government (DESNZ / DEFRA) GHG Conversion Factors 2025, "Hotel
 // stay" tab. The figures come from the Greenview Hotel Footprinting Tool, built

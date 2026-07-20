@@ -79,6 +79,23 @@ function buildStoryData(profile, agg, macc, voice) {
     overshoot = { within: true };
   }
 
+  // Physical tallies for the year moment. A count of ledger rows is an
+  // artifact of how bills aggregate (41 lines could be one week of ordinary
+  // spending), so the moment leads with quantities that mean something on
+  // their own: kilometres flown, kilometres on the ground, energy through
+  // the meter, parcels, nights, days of meals.
+  const inWindow = profile.entries.filter((e) => e.date >= profile.period.start && e.date <= profile.period.end);
+  const tally = (cat, f) => Math.round(inWindow.reduce((s, e) => s + (e.category === cat ? f(e.meta || {}) : 0), 0));
+  const kmFlown = tally('flight', (m) => (m.km || 0) * (m.return ? 2 : 1));
+  const tallies = [
+    { id: 'kmFlown', v: kmFlown },
+    { id: 'kmGround', v: tally('road', (m) => m.km || 0) },
+    { id: 'kwh', v: tally('electricity', (m) => m.kwh || 0) },
+    { id: 'parcels', v: tally('freight', (m) => m.parcels || 0) },
+    { id: 'nights', v: tally('hotel', (m) => m.nights || 0) },
+    { id: 'mealDays', v: tally('diet', (m) => m.days || 0) },
+  ].filter((t) => t.v > 0).slice(0, 4);
+
   const effortLabel = { low: 'Easy', med: 'Moderate', high: 'Harder' };
   const needle = macc
     .filter((r) => r.applicable && r.reduction > 0.05)
@@ -99,7 +116,8 @@ function buildStoryData(profile, agg, macc, voice) {
     // Picks the diet silhouette (drumstick, fish or leaf) on the total moment.
     dietType: (profile.settings && profile.settings.dietType) || 'medMeat',
     total: agg.total,
-    entryCount: agg.count,
+    tallies,
+    planetX: kmFlown / 40075, // mean equatorial circumference, km
     byScope: agg.byScope,
     ranked,
     tickerEntries,
