@@ -70,10 +70,16 @@ a { text-decoration: none; }
   border-bottom: 1px solid var(--rule-dk);
 }
 .ow-hero-grid {
+  position: relative; z-index: 1; /* above the aurora + contour canvases */
   display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
   gap: clamp(1.5rem, 5vw, 4rem); align-items: center;
 }
-@media (max-width: 900px) { .ow-hero-grid { grid-template-columns: 1fr; } }
+/* Phones: the swing tags hide, so the hero must not reserve a near-full
+   viewport; it hugs its content instead of leaving a blank band. */
+@media (max-width: 900px) {
+  .ow-hero-grid { grid-template-columns: 1fr; }
+  .ow-hero { min-height: 0; padding: clamp(2.5rem, 8vh, 4rem) 0 3rem; }
+}
 
 .ow-hero h1 {
   font-size: clamp(2.6rem, 8vw, 6rem); line-height: 0.88;

@@ -6,7 +6,7 @@ import { PLAN, fmtT } from './data/copy';
 import { fill } from './data/storyCopy';
 import { prefersReducedMotion } from '../utils/media';
 import { PathwayChart, MaccChart } from './charts';
-import Icon from './Icons';
+import Icon from '../components/Icons';
 
 const EFFORT = { low: 'Easy', med: 'Moderate', high: 'Harder' };
 

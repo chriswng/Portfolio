@@ -296,11 +296,42 @@ const book = (
   </>
 );
 
+// --- Fashion / Openweave glyphs -------------------------------------------
+
+// A swing tag on its string, with a matcha punched hole.
+const tag = (
+  <>
+    <path d="M13.2 10.6 L19.6 5.4 Q20.4 4.8 21.3 5.3 L26 8 Q26.9 8.5 26.8 9.5 L26 15 L15.4 27.2 Q14.7 28 13.9 27.3 L7.4 21.7 Q6.6 21 7.3 20.2 Z" transform="rotate(-8 16 16)" />
+    <circle className="fpi-fill" cx="21.6" cy="10.2" r="1.9" />
+    <path d="M21.6 10.2 Q24 5.5 20.5 3.4" />
+  </>
+);
+
+// A tee with a matcha pocket square.
+const shirt = (
+  <>
+    <path d="M11.3 6.6 Q13 9 16 9 Q19 9 20.7 6.6 L26.4 9.4 Q27.3 9.8 27 10.8 L25.3 15.2 Q25 16 24.1 15.8 L21.8 15.2 V25.4 Q21.8 26.4 20.8 26.4 H11.2 Q10.2 26.4 10.2 25.4 V15.2 L7.9 15.8 Q7 16 6.7 15.2 L5 10.8 Q4.7 9.8 5.6 9.4 Z" />
+    <rect className="fpi-fill" x="16.8" y="17.6" width="3.4" height="3.9" rx="0.8" stroke="none" />
+  </>
+);
+
+// Tailor's scissors, one matcha handle ring.
+const scissors = (
+  <>
+    <path d="M13.1 15.1 L26 6.4" />
+    <path d="M13.1 16.9 L26 25.6" />
+    <circle cx="9.4" cy="11.5" r="3.4" />
+    <circle className="fpi-fill" cx="9.4" cy="20.5" r="3.4" />
+    <circle cx="14.6" cy="16" r="1.1" />
+  </>
+);
+
 const GLYPHS = {
   house, bolt, car, plane, bowl, spark,
   pin, people, building, flame, leaf, fuel, phone, bus, fork, box, globe, clock,
   bag, bed, coins, bin,
   chart, target, list, book,
+  tag, shirt, scissors,
 };
 
 // Public component: <Icon name="bolt" size={28} />. Unknown names render
