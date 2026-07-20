@@ -8,9 +8,13 @@
 // rest is honestly marked "Needs research" until a source is confirmed.
 //
 // Structure: Hero (search) -> Lookup -> Compare -> Directory (brands +
-// corporate groups) -> What the signals mean -> Research backlog -> Footer.
-// State (selected brand + compare set) is deep-linked into the URL hash, so
-// any lookup is shareable and the back button works.
+// corporate groups) -> Garment studio (estimator, fabrics, chain, loop) ->
+// Claim check -> Materials -> What the signals mean -> Research backlog ->
+// Footer. State (selected brand + compare set) is deep-linked into the URL
+// hash, so any lookup is shareable and the back button works.
+//
+// Chrome is the site's own: the shared nav (NAV_LINKS + Mark), grain and
+// design tokens come from global.css, exactly as the footprint pages do.
 // ============================================================================
 import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import {
@@ -20,6 +24,10 @@ import {
   COMMITMENT_INFO, FIBRES, CERTS, REGULATION, VERIFIED_AS_OF,
   deriveMonogram, segmentStyle, logoUrl, GROUP_DOMAIN,
 } from './data';
+import { NAV_LINKS } from '../data/content';
+import { Grain } from '../components/Chrome';
+import Mark from '../components/Mark';
+import Studio from './Studio';
 import { prefersReducedMotion } from '../utils/media';
 
 const MAX_COMPARE = 3;
@@ -186,17 +194,40 @@ function BrandLogo({ brand, name, segment, domain, size = 'md', className = '' }
 }
 
 // =========================================================================
-// Chrome
+// Chrome — the site's own nav, as on the footprint pages, so Openweave sits
+// inside the portfolio rather than beside it.
 // =========================================================================
-function TopBar() {
+function FashionNav() {
+  const [menuOpen, setMenuOpen] = useState(false);
   return (
-    <header className="ow-topbar">
-      <a className="ow-wordmark" href="#top" aria-label={`${COPY.brand}, back to top`}>
-        <b>{COPY.brand}</b>
-        <span>{COPY.strap}</span>
-      </a>
-      <a className="ow-back" href={COPY.backHref}>{COPY.backLabel}</a>
-    </header>
+    <nav className="nav" aria-label="Primary">
+      <div className="nav-inner canvas">
+        <a href="../" className="nav-logo"><Mark label="Christopher Wang, home" /></a>
+        <div className={`nav-links${menuOpen ? ' open' : ''}`}>
+          {NAV_LINKS.map((l) => {
+            const self = l.href === 'fashion/';
+            return (
+              <a
+                key={l.label}
+                href={self ? './' : `../${l.href}`}
+                className={self ? 'active' : undefined}
+                aria-current={self ? 'true' : undefined}
+              >
+                {l.label}
+              </a>
+            );
+          })}
+        </div>
+        <button
+          className={`nav-hamburger${menuOpen ? ' open' : ''}`}
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((v) => !v)}
+        >
+          <span /><span /><span />
+        </button>
+      </div>
+    </nav>
   );
 }
 
@@ -256,12 +287,13 @@ function SectionRail() {
   );
 }
 
+// Section head in the site's shared editorial language: a mono sec-tag with
+// the numbered index in matcha, then a Space Grotesk display title.
 function SecHead({ c }) {
   return (
     <div className="ow-sechead">
-      <span className="idx">{c.idx}</span>
-      <h2>{c.title}</h2>
-      <span className="sub">{c.sub}</span>
+      <div className="sec-tag" data-idx={`${c.idx} / `}>{c.sub}</div>
+      <h2 className="display ow-h2">{c.title}</h2>
     </div>
   );
 }
@@ -376,8 +408,8 @@ function Hero({ onSelect, recent }) {
     <section className="ow-hero" id="top">
       <div className="ow-wrap ow-hero-grid">
         <div>
-          <span className="ow-kicker">{COPY.hero.kicker}</span>
-          <h1>{COPY.hero.headA} <em>{COPY.hero.headB}</em></h1>
+          <span className="ow-kicker"><b>{COPY.brand}</b> · {COPY.hero.kicker}</span>
+          <h1 className="display">{COPY.hero.headA} <em>{COPY.hero.headB}</em></h1>
           <p className="stand">{COPY.hero.stand}</p>
           <SearchField onSelect={onSelect} id="ow-hero-search" />
           <div className="ow-examples">
@@ -1255,9 +1287,9 @@ export default function FashionApp() {
   return (
     <>
       <a className="skip-link" href="#lookup">Skip to the brand lookup</a>
-      <div className="ow-grain" aria-hidden="true" />
+      <Grain />
       <ScrollProgress />
-      <TopBar />
+      <FashionNav />
       <SectionRail />
       <main className="ow-main" ref={heroSearchRef}>
         <Hero onSelect={select} recent={recent} />
@@ -1273,6 +1305,7 @@ export default function FashionApp() {
         <CompareSection compareIds={compareIds} onRemove={removeCompare} onClear={clearCompare} onSelect={select} />
         <Directory onSelect={select} view={dirView} setView={setDirView} focusGroup={focusGroup} />
         <Spotlight />
+        <Studio />
         <ClaimCheck />
         <MaterialsGuide />
         <SignalsExplainer />
