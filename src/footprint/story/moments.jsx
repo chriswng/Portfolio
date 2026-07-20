@@ -1,11 +1,13 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, useMotionValue, useScroll, useSpring, useTransform } from 'framer-motion';
 import { canHover, prefersReducedMotion } from '../../utils/media';
 import SplitText from '../../components/SplitText';
 import CarbonField from './CarbonField';
 import { CountUp, ScrubNumber } from './CountUp';
 import { fmtT } from '../data/copy';
+import { categoryShapes } from '../data/shapes';
 import ShareSheet from './ShareSheet';
+import { renderShare } from '../lib/shareCard';
 import {
   CHROME, COVER, YEAR, GUESS, TOTAL, SCOPES, HOTSPOTS_ST,
   MONTHS_ST, BENCH_ST, NEEDLE, OUTRO, SHARE_ST, fill,
@@ -22,28 +24,74 @@ const rise = {
 const inView = { once: true, margin: '-18% 0px' };
 
 // ---------------------------------------------------------------------------
-// Per-moment share affordance: opens the share sheet, which previews the card
-// and offers Instagram story, post, or (for the character) LinkedIn. Pass
-// `linkedIn` to add the LinkedIn banner as a format.
+// A shareable card in the outro gallery: the card itself is drawn up front as
+// a thumbnail (square-post format), so the gallery shows what you would be
+// sharing instead of a row of identical buttons. Tapping the preview or the
+// button opens the share sheet with the full format choices.
 // ---------------------------------------------------------------------------
-export function MomentShare({ kind, data, fy, linkedIn }) {
+export function GalleryCard({ kind, data, fy, linkedIn, label }) {
   const [open, setOpen] = useState(false);
+  const [url, setUrl] = useState('');
+  const boxRef = useRef(null);
+
+  // Draw the preview once the card scrolls near the viewport; the canvas
+  // render is not free and the outro holds several of these.
+  useEffect(() => {
+    let alive = true;
+    let objUrl = '';
+    const el = boxRef.current;
+    const draw = async () => {
+      let canvas;
+      try { canvas = await renderShare('post', kind, { ...data, fy }); }
+      catch { return; }
+      if (!alive) return;
+      canvas.toBlob((blob) => {
+        if (!alive || !blob) return;
+        objUrl = URL.createObjectURL(blob);
+        setUrl(objUrl);
+      }, 'image/png');
+    };
+    if (!el || !('IntersectionObserver' in window)) {
+      draw();
+    } else {
+      const io = new IntersectionObserver((entries) => {
+        if (entries.some((e) => e.isIntersecting)) { io.disconnect(); draw(); }
+      }, { rootMargin: '300px' });
+      io.observe(el);
+      return () => { alive = false; io.disconnect(); if (objUrl) URL.revokeObjectURL(objUrl); };
+    }
+    return () => { alive = false; if (objUrl) URL.revokeObjectURL(objUrl); };
+    // Card data is frozen for the life of the outro; draw once.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
-    <>
+    <div className="st-gallery-card" ref={boxRef}>
+      <button
+        type="button"
+        className="st-gallery-thumb"
+        onClick={() => setOpen(true)}
+        aria-label={label + ': ' + SHARE_ST.button}
+      >
+        {url
+          ? <img src={url} alt="" />
+          : <span className="st-gallery-loading">{SHARE_ST.sheet.rendering}</span>}
+      </button>
+      <span className="st-gallery-label">{label}</span>
       <button type="button" className="st-share" onClick={() => setOpen(true)}>
         <span aria-hidden="true">↗</span> {SHARE_ST.button}
       </button>
       {open && (
         <ShareSheet kind={kind} data={{ ...data, fy }} linkedIn={linkedIn} onClose={() => setOpen(false)} />
       )}
-    </>
+    </div>
   );
 }
 
 // ---------------------------------------------------------------------------
 // 0 · Cover
 // ---------------------------------------------------------------------------
-export function Cover({ d, voice, onStart, reduced, chapterCount }) {
+export function Cover({ d, voice, onStart, reduced }) {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
   const ghostY = useTransform(scrollYProgress, [0, 1], ['0%', reduced ? '0%' : '34%']);
@@ -87,13 +135,15 @@ export function Cover({ d, voice, onStart, reduced, chapterCount }) {
           <SplitText text={COVER.h1a[voice]} /> <SplitText text={COVER.h1b} accentIndex={1} />
         </h1>
         <p className="st-cover-sub">{COVER.sub[voice]}</p>
-        <p className="st-cover-meta">{fill(COVER.meta, { n: chapterCount })}</p>
+        <p className="st-cover-meta">{fill(COVER.meta[voice], { fy: d.fy })}</p>
         {voice === 'example' && (
           <div className="st-cover-cta">
             <button type="button" className="btn btn-primary fp-btn" onClick={onStart}>{COVER.start} →</button>
-            <span className="st-cover-note">{COVER.startNote}</span>
           </div>
         )}
+        <p className="st-cover-note">
+          <span className="st-cover-note-dot" aria-hidden="true" />{COVER.startNote}
+        </p>
       </motion.div>
       <div className="st-cue" aria-hidden="true">
         <span>{COVER.scrollCue}</span>
@@ -118,7 +168,9 @@ export function ScrollHint({ progress, fadeEnd = 0.45, label = CHROME.keepScroll
 }
 
 // ---------------------------------------------------------------------------
-// 1 · The year: the log streams past.
+// 1 · The year: the audited year as raw material. A big count lands first,
+// then the log itself streams past: three rows of priced line items, tinted
+// by category, drifting on their own and steered by the scroll.
 // ---------------------------------------------------------------------------
 export function YearTicker({ d, voice, reduced }) {
   const ref = useRef(null);
@@ -133,22 +185,27 @@ export function YearTicker({ d, voice, reduced }) {
   return (
     <section className="st-moment st-year" id="st-year" ref={ref} aria-label="The year in entries">
       <div className="st-sticky">
+        <div className="st-ghost st-ghost-year" aria-hidden="true">{d.fy}</div>
         <motion.div className="st-center" initial="hidden" whileInView="visible" viewport={inView}>
           <motion.div className="sec-tag" data-idx="" variants={rise}>{YEAR.tag}</motion.div>
           <motion.h2 className="st-h2 display" variants={rise} custom={1}>{YEAR.headline[voice]}</motion.h2>
-          <motion.p className="st-line" variants={rise} custom={2}>
-            <CountUp value={d.entryCount} decimals={0} duration={1.1} className="st-line-num" /> {YEAR.sub[voice]}
-          </motion.p>
+          <motion.div className="st-year-count display" variants={rise} custom={2}>
+            <CountUp value={d.entryCount} decimals={0} duration={1.2} />
+            <span className="st-year-count-l">{YEAR.countLabel}</span>
+          </motion.div>
+          <motion.p className="st-line" variants={rise} custom={3}>{YEAR.sub[voice]}</motion.p>
         </motion.div>
         <div className="st-ticker" role="img" aria-label={YEAR.tickerAria}>
           {rows.map((row, ri) => (
             <motion.div className="st-ticker-row" key={ri} style={reduced ? undefined : { x: xs[ri] }}>
-              {row.map((e, i) => (
-                <span className="st-tick-chip" key={i}>
-                  <span className="fp-leg-dot" style={{ background: e.hex }} aria-hidden="true" />
-                  {e.label} · <strong>{fmtT(e.t, 2)} t</strong>
-                </span>
-              ))}
+              <div className={'st-ticker-drift st-drift-' + ri}>
+                {row.map((e, i) => (
+                  <span className="st-tick-chip" key={i} style={{ borderColor: e.hex + '66' }}>
+                    <span className="fp-leg-dot" style={{ background: e.hex }} aria-hidden="true" />
+                    {e.label} · <strong>{fmtT(e.t, 2)} t</strong>
+                  </span>
+                ))}
+              </div>
             </motion.div>
           ))}
         </div>
@@ -193,90 +250,92 @@ export function ReferencePoints({ d, voice, goTo }) {
 }
 
 // ---------------------------------------------------------------------------
-// 3 · The total: the number answers "what was it?" immediately on arrival, no
-// extra scrolling required. Tapping a category lights up its share of the
-// particle field so the interaction reads as "this is that category's slice".
+// 3 · The total: the number answers "what was it?" immediately on arrival.
+// The particle field lives in its own stage beside the words (behind them
+// only on phones, masked low), so the text never fights the dots. Tapping a
+// category pulls its share of the particles into that category's silhouette:
+// the flights become a plane, dinner becomes a drumstick, a fish or a leaf.
 // ---------------------------------------------------------------------------
 export function TotalReveal({ d, voice, onCopyLink, reduced }) {
   const ref = useRef(null);
-  // The carbon field behind the number: one particle per 10 kg. Hovering or
-  // focusing a category chip gathers that category's particles.
-  // Pinned (clicked) and hover/focus previews are separate states so a tap
-  // pins, a second tap unpins, and mouse traversal only previews.
+  // One particle per 10 kg. Pinned (clicked) and hover/focus previews are
+  // separate states so a tap pins, a second tap unpins, and mouse traversal
+  // only previews.
   const [pinnedCat, setPinnedCat] = useState(null);
   const [hoverCat, setHoverCat] = useState(null);
-  const [shown, setShown] = useState(false);
   const focusCat = pinnedCat ?? hoverCat;
   const focusName = focusCat ? (d.ranked.find((c) => c.id === focusCat) || {}) : null;
   // Gentle parallax on the unit ghost only; the number itself reveals on view.
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end end'] });
   const ghostY = useTransform(scrollYProgress, [0, 1], ['16%', '-16%']);
 
-  const body = (
-    <>
-      <div className="st-kicker">{TOTAL.kicker[voice]}</div>
-      <motion.div
-        className="st-total-num display"
-        initial={reduced ? false : { scale: 0.6, opacity: 0 }}
-        whileInView={{ scale: 1, opacity: 1 }}
-        viewport={{ once: true, margin: '-30% 0px' }}
-        transition={{ type: 'spring', stiffness: 90, damping: 18, mass: 0.7 }}
-        onViewportEnter={() => setShown(true)}
-      >
-        {reduced ? fmtT(d.total, 1) : (shown ? <CountUp value={d.total} decimals={1} duration={1.1} /> : fmtT(d.total, 1))}
-        <span className="st-total-unit">{TOTAL.unit}</span>
-      </motion.div>
-      <motion.div
-        className="st-total-tail"
-        initial={reduced ? false : { opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-20% 0px' }}
-        transition={{ duration: 0.5, delay: 0.35, ease: [0.25, 1, 0.5, 1] }}
-      >
-        <p className="st-line">{TOTAL.line[voice]}</p>
-        <p className="st-enote">{TOTAL.eNote}</p>
-        <p className="st-cat-hint" aria-hidden="true">
-          {focusName ? `${focusName.label}: ${fmtT(focusName.t)} t, ${focusName.pct}% of the total` : TOTAL.chipsHint}
-        </p>
-        <div className="st-cat-chips" role="group" aria-label={TOTAL.chipsLabel}>
-          {d.ranked.map((c) => (
-            <button
-              key={c.id}
-              type="button"
-              className={'st-cat-chip' + (focusCat === c.id ? ' on' : '')}
-              aria-pressed={pinnedCat === c.id}
-              onPointerEnter={() => { if (canHover()) setHoverCat(c.id); }}
-              onPointerLeave={() => { if (canHover()) setHoverCat((f) => (f === c.id ? null : f)); }}
-              onFocus={(e) => { if (e.target.matches(':focus-visible')) setHoverCat(c.id); }}
-              onBlur={() => setHoverCat((f) => (f === c.id ? null : f))}
-              onClick={() => setPinnedCat((f) => (f === c.id ? null : c.id))}
-            >
-              <span className="fp-leg-dot" style={{ background: c.hex }} aria-hidden="true" />
-              {c.label} · {fmtT(c.t)} t
-            </button>
-          ))}
-        </div>
-        {onCopyLink && (
-          <div className="st-share-row">
-            <button type="button" className="st-quiet" onClick={onCopyLink}>{SHARE_ST.copyLink}</button>
-          </div>
-        )}
-      </motion.div>
-    </>
-  );
-
   return (
     <section className={'st-moment st-total' + (reduced ? ' st-static' : '')} id="st-total" ref={ref} aria-label="The total">
       <div className="st-sticky">
         <motion.div className="st-ghost st-ghost-unit" style={reduced ? undefined : { y: ghostY }} aria-hidden="true">tCO₂e</motion.div>
-        <CarbonField
-          mode="swarm"
-          total={d.total}
-          categories={d.ranked.map((c) => ({ id: c.id, hex: c.hex, share: c.t }))}
-          focus={focusCat}
-          className="st-field"
-        />
-        <div className="st-center st-total-center">{body}</div>
+        <div className="st-total-grid">
+          <div className="st-total-copy">
+            <div className="st-kicker">{TOTAL.kicker[voice]}</div>
+            <motion.div
+              className="st-total-num display"
+              initial={reduced ? false : { scale: 0.6, opacity: 0 }}
+              whileInView={{ scale: 1, opacity: 1 }}
+              viewport={{ once: true, margin: '-20% 0px' }}
+              transition={{ type: 'spring', stiffness: 90, damping: 18, mass: 0.7 }}
+            >
+              {reduced ? fmtT(d.total, 1) : <CountUp value={d.total} decimals={1} duration={1.4} />}
+              <span className="st-total-unit">{TOTAL.unit}</span>
+            </motion.div>
+            <motion.div
+              className="st-total-tail"
+              initial={reduced ? false : { opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-15% 0px' }}
+              transition={{ duration: 0.5, delay: 0.35, ease: [0.25, 1, 0.5, 1] }}
+            >
+              <p className="st-line">{TOTAL.line[voice]}</p>
+              <p className="st-enote">{TOTAL.eNote}</p>
+              {onCopyLink && (
+                <div className="st-share-row">
+                  <button type="button" className="st-quiet" onClick={onCopyLink}>{SHARE_ST.copyLink}</button>
+                </div>
+              )}
+            </motion.div>
+          </div>
+          <div className="st-total-stage">
+            <div className="st-total-fieldbox">
+              <CarbonField
+                mode="swarm"
+                total={d.total}
+                categories={d.ranked.map((c) => ({ id: c.id, hex: c.hex, share: c.t }))}
+                focus={focusCat}
+                shapes={categoryShapes(d.dietType)}
+                className="st-field"
+              />
+            </div>
+            <p className="st-cat-hint" aria-hidden="true">
+              {focusName ? `${focusName.label}: ${fmtT(focusName.t)} t, ${focusName.pct}% of the total` : TOTAL.chipsHint}
+            </p>
+            <div className="st-cat-chips" role="group" aria-label={TOTAL.chipsLabel}>
+              {d.ranked.map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  className={'st-cat-chip' + (focusCat === c.id ? ' on' : '')}
+                  aria-pressed={pinnedCat === c.id}
+                  onPointerEnter={() => { if (canHover()) setHoverCat(c.id); }}
+                  onPointerLeave={() => { if (canHover()) setHoverCat((f) => (f === c.id ? null : f)); }}
+                  onFocus={(e) => { if (e.target.matches(':focus-visible')) setHoverCat(c.id); }}
+                  onBlur={() => setHoverCat((f) => (f === c.id ? null : f))}
+                  onClick={() => setPinnedCat((f) => (f === c.id ? null : c.id))}
+                >
+                  <span className="fp-leg-dot" style={{ background: c.hex }} aria-hidden="true" />
+                  {c.label} · {fmtT(c.t)} t
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -579,10 +638,7 @@ export function Outro({ d, voice, character, onStart, onExplore, onReplay, onCop
 
         <motion.div className="st-gallery" variants={rise} custom={3} role="group" aria-label={OUTRO.galleryLabel}>
           {cards.map((c) => (
-            <div className="st-gallery-card" key={c.key}>
-              <span className="st-gallery-label">{c.label}</span>
-              <MomentShare kind={c.kind} fy={d.fy} data={c.data} linkedIn={c.linkedIn} />
-            </div>
+            <GalleryCard key={c.key} kind={c.kind} fy={d.fy} data={c.data} linkedIn={c.linkedIn} label={c.label} />
           ))}
         </motion.div>
 

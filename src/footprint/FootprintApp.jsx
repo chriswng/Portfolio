@@ -295,7 +295,10 @@ export default function FootprintApp() {
         />
       )}
 
-      <FootprintNav />
+      {/* The reveal carries its own chrome (home mark, skip, rail); the site
+          nav would otherwise stick to the top the moment you scroll past the
+          story, reappearing out of nowhere. It mounts once the story closes. */}
+      {!storyOpen && <FootprintNav />}
 
       <main id="main-content">
         {snapshot && (

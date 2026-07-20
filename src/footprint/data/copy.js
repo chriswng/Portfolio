@@ -8,7 +8,7 @@ export const META = {
 
 export const INTRO = {
   tag: 'Your Carbon Footprint',
-  h1a: 'My year of',
+  h1a: 'Calculate your year of',
   h1b: 'carbon emissions',
   paras: [
     'I measure carbon for a living, so I pointed the same maths at my own year. This is a plain-English carbon calculator and a visual case study in one: see where a real year of flights, power, food and freight actually goes, then run your own. Your answers stay in this browser.',
@@ -154,7 +154,7 @@ export const ONBOARD = {
   },
   flights: {
     title: 'Your flights, one trip at a time',
-    sub: 'Think through a typical year: holidays, work trips, weddings. Add a card for each trip, pick where it went, and edit any of them whenever you like.',
+    sub: 'Think through a typical year: holidays, work trips, weddings. Add a card for each trip, pick where it went, and pop in any hotel nights while you were there.',
     from: 'From',
     to: 'To',
     pickTo: 'Choose a destination',
@@ -180,8 +180,13 @@ export const ONBOARD = {
     // Distance is shown (not carbon) so the estimate feels transparent.
     dist: '≈ {km} km each way',
     sameCities: 'Pick two different cities.',
+    // Hotel nights ride with the trip that caused them, so each night is
+    // priced at the factor for the country you actually slept in.
+    nights: 'Hotel nights there',
+    otherNights: 'Hotel nights with no flight attached',
+    otherNightsNote: 'Road trips, work stays, weekends away. Counted at the Australian per-room-night factor. Nights on the trips above are priced at the destination country instead.',
     sourceSummary: 'How this is estimated',
-    sourceBody: 'Flight emissions are estimated from the route distance and published UK Government (DESNZ) emissions factors, with an uplift for the extra warming of burning fuel at altitude. It is an estimate, not an airline-specific figure.',
+    sourceBody: 'Flight emissions are estimated from the route distance and published UK Government (DESNZ) emissions factors, with an uplift for the extra warming of burning fuel at altitude. It is an estimate, not an airline-specific figure. Hotel nights are priced per occupied room-night at the destination country\'s published factor (UK Government DEFRA hotel-stay table), and land in the trip\'s month when you give one.',
   },
   food: {
     title: 'Food and parcels',
@@ -199,21 +204,26 @@ export const ONBOARD = {
     intlOrders: 'Overseas orders per month (the ones that arrive by air)',
   },
   // The optional sixth step. Everything here is opt-in and starts at zero, so
-  // skipping it (or the whole step) leaves the result unchanged.
+  // skipping it (or the whole step) leaves the result unchanged. No average
+  // person is ever substituted in: a skipped field counts nothing, and the
+  // context chapter's caveat says the total leaves that basket out.
   advanced: {
     title: 'A little more detail',
-    sub: 'Optional. The quick survey leaves out the things you buy and where you stay: clothes, gadgets, going out, health, and hotel nights. Pop in rough figures and we will estimate those too, or skip the lot.',
-    optional: 'Every field here starts at zero and is yours to skip. Leave it be and your result is exactly the same.',
+    sub: 'Optional. The quick survey leaves out the things you buy: clothes, gadgets, going out and health. Pop in rough monthly figures and we will estimate those too, or skip the lot.',
+    optional: 'Every field starts at zero and skipping adds nothing: we never swap in an average person\'s spending for yours. Skip it and your total simply leaves this basket out, and the benchmark chapter says so.',
     clothing: 'Clothing and footwear, $ a month',
+    clothingNote: 'Spend-based, so every dollar carries the same factor: a $300 boutique jacket counts ten times a $30 fast-fashion tee, even though the physical impact of the cheap haul may be no smaller. Count what you actually spend and read the line as a screening figure, not a fashion audit.',
     electronics: 'Electronics and tech, $ a month',
+    electronicsNote: 'New phones, laptops, headphones, consoles, small appliances and accessories, averaged out. A $1,200 phone every two years is $50 a month.',
     entertainment: 'Entertainment and going out, $ a month',
+    entertainmentNote: 'Streaming and subscriptions, the gym, gigs, cinema and events. Not meals and drinks: your diet already covers the food.',
     health: 'Health, out of pocket, $ a month',
+    healthNote: 'Gap payments, pharmacy, physio, dental: what actually leaves your pocket, not what insurance covers.',
     other: 'Other goods and services, $ a month',
-    hotel: 'Hotel nights this year',
-    hotelNote: 'Counted at the Australian per-room-night factor as a screening default, whichever country you stayed in.',
+    otherNote: 'The rest of the trolley: furniture and homewares, personal care, haircuts, hobbies, pet things. Leave out rent, groceries and transport; they are counted elsewhere or out of scope.',
     skip: 'Skip this step',
     sourceSummary: 'How this is estimated',
-    sourceBody: 'The spend fields come from how much you spend, not a physical quantity: dollars times a published spend-based factor (US EPA supply-chain factors, converted to Australian dollars). Hotel nights use the UK Government (DEFRA) per-room-night factor. Both are screening estimates for the wider basket the simple survey leaves out, deliberately rough, so treat them as coarse additions rather than precise numbers.',
+    sourceBody: 'The spend fields come from how much you spend, not a physical quantity: dollars times a published spend-based factor (US EPA supply-chain factors, converted to Australian dollars). They are screening estimates for the wider basket the simple survey leaves out, deliberately rough, so treat them as coarse additions rather than precise numbers. A skipped field adds exactly nothing.',
   },
   finish: 'See your footprint',
   back: 'Back',
@@ -245,7 +255,7 @@ export const METHOD = {
     title: 'What it includes',
     paras: [
       'The calculator covers the things a person controls or pays for directly: home electricity and gas, personal travel on the ground, flights, parcel deliveries, and diet. It groups them the way companies do, translated to a person: Scope 1 is fuel you burn yourself (home gas, and petrol if you drive), Scope 2 is the electricity you buy, and Scope 3 is everything else your choices cause but that happens elsewhere.',
-      'An optional detail step adds the wider basket the quick survey skips: clothing, electronics, entertainment, health, other goods and services, and hotel nights. The goods lines are estimated from how much you spend, and hotel nights from the number of nights, rather than a measured quantity, so they are labelled screening estimates and carry more uncertainty than a metered bill. They are off unless you fill them in, and count as Scope 3.',
+      'An optional detail step adds part of the wider basket the quick survey skips: clothing, electronics, entertainment, health, and other goods and services, estimated from how much you spend rather than a measured quantity, so they are labelled screening estimates and carry more uncertainty than a metered bill. They are off unless you fill them in, and count as Scope 3. Skipping the step adds nothing: no average-person spending is ever substituted in, so a skipped basket simply stays out of the total. Hotel nights are gathered in the flights step instead: each trip carries its own nights, priced per occupied room-night at the destination country\'s published factor, and nights with no flight attached use the Australian figure.',
       'Shared home energy is split evenly between the adults in the home: two adults means half of each bill counts as yours. Shared car trips are split the same way, by the average number of people in the car. Rideshare and public-transport factors are already per passenger, so they need no split.',
     ],
   },
@@ -260,7 +270,7 @@ export const METHOD = {
     title: 'Where the numbers come from',
     paras: [
       'Australian electricity, gas and road-fuel factors are from the Australian Government (DCCEEW) National Greenhouse Accounts Factors. Flights and freight use the UK Government conversion factors 2025 edition, published by DESNZ and still widely known as the DEFRA factors, because they are the most complete public source for aviation by distance and cabin. The flight numbers here match that workbook cell for cell; the June 2026 edition could not be reached to check, so the page cites the edition it can stand behind.',
-      'Diet is an estimate, not a precise figure: it uses published UK per-day values by diet type, chosen because they separate the six diet patterns cleanly. Australian studies find the same direction (CSIRO and Ridoutt), but on different accounting boundaries, so they anchor the size rather than replace the numbers. Public transport uses a UK rail factor as a stand-in until a published Australian per-passenger figure is available. On the physical NSW grid the real rail figure is higher than this proxy, because the grid is coal-heavy; measured against Sydney Trains renewable electricity contracts it is close to zero. Public transport is a small line, so the choice barely moves a total. The optional detail is the coarsest part: goods and services are a spend-based screening estimate from the US EPA Supply Chain factors converted to Australian dollars, and hotel nights use the UK Government (DEFRA) per-room-night factors by country. Both are labelled that way. Every factor and its source is in the tables below.',
+      'Diet is an estimate, not a precise figure: it uses published UK per-day values by diet type, chosen because they separate the six diet patterns cleanly. Australian studies find the same direction (CSIRO and Ridoutt), but on different accounting boundaries, so they anchor the size rather than replace the numbers. Public transport uses a UK rail factor as a stand-in until a published Australian per-passenger figure is available. On the physical NSW grid the real rail figure is higher than this proxy, because the grid is coal-heavy; measured against Sydney Trains renewable electricity contracts it is close to zero. Public transport is a small line, so the choice barely moves a total. The optional detail is the coarsest part: goods and services are a spend-based screening estimate from the US EPA Supply Chain factors converted to Australian dollars, and hotel nights use the UK Government (DEFRA) per-room-night factors by country, priced at the destination country of the trip they belong to. Both are labelled that way. Every factor and its source is in the tables below.',
     ],
   },
   quality: {
