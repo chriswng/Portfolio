@@ -1,6 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
 import { MotionConfig } from 'framer-motion';
 import { Grain, ScrollProgress, SkipLink } from '../components/Chrome';
+import Aurora from '../components/Aurora';
+import ContourField from '../components/ContourField';
 import SplitText from '../components/SplitText';
 import { buildSeedProfile, SEED_SETTINGS } from './data/seedProfile';
 import { INTRO, MODE, SHARE, DATA_CTRL, TOASTS, YEARS, METHOD_LINK, fmtT } from './data/copy';
@@ -17,7 +19,7 @@ import Dashboard from './Dashboard';
 import Plan from './Plan';
 import Onboarding from './Onboarding';
 import { FootprintNav, FootprintFooter } from './Nav';
-import Icon from './Icons';
+import Icon from '../components/Icons';
 
 // Local date, never toISOString: UTC lands on yesterday in Australian zones.
 const todayIso = () => {
@@ -326,6 +328,13 @@ export default function FootprintApp() {
         {!storyOpen && (
           <section id="fp-intro">
             <div className="bloom-wrap" aria-hidden="true"><div className="bloom bloom-a" /><div className="bloom bloom-b" /><div className="bloom bloom-c" /></div>
+            <Aurora
+              colorStops={['#635BFF', '#B5C42B', '#FF9500', '#FF3B60']}
+              amplitude={0.55}
+              blend={0.5}
+              opacity={0.18}
+            />
+            <ContourField />
             <div className="canvas" style={{ position: 'relative', zIndex: 1 }}>
               <div className="sec-tag" data-idx="00 / "><Icon name="leaf" size={16} />{INTRO.tag}</div>
               <h1 className="fp-h1 display">

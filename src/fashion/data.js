@@ -1529,6 +1529,7 @@ export const COPY = {
 
   lookup: {
     idx: '01',
+    icon: 'tag',
     title: 'Brand lookup',
     sub: 'Search a label, read its tag',
     lede: 'Type a brand you recognise. You get its corporate parent, its market segment, and a plain reading of what it discloses. Where a figure has not been verified yet, it says so.',
@@ -1561,6 +1562,7 @@ export const COPY = {
 
   compare: {
     idx: '02',
+    icon: 'chart',
     title: 'Compare',
     sub: 'Two or three, signal by signal',
     lede: 'Line brands up in one table to see exactly where their disclosure differs. Add up to three from any lookup or from the directory.',
@@ -1571,6 +1573,7 @@ export const COPY = {
 
   directory: {
     idx: '03',
+    icon: 'building',
     title: 'The directory',
     sub: 'Every brand, and every owner',
     lede: 'The full universe of tracked companies. Filter by segment, narrow by hand, sort by what matters, then tap any tag to pull it into the lookup. Switch to Groups to see who owns whom.',
@@ -1608,6 +1611,7 @@ export const COPY = {
     lede: 'The lookup tells you what a brand says. The studio shows you what a garment costs the world, and where. Build one, follow it, then design its second life.',
     estimator: {
       idx: '04',
+      icon: 'spark',
       title: 'Carbon footprint estimator',
       sub: 'Build a garment, watch it cost',
       lede: 'Pick the cut, the size, the cloth and where it is made. Carbon dioxide equivalent gathers around the garment as you work: fibre, dyeing, assembly and transport each emit their own stream.',
@@ -1631,6 +1635,7 @@ export const COPY = {
     },
     fabrics: {
       idx: '05',
+      icon: 'leaf',
       title: 'Fabric comparator',
       sub: 'Three cloths on the bench',
       lede: 'Pin up to three fibres and put them through the same questions at the same time: carbon to make, water to grow, what sheds in the wash, how long it lives, and what happens when you bury it.',
@@ -1647,6 +1652,7 @@ export const COPY = {
     },
     chain: {
       idx: '06',
+      icon: 'globe',
       title: 'Supply chain mapper',
       sub: 'Follow the garment you just built',
       lede: 'The same garment, traced from fibre to a Melbourne shop floor. Each stop shows what it adds. Switch the freight to air to see why the boat matters.',
@@ -1659,6 +1665,7 @@ export const COPY = {
     },
     loop: {
       idx: '07',
+      icon: 'target',
       title: 'Circularity scorecard',
       sub: 'Design its second life',
       lede: 'Eight years from now this garment is worn. Whether its loop closes, jams or snaps was decided today, at the bench. Score the design you built above, then change it.',
@@ -1671,6 +1678,7 @@ export const COPY = {
 
   claim: {
     idx: '08',
+    icon: 'book',
     title: 'Claim check',
     sub: 'Paste a green claim, see what holds up',
     lede: 'Marketing is where a brand chooses its words. Paste any sustainability claim and this checks it against the way regulators read it: flagging vague and absolute terms, and the qualifiers each one demands. It reads what you paste. It makes no judgement about any real brand.',
@@ -1689,6 +1697,7 @@ export const COPY = {
 
   materials: {
     idx: '09',
+    icon: 'shirt',
     title: 'Materials',
     sub: 'What the fabric is telling you',
     lede: 'Half of a garment’s story is the fibre it is cut from. This is a plain read of the common ones, and their trade-offs. It is not a ranking, on purpose.',
@@ -1701,6 +1710,7 @@ export const COPY = {
 
   signals: {
     idx: '10',
+    icon: 'list',
     title: 'What the signals mean',
     sub: 'Disclosure is not the same as doing well',
     lede: 'Openweave measures what a brand tells the public, not whether the brand is good. Read these before you draw a conclusion.',
@@ -1733,6 +1743,7 @@ export const COPY = {
 
   backlog: {
     idx: '11',
+    icon: 'scissors',
     title: 'Research backlog',
     sub: 'What still needs a human',
     lede: 'This tool is honest about its gaps. Structural facts, parent, segment, headquarters, are verified. Quantified disclosure fields are being filled in over time. Anything marked "Needs research" below is waiting for a checked source.',

@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { BIO_PARAS, OUTCOMES } from '../data/content';
 import SplitText from './SplitText';
 import Pipeline from './Pipeline';
+import Icon from './Icons';
 
 const reveal = {
   hidden: { opacity: 0, y: 24 },
@@ -13,7 +14,7 @@ export default function Bio() {
     <section id="bio">
       <div className="canvas matrix bio-matrix">
         <div className="bio-head">
-          <div className="sec-tag" data-idx="00 / ">Profile</div>
+          <div className="sec-tag" data-idx="00 / "><Icon name="people" size={15} />Profile</div>
         </div>
         <div className="bio-body">
           {BIO_PARAS.map((p, i) => (
@@ -24,7 +25,7 @@ export default function Bio() {
 
       <div className="canvas">
         <div className="outcomes" aria-label="Selected outcomes">
-          <div className="outcomes-head">Selected outcomes</div>
+          <div className="outcomes-head"><Icon name="chart" size={15} />Selected outcomes</div>
           <div className="outcomes-grid">
             {OUTCOMES.map((o, i) => (
               <motion.div

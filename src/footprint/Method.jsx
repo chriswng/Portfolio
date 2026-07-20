@@ -12,7 +12,7 @@ import {
   HOTEL, HOTEL_SOURCE,
 } from './data/factors';
 import { METHOD } from './data/copy';
-import Icon from './Icons';
+import Icon from '../components/Icons';
 
 function FTable({ caption, head, rows, source }) {
   return (
