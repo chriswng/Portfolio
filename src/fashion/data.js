@@ -64,18 +64,27 @@ export function ftiBand(score) {
 // ---------------------------------------------------------------------------
 // BRAND LOGOS.
 //
-// Each brand shows its REAL logo, loaded at runtime from a logo CDN keyed by
-// the company's web domain (BRAND_DOMAIN below). If a domain is not on file, or
-// the logo fails to load, the brand falls back to a generated "woven care-label"
-// monogram (deriveMonogram + SEGMENT_STYLE) so every brand always has a mark.
+// Each brand shows its REAL mark, loaded at runtime by the company's web
+// domain (BRAND_DOMAIN below). Clearbit's free logo CDN was retired after the
+// HubSpot acquisition, so instead of one provider the page walks an ordered
+// chain of keyless icon services: DuckDuckGo's icon service first (real site
+// icons, misses cleanly), then Google's s2 favicon service as the backstop
+// (never 404s, but serves a tiny generic globe when it has nothing, which
+// BrandLogo detects by rendered size and treats as a miss). If every source
+// misses, the brand falls back to a generated "woven care-label" monogram
+// (deriveMonogram + SEGMENT_STYLE) so every brand always has a mark.
 //
-// LOGO_CDN is a single swap-point. logo.clearbit.com needs no API key; to move
-// to a keyed provider later (e.g. Logo.dev) only this line changes.
+// LOGO_SOURCES stays the single swap-point: to move to a keyed provider later
+// (e.g. Logo.dev or Brandfetch) prepend a URL builder here; nothing else moves.
 // ---------------------------------------------------------------------------
-export const LOGO_CDN = 'https://logo.clearbit.com/';
+export const LOGO_SOURCES = [
+  (domain) => `https://icons.duckduckgo.com/ip3/${domain}.ico`,
+  (domain) => `https://www.google.com/s2/favicons?domain=${domain}&sz=128`,
+];
 
-export function logoUrl(domain) {
-  return domain ? `${LOGO_CDN}${domain}` : null;
+export function logoUrl(domain, source = 0) {
+  if (!domain || source < 0 || source >= LOGO_SOURCES.length) return null;
+  return LOGO_SOURCES[source](domain);
 }
 
 // Primary web domain per brand, used to fetch the logo. Kept as a flat map so
@@ -137,6 +146,178 @@ export const BRAND_DOMAIN = {
   'Cotton On': 'cottonon.com',
   'Country Road': 'countryroad.com.au',
   'The Iconic': 'theiconic.com.au',
+  'R.M. Williams': 'rmwilliams.com.au',
+  Zimmermann: 'zimmermann.com',
+  Camilla: 'camilla.com',
+  'Lorna Jane': 'lornajane.com.au',
+  Bonds: 'bonds.com.au',
+  Converse: 'converse.com',
+  Jordan: 'nike.com',
+  Champion: 'champion.com',
+  Reebok: 'reebok.com',
+  Fila: 'fila.com',
+  Skechers: 'skechers.com',
+  Speedo: 'speedo.com',
+  Gymshark: 'gymshark.com',
+  Lacoste: 'lacoste.com',
+  Decathlon: 'decathlon.com',
+  UGG: 'ugg.com',
+  'Dr. Martens': 'drmartens.com',
+  'Columbia Sportswear': 'columbia.com',
+  Kathmandu: 'kathmandu.com.au',
+  Guess: 'guess.com',
+  'G-Star RAW': 'g-star.com',
+  Diesel: 'diesel.com',
+  Wrangler: 'wrangler.com',
+  'C&A': 'c-and-a.com',
+  'United Colors of Benetton': 'benetton.com',
+  Mango: 'mango.com',
+  'Massimo Dutti': 'massimodutti.com',
+  Stradivarius: 'stradivarius.com',
+  Superdry: 'superdry.com',
+  'River Island': 'riverisland.com',
+  'Abercrombie & Fitch': 'abercrombie.com',
+  OVS: 'ovs.it',
+  PrettyLittleThing: 'prettylittlething.com',
+  'Marks & Spencer': 'marksandspencer.com',
+  'Old Navy': 'oldnavy.gap.com',
+  'Victoria’s Secret': 'victoriassecret.com',
+  'Hugo Boss': 'hugoboss.com',
+  Armani: 'armani.com',
+  'Michael Kors': 'michaelkors.com',
+  Versace: 'versace.com',
+  'Salvatore Ferragamo': 'ferragamo.com',
+  // Full-coverage batch. Confident, well-known primary domains only: a brand
+  // whose domain is uncertain is left out on purpose and keeps its monogram.
+  Aeropostale: 'aeropostale.com',
+  AJIO: 'ajio.com',
+  'ALDI Nord': 'aldi-nord.de',
+  'ALDI SOUTH': 'aldi-sued.de',
+  ALDO: 'aldoshoes.com',
+  Amazon: 'amazon.com',
+  'American Eagle': 'ae.com',
+  Anthropologie: 'anthropologie.com',
+  Aritzia: 'aritzia.com',
+  Asda: 'asda.com',
+  Bally: 'bally.com',
+  'Banana Republic': 'bananarepublic.gap.com',
+  Billabong: 'billabong.com',
+  "Bloomingdale's": 'bloomingdales.com',
+  Bonprix: 'bonprix.de',
+  'Brooks Sports': 'brooksrunning.com',
+  'Brunello Cucinelli': 'brunellocucinelli.com',
+  Buckle: 'buckle.com',
+  Burlington: 'burlington.com',
+  Calzedonia: 'calzedonia.com',
+  'Canada Goose': 'canadagoose.com',
+  Carhartt: 'carhartt.com',
+  'Carolina Herrera': 'carolinaherrera.com',
+  Carrefour: 'carrefour.com',
+  "Carter's": 'carters.com',
+  celio: 'celio.com',
+  "Chico's": 'chicos.com',
+  Chloé: 'chloe.com',
+  Clarks: 'clarks.com',
+  Costco: 'costco.com',
+  Deichmann: 'deichmann.com',
+  Desigual: 'desigual.com',
+  "Dick's Sporting Goods": 'dickssportinggoods.com',
+  "Dillard's": 'dillards.com',
+  Disney: 'disney.com',
+  DKNY: 'dkny.com',
+  'Dolce & Gabbana': 'dolcegabbana.com',
+  Dressmann: 'dressmann.com',
+  DSW: 'dsw.com',
+  'Eddie Bauer': 'eddiebauer.com',
+  'El Corte Inglés': 'elcorteingles.es',
+  'Ermenegildo Zegna': 'zegna.com',
+  Esprit: 'esprit.com',
+  Express: 'express.com',
+  Fabletics: 'fabletics.com',
+  Falabella: 'falabella.com',
+  'Famous Footwear': 'famousfootwear.com',
+  Fanatics: 'fanatics.com',
+  'Fashion Nova': 'fashionnova.com',
+  Fjällräven: 'fjallraven.com',
+  'Foot Locker': 'footlocker.com',
+  Fossil: 'fossil.com',
+  'Free People': 'freepeople.com',
+  'Fruit of the Loom': 'fruit.com',
+  Furla: 'furla.com',
+  'Gerry Weber': 'gerryweber.com',
+  Gildan: 'gildan.com',
+  Hanes: 'hanes.com',
+  'Helly Hansen': 'hellyhansen.com',
+  HEMA: 'hema.nl',
+  'Hollister Co.': 'hollisterco.com',
+  "Hudson's Bay": 'thebay.com',
+  Intimissimi: 'intimissimi.com',
+  'Jack & Jones': 'jackjones.com',
+  'Jack Wolfskin': 'jack-wolfskin.com',
+  'Jil Sander': 'jilsander.com',
+  Jockey: 'jockey.com',
+  'Joe Fresh': 'joefresh.com',
+  'John Lewis': 'johnlewis.com',
+  'K-Way': 'k-way.com',
+  Kaufland: 'kaufland.de',
+  Kiabi: 'kiabi.com',
+  KiK: 'kik.de',
+  "Kohl's": 'kohls.com',
+  'La Redoute': 'laredoute.fr',
+  "Lands' End": 'landsend.com',
+  'LC Waikiki': 'lcwaikiki.com',
+  Lidl: 'lidl.com',
+  Lindex: 'lindex.com',
+  'LL Bean': 'llbean.com',
+  Longchamp: 'longchamp.com',
+  "Macy's": 'macys.com',
+  Mammut: 'mammut.com',
+  'Marc Jacobs': 'marcjacobs.com',
+  Marni: 'marni.com',
+  Matalan: 'matalan.co.uk',
+  'Max Mara': 'maxmara.com',
+  Merrell: 'merrell.com',
+  Mizuno: 'mizuno.com',
+  Monoprix: 'monoprix.fr',
+  Morrisons: 'morrisons.com',
+  Muji: 'muji.com',
+  'New Look': 'newlook.com',
+  'Nine West': 'ninewest.com',
+  Nordstrom: 'nordstrom.com',
+  Otto: 'otto.de',
+  'Pepe Jeans': 'pepejeans.com',
+  Quiksilver: 'quiksilver.com',
+  REI: 'rei.com',
+  Reserved: 'reserved.com',
+  REVOLVE: 'revolve.com',
+  Romwe: 'romwe.com',
+  Roxy: 'roxy.com',
+  'Russell Athletic': 'russellathletic.com',
+  's.Oliver': 'soliver.com',
+  "Sainsbury's": 'sainsburys.co.uk',
+  'Saks Fifth Avenue': 'saksfifthavenue.com',
+  Sandro: 'sandro-paris.com',
+  'Savage X Fenty': 'savagex.com',
+  'Sports Direct': 'sportsdirect.com',
+  'Steve Madden': 'stevemadden.com',
+  Tchibo: 'tchibo.de',
+  'Ted Baker': 'tedbaker.com',
+  Tesco: 'tesco.com',
+  Tezenis: 'tezenis.com',
+  "The Children's Place": 'childrensplace.com',
+  'The Warehouse': 'thewarehouse.co.nz',
+  "Tod's": 'tods.com',
+  'Tom Ford': 'tomford.com',
+  'Tommy Bahama': 'tommybahama.com',
+  'Tory Burch': 'toryburch.com',
+  Triumph: 'triumph.com',
+  'Urban Outfitters': 'urbanoutfitters.com',
+  Valentino: 'valentino.com',
+  'Vero Moda': 'veromoda.com',
+  Very: 'very.co.uk',
+  Walmart: 'walmart.com',
+  'Woolworths South Africa': 'woolworths.co.za',
+  Zeeman: 'zeeman.com',
 };
 
 // Corporate-parent domains, for the real logo shown on each group card.
@@ -151,6 +332,24 @@ export const GROUP_DOMAIN = {
   'PVH Corp.': 'pvh.com',
   'Tapestry, Inc.': 'tapestry.com',
   Wesfarmers: 'wesfarmers.com.au',
+  'Nike, Inc.': 'nike.com',
+  'Capri Holdings': 'capriholdings.com',
+  Hanesbrands: 'hanesbrands.com',
+  'Gap Inc.': 'gapinc.com',
+  'Authentic Brands Group': 'authentic.com',
+  URBN: 'urbn.com',
+  'Calzedonia Group': 'calzedoniagroup.com',
+  Boardriders: 'boardriders.com',
+  'Schwarz Group': 'gruppe.schwarz',
+  'Reliance Retail': 'relianceretail.com',
+  'Otto Group': 'ottogroup.com',
+  'OTB Group': 'otb.net',
+  'Macy’s, Inc.': 'macysinc.com',
+  'Landmark Group': 'landmarkgroup.com',
+  'Hudson’s Bay Company': 'hbc.com',
+  Bestseller: 'bestseller.com',
+  'Berkshire Hathaway': 'berkshirehathaway.com',
+  'Abercrombie & Fitch Co.': 'abercrombie.com',
 };
 
 // ---------------------------------------------------------------------------
@@ -880,7 +1079,7 @@ function buildBrand(raw) {
   const fti = raw.fti != null ? raw.fti : (FTI_2023[id] != null ? FTI_2023[id] : null);
   const band = ftiBand(fti);
   const ftiNote = raw.ftiNote || FTI_2023_NOTE[id]
-    || (FTI_2023[id] != null ? 'Fashion Transparency Index 2023, published by Fashion Revolution.' : '');
+    || (FTI_2023[id] != null ? 'Fashion Transparency Index 2023 (final edition), published by Fashion Revolution.' : '');
   return {
     id,
     name: raw.name,
@@ -1085,7 +1284,8 @@ export function digLinks(brand) {
   links.push({ label: 'Good On You rating', url: goodOnYouUrl(brand), note: 'Independent people, planet and animal score' });
   links.push({ label: 'Baptist World Aid (AU)', url: 'https://baptistworldaid.org.au/resources/ethical-fashion-guide/', note: 'Australian worker-rights and environment score out of 100' });
   links.push({ label: 'SBTi climate targets', url: 'https://sciencebasedtargets.org/target-dashboard', note: 'Check for a validated science-based emissions target' });
-  links.push({ label: 'Fashion Transparency Index', url: 'https://www.fashionrevolution.org/about/transparency/', note: 'The source of the disclosure score above' });
+  links.push({ label: 'Fashion Transparency Index', url: 'https://www.fashionrevolution.org/about/transparency/', note: 'The source of the disclosure score above. 2023 was its final edition' });
+  links.push({ label: 'What Fuels Fashion (2024)', url: 'https://www.fashionrevolution.org/what-fuels-fashion/', note: 'Fashion Revolution’s successor index, scoring decarbonisation disclosure' });
   return links;
 }
 
@@ -1098,6 +1298,64 @@ export const SIGNAL_FIELDS = [
   { id: 'materials', label: 'Materials', help: 'What fibres and materials the brand reports using.' },
   { id: 'supplyChain', label: 'Supplier list', help: 'A published list of manufacturing facilities.' },
   { id: 'circularity', label: 'Circularity', help: 'Repair, resale, take-back or recycling programmes.' },
+];
+
+// ---------------------------------------------------------------------------
+// THE LENS — "what you can't know", by concern.
+//
+// The tool's decision aid, built without breaking the no-ranking rule: instead
+// of scoring brands, it scores the COMPLETENESS of what a shopper can verify.
+// Each concern maps onto the disclosure signals above; the lens then reads a
+// brand's statuses and reports what can be checked, what only the parent
+// publishes, what is not published, and what this tool has not verified yet.
+// No new metric is invented: it is a re-reading of statuses already on file.
+// ---------------------------------------------------------------------------
+export const LENS_CONCERNS = [
+  {
+    id: 'climate', label: 'Climate', signals: ['climateTarget', 'scope12', 'scope3'],
+    why: 'A dated target plus reported Scope 1, 2 and 3 emissions. Scope 3, the supply chain, is where most of fashion’s footprint sits.',
+  },
+  {
+    id: 'supply', label: 'Supply chain and labour', signals: ['supplyChain'],
+    why: 'A published factory list is the entry ticket. A brand that will not name its factories is choosing what you can check.',
+  },
+  {
+    id: 'materials', label: 'Materials and fibres', signals: ['materials'],
+    why: 'What the brand reports using. Fibre choice drives water use, microplastic shedding and what happens at end of life.',
+  },
+  {
+    id: 'circularity', label: 'Circularity and waste', signals: ['circularity'],
+    why: 'Repair, resale, take-back or recycling programmes with a real destination, beyond a bin at the door.',
+  },
+  {
+    id: 'ownership', label: 'Ownership and governance', signals: [], ownership: true,
+    why: 'Who actually makes the decisions on targets, suppliers and wages. Openweave verifies this for every brand on file.',
+  },
+];
+
+// How a disclosure status reads through the lens. 'research' is kept honestly
+// distinct from 'notFound': the first is this tool's gap, the second is the
+// brand's silence.
+export const LENS_READING = {
+  disclosed: { id: 'open', label: 'You can check this' },
+  partial: { id: 'part', label: 'Partly checkable' },
+  parent: { id: 'parent', label: 'Only the parent publishes' },
+  notFound: { id: 'dark', label: 'Not published' },
+  research: { id: 'unverified', label: 'Not verified here yet' },
+};
+
+// ---------------------------------------------------------------------------
+// CHANGE LOG — the freshness discipline made visible. Real, dated entries for
+// every change to the dataset or the tool's method, newest first. Dates are
+// the actual dates the changes landed in the repository.
+// ---------------------------------------------------------------------------
+export const CHANGELOG = [
+  { date: '20 July 2026', note: 'The four explainers consolidated into one field guide; the personal lens and the ownership map added; the garment studio retired. Logo loading moved from the retired Clearbit CDN to a keyless multi-provider chain, with domains on file for the full brand universe.' },
+  { date: '20 July 2026', note: 'Fashion Transparency Index 2023 relabelled as the final edition of that index. What Fuels Fashion 2024, Fashion Revolution’s successor on decarbonisation, added as a per-brand link-out; its scores await ingestion from the primary report.' },
+  { date: '19 July 2026', note: 'Full FTI 2023 universe ingested: 258 brands and retailers on file, 248 with a score read from the report’s Final Scores table. SBTi climate-target status matched for 111 companies; fuzzy name matches discarded.' },
+  { date: '19 July 2026', note: 'Ownership provenance lines and the verification stamp added. Bonds and Champion note the Gildan takeover of Hanesbrands agreed in 2025.' },
+  { date: '18 July 2026', note: 'Fashion Pact, B Corp and SBTi memberships verified from source, with Hermès marked as having left the Fashion Pact in 2023. Australian labels R.M. Williams, Zimmermann, Camilla, Lorna Jane and Bonds added with verified ownership.' },
+  { date: '18 July 2026', note: 'Openweave launched: verified corporate ownership, segments and headquarters for the initial brand set, with deep-linked lookups and the corporate group lens.' },
 ];
 
 // ===========================================================================
@@ -1217,286 +1475,6 @@ export function analyseClaim(text) {
 // ---------------------------------------------------------------------------
 // Editorial copy. Australian English, plain, active. No em dashes.
 // ---------------------------------------------------------------------------
-// ===========================================================================
-// THE GARMENT STUDIO — model factors for the four working tools: the carbon
-// footprint estimator, the fabric comparator, the supply chain mapper and the
-// circularity scorecard.
-//
-// HONESTY NOTE, load-bearing: every physical factor below is an indicative
-// estimate assembled from published life cycle assessment literature ranges
-// (fibre LCAs, mill energy studies, IMO/ICAO freight factors, public grid
-// intensity data), rounded hard and simplified so they can be manipulated
-// live. They support decisions and intuition. They are not an audit, and the
-// UI says so in plain sight, once.
-// ===========================================================================
-
-// Fibres the estimator and comparator share. One row per fibre:
-//   ef        kg CO2e per kg of finished fibre, cradle to spinning gate
-//   waterL    litres per kg of fibre (irrigated where relevant)
-//   microMg   microfibre shed, mg per wash, indicative machine-wash figure
-//   wearsMod  multiplier on garment life expectancy
-//   decayYr   years to substantially break down buried in active soil
-//   loop      'mono' closes a fibre recycling loop, 'jam' blocks it,
-//             'hard' is technically possible but rarely done at scale
-export const STUDIO_FIBRES = [
-  { id: 'cotton', name: 'Cotton', kind: 'natural, conventional',
-    ef: 5.0, waterL: 7000, microMg: 10, wearsMod: 1.0, decayYr: 0.6, loop: 'mono',
-    read: 'Thirsty in the field, honest at end of life. Irrigation is the swing factor.' },
-  { id: 'orgcotton', name: 'Organic cotton', kind: 'natural, certified growing',
-    ef: 3.2, waterL: 5500, microMg: 10, wearsMod: 1.0, decayYr: 0.6, loop: 'mono',
-    read: 'Lower-input growing, similar thirst. The certificate is about the field, not the factory.' },
-  { id: 'linen', name: 'Linen', kind: 'natural, bast fibre',
-    ef: 2.1, waterL: 650, microMg: 6, wearsMod: 1.15, decayYr: 0.4, loop: 'mono',
-    read: 'Rain-fed flax, small footprint, creases with pride and outlives trends.' },
-  { id: 'hemp', name: 'Hemp', kind: 'natural, bast fibre',
-    ef: 1.9, waterL: 500, microMg: 6, wearsMod: 1.2, decayYr: 0.4, loop: 'mono',
-    read: 'The quiet achiever. Low water, low input, gets softer for a decade.' },
-  { id: 'wool', name: 'Merino wool', kind: 'natural, protein fibre',
-    ef: 21.0, waterL: 1250, microMg: 12, wearsMod: 1.25, decayYr: 1.5, loop: 'hard',
-    read: 'Heavy at the farm gate, then repays it: fewer washes, long life, full breakdown.' },
-  { id: 'poly', name: 'Polyester', kind: 'synthetic, virgin',
-    ef: 5.4, waterL: 60, microMg: 260, wearsMod: 1.1, decayYr: 500, loop: 'mono',
-    read: 'Cheap, strong, nearly waterless to make, and it never really leaves.' },
-  { id: 'rpet', name: 'Recycled polyester', kind: 'synthetic, bottle-derived',
-    ef: 2.4, waterL: 45, microMg: 260, wearsMod: 1.05, decayYr: 500, loop: 'hard',
-    read: 'Half the carbon of virgin, same shedding, and bottles only recycle once this way.' },
-  { id: 'lyocell', name: 'Lyocell', kind: 'regenerated cellulose',
-    ef: 2.6, waterL: 320, microMg: 9, wearsMod: 0.95, decayYr: 0.8, loop: 'mono',
-    read: 'Wood pulp spun in a closed solvent loop. Gentle drape, honest ending.' },
-];
-
-export const FIBRE_BY_ID = Object.fromEntries(STUDIO_FIBRES.map((f) => [f.id, f]));
-
-// Garment cuts. Area is fabric consumed in m² including cutting-loss allowance
-// at size M; gsm bounds are the realistic cloth-weight range for the cut.
-export const GARMENT_TYPES = [
-  { id: 'tee', name: 'Tee', area: 0.85, gsmMin: 120, gsmMax: 280, gsmDefault: 180, wearsBase: 90 },
-  { id: 'shirt', name: 'Shirt', area: 1.1, gsmMin: 100, gsmMax: 220, gsmDefault: 140, wearsBase: 110 },
-  { id: 'hoodie', name: 'Hoodie', area: 1.7, gsmMin: 240, gsmMax: 520, gsmDefault: 340, wearsBase: 150 },
-  { id: 'jeans', name: 'Jeans', area: 1.6, gsmMin: 280, gsmMax: 480, gsmDefault: 400, wearsBase: 230 },
-  { id: 'dress', name: 'Dress', area: 1.4, gsmMin: 110, gsmMax: 320, gsmDefault: 190, wearsBase: 60 },
-];
-
-// Size grades the pattern up or down; multipliers on fabric area.
-export const SIZES = [
-  { id: 'xs', label: 'XS', mult: 0.86 },
-  { id: 's', label: 'S', mult: 0.93 },
-  { id: 'm', label: 'M', mult: 1.0 },
-  { id: 'l', label: 'L', mult: 1.08 },
-  { id: 'xl', label: 'XL', mult: 1.17 },
-  { id: 'xxl', label: 'XXL', mult: 1.27 },
-];
-
-// Making origins. Grid intensity is an indicative national average in
-// kg CO2e per kWh; km is a rough freight distance to Melbourne. cell indexes
-// into WORLD_MASK below as [col, row].
-export const ORIGINS = [
-  { id: 'vn', name: 'Vietnam', grid: 0.68, km: 7900, cell: [51, 12],
-    note: 'Coal-heavy grid, deep garment expertise, short sea leg to Australia.' },
-  { id: 'cn', name: 'China', grid: 0.64, km: 9200, cell: [52, 10],
-    note: 'The full supply chain in one country, on a grid decarbonising unevenly.' },
-  { id: 'bd', name: 'Bangladesh', grid: 0.74, km: 9300, cell: [48, 10],
-    note: 'Gas and coal power most mills. Labour cost pressure is the industry story here.' },
-  { id: 'in', name: 'India', grid: 0.77, km: 9800, cell: [45, 11],
-    note: 'Cotton at the doorstep, one of the most carbon-intense grids in the trade.' },
-  { id: 'tr', name: 'Türkiye', grid: 0.44, km: 14600, cell: [38, 7],
-    note: 'Closer to European buyers than to you. Mid-intensity grid, strong denim craft.' },
-  { id: 'pt', name: 'Portugal', grid: 0.17, km: 17600, cell: [30, 7],
-    note: 'Wind and hydro do the wet processing. The distance is the price you pay.' },
-  { id: 'au', name: 'Australia', grid: 0.63, km: 600, cell: [56, 19],
-    note: 'Almost no freight, honest labour law, a grid still burning coal for now.' },
-];
-
-export const ORIGIN_BY_ID = Object.fromEntries(ORIGINS.map((o) => [o.id, o]));
-
-// Destination pin for the freight route.
-export const DEST = { name: 'Melbourne', cell: [57, 20] };
-
-// A coarse dot map of the world, 64 columns by 23 rows, equirectangular-ish.
-// '#' is land. It is a stylised chart, not cartography; hubs index into it.
-export const WORLD_MASK = [
-  '................................................................',
-  '.......###.........#####..........##############................',
-  '..#######*#........######......###################.#............',
-  '.##########.........####.....######################..##.........',
-  '..#########..........##....#..######################.###........',
-  '...########...............###.#####################..##.........',
-  '....######.................####.####################.##.........',
-  '.....####.....................#######..####..######..#..........',
-  '......##.......................######..#####.#####..............',
-  '.......#........................#####...#######.##..............',
-  '................#....................#...######..##.#............',
-  '...............####..............####....#####...#.##...........',
-  '...............######............#####....##....##..#...........',
-  '................#######..........#####.....#....##.###..........',
-  '................######...........####..........####..##.........',
-  '.................####............###..........#######...........',
-  '.................###.............##...........########..........',
-  '..................##.............#............########..........',
-  '..................##..........................#######...........',
-  '..................#............................#####.#..........',
-  '..................#.................................#...........',
-  '...................................................#............',
-  '................................................................',
-];
-
-// Process constants. Rounded, indicative, and labelled as such in the UI.
-export const STUDIO_FACTORS = {
-  spinKwhPerKg: 3.4,      // yarn prep, spinning, knitting or weaving
-  dyeThermalPerKg: 2.2,   // kg CO2e per kg, boiler fuel for hot wet processing
-  dyeElecKwhPerKg: 3.2,   // pumps, jets, drying, grid powered
-  dyeWaterLPerKg: 120,    // process water for dye and finish
-  makeKwhPerKg: 1.6,      // cut, sew, press
-  trimsKg: 0.25,          // threads, labels, zips, buttons, flat allowance
-  seaPerKgKm: 0.000012,   // container sea freight, kg CO2e per kg per km
-  airPerKgKm: 0.00085,    // long-haul air freight, kg CO2e per kg per km
-  roadKm: 300,            // domestic road leg to the store
-  roadPerKgKm: 0.00011,   // road freight, kg CO2e per kg per km
-  retailKg: 0.28,         // packaging, DC and store overhead allowance
-  cutLoss: 0.85,          // 15 per cent of cloth becomes offcut
-  carKgPerKm: 0.17,       // average petrol car, for the equivalence line
-};
-
-// The four streams the particle field renders, in the same chart-grade hues
-// the footprint dashboard uses for its categories.
-export const STREAMS = [
-  { id: 'fibre', label: 'Fibre', color: '#75821D',
-    note: 'Growing or extruding the raw fibre, cradle to spinning gate.' },
-  { id: 'dyeing', label: 'Dyeing', color: '#635BFF',
-    note: 'The dye house: tonnes of water heated to a simmer to fix colour. The hotspot.' },
-  { id: 'assembly', label: 'Assembly', color: '#B56A00',
-    note: 'Spinning, knitting, cutting and sewing, on the making country’s grid.' },
-  { id: 'transport', label: 'Transport', color: '#C7274A',
-    note: 'Sea freight to Melbourne, the road leg, and the retail allowance.' },
-];
-
-// Supply chain stages for the mapper. share() splits the four streams into six
-// physical stops so the route reads as a journey, not an accounting table.
-export const CHAIN_STAGES = [
-  { id: 'fibre', name: 'Fibre', from: 'fibre', frac: 1,
-    hud: 'Grown or extruded. For cotton, the irrigation decision starts here and never stops mattering.' },
-  { id: 'spin', name: 'Spinning and knitting', from: 'assembly', frac: 0.68,
-    hud: 'Fibre becomes yarn becomes cloth. Steady electricity, all grid, runs the mill.' },
-  { id: 'dye', name: 'The dye house', from: 'dyeing', frac: 1,
-    hud: 'Most of the energy your garment will ever use in production is spent in this shed.' },
-  { id: 'make', name: 'Cut and sew', from: 'assembly', frac: 0.32,
-    hud: 'Hands and machines. Modest energy, most of the labour story, all of the craft.' },
-  { id: 'freight', name: 'Freight', from: 'transport', frac: null, // computed live
-    hud: 'Sea freight barely registers per garment. Put the same box on a plane and watch.' },
-  { id: 'retail', name: 'Retail', from: 'transport', frac: null,
-    hud: 'Packed, trucked, lit and shelved. The last kilometres are short but never free.' },
-];
-
-// ---------------------------------------------------------------------------
-// The garment model. One function the estimator, mapper and scorecard share.
-// blend: { a: fibreId, b: fibreId|null, pctA: 50..100 }
-// Returns per-stream kg CO2e, water, mass and life expectancy.
-// ---------------------------------------------------------------------------
-export function buildGarment({ typeId, sizeId, gsm, blend, originId, freight = 'sea' }) {
-  const F = STUDIO_FACTORS;
-  const type = GARMENT_TYPES.find((t) => t.id === typeId) || GARMENT_TYPES[0];
-  const size = SIZES.find((s) => s.id === sizeId) || SIZES[2];
-  const origin = ORIGIN_BY_ID[originId] || ORIGINS[0];
-  const a = FIBRE_BY_ID[blend.a] || STUDIO_FIBRES[0];
-  const b = blend.b ? FIBRE_BY_ID[blend.b] : null;
-  const wA = b ? Math.min(Math.max(blend.pctA, 50), 100) / 100 : 1;
-  const mix = (k) => a[k] * wA + (b ? b[k] * (1 - wA) : 0);
-
-  const clothKg = (type.area * size.mult * gsm) / 1000;
-  const fibreKg = clothKg / F.cutLoss; // offcuts still had to be grown
-  const massKg = clothKg + F.trimsKg;
-
-  const fibre = fibreKg * mix('ef');
-  const dyeing = clothKg * (F.dyeThermalPerKg + F.dyeElecKwhPerKg * origin.grid);
-  const spin = fibreKg * F.spinKwhPerKg * origin.grid;
-  const make = clothKg * F.makeKwhPerKg * origin.grid;
-  const assembly = spin + make;
-  const perKgKm = freight === 'air' ? F.airPerKgKm : F.seaPerKgKm;
-  const freightKg = massKg * (origin.km * perKgKm + F.roadKm * F.roadPerKgKm);
-  const transport = freightKg + F.retailKg;
-
-  const total = fibre + dyeing + assembly + transport;
-  const waterL = fibreKg * mix('waterL') + clothKg * F.dyeWaterLPerKg;
-  const wears = Math.round(type.wearsBase * mix('wearsMod'));
-  const microMg = mix('microMg');
-  const isBlend = Boolean(b) && wA < 0.95;
-  // Recycling loop of the finished cloth: a true blend jams the shredder line
-  // regardless of what each fibre could do alone.
-  const loop = isBlend ? 'jam' : a.loop;
-  const decayYr = Math.max(a.decayYr, b ? b.decayYr : 0);
-
-  return {
-    type, size, origin, fibreA: a, fibreB: b, pctA: Math.round(wA * 100),
-    clothKg, massKg, total, waterL, wears, microMg, isBlend, loop, decayYr,
-    streams: { fibre, dyeing, assembly, transport },
-    chain: { fibre, spin, dye: dyeing, make, freight: freightKg, retail: F.retailKg },
-    carKm: Math.round(total / F.carKgPerKm),
-  };
-}
-
-// ---------------------------------------------------------------------------
-// Circularity scorecard. A transparent rubric over the built garment plus
-// design choices; a heuristic for intuition, not a certification, and the UI
-// says so. Each row returns earned points, its ceiling, and a plain reason.
-// ---------------------------------------------------------------------------
-export const LOOP_CHOICES = [
-  { id: 'spares', label: 'Repair spares in the hem',
-    blurb: 'Buttons, patch cloth and thread sewn inside, so repair is the easy choice.' },
-  { id: 'seams', label: 'Unpickable seams',
-    blurb: 'Designed for disassembly: trims come off clean, panels part without shredding.' },
-  { id: 'takeback', label: 'Take-back programme',
-    blurb: 'The maker collects it at end of life and has somewhere real to send it.' },
-  { id: 'resale', label: 'Built for resale',
-    blurb: 'Construction and cloth chosen to survive a second owner, not just a season.' },
-];
-
-export function scoreCircularity(g, choices) {
-  const rows = [];
-
-  if (!g.isBlend && g.loop === 'mono') {
-    rows.push({ id: 'mono', label: 'One-fibre construction', pts: 25, max: 25,
-      why: 'A single fibre means a recycler can actually take it.' });
-  } else if (!g.isBlend) {
-    rows.push({ id: 'mono', label: 'One-fibre construction', pts: 15, max: 25,
-      why: `${g.fibreA.name} recycles in theory, rarely in practice. Points for possibility.` });
-  } else {
-    rows.push({ id: 'mono', label: 'One-fibre construction', pts: 0, max: 25,
-      why: `A ${g.pctA}/${100 - g.pctA} blend jams the shredder line. No recycler will divorce these fibres.` });
-  }
-
-  if (g.decayYr <= 2) {
-    rows.push({ id: 'eol', label: 'End of life', pts: 20, max: 20,
-      why: `Buried, it substantially breaks down in about ${g.decayYr < 1 ? 'a year' : Math.round(g.decayYr) + ' years'}.` });
-  } else if (g.loop !== 'jam') {
-    rows.push({ id: 'eol', label: 'End of life', pts: 10, max: 20,
-      why: 'It will not break down, so its only honest exit is the recycling loop.' });
-  } else {
-    rows.push({ id: 'eol', label: 'End of life', pts: 0, max: 20,
-      why: `Recognisable in landfill for centuries, and the blend blocks recycling.` });
-  }
-
-  const durPts = Math.round(Math.min(1, g.wears / 250) * 20);
-  rows.push({ id: 'durability', label: 'Durability', pts: durPts, max: 20,
-    why: `Expected life of about ${g.wears} wears for this cut and cloth.` });
-
-  const spares = choices.includes('spares') ? 8 : 0;
-  const seams = choices.includes('seams') ? 7 : 0;
-  rows.push({ id: 'repair', label: 'Repair and disassembly', pts: spares + seams, max: 15,
-    why: spares + seams ? 'Designed to be fixed and taken apart, not just worn out.' : 'No repair spares, no unpickable seams. Repair is left to the owner’s stubbornness.' });
-
-  rows.push({ id: 'takeback', label: 'Take-back', pts: choices.includes('takeback') ? 10 : 0, max: 10,
-    why: choices.includes('takeback') ? 'Collection with a real destination beats a bin at the door.' : 'No take-back programme. The bin at the store is a bin.' });
-
-  rows.push({ id: 'resale', label: 'Resale value', pts: choices.includes('resale') ? 10 : 0, max: 10,
-    why: choices.includes('resale') ? 'Built well enough to sell twice. The loop closes wide.' : 'Not specified for a second owner.' });
-
-  const score = rows.reduce((n, r) => n + r.pts, 0);
-  const band = score >= 80 ? { id: 'closed', label: 'Closes the loop' }
-    : score >= 60 ? { id: 'near', label: 'Nearly circular' }
-      : score >= 40 ? { id: 'half', label: 'Half-way there' }
-        : { id: 'linear', label: 'Linear by design' };
-  return { rows, score, band };
-}
 
 export const COPY = {
   brand: 'OPENWEAVE',
@@ -1557,7 +1535,7 @@ export const COPY = {
     commitmentsHint: 'Industry pledges this brand has signed. A commitment, not a result.',
     commitmentsNone: 'No memberships confirmed on file yet.',
     provenanceLabel: 'Ownership',
-    freshnessTemplate: 'Ownership and memberships verified as of {d}. Transparency score: Fashion Transparency Index 2023.',
+    freshnessTemplate: 'Ownership and memberships verified as of {d}. Transparency score: Fashion Transparency Index 2023, the final edition of that index.',
   },
 
   compare: {
@@ -1571,8 +1549,24 @@ export const COPY = {
     brandCol: 'Signal',
   },
 
-  directory: {
+  lens: {
     idx: '03',
+    icon: 'target',
+    title: 'What you can’t know',
+    sub: 'Pick what you care about',
+    lede: 'Most tools tell you which brands are good. This one tells you what you can and cannot verify. Choose the things you care about, and the lens reads the selected brand against them: what it publishes, what only its parent publishes, and what stays dark.',
+    pickLabel: 'I care about',
+    emptyTitle: 'No brand under the lens yet',
+    emptyBody: 'Look up a brand above and this section will read it against the things you care about.',
+    noneChecked: 'Pick at least one concern above to read this brand against it.',
+    ownershipLine: 'Verified: {p}.',
+    ownershipFallback: 'Verified owner: {p}.',
+    summaryTemplate: 'Of the {n} signals behind what you care about, {open} can be checked, {parent} only through the parent, {dark} are not published, and {unverified} have not been verified by this tool yet.',
+    note: 'This is not a score. A brand can publish a lot and still weigh heavily on the world. But a dark signal means you are being asked to trust, not check.',
+  },
+
+  directory: {
+    idx: '04',
     icon: 'building',
     title: 'The directory',
     sub: 'Every brand, and every owner',
@@ -1602,83 +1596,35 @@ export const COPY = {
     stat: 'Ten owners',
     line: 'hold most of the brands on this page. The name on the label is rarely the company making the calls on climate, suppliers or wages. If you want the real numbers, read the parent.',
     sub: 'Which is why Openweave shows you the owner first',
+    mapLede: 'Every owner of more than one brand on this page, sized by how many labels it holds. Tap an owner to open its group in the directory.',
+    mapNote: 'Tile size is the number of brands on file under that owner. The number after each name is its brand count.',
+    independentsTemplate: '+ {n} standalone labels that own no other brand on file',
   },
 
-  // The Garment Studio: four working tools that show the speciality, not just
-  // the directory. All figures downstream of buildGarment().
-  studio: {
-    kicker: 'The garment studio',
-    lede: 'The lookup tells you what a brand says. The studio shows you what a garment costs the world, and where. Build one, follow it, then design its second life.',
-    estimator: {
-      idx: '04',
-      icon: 'spark',
-      title: 'Carbon footprint estimator',
-      sub: 'Build a garment, watch it cost',
-      lede: 'Pick the cut, the size, the cloth and where it is made. Carbon dioxide equivalent gathers around the garment as you work: fibre, dyeing, assembly and transport each emit their own stream.',
-      disclaimer: 'Figures are indicative estimates from published life cycle assessment factors, rounded and simplified so they move live. They support intuition, not audits.',
-      typeLabel: 'The cut',
-      sizeLabel: 'Size',
-      gsmLabel: 'Cloth weight',
-      blendLabel: 'The cloth',
-      blendALabel: 'Main fibre',
-      blendBLabel: 'Second fibre',
-      blendNone: 'None, single fibre',
-      pctTemplate: '{a}% {an} / {b}% {bn}',
-      originLabel: 'Made in',
-      originHint: 'Pick a port on the map, or use the list.',
-      totalLabel: 'Cradle to shop floor',
-      unit: 'kg CO2e',
-      waterLabel: 'Water, cradle to gate',
-      carTemplate: 'About the same as driving {n} km in an average petrol car.',
-      wearsTemplate: 'Expected life around {n} wears.',
-      srField: 'Decorative particle field showing the estimate as drifting motes; the figures are in the readout beside it.',
-    },
-    fabrics: {
-      idx: '05',
-      icon: 'leaf',
-      title: 'Fabric comparator',
-      sub: 'Three cloths on the bench',
-      lede: 'Pin up to three fibres and put them through the same questions at the same time: carbon to make, water to grow, what sheds in the wash, how long it lives, and what happens when you bury it.',
-      pinHint: 'Pin fibres from the shelf. Three at a time.',
-      useThis: 'Cut the garment from this',
-      rows: {
-        ef: { label: 'Carbon to make', unit: 'kg CO2e / kg fibre' },
-        waterL: { label: 'Water to grow', unit: 'litres / kg fibre' },
-        microMg: { label: 'Sheds in the wash', unit: 'mg / wash' },
-        wears: { label: 'Life expectancy', unit: 'relative to cotton' },
-        decayYr: { label: 'Buried breakdown', unit: 'years to break down' },
-      },
-      decayCapNote: '500 means it effectively never leaves; polyester survives centuries.',
-    },
-    chain: {
-      idx: '06',
-      icon: 'globe',
-      title: 'Supply chain mapper',
-      sub: 'Follow the garment you just built',
-      lede: 'The same garment, traced from fibre to a Melbourne shop floor. Each stop shows what it adds. Switch the freight to air to see why the boat matters.',
-      routeTemplate: '{origin} to {dest}, about {km} km',
-      seaLabel: 'By sea',
-      airLabel: 'By air',
-      stageLabel: 'Stage',
-      hotspotNote: 'The dye house is the hotspot: heating water to fix colour spends more energy than any other step in the making.',
-      airWarnTemplate: 'Air freight multiplies the transport stream by roughly {n}×. Nothing else you choose moves the number this hard, this fast.',
-    },
-    loop: {
-      idx: '07',
-      icon: 'target',
-      title: 'Circularity scorecard',
-      sub: 'Design its second life',
-      lede: 'Eight years from now this garment is worn. Whether its loop closes, jams or snaps was decided today, at the bench. Score the design you built above, then change it.',
-      choicesLabel: 'Design choices',
-      scoreLabel: 'Circularity score',
-      rubricNote: 'A transparent design heuristic scored out of 100, not a certification. Every point is explained, and half of them were earned or lost back in the estimator.',
-      maxLabel: 'of {n}',
-    },
+  // The field guide: one section, four tabs. The working knowledge that used
+  // to sprawl across four separate sections (materials, certifications,
+  // regulation, claim check), collapsed so the page's spine stays the lookup.
+  guide: {
+    idx: '05',
+    icon: 'book',
+    title: 'Field guide',
+    sub: 'Materials, labels, rules and claims',
+    lede: 'The working knowledge behind the lookup, in one place: what the common fibres trade off, what certifications actually verify, the rules about to change what brands must tell you, and a checker for the claims on the swing tag.',
+    tabs: [
+      { id: 'materials', label: 'Materials' },
+      { id: 'certs', label: 'Certifications' },
+      { id: 'regulation', label: 'Regulation' },
+      { id: 'claim', label: 'Claim check' },
+    ],
+    certTitle: 'What the certifications actually verify',
+    certLede: 'A certificate proves one specific, bounded thing. Knowing its edge is how you avoid reading a single label as a blanket "this is good".',
+    certVerifies: 'Verifies',
+    certEdge: 'Its edge',
+    regTitle: 'Regulation radar',
+    regLede: 'The rules that will change what brands must tell you. Forward-looking, and deliberately not a claim about any one brand.',
   },
 
   claim: {
-    idx: '08',
-    icon: 'book',
     title: 'Claim check',
     sub: 'Paste a green claim, see what holds up',
     lede: 'Marketing is where a brand chooses its words. Paste any sustainability claim and this checks it against the way regulators read it: flagging vague and absolute terms, and the qualifiers each one demands. It reads what you paste. It makes no judgement about any real brand.',
@@ -1696,8 +1642,6 @@ export const COPY = {
   },
 
   materials: {
-    idx: '09',
-    icon: 'shirt',
     title: 'Materials',
     sub: 'What the fabric is telling you',
     lede: 'Half of a garment’s story is the fibre it is cut from. This is a plain read of the common ones, and their trade-offs. It is not a ranking, on purpose.',
@@ -1709,7 +1653,7 @@ export const COPY = {
   },
 
   signals: {
-    idx: '10',
+    idx: '06',
     icon: 'list',
     title: 'What the signals mean',
     sub: 'Disclosure is not the same as doing well',
@@ -1732,21 +1676,17 @@ export const COPY = {
         b: 'You will see Disclosed, Not found, Parent-level only, and Needs research. You will not see "good", "bad", "ethical" or "sustainable" attached to a brand, because those words hide the working. This tool tracks what can be found publicly, and hands you the sources to judge for yourself.',
       },
     ],
-    disclaimer: 'Transparency is not the same as performance. A brand can disclose a lot and still have significant impacts. This tool tracks what can be found publicly, not a moral ranking.',
-    certTitle: 'What the certifications actually verify',
-    certLede: 'A certificate proves one specific, bounded thing. Knowing its edge is how you avoid reading a single label as a blanket "this is good".',
-    certVerifies: 'Verifies',
-    certEdge: 'Its edge',
-    regTitle: 'Regulation radar',
-    regLede: 'The rules that will change what brands must tell you. Forward-looking, and deliberately not a claim about any one brand.',
+    disclaimer: 'Transparency is not the same as performance. A brand can disclose a lot and still have significant impacts. This tool tracks what can be found publicly, not a moral ranking. The score it carries is the Fashion Transparency Index 2023, the final edition of that index; its successor, What Fuels Fashion, is linked from every brand card.',
   },
 
   backlog: {
-    idx: '11',
+    idx: '07',
     icon: 'scissors',
     title: 'Research backlog',
     sub: 'What still needs a human',
-    lede: 'This tool is honest about its gaps. Structural facts, parent, segment, headquarters, are verified. Quantified disclosure fields are being filled in over time. Anything marked "Needs research" below is waiting for a checked source.',
+    lede: 'This tool is honest about its gaps. Structural facts, parent, segment, headquarters, are verified. Quantified disclosure fields are being filled in over time. Anything marked "Needs research" below is waiting for a checked source. Next on the list: verified What Fuels Fashion 2024 scores, read from the primary report, to succeed the retired Transparency Index.',
+    logTitle: 'Change log',
+    logLede: 'Freshness is a discipline, not a stamp. Every change to the dataset or the method, dated.',
     fileNote: 'The editable tracker lives in the repository at',
     filePath: 'public/data/fashion-brands.csv',
     fileHref: 'https://github.com/itschriswang/portfolio/blob/main/public/data/fashion-brands.csv',
@@ -1756,7 +1696,7 @@ export const COPY = {
   },
 
   footer: {
-    method: 'Method: brand ownership from corporate filings and official brand pages. Transparency scores are the Fashion Transparency Index 2023, published by Fashion Revolution, which rates public disclosure only. Climate-target status is drawn from the Science Based Targets initiative dashboard; memberships from The Fashion Pact and B Lab. Per-field disclosure statuses are tracked in the repository and marked "Needs research" until a source is confirmed. Garment studio figures are indicative estimates assembled from published life cycle assessment literature, freight factors and public grid intensity data, rounded and simplified so they can be manipulated live. Nothing here is assured reporting, a product footprint, or advice about a real brand.',
+    method: 'Method: brand ownership from corporate filings and official brand pages. Transparency scores are the Fashion Transparency Index 2023, published by Fashion Revolution, which rates public disclosure only; 2023 was the final edition of that index, and its successor, What Fuels Fashion, is linked from every brand card until its scores are ingested from the primary report. Climate-target status is drawn from the Science Based Targets initiative dashboard; memberships from The Fashion Pact and B Lab. Per-field disclosure statuses are tracked in the repository and marked "Needs research" until a source is confirmed. Nothing here is assured reporting, a product footprint, or advice about a real brand.',
     attributionLabel: 'Data and attribution',
     attribution: 'This tool reproduces published figures with attribution, and claims none of them as its own. Fashion Transparency Index scores are © Fashion Revolution CIC, used for reference under their public research. Science Based Targets initiative data © SBTi. Certification and membership marks belong to their owners: The Fashion Pact, B Lab (B Corp), and the brands named. Company ownership is a matter of public record. Openweave is an independent, non-commercial reference tool and is not affiliated with, or endorsed by, any brand or organisation named. Every figure links to its source so you can check it. If you own a listing and something is wrong, it can be corrected.',
     sourcesLabel: 'Sources',
@@ -1768,13 +1708,9 @@ export const COPY = {
   rail: [
     { label: 'Lookup', id: 'lookup' },
     { label: 'Compare', id: 'compare' },
+    { label: 'Your lens', id: 'lens' },
     { label: 'Directory', id: 'directory' },
-    { label: 'Estimator', id: 'estimator' },
-    { label: 'Fabrics', id: 'fabrics' },
-    { label: 'Supply chain', id: 'chain' },
-    { label: 'Circularity', id: 'loop' },
-    { label: 'Claim check', id: 'claim' },
-    { label: 'Materials', id: 'materials' },
+    { label: 'Field guide', id: 'guide' },
     { label: 'Signals', id: 'signals' },
     { label: 'Backlog', id: 'backlog' },
   ],
