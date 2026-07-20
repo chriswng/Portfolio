@@ -467,6 +467,10 @@
 .ob-seg2-btn + .ob-seg2-btn{ border-left:1px solid var(--rule-dk); }
 .ob-seg2-btn.on{ background:var(--matcha); color:var(--slate); }
 
+/* Clothing by item: six compact steppers in a two-up grid. */
+.ob-items-grid{ display:grid; grid-template-columns:repeat(2, minmax(150px, 220px)); gap:0.9rem 1.4rem; margin:0.2rem 0 0.6rem; }
+@media (max-width:480px){ .ob-items-grid{ grid-template-columns:1fr 1fr; gap:0.8rem 0.8rem; } }
+
 .ob-field-compact{ margin-bottom:0; }
 .ob-field-compact .ob-label{ margin-bottom:0.3rem; }
 .ob-field-compact .ob-stepper button{ width:32px; height:32px; font-size:1rem; }

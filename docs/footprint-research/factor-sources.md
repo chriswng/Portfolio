@@ -243,6 +243,63 @@ as such in the basis of preparation. They size the displayed range only and
 never move a central estimate. Change them freely with the method note; no
 external value depends on them.
 
+## Clothing by item: ADEME consumer-products LCA (2018): shipped
+
+The physical alternative to the spend-based clothing line, added after the
+critique that spend weights dollars rather than garments (a fast-fashion
+haul reads lighter than one boutique piece). Counted as items bought new in
+the last 12 months, per bucket, priced on published per-garment cradle-to-
+grave climate results.
+
+Primary source, read directly from the archived PDFs (not mirrors):
+ADEME, "Modélisation et évaluation des impacts environnementaux de produits
+de consommation et biens d'équipement" (September 2018), the study behind
+the Base Empreinte per-item textile factors and ADEME's national consumer
+calculator. Full report + synthesis archived at
+`docs/footprint-research/clothing/ademe-base-empreinte-consumer-products.zip`.
+Per-product values read from the annex results table (report p. 180,
+"Changement climatique cradle-to-grave, kg CO2-eq. / produit"):
+
+| Product | kg CO2e / item |
+|---|---|
+| Chemise coton / viscose | 13 / 12 |
+| Jean coton | 25 |
+| T-shirt coton / polo / T-shirt polyester sport | 7 / 10 / 6 |
+| Pull acrylique / polaire rPET / sweat coton / pull laine / pull coton recyclé | 28 / 26 / 31 / 56 / 12 |
+| Manteau moyen / anorak / veste simili cuir | 89 / 39 / 25 |
+| Robe polyester / coton / viscose | 56 / 56 / 51 |
+| Chaussures cuir / tissu / sport | 15 / 19 / 20 |
+
+Buckets in `CLOTHING_ITEMS` are equal-weighted means of the named rows
+(same stated-screening pattern as the GOODS block): tops 9.6, jumpers 30.6,
+trousers 25, dresses 54.3, coats 51, shoes 18.
+
+Method notes:
+
+- ADEME's use phase attributes 100% of laundering consumables to the garment
+  (delta approach; reference scenario is no wash/dry/iron), at 50 care cycles
+  a year for shirts/tees, 30 for jumpers/jeans/dresses, 2 for coats (report
+  pp. 52-53). That overlaps slightly with home electricity metered elsewhere
+  in this calculator; declared in the basis of preparation as a conservatism
+  rather than netted out, since the workbook does not publish a use-phase
+  split per product.
+- Cross-check 1: Mistra Future Fashion (Sandin et al. 2019, Chalmers 514322,
+  PDF archived at `clothing/mistra-sandin-2019-six-garments.pdf`) spans about
+  1 kg CO2e (socks) to 20 kg (jacket) per garment life cycle and calls its
+  results order-of-magnitude estimates; ADEME values sit at the top of that
+  range (heavier laundering attribution, French distribution assumptions).
+- Cross-check 2: WRAP "Valuing Our Clothes" (2017, archived at
+  `clothing/wrap-valuing-our-clothes-2017.pdf`): 26.2 Mt CO2e for UK clothing
+  in 2016 (p. 12) over 1,130,000 t purchased (p. 9) ≈ 23 kg CO2e per kg,
+  consistent with the ADEME figures at typical garment weights (0.2-1.9 kg).
+- Second-hand purchases are excluded by instruction in the UI copy (they
+  carry no production impact in this framing).
+- The spend-based clothing line remains as a fallback; the two are mutually
+  exclusive per audit so nothing double counts.
+- At refresh: prefer Base Empreinte's current per-item values via the CSV
+  export (base-empreinte.ademe.fr, free account; impactco2.fr mirrors them
+  with an open API) over the 2018 study if they diverge.
+
 ## July 2026 session: verification-blocked queue
 
 **Update (later July 2026):** the spend-screening block (idea 8) and the
