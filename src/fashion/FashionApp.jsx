@@ -15,8 +15,10 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import {
   BRANDS, BRAND_BY_ID, SEGMENTS, SIGNAL_FIELDS, STATUS, COPY, SOURCES,
-  MULTI_GROUPS, segmentCount, ftiBand, groupFamily, deriveMonogram, segmentStyle,
-  logoUrl, GROUP_DOMAIN,
+  MULTI_GROUPS, segmentCount, ftiBand, groupFamily,
+  digLinks, analyseClaim, SPECIMEN_CLAIMS, ACCC_PRINCIPLES, CLAIM_VERDICTS,
+  COMMITMENT_INFO, FIBRES, CERTS, REGULATION, VERIFIED_AS_OF,
+  deriveMonogram, segmentStyle, logoUrl, GROUP_DOMAIN,
 } from './data';
 import { prefersReducedMotion } from '../utils/media';
 
@@ -40,9 +42,10 @@ function searchBrands(query, limit = 8) {
     const group = normalise(b.group);
     let score = 0;
     if (name === q) score = 100;
+    else if (b.aliases.some((a) => normalise(a) === q)) score = 92; // exact alias (e.g. "m&s")
     else if (name.startsWith(q)) score = 85;
+    else if (b.aliases.some((a) => normalise(a).startsWith(q))) score = 78;
     else if (name.includes(q)) score = 70;
-    else if (b.aliases.some((a) => normalise(a).startsWith(q))) score = 65;
     else if (aliasHit) score = 55;
     else if (parent.startsWith(q) || group.startsWith(q)) score = 45;
     else if (parent.includes(q) || group.includes(q)) score = 35;
@@ -113,6 +116,29 @@ const SearchIcon = () => (
 function ftiText(brand) {
   if (brand.fti != null) return `${brand.fti} / 100`;
   return brand.ftiScope === 'outside' ? 'Not assessed' : 'Needs research';
+}
+
+// A practical, honest "before you buy" read, built only from what is on file.
+// No invented metrics: it uses ownership, the FTI score and general guidance.
+function beforeYouBuy(brand, family) {
+  const items = [];
+  const parentClean = brand.parent.replace(/\.$/, '');
+  items.push(family.length
+    ? `Owned by ${parentClean}, which runs ${family.length} other label${family.length > 1 ? 's' : ''} on this page. Its group targets can differ from what the brand says.`
+    : `Owned by ${parentClean}. Read the parent's reporting, not just the brand's marketing.`);
+  if (brand.fti != null) {
+    const band = (brand.ftiBand || ftiBand(brand.fti));
+    items.push(`Its transparency score is ${brand.fti}/100 (${band ? band.label.toLowerCase() : 'disclosure'}). Publishing a lot is not the same as low impact.`);
+  } else if (brand.ftiScope === 'outside') {
+    items.push('Not assessed by the Fashion Transparency Index, so there is no disclosure score to lean on. Treat unqualified claims with extra care.');
+  } else {
+    items.push('No verified transparency score yet. Open its latest report yourself and note the date on it.');
+  }
+  items.push('Look for a dated climate target, and whether it reports Scope 3, the supply-chain emissions where most of fashion’s footprint sits.');
+  items.push('See if it publishes a supplier factory list. A brand that will not name its factories is choosing what you can check.');
+  items.push('Get a second opinion in Dig deeper below: Good On You for a consumer rating, Baptist World Aid for an Australian read.');
+  items.push('The lowest-impact option is usually the one you already own, bought secondhand, or repaired.');
+  return items;
 }
 
 // =========================================================================
@@ -212,12 +238,18 @@ function SectionRail() {
     secs.forEach((s) => io.observe(s));
     return () => io.disconnect();
   }, []);
+  const total = COPY.rail.length;
+  const activeIdx = COPY.rail.findIndex((r) => r.id === active);
   return (
     <nav className="ow-rail" aria-label="Sections">
-      {COPY.rail.map((r) => (
+      <span className="ow-rail-progress" aria-hidden="true">
+        {String(activeIdx + 1).padStart(2, '0')} <i>/</i> {String(total).padStart(2, '0')}
+      </span>
+      {COPY.rail.map((r, i) => (
         <a key={r.id} href={`#${r.id}`} className={active === r.id ? 'on' : ''}>
-          <span className="dot" aria-hidden="true" />
+          <span className="num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
           <span className="lbl">{r.label}</span>
+          <span className="dot" aria-hidden="true" />
         </a>
       ))}
     </nav>
@@ -314,7 +346,7 @@ function SearchField({ onSelect, id = 'ow-search-input', label }) {
 // =========================================================================
 function SwingTagStack() {
   const tags = [
-    { cls: 's1', name: 'Uniqlo', seg: 'basics', parent: 'Fast Retailing', rows: [['Parent', 'Fast Retailing'], ['Segment', 'Basics'], ['FTI 2023', 'Needs research']] },
+    { cls: 's1', name: 'Uniqlo', seg: 'basics', parent: 'Fast Retailing', rows: [['Parent', 'Fast Retailing'], ['Segment', 'Basics'], ['FTI 2023', '51 / 100']] },
     { cls: 's2', name: 'Gucci', seg: 'luxury', parent: 'Kering', rows: [['Parent', 'Kering'], ['Segment', 'Luxury'], ['FTI 2023', '80 / 100']] },
     { cls: 's3', name: 'Kmart', seg: 'department', parent: 'Wesfarmers', rows: [['Parent', 'Wesfarmers'], ['Segment', 'Value'], ['FTI 2023', '76 / 100']] },
   ];
@@ -433,6 +465,12 @@ function BrandCard({ brand, inCompare, onToggleCompare, onSelect, onOpenGroup })
           <div className="ow-card-tagcode">{brand.segmentLabel} · {brand.au ? 'Australian relevant' : brand.country}</div>
           <h3 className="ow-card-name">{brand.name}</h3>
           <div className="ow-card-knownfor">{brand.knownFor}</div>
+          {brand.provenance && (
+            <div className="ow-provenance">
+              <span className="k">{COPY.lookup.provenanceLabel}</span>
+              {brand.provenance}
+            </div>
+          )}
         </div>
       </div>
 
@@ -471,6 +509,24 @@ function BrandCard({ brand, inCompare, onToggleCompare, onSelect, onOpenGroup })
         </div>
       </div>
 
+      <div className="ow-commit">
+        <div className="ow-commit-h">{COPY.lookup.commitmentsLabel} <span>· {COPY.lookup.commitmentsHint}</span></div>
+        <div className="ow-commit-row">
+          {(() => {
+            const badges = [];
+            const c = brand.commitments;
+            if (c.sbti) {
+              const meta = COMMITMENT_INFO.sbti;
+              badges.push(<a key="sbti" className="ow-badge sbti" href={meta.url} target="_blank" rel="noopener noreferrer" title={c.sbti === 'parent' ? meta.parentHelp : meta.help}>{c.sbti === 'parent' ? meta.parentLabel : meta.label}</a>);
+            }
+            if (c.fashionPact === 'yes') badges.push(<a key="fp" className="ow-badge fp" href={COMMITMENT_INFO.fashionPact.url} target="_blank" rel="noopener noreferrer" title={COMMITMENT_INFO.fashionPact.help}>{COMMITMENT_INFO.fashionPact.label}</a>);
+            else if (c.fashionPact === 'former') badges.push(<span key="fp" className="ow-badge former" title={COMMITMENT_INFO.fashionPact.help}>{COMMITMENT_INFO.fashionPact.former}</span>);
+            if (c.bCorp) badges.push(<a key="bc" className="ow-badge bc" href={COMMITMENT_INFO.bCorp.url} target="_blank" rel="noopener noreferrer" title={COMMITMENT_INFO.bCorp.help}>{COMMITMENT_INFO.bCorp.label}</a>);
+            return badges.length ? badges : <span className="ow-commit-none">{COPY.lookup.commitmentsNone}</span>;
+          })()}
+        </div>
+      </div>
+
       {family.length > 0 && (
         <div className="ow-family">
           <div className="ow-family-h">{COPY.lookup.familyLabel} <span>· {COPY.lookup.familyHint}</span></div>
@@ -486,6 +542,27 @@ function BrandCard({ brand, inCompare, onToggleCompare, onSelect, onOpenGroup })
         </div>
       )}
 
+      <div className="ow-buy">
+        <div className="ow-buy-h">{COPY.lookup.checklistLabel} <span>· {COPY.lookup.checklistHint}</span></div>
+        <ol className="ow-buy-list">
+          {beforeYouBuy(brand, family).map((line, i) => (
+            <li key={i}><span className="n">{String(i + 1).padStart(2, '0')}</span>{line}</li>
+          ))}
+        </ol>
+      </div>
+
+      <div className="ow-dig">
+        <div className="ow-dig-h">{COPY.lookup.digLabel} <span>· {COPY.lookup.digHint}</span></div>
+        <div className="ow-dig-links">
+          {digLinks(brand).map((l) => (
+            <a key={l.label} className="ow-diglink" href={l.url} target="_blank" rel="noopener noreferrer">
+              <span className="dl-name">{l.label} ↗</span>
+              <span className="dl-note">{l.note}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+
       <div className="ow-card-actions">
         {brand.reportUrl ? (
           <a className="ow-btn" href={brand.reportUrl} target="_blank" rel="noopener noreferrer">{COPY.lookup.reportLabel} ↗</a>
@@ -497,6 +574,8 @@ function BrandCard({ brand, inCompare, onToggleCompare, onSelect, onOpenGroup })
         </button>
         <button className="ow-btn" onClick={copyLink}>{copied ? `✓ ${COPY.lookup.shareDone}` : COPY.lookup.shareLabel}</button>
       </div>
+
+      <div className="ow-stamp">{COPY.lookup.freshnessTemplate.replace('{d}', VERIFIED_AS_OF)}</div>
     </article>
   );
 }
@@ -650,6 +729,8 @@ function Directory({ onSelect, view, setView, focusGroup }) {
   const [seg, setSeg] = useState('all');
   const [auOnly, setAuOnly] = useState(false);
   const [scoredOnly, setScoredOnly] = useState(false);
+  const [pactOnly, setPactOnly] = useState(false);
+  const [bcorpOnly, setBcorpOnly] = useState(false);
   const [text, setText] = useState('');
   const [sort, setSort] = useState('name');
   const focusRef = useRef(null);
@@ -659,6 +740,8 @@ function Directory({ onSelect, view, setView, focusGroup }) {
     if (seg !== 'all') out = out.filter((b) => b.segment === seg);
     if (auOnly) out = out.filter((b) => b.au);
     if (scoredOnly) out = out.filter((b) => b.fti != null);
+    if (pactOnly) out = out.filter((b) => b.commitments.fashionPact === 'yes');
+    if (bcorpOnly) out = out.filter((b) => b.commitments.bCorp);
     const q = normalise(text);
     if (q) out = out.filter((b) => normalise(b.name).includes(q) || normalise(b.parent).includes(q) || b.aliases.some((a) => normalise(a).includes(q)));
     out.sort((a, b) => {
@@ -668,7 +751,7 @@ function Directory({ onSelect, view, setView, focusGroup }) {
       return a.name.localeCompare(b.name);
     });
     return out;
-  }, [seg, auOnly, scoredOnly, text, sort]);
+  }, [seg, auOnly, scoredOnly, pactOnly, bcorpOnly, text, sort]);
 
   useEffect(() => {
     if (view === 'groups' && focusGroup && focusRef.current) {
@@ -716,6 +799,8 @@ function Directory({ onSelect, view, setView, focusGroup }) {
               ))}
               <button className="ow-chip alt" aria-pressed={auOnly} onClick={() => setAuOnly((v) => !v)}>{COPY.directory.auOnly}</button>
               <button className="ow-chip alt" aria-pressed={scoredOnly} onClick={() => setScoredOnly((v) => !v)}>{COPY.directory.scored}</button>
+              <button className="ow-chip alt" aria-pressed={pactOnly} onClick={() => setPactOnly((v) => !v)}>{COPY.directory.pactOnly}</button>
+              <button className="ow-chip alt" aria-pressed={bcorpOnly} onClick={() => setBcorpOnly((v) => !v)}>{COPY.directory.bcorpOnly}</button>
             </div>
 
             <p className="ow-count">{COPY.directory.resultTemplate.replace('{n}', list.length)}</p>
@@ -745,6 +830,188 @@ function Directory({ onSelect, view, setView, focusGroup }) {
 }
 
 // =========================================================================
+// Stat band (form: at-a-glance editorial figures under the hero)
+// =========================================================================
+function StatBand() {
+  const values = {
+    brands: BRANDS.length,
+    groups: MULTI_GROUPS.length,
+    scored: BRANDS.filter((b) => b.fti != null).length,
+    segments: SEGMENTS.length,
+  };
+  return (
+    <div className="ow-statband" aria-hidden="false">
+      <div className="ow-wrap ow-statband-inner">
+        {COPY.stats.map((s) => (
+          <div className="ow-statcell" key={s.from}>
+            <span className="n">{values[s.from]}</span>
+            <span className="k">{s.k}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// =========================================================================
+// Spotlight (form: a dark editorial band for pacing and emphasis)
+// =========================================================================
+function Spotlight() {
+  return (
+    <aside className="ow-spotlight ow-dark" aria-label="Editorial note">
+      <div className="ow-wrap">
+        <p className="ow-spotlight-line">
+          <b>{COPY.spotlight.stat}</b> {COPY.spotlight.line}
+        </p>
+        <p className="ow-spotlight-sub">{COPY.spotlight.sub}</p>
+      </div>
+    </aside>
+  );
+}
+
+// =========================================================================
+// Claim check (greenwashing utility, grounded in ACCC guidance)
+// =========================================================================
+function FlagList({ title, items, noteKey }) {
+  if (!items.length) return null;
+  return (
+    <div className="ow-flag-group">
+      <div className="ow-flag-h">{title} <span>· {items.length}</span></div>
+      {items.map((f, i) => (
+        <div className="ow-flag" key={f.term + i}>
+          <span className="ow-flag-word">“{f.word}”</span>
+          <span className="ow-flag-note">{f[noteKey] || f.note}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// Render the submitted claim with flagged words marker-underlined, like an
+// auditor marking up a record (Madam Speaker mechanic).
+function MarkedClaim({ text, result }) {
+  const words = [...result.absolute, ...result.vague, ...result.qualifier].map((f) => f.word);
+  if (!words.length) return <span>{text}</span>;
+  const trimmed = [...new Set(words.map((w) => w.trim()))].filter(Boolean);
+  const flagSet = new Set(trimmed.map((w) => w.toLowerCase()));
+  const escaped = trimmed.sort((a, b) => b.length - a.length)
+    .map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  const parts = text.split(new RegExp(`(${escaped.join('|')})`, 'gi'));
+  return (
+    <span>
+      {parts.map((p, i) => (p && flagSet.has(p.toLowerCase())
+        ? <mark key={i} className="ow-mark">{p}</mark>
+        : <span key={i}>{p}</span>))}
+    </span>
+  );
+}
+
+function ClaimCheck() {
+  const [text, setText] = useState('');
+  const [submitted, setSubmitted] = useState('');
+  const result = useMemo(() => analyseClaim(submitted), [submitted]);
+
+  const run = () => setSubmitted(text);
+  const tryOne = (c) => { setText(c); setSubmitted(c); };
+  const verdictClass = result ? { sound: 'ok', vague: 'warn', risk: 'bad' }[result.verdict.id] : '';
+
+  return (
+    <section className="ow-section ow-reveal" id="claim">
+      <div className="ow-wrap">
+        <SecHead c={COPY.claim} />
+        <p className="ow-lede">{COPY.claim.lede}</p>
+
+        <div className="ow-claim-grid">
+          <div className="ow-claim-input">
+            <textarea
+              className="ow-claim-ta"
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              placeholder={COPY.claim.placeholder}
+              rows={3}
+              aria-label="Marketing claim to check"
+              onKeyDown={(e) => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) run(); }}
+            />
+            <div className="ow-claim-controls">
+              <button className="ow-btn solid" onClick={run}>{COPY.claim.run}</button>
+              <div className="ow-claim-try">
+                <span className="lbl">{COPY.claim.tryLabel}</span>
+                {SPECIMEN_CLAIMS.map((c, i) => (
+                  <button key={i} className="ow-chip" onClick={() => tryOne(c)} title={c}>{c.length > 34 ? c.slice(0, 32) + '…' : c}</button>
+                ))}
+              </div>
+            </div>
+
+            {result ? (
+              <div className={`ow-claim-result ${verdictClass}`}>
+                <div className="ow-marked">“<MarkedClaim text={submitted} result={result} />”</div>
+                <div className="ow-verdict">
+                  <span className="stamp">{result.verdict.label}</span>
+                  <span className="line">{result.verdict.line}</span>
+                </div>
+                <FlagList title={COPY.claim.flaggedAbsolute} items={result.absolute} noteKey="note" />
+                <FlagList title={COPY.claim.flaggedVague} items={result.vague} noteKey="note" />
+                <FlagList title={COPY.claim.flaggedQualifier} items={result.qualifier} noteKey="note" />
+                <div className="ow-evidence">{COPY.claim.evidenceLabel}: <b>{result.evidence}</b></div>
+                <details className="ow-method">
+                  <summary>How this verdict was reached</summary>
+                  <p>The claim is scanned for vague terms with no fixed meaning, for absolute terms that fail on the first exception, and for terms that are legitimate only with a specific qualifier. It then looks for evidence signals: a number, a recognised certification, a third-party audit, a year, or a stated comparison. A claim with flagged terms and no evidence reads as vague; an absolute claim, or two or more flags with no evidence, reads as high risk. It is a heuristic, not a ruling.</p>
+                </details>
+              </div>
+            ) : (
+              <div className="ow-claim-result empty"><p>{COPY.claim.emptyResult}</p></div>
+            )}
+            <p className="ow-claim-disclaimer">{COPY.claim.disclaimer}</p>
+          </div>
+
+          <aside className="ow-principles">
+            <h3>{COPY.claim.principlesLabel}</h3>
+            <ol className="ow-principles-list">
+              {ACCC_PRINCIPLES.map((p, i) => (
+                <li key={i}><span className="pn">{String(i + 1).padStart(2, '0')}</span>{p}</li>
+              ))}
+            </ol>
+            <p className="ow-principles-note">{COPY.claim.principlesNote}</p>
+          </aside>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// =========================================================================
+// Materials guide (fibre-level "before you buy" context)
+// =========================================================================
+function MaterialsGuide() {
+  return (
+    <section className="ow-section ow-reveal" id="materials">
+      <div className="ow-wrap">
+        <SecHead c={COPY.materials} />
+        <p className="ow-lede">{COPY.materials.lede}</p>
+        <div className="ow-fibres">
+          {FIBRES.map((f) => (
+            <div className="ow-fibre" key={f.name}>
+              <div className="ow-fibre-head">
+                <span className="fn">{f.name}</span>
+                <span className="fk">{f.kind}</span>
+              </div>
+              <div className="ow-fibre-body">
+                <div className="ow-fibre-row good"><span className="fl">{COPY.materials.goodLabel}</span>{f.good}</div>
+                <div className="ow-fibre-row watch"><span className="fl">{COPY.materials.watchLabel}</span>{f.watch}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="ow-caveat">
+          <h3>{COPY.materials.caveatTitle}</h3>
+          <p>{COPY.materials.caveat}</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// =========================================================================
 // What the signals mean
 // =========================================================================
 function SignalsExplainer() {
@@ -762,6 +1029,37 @@ function SignalsExplainer() {
           ))}
         </div>
         <p className="ow-note"><b>Read this first.</b> {COPY.signals.disclaimer}</p>
+
+        <div className="ow-subblock">
+          <h3 className="ow-subhead">{COPY.signals.certTitle}</h3>
+          <p className="ow-sublede">{COPY.signals.certLede}</p>
+          <div className="ow-certs">
+            {CERTS.map((c) => (
+              <div className="ow-cert" key={c.name}>
+                <div className="ow-cert-name">{c.name}</div>
+                <div className="ow-cert-row"><span className="cl">{COPY.signals.certVerifies}</span>{c.verifies}</div>
+                <div className="ow-cert-row edge"><span className="cl">{COPY.signals.certEdge}</span>{c.edge}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="ow-subblock">
+          <h3 className="ow-subhead">{COPY.signals.regTitle}</h3>
+          <p className="ow-sublede">{COPY.signals.regLede}</p>
+          <div className="ow-reg">
+            {REGULATION.map((r) => (
+              <div className="ow-regitem" key={r.name}>
+                <div className="ow-reg-top">
+                  <span className="ow-reg-name">{r.name}</span>
+                  <span className="ow-reg-tag">{r.tag}</span>
+                </div>
+                <div className="ow-reg-when">{r.when}</div>
+                <p className="ow-reg-what">{r.what}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -821,6 +1119,10 @@ function Footer() {
               <a className="src" key={s.url} href={s.url} target="_blank" rel="noopener noreferrer">{s.label} ↗</a>
             ))}
           </div>
+        </div>
+        <div className="ow-attribution">
+          <h4>{COPY.footer.attributionLabel}</h4>
+          <p>{COPY.footer.attribution}</p>
         </div>
         <div className="ow-footer-base">
           <span>{COPY.footer.made}</span>
@@ -959,6 +1261,7 @@ export default function FashionApp() {
       <SectionRail />
       <main className="ow-main" ref={heroSearchRef}>
         <Hero onSelect={select} recent={recent} />
+        <StatBand />
         <LookupSection
           selected={selected}
           compareIds={compareIds}
@@ -969,6 +1272,9 @@ export default function FashionApp() {
         />
         <CompareSection compareIds={compareIds} onRemove={removeCompare} onClear={clearCompare} onSelect={select} />
         <Directory onSelect={select} view={dirView} setView={setDirView} focusGroup={focusGroup} />
+        <Spotlight />
+        <ClaimCheck />
+        <MaterialsGuide />
         <SignalsExplainer />
         <Backlog />
       </main>
