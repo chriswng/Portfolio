@@ -51,6 +51,26 @@ string, hard ink borders with offset shadows, no rounded cards, no gradient
 blobs. Archivo for display, Instrument Serif for editorial asides. Palette is
 calico ground, vat indigo accent, madder for section indices.
 
+## Brand logos
+
+Every company shows its **real logo**, loaded at runtime from a logo CDN
+(`LOGO_CDN`) keyed by the brand's web domain (`BRAND_DOMAIN` in `data.js`), and
+framed in a small care-label tile by the `BrandLogo` component. Corporate-group
+cards show the real parent logo via `GROUP_DOMAIN`.
+
+Where no domain is on file, or a logo fails to load, the tile falls back to a
+generated **woven-label monogram**: derived from the brand's own data
+(`deriveMonogram()`), set in a segment-specific typeface with a segment-coloured
+stitch line (`SEGMENT_STYLE`). This guarantees every brand (present or future)
+always has a mark, and keeps the fallback inside the calico / indigo / madder
+palette. A short `MONO_OVERRIDES` map covers houses whose established lettermark
+differs from the plain initials (Gucci GG, Saint Laurent YSL, and so on).
+
+`LOGO_CDN` is a single swap-point: `logo.clearbit.com` needs no API key; moving
+to a keyed provider later changes only that line. The marks appear on the
+directory tags, the lookup card, the compare table, the corporate-group cards,
+the autocomplete, and the hero swing tags.
+
 ## Interaction and access
 
 - Search is forgiving: partial, lowercase, alias and parent-company aware, with

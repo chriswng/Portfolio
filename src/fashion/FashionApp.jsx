@@ -18,6 +18,7 @@ import {
   MULTI_GROUPS, segmentCount, ftiBand, groupFamily,
   digLinks, analyseClaim, SPECIMEN_CLAIMS, ACCC_PRINCIPLES, CLAIM_VERDICTS,
   COMMITMENT_INFO, FIBRES, CERTS, REGULATION, VERIFIED_AS_OF,
+  deriveMonogram, segmentStyle, logoUrl, GROUP_DOMAIN,
 } from './data';
 import { prefersReducedMotion } from '../utils/media';
 
@@ -138,6 +139,50 @@ function beforeYouBuy(brand, family) {
   items.push('Get a second opinion in Dig deeper below: Good On You for a consumer rating, Baptist World Aid for an Australian read.');
   items.push('The lowest-impact option is usually the one you already own, bought secondhand, or repaired.');
   return items;
+}
+
+// =========================================================================
+// Brand logo — the real logo, with a woven care-label monogram fallback.
+//
+// Shows the company's actual logo, loaded from a logo CDN by domain. If no
+// domain is on file or the image fails to load, it falls back to a generated
+// monogram tile (from brand data), set in the segment's typeface with a
+// segment-coloured stitch, so every brand always has a mark. Purely a visual
+// reinforcement of the adjacent brand name, so it is aria-hidden. Pass a
+// `brand` (preferred) or an explicit `name`/`segment`/`domain` (used for
+// corporate parents, which are not brand records).
+// =========================================================================
+function BrandLogo({ brand, name, segment, domain, size = 'md', className = '' }) {
+  const [loaded, setLoaded] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const mark = brand ? brand.mono : deriveMonogram(name || '');
+  const seg = brand ? brand.segment : segment;
+  const dom = domain || (brand ? brand.domain : null);
+  const style = segmentStyle(seg);
+  const src = !failed ? logoUrl(dom) : null;
+  // The monogram is always rendered as the base. When a real logo exists it
+  // fades in on top once it has actually loaded, so there is never an empty
+  // tile: a missing or failed logo simply leaves the monogram showing.
+  return (
+    <span
+      className={`ow-logo s-${size} t-${style.type} l-${mark.length} ${loaded ? 'img-on' : ''} ${className}`}
+      style={{ '--lc': style.accent }}
+      aria-hidden="true"
+    >
+      <span className="mk">{mark}</span>
+      {src && (
+        <img
+          className="ow-logo-img"
+          src={src}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          onLoad={() => setLoaded(true)}
+          onError={() => setFailed(true)}
+        />
+      )}
+    </span>
+  );
 }
 
 // =========================================================================
@@ -285,6 +330,7 @@ function SearchField({ onSelect, id = 'ow-search-input', label }) {
               onMouseEnter={() => setActive(i)}
               onClick={() => choose(b)}
             >
+              <BrandLogo brand={b} size="sm" />
               <span className="ow-ac-name"><Highlight text={b.name} query={q} /></span>
               <span className="ow-ac-meta">{b.parent !== b.name ? b.parent : b.segmentLabel}</span>
             </button>
@@ -300,16 +346,21 @@ function SearchField({ onSelect, id = 'ow-search-input', label }) {
 // =========================================================================
 function SwingTagStack() {
   const tags = [
-    { cls: 's1', name: 'Uniqlo', parent: 'Fast Retailing', rows: [['Parent', 'Fast Retailing'], ['Segment', 'Basics'], ['FTI 2023', '51 / 100']] },
-    { cls: 's2', name: 'Gucci', parent: 'Kering', rows: [['Parent', 'Kering'], ['Segment', 'Luxury'], ['FTI 2023', '80 / 100']] },
-    { cls: 's3', name: 'Kmart', parent: 'Wesfarmers', rows: [['Parent', 'Wesfarmers'], ['Segment', 'Value'], ['FTI 2023', '76 / 100']] },
+    { cls: 's1', name: 'Uniqlo', seg: 'basics', parent: 'Fast Retailing', rows: [['Parent', 'Fast Retailing'], ['Segment', 'Basics'], ['FTI 2023', '51 / 100']] },
+    { cls: 's2', name: 'Gucci', seg: 'luxury', parent: 'Kering', rows: [['Parent', 'Kering'], ['Segment', 'Luxury'], ['FTI 2023', '80 / 100']] },
+    { cls: 's3', name: 'Kmart', seg: 'department', parent: 'Wesfarmers', rows: [['Parent', 'Wesfarmers'], ['Segment', 'Value'], ['FTI 2023', '76 / 100']] },
   ];
   return (
     <div className="ow-tagstack" aria-hidden="true">
       {tags.map((t) => (
         <div className={`ow-swing ${t.cls}`} key={t.name}>
-          <div className="tag-brand">{t.name}</div>
-          <div className="tag-parent">{t.parent}</div>
+          <div className="tag-top">
+            <BrandLogo name={t.name} segment={t.seg} size="md" />
+            <div>
+              <div className="tag-brand">{t.name}</div>
+              <div className="tag-parent">{t.parent}</div>
+            </div>
+          </div>
           <div className="tag-rule" />
           {t.rows.map(([k, v]) => (
             <div className="tag-row" key={k}><span>{k}</span><span>{v}</span></div>
@@ -333,7 +384,11 @@ function Hero({ onSelect, recent }) {
             <span className="lbl">{COPY.hero.examplesLabel}</span>
             {COPY.hero.examples.map((name) => {
               const b = searchBrands(name, 1)[0];
-              return <button key={name} className="ow-chip" onClick={() => b && onSelect(b.id)}>{name}</button>;
+              return (
+                <button key={name} className="ow-chip ow-chip-brand" onClick={() => b && onSelect(b.id)}>
+                  {b && <BrandLogo brand={b} size="xs" />}{name}
+                </button>
+              );
             })}
           </div>
           {recent.length > 0 && (
@@ -341,7 +396,11 @@ function Hero({ onSelect, recent }) {
               <span className="lbl">{COPY.hero.recentLabel}</span>
               {recent.map((id) => {
                 const b = BRAND_BY_ID[id];
-                return b ? <button key={id} className="ow-chip" onClick={() => onSelect(id)}>{b.name}</button> : null;
+                return b ? (
+                  <button key={id} className="ow-chip ow-chip-brand" onClick={() => onSelect(id)}>
+                    <BrandLogo brand={b} size="xs" />{b.name}
+                  </button>
+                ) : null;
               })}
             </div>
           )}
@@ -401,15 +460,18 @@ function BrandCard({ brand, inCompare, onToggleCompare, onSelect, onOpenGroup })
   return (
     <article className="ow-card">
       <div className="ow-card-head">
-        <div className="ow-card-tagcode">{brand.segmentLabel} · {brand.au ? 'Australian relevant' : brand.country}</div>
-        <h3 className="ow-card-name">{brand.name}</h3>
-        <div className="ow-card-knownfor">{brand.knownFor}</div>
-        {brand.provenance && (
-          <div className="ow-provenance">
-            <span className="k">{COPY.lookup.provenanceLabel}</span>
-            {brand.provenance}
-          </div>
-        )}
+        <BrandLogo brand={brand} size="lg" className="ow-card-logo" />
+        <div className="ow-card-headtext">
+          <div className="ow-card-tagcode">{brand.segmentLabel} · {brand.au ? 'Australian relevant' : brand.country}</div>
+          <h3 className="ow-card-name">{brand.name}</h3>
+          <div className="ow-card-knownfor">{brand.knownFor}</div>
+          {brand.provenance && (
+            <div className="ow-provenance">
+              <span className="k">{COPY.lookup.provenanceLabel}</span>
+              {brand.provenance}
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="ow-card-facts">
@@ -471,6 +533,7 @@ function BrandCard({ brand, inCompare, onToggleCompare, onSelect, onOpenGroup })
           <div className="ow-family-chips">
             {family.map((b) => (
               <button key={b.id} className="ow-familychip" onClick={() => onSelect(b.id)}>
+                <BrandLogo brand={b} size="xs" />
                 {b.name}
                 <span className="s">{b.fti != null ? b.fti : (b.ftiScope === 'outside' ? 'n/a' : 'TBC')}</span>
               </button>
@@ -573,6 +636,7 @@ function CompareSection({ compareIds, onRemove, onClear, onSelect }) {
                 <div className="ow-ct-corner">{COPY.compare.brandCol}</div>
                 {brands.map((b) => (
                   <div className="ow-ct-head" key={b.id}>
+                    <BrandLogo brand={b} size="md" className="ow-ct-logo" />
                     <button className="ow-ct-name" onClick={() => onSelect(b.id)} title="Open in lookup">{b.name}</button>
                     <button className="ow-ct-x" onClick={() => onRemove(b.id)} aria-label={`Remove ${b.name}`}>✕</button>
                     <span className="ow-ct-sub">{b.knownFor}</span>
@@ -618,6 +682,7 @@ function DirTag({ brand, onSelect }) {
   return (
     <button className="ow-tag" onClick={() => onSelect(brand.id)}>
       <div className="top">
+        <BrandLogo brand={brand} size="md" />
         <span className="name">{brand.name}{brand.au && <span className="aub">AU</span>}</span>
         {brand.fti != null
           ? <span className="score">{brand.fti}</span>
@@ -633,9 +698,12 @@ function GroupCard({ group, focus, onSelect, cardRef }) {
   return (
     <div className={`ow-group ${focus ? 'focus' : ''}`} ref={cardRef}>
       <div className="ow-group-head">
-        <div>
-          <h3>{group.parent}</h3>
-          <span className="ct">{COPY.directory.groupBrandsTemplate.replace('{n}', group.count)}</span>
+        <div className="ow-group-id">
+          <BrandLogo name={group.parent} domain={GROUP_DOMAIN[group.parent]} segment={group.brands[0] && group.brands[0].segment} size="md" />
+          <div>
+            <h3>{group.parent}</h3>
+            <span className="ct">{COPY.directory.groupBrandsTemplate.replace('{n}', group.count)}</span>
+          </div>
         </div>
         {group.avg != null && (
           <div className="ow-group-avg">
@@ -647,6 +715,7 @@ function GroupCard({ group, focus, onSelect, cardRef }) {
       <div className="ow-group-brands">
         {group.brands.map((b) => (
           <button key={b.id} className="ow-groupchip" onClick={() => onSelect(b.id)}>
+            <BrandLogo brand={b} size="xs" />
             <span className="bn">{b.name}</span>
             <span className={`bs ${b.fti != null ? '' : 'na'}`}>{b.fti != null ? b.fti : (b.ftiScope === 'outside' ? 'n/a' : 'TBC')}</span>
           </button>

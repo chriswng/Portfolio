@@ -93,5 +93,25 @@ export function buildSeedProfile() {
       enabled: ['sea-not-air', 'diet-low', 'uber-to-pt'],
       note: 'The changes I have actually committed to. The flight ones are still off, and the gap between my line and the benchmark is that decision.',
     },
+    // The wider basket the core leaves out, estimated from a year of card
+    // spending and the trips above: goods and services at screening-grade EPA
+    // factors, and hotel nights per country at the DEFRA factors. Kept outside
+    // the audited total, exactly as the panel presents it.
+    wider: {
+      goods: {
+        clothing: 1400, electronics: 1200, appliances: 300,
+        furniture: 600, personalCare: 500, health: 400, recreation: 1800,
+        finance: 2600, education: 900, homeImprove: 1500,
+      },
+      hotels: [
+        { country: 'KR', nights: 8 },
+        { country: 'JP', nights: 4 },
+        { country: 'PH', nights: 7 },
+        { country: 'SG', nights: 5 },
+        { country: 'AU', nights: 3 },
+      ],
+      // Roughly my share of the red bin, in kilograms a week.
+      waste: 4,
+    },
   };
 }

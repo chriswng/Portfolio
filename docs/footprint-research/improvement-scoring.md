@@ -1,5 +1,11 @@
 # Footprinting improvements: the scored twelve
 
+> **Later, July 2026 accuracy audit.** A second session scored fifteen more
+> items (accuracy fixes plus new categories) on the same four axes and shipped
+> ten of them, every factor read from a primary workbook held in
+> `docs/footprint-research`. That scored table and the full audit live in
+> `accuracy-audit-2026.md`. The twelve below are the original design session.
+
 July 2026 session. Twelve candidate improvements to the carbon accounting and
 its usefulness, scored 1 to 5 on four axes:
 
