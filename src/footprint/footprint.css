@@ -12,6 +12,11 @@
   --fp-gas: #C7274A;
   --fp-diet: #8A4FBE;
   --fp-other: #6E7469;
+  /* Optional module: spend-based goods (deep plum) and hotel nights (dark
+     teal). Chosen as the two most CVD-distinct additions to the seven above
+     and dark enough for white-on-fill labels. */
+  --fp-goods: #8E2D6E;
+  --fp-hotel: #1F5F6E;
 }
 
 /* ---- Intro ---- */
@@ -376,6 +381,11 @@
 .ob-foot-status-t{ font-family:var(--sans); font-size:0.9rem; font-weight:700; color:var(--slate); }
 .ob-foot-note{ font-family:var(--mono); font-size:9.5px; letter-spacing:0.05em; color:var(--mid); border-left:1px solid var(--rule-dk); padding-left:0.5rem; }
 .ob-foot-btns{ display:flex; gap:0.6rem; align-items:center; }
+/* The optional step: a "starts at zero, skip freely" reassurance line, plus a
+   Skip that reads as a real, prominent choice beside the primary. */
+.ob-optnote{ display:flex; align-items:flex-start; gap:0.35rem; font-size:0.82rem; color:#475569; line-height:1.6; background:rgba(142,45,110,0.07); border-left:3px solid var(--fp-goods); padding:0.7rem 0.95rem; margin:0 0 1.5rem; max-width:520px; }
+.ob-optnote .ob-label-i{ color:var(--fp-goods); margin-top:0.15rem; }
+.ob-skip{ white-space:nowrap; }
 
 .ob-done{ text-align:left; }
 .ob-done-ready{ display:inline-flex; align-items:center; gap:0.15rem; font-family:var(--sans); font-weight:700; font-size:1.05rem; color:var(--slate); background:rgba(181,196,43,0.14); border:1px solid rgba(181,196,43,0.4); padding:0.55rem 0.9rem; border-radius:999px; margin:1rem 0 1.2rem; }
@@ -526,57 +536,3 @@
 .fp-excl-group:first-of-type{ margin-top:0.6rem; }
 .fp-excl-group .fp-card-head{ margin-bottom:0.6rem; }
 
-/* ---- A fuller picture: the wider-basket screening panel ------------------- */
-#fp-wider{ padding:clamp(3rem,7vw,5rem) 0; background:var(--white); border-top:1px solid var(--rule-lt); }
-.fp-wider-grid{ display:grid; gap:1.25rem; }
-@media (min-width:980px){
-  .fp-wider-grid{ grid-template-columns:minmax(0,1.05fr) minmax(0,0.95fr); align-items:start; }
-  .fp-wider-result{ position:sticky; top:84px; margin-bottom:0; }
-}
-.fp-wider-inputs .fp-card-head{ display:flex; align-items:center; gap:0.2rem; }
-.fp-wider-subhead{ margin-top:1.6rem; padding-top:1.2rem; border-top:1px solid var(--rule-lt); }
-
-/* Spend rows: label + dollars-a-year input, editorial and quiet. */
-.fp-spend-grid{ display:flex; flex-direction:column; margin-top:0.3rem; }
-.fp-spend-row{ display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:0.5rem 0; border-bottom:1px solid var(--rule-lt); }
-.fp-spend-row:last-child{ border-bottom:none; }
-.fp-spend-name{ font-size:0.82rem; font-weight:600; color:var(--slate); display:flex; align-items:center; gap:0.35rem; }
-.fp-spend-input{ display:inline-flex; align-items:baseline; gap:0.1rem; font-family:var(--disp); font-weight:700; color:var(--slate); }
-.fp-spend-input > span{ color:var(--mid); font-size:0.95rem; }
-.fp-spend-input input{ width:6.5ch; text-align:right; font:inherit; font-size:1.05rem; color:var(--slate); background:transparent; border:none; border-bottom:1px dashed var(--rule-dk); padding:0.1rem 0.15rem; font-variant-numeric:tabular-nums; -moz-appearance:textfield; transition:border-color 0.2s var(--ease); }
-.fp-spend-input input:hover{ border-bottom-color:var(--mid); }
-.fp-spend-input input:focus{ outline:none; border-bottom:1px solid var(--matcha); }
-.fp-spend-input input::-webkit-outer-spin-button, .fp-spend-input input::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
-
-/* Hotel editor: country + nights rows, add and remove. */
-.fp-hotel-edit{ display:flex; flex-direction:column; gap:0.6rem; margin-top:0.3rem; }
-.fp-hotel-row{ display:flex; align-items:flex-end; gap:0.75rem; }
-.fp-hotel-row .fp-field{ min-width:0; }
-.fp-field-nights{ flex:0 0 auto; max-width:96px; }
-.fp-wider-add{ align-self:flex-start; margin-top:0.35rem; }
-.fp-waste-row{ align-items:flex-end; }
-.fp-waste-unit{ font-size:0.8rem; color:var(--mid); padding-bottom:0.55rem; }
-
-/* Read-only breakdown for the worked example. */
-.fp-wider-readout{ display:flex; flex-direction:column; margin-top:0.3rem; }
-.fp-wider-line{ display:grid; grid-template-columns:1fr auto auto; gap:0.75rem; align-items:center; padding:0.45rem 0; border-bottom:1px solid var(--rule-lt); }
-.fp-wider-line:last-child{ border-bottom:none; }
-.fp-wider-line-n{ font-size:0.8rem; font-weight:600; color:var(--slate); display:flex; align-items:center; gap:0.35rem; }
-.fp-wider-line-a{ font-family:var(--mono); font-size:0.72rem; color:var(--mid); text-align:right; }
-.fp-wider-line-t{ font-family:var(--mono); font-size:0.75rem; color:var(--slate); font-weight:700; text-align:right; min-width:56px; }
-.fp-wider-examplenote{ margin-top:1.3rem; padding-top:1.1rem; border-top:1px solid var(--rule-lt); }
-.fp-wider-examplenote p{ font-size:0.8rem; color:#475569; line-height:1.6; margin-bottom:0.9rem; max-width:48ch; }
-
-/* Result card: the wider basket total, the split, then the fuller picture. */
-.fp-wider-total{ display:flex; align-items:baseline; gap:0.7rem; flex-wrap:wrap; margin-top:0.4rem; }
-.fp-wider-total-v{ font-size:clamp(2rem,5vw,3rem); font-weight:700; line-height:1; color:var(--slate); font-variant-numeric:tabular-nums; }
-.fp-wider-total-v span{ font-size:0.42em; color:var(--mid); font-weight:600; }
-.fp-wider-total-tag{ font-family:var(--mono); font-size:9px; letter-spacing:0.1em; text-transform:uppercase; font-weight:700; color:#8A5200; background:rgba(181,106,0,0.12); border:1px solid rgba(181,106,0,0.35); padding:0.22rem 0.55rem; border-radius:999px; }
-.fp-wider-split{ display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--rule-dk); border:1px solid var(--rule-dk); margin:1rem 0; }
-.fp-wider-split-item{ background:var(--white); padding:0.75rem 0.9rem; }
-.fp-wider-split-l{ display:block; font-family:var(--mono); font-size:9px; letter-spacing:0.08em; text-transform:uppercase; color:var(--mid); font-weight:700; margin-bottom:0.35rem; }
-.fp-wider-split-v{ font-family:var(--disp); font-size:1rem; font-weight:700; color:var(--slate); }
-.fp-wider-split-v em{ font-style:normal; font-family:var(--mono); font-size:0.6rem; color:var(--mid); font-weight:600; margin-left:0.25rem; }
-.fp-wider-combined{ margin-top:1rem; border-top:1px solid var(--rule-lt); padding-top:1rem; }
-.fp-wider-combined .fp-takeaway{ margin-top:0.5rem; border-top:none; padding-top:0; }
-.fp-wider-caveat{ margin-top:1.25rem; }

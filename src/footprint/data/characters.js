@@ -301,6 +301,7 @@ export const WEDGE_FLAVOUR = {
   home: 'The category that decides it: the home energy.',
   diet: 'The category that decides it: the food.',
   freight: 'The category that decides it: the parcels.',
+  goods: 'The category that decides it: the things you buy.',
   none: '',
 };
 export const WEDGE_HINT = {
@@ -309,6 +310,7 @@ export const WEDGE_HINT = {
   home: 'Electrify the lot, then put solar over the new load.',
   diet: 'A bit less of the heaviest meals. Nobody is taking your dinner.',
   freight: 'Sea shipping cuts the freight roughly ninety percent.',
+  goods: 'Buy less and keep it longer. The greenest gadget is the one you did not replace.',
   none: 'The biggest one or two categories decide most of the total.',
 };
 
@@ -345,6 +347,8 @@ export function classifyCharacter(agg) {
     ['diet', share('diet')],
     ['freight', share('freight')],
     ['home', share('electricity') + share('gas') + share('other')],
+    // The optional consumption basket, when it is switched on.
+    ['goods', share('goods') + share('hotel')],
   ].sort((a, b) => b[1] - a[1]);
   const [topGroup, topShare] = groups[0];
 

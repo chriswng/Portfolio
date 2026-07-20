@@ -86,9 +86,6 @@ export function parseImported(text) {
     pastYears: Array.isArray(p.pastYears)
       ? p.pastYears.filter((y) => y && y.label && y.start && y.end && Array.isArray(y.entries))
       : [],
-    // The optional wider basket (goods and services spend, hotel nights) is a
-    // screening add-on outside the core; carry it through a backup untouched.
-    wider: p.wider && typeof p.wider === 'object' ? p.wider : undefined,
   };
 }
 

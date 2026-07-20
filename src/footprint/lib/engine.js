@@ -11,6 +11,8 @@ import {
   FREIGHT_MODES, FREIGHT_SOURCE,
   DIET_TYPES, DIET_SOURCE,
   OTHER_FUELS, OTHER_SOURCE,
+  GOODS, GOODS_SOURCE, goodsPerAud,
+  HOTEL, HOTEL_SOURCE, hotelPerNight,
   QUALITY_TIERS, qualityOf,
 } from '../data/factors';
 import { ABATEMENT_OPTIONS, APPLY_ORDER } from '../data/abatement';
@@ -133,6 +135,31 @@ export function priceEntry(draft, settings) {
         { scope: '3', tco2e: activity * f.s3 * share / 1000 },
       ];
       scope = '1'; source = OTHER_SOURCE.name;
+      break;
+    }
+    case 'goods': {
+      // Spend-based screening: dollars of purchaser-price spend times the EPA
+      // per-dollar factor already bridged into Australian dollars. Always
+      // scope 3 (embodied in goods and services made elsewhere). activity is
+      // the spend in AUD; the effective factor snapshotted is per dollar.
+      const kind = GOODS[meta.kind] ? meta.kind : 'other';
+      activity = meta.spendAud || 0; unit = '$';
+      components = [{ scope: '3', tco2e: activity * goodsPerAud(kind) / 1000 }];
+      scope = '3';
+      source = GOODS_SOURCE.name + ' (' + GOODS[kind].label.toLowerCase() + ', spend-based screening)';
+      break;
+    }
+    case 'hotel': {
+      // Per occupied room-night at the country factor. Scope 3 (accommodation
+      // energy bought on your behalf elsewhere). The guided audit defaults the
+      // country to Australia; the worked example sets it per trip.
+      const country = meta.country || 'AU';
+      const perNight = hotelPerNight(country);
+      activity = meta.nights || 0; unit = 'nights';
+      components = [{ scope: '3', tco2e: activity * perNight / 1000 }];
+      scope = '3';
+      const c = HOTEL.countries[country];
+      source = HOTEL_SOURCE.name + ' (' + (c ? c.label : 'home-country default') + ', per room-night)';
       break;
     }
     default:
@@ -300,7 +327,7 @@ export function baselineState(profile, agg) {
   const s = profile.settings;
   const share = 1 / Math.max(1, s.householdSize || 1);
   let kwh = 0, mj = 0, kmCar = 0, kmEv = 0, litres = 0, kmRide = 0, kmPt = 0;
-  let dietDays = 0, freightAirT = 0, freightOtherT = 0, otherT = 0;
+  let dietDays = 0, freightAirT = 0, freightOtherT = 0, otherT = 0, goodsT = 0;
   const flights = [];
   for (const e of profile.entries) {
     if (e.date < profile.period.start || e.date > profile.period.end) continue;
@@ -328,6 +355,10 @@ export function baselineState(profile, agg) {
     else if (e.category === 'freight') {
       if (m.mode === 'air') freightAirT += e.tco2e; else freightOtherT += e.tco2e;
     } else if (e.category === 'other') otherT += e.tco2e;
+    // Spend-based goods and hotel nights carry through the pathway as a flat
+    // annual band: no abatement lever acts on them, so BAU and plan hold them
+    // steady while the levers move the categories they do touch.
+    else if (e.category === 'goods' || e.category === 'hotel') goodsT += e.tco2e;
   }
   const dietType = s.dietType || 'medMeat';
   return {
@@ -347,7 +378,7 @@ export function baselineState(profile, agg) {
     droppedFlightT: 0,
     dietPerDay: DIET_TYPES[dietType].perDay,
     dietDays: dietDays || 365,
-    freightAirT, freightOtherT, otherT,
+    freightAirT, freightOtherT, otherT, goodsT,
     agg,
   };
 }
@@ -372,8 +403,8 @@ export function stateEmissions(st, yearOffset) {
   const freight = st.freightAirT * (1 - (st.seaShift || 0) * (1 - 0.016 / 1.13)) + st.freightOtherT;
 
   return {
-    total: elec + gas + road + flight + diet + freight + st.otherT,
-    byCategory: { electricity: elec, gas, road, flight, diet, freight, other: st.otherT },
+    total: elec + gas + road + flight + diet + freight + st.otherT + (st.goodsT || 0),
+    byCategory: { electricity: elec, gas, road, flight, diet, freight, other: st.otherT, goods: st.goodsT || 0 },
   };
 }
 

@@ -140,76 +140,97 @@ it derived.
   (IGES / Aalto / D-mat 1.5-Degree Lifestyles 2019; Hot or Cool Institute
   2021 update).
 
-## Wider basket (screening): goods & services, hotels, waste (updated July 2026)
+## Goods and services: spend-based screening (US EPA Supply Chain Factors v1.3.0)
 
-Shipped as the optional "A fuller picture" panel (`src/footprint/data/screening.js`,
-set id `epa-scv1.3-defra2025`), kept outside the audited total and labelled
-screening throughout.
+Optional opt-in module (idea 8 in `improvement-scoring.md`), shipped July 2026.
+Base factors: US EPA "Supply Chain GHG Emission Factors v1.3.0 by NAICS-6",
+"with margins" column, kg CO2e per 2022 USD of purchaser-price spend, all GHGs
+at AR5 GWP-100. File `SupplyChainGHGEmissionFactors_v1.3.0_NAICS_CO2e_USD2022.csv`,
+DOI 10.23719/1531143 (pasteur.epa.gov; catalog.data.gov landing page).
 
-**July 2026 accuracy-audit update:**
-- **FX bridge to RBA.** The AUD/USD rate is now 0.6449, the RBA F11.1 daily
-  series averaged over calendar 2025 (read from the RBA workbook saved here,
-  251 trading days, low 0.598, high 0.672), replacing the earlier "indicative
-  market, not RBA" figure of 0.65.
-- **Hotels to DEFRA 2025.** Vintage confirmed against the local 2025 full-set
-  workbook; AU 35, JP 39, KR 55.8, SG 24.5, PH 54.3, GB 10.4 are unchanged. The
-  country list expanded from 6 to 14 to match the flight picker: ID 62.7,
-  TH 43.4, VN 38.5, MY 61.5, CN 53.5, HK 51.5, IN 58.9, US 16.1 added, all read
-  from the workbook.
-- **Three new goods spend lines**, each read from the EPA v1.3.0 CSV held here,
-  "with margins" column, one named NAICS subsector each (the same rule as the
-  original seven): banking & insurance 522110 commercial banking 0.059
-  (insurance carriers 524126 0.033, noted lower); education 611310 colleges &
-  universities 0.14 (schools 611110 0.186, noted higher); home improvements
-  236118 residential remodelers 0.211.
-- **Waste to landfill line** (new, activity-based like hotels): DEFRA 2025
-  "Refuse: household residual waste", landfill column, 497 kg CO2-e/tonne =
-  0.497 kg/kg, read from the local workbook. A stated proxy for the preferred
-  DCCEEW NGA waste factors (still gov-blocked). Survey asks kg/week to landfill;
-  the National Waste Report (~512 kg municipal waste per capita/yr, ~1/3
-  landfilled) is the Australian anchor for the hint, not a shipped factor.
-- **AU input-output replacement queued.** The University of Sydney / IELab
-  spend-based factors (kg CO2-e per AUD, ISAPC, the Climate Active set) would
-  replace the US EPA factors and remove the FX bridge. Free CC-BY-SA 2019 basic-
-  price version at Zenodo 15524908; current-year purchaser-price via
-  FootprintLab. Per-category values not readable this session (all hosts 403). Re-verified in a follow-up session where egress reached
-search and package mirrors but the EPA host, gov.uk and the RBA/ATO were all
-403; values came from faithful hash-matched mirrors and were confirmed by
-independent parses agreeing to the cent (three sourcing agents plus an
-adversarial reconciler per target).
+Note: a parallel session's accuracy audit (PR #73) refined the same factors in a
+separate "wider basket" panel; this branch folds the basket into the total
+instead, so those panel-only additions (extra goods lines, a waste line) are not
+carried here and remain queued for the fold-in. A promising future replacement
+that audit flagged: the University of Sydney / IELab spend-based factors (kg
+CO2-e per AUD, the Climate Active set; CC-BY-SA 2019 basic-price version at
+Zenodo 15524908, current-year purchaser-price via FootprintLab), which would
+price AUD spend directly and remove the USD-to-AUD bridge entirely. Per-category
+values were not readable this session (gov/academic hosts 403); queued.
 
-Goods & services: US EPA Supply Chain GHG Emission Factors v1.3.0, NAICS-6,
-2022 USD, "with margins" column, kg CO2-e per USD (DOI 10.23719/1531143). One
-named subsector each, never a group average:
-- Clothing & footwear (apparel 315) 0.12; footwear/leather 316 is 0.282, noted
-- Electronics & gadgets (audio/video 3343) 0.081; computers 334111 0.058 and
-  semiconductors 334413 0.215 differ widely, so not averaged into one
-- Household appliances (3352) 0.172
-- Furniture & homewares (337) 0.188
-- Personal care & cosmetics (325620) 0.194; soap/detergent 0.355 kept out
-- Health & medical (health services 621) 0.083; pharma prep 325412 is 0.099
-- Recreation & entertainment (arts/recreation 71) 0.086
-Food services 722 (0.194) is deliberately excluded: diet already prices food,
-and spend-pricing it again would double count. Two independent parses agreed to
-0.001 kg; a single authoritative dataset lineage (the GitHub mirrors are
-byte-identical copies of the one EPA file, counted as one source, not many).
+Verification: EPA/data.gov and every factor mirror are 403-blocked at the build
+environment's egress proxy, but the full 1,016-row CSV was pulled from public
+GitHub mirrors and the target rows were cross-checked byte-for-byte across three
+independently-hosted copies (all agreed to 3 dp; base + margins = with-margins
+held for every row). Rows used (with-margins, kg CO2e/2022 USD):
 
-Currency: 1 AUD ~ 0.65 USD, indicative calendar-2025 market average (Exchange
-Rates UK 0.6449, corroborated by exchange-rates.org 0.6451). A market price,
-not an emission factor, and NOT the RBA F11.1 or ATO figure (both 403), so it
-is labelled indicative. The 2022-USD-versus-current-AUD price change is not
-adjusted for (screening). Re-source from RBA F11.1 or ATO at the next refresh.
+- Clothing 0.12 = apparel manufacturing NAICS 315 (315220/315240/315280/315990
+  all 0.12; USEEIO 315000). Single uniform sector.
+- Electronics 0.102 = mean of 334111 computers 0.058, 334220 phones/comms
+  0.111, 334310 audio-video 0.081, 335210 small appliances 0.157.
+- Entertainment 0.112 = mean of 713940 recreation/gyms 0.235, 512131 cinema
+  0.052, 515210 subscription/streaming 0.094, 711211 events/sport 0.067.
+- Health 0.094 = mean of 621111 physicians 0.083, 621210 dentists 0.056,
+  621300 allied practitioners 0.105, 446110 pharmacy 0.13.
+- Other 0.164 = general-merchandise retail NAICS 452 (452311/452210/452319 all
+  0.164; USEEIO 452000). Retail-trade sector, so the margins column is 0.
 
-Hotels: UK Government (DESNZ / DEFRA) hotel-stay set, kg CO2-e per room-night by
-country, 2024 edition. Confirmed across three independent transcriptions
-(carbonr R `sysdata`, greenlang `business_travels.csv`, nzi-pro Standard UK
-template) and identical across the 2022 to 2024 editions; UK also witnessed by
-Circular Ecology (10.4). Values: AU 35, JP 39, KR 55.8, SG 24.5, PH 54.3,
-UK 10.4 (a UK London row of 11.5 also exists). DEFRA publishes no rest-of-world
-row, so "Somewhere else" uses a tool-chosen mid of 40, labelled non-DEFRA. The
-2025 and 2026 workbooks were unreachable (403), so 2024 is the stated vintage;
-confirm at refresh, since the older ~2019 vintage was far higher (values do
-move between methodology revisions).
+Heterogeneous baskets (electronics, entertainment, health) use an equal-weighted
+mean of the named representative commodities, a stated screening assumption;
+clothing and other are single uniform sectors. USEEIO is a US model applied to
+Australian spend, itself a screening approximation noted on the method page.
+
+Currency and inflation bridge (a 2022-USD factor priced against current-AUD
+spend), `GOODS_FX` in `factors.js`. Both sides are now FY2026-based from the
+primary sources uploaded to this directory:
+- AUD/USD 0.6785 USD per 1 AUD = FY2026 average (1 Jul 2025 to 30 Jun 2026),
+  RBA Statistical Table F11.1 daily series (`f11.1-data.csv`), mean of the 251
+  trading days; monthly F11 (`f11-data.csv`) cross-checks at 0.6792.
+- US CPI-U 2022 to FY2026 = 1.120 (2022 annual average 292.655; FY2026 average
+  327.67 over the 11 available months, Oct-2025 absent in the appropriations
+  lapse; BLS CPI-U all items series CUUR0000SA0, `SeriesReport-*.xlsx`).
+- Effective per-AUD factor = usPerUsd x 0.6785 / 1.120 (= usPerUsd x 0.6058).
+
+Uncertainty tier: `estimated` (±30%). Labelled screening throughout; folded into
+the audit total as scope 3 only when the visitor opts in.
+
+### Category palette additions (dataviz CVD checks)
+
+Two identity colours for the optional module: goods `#8E2D6E` (deep plum),
+hotel `#1F5F6E` (dark teal). Chosen by a Lab ΔE search over normal plus
+deuteranopia/protanopia/tritanopia (Machado matrices) as the two most distinct
+additions to the existing seven; both clear white-on-fill contrast (WCAG 7.6
+and 7.2). The one soft spot is goods/hotel convergence under deuteranopia
+(ΔE ~5.6), no worse than the palette's existing collisions and mitigated by the
+legend labels and white segment borders. A gold candidate scored highest on CVD
+separation but was rejected for failing white-text contrast (2.25).
+
+## Hotel nights (idea 7): shipped
+
+`HOTEL` in `factors.js`. Per occupied room-night, kg CO2e, by country, read
+directly from the DEFRA 2025 full-set "Hotel stay" worksheet
+(`ghg-conversion-factors-2025-full-set.xlsx`, uploaded to this directory). The
+figures derive from the Greenview Hotel Footprinting Tool / Cornell HSBI. UK
+10.4 matches the value corroborated earlier from public prose, so the sheet is
+the same lineage. Values used (kg/room-night): Australia 35, Japan 39, South
+Korea (DEFRA "Korea") 55.8, Singapore 24.5, Philippines 54.3, Indonesia 62.7,
+Thailand 43.4, Vietnam 38.5, Malaysia 61.5, Hong Kong 51.5, China 53.5, India
+58.9, UAE 63.8, Qatar 86.2, United States 16.1, Canada 7.4, UK 10.4, France
+6.7, Netherlands 14.8, Germany 13.2, Italy 14.3. Full DEFRA range runs Costa
+Rica 4.7 to Maldives 152.2 across 38 countries.
+
+The DEFRA "Hotel stay" tab carries no global/average row, so `HOTEL.default`
+uses the Australian figure (35, near the table median 32.1) for a country not
+listed (e.g. New Zealand, Taiwan). The guided audit prices hotel nights at the
+Australian factor as a home-country default; the worked example sets the country
+per trip. Edition note: this is the DEFRA 2025 hotel set (Singapore 24.5),
+consistent with the 2025 revision; do not mix with 2024 (Singapore 37.3).
+Uncertainty tier: `estimated` (±30%).
+
+Note on the earlier block: the environment's egress proxy hard-blocks gov.uk,
+its asset CDN and every hotel mirror (403 on CONNECT), and search will not
+reproduce individual table cells, so these values could only be obtained once
+the DEFRA workbook was uploaded to the repo directly.
 
 ## Data quality tiers and uncertainty bands (July 2026 addition)
 
@@ -223,6 +244,13 @@ never move a central estimate. Change them freely with the method note; no
 external value depends on them.
 
 ## July 2026 session: verification-blocked queue
+
+**Update (later July 2026):** the spend-screening block (idea 8) and the
+hotel-nights factor (idea 7) are both now verified and shipped, see "Goods and
+services" and "Hotel nights" above. The EPA CSV was recovered from public
+GitHub mirrors and cross-checked three ways; the DEFRA hotel workbook, RBA F11
+exchange rates and BLS CPI series were uploaded to `docs/footprint-research/`
+and read directly. Waste (idea 9) is still queued.
 
 Three additions were designed, scored and then withheld because the build
 environment could not verify their values against any source (egress proxy
