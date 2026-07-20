@@ -52,7 +52,9 @@ export function TrendChart({ agg }) {
           },
         },
         scales: {
-          x: { stacked: true, grid: { display: false }, ticks: AXIS_TICKS },
+          // Horizontal month labels with auto-skip: on a phone the twelve
+          // labels would otherwise rotate and collide.
+          x: { stacked: true, grid: { display: false }, ticks: { ...AXIS_TICKS, maxRotation: 0, autoSkip: true, autoSkipPadding: 10 } },
           y: { stacked: true, grid: GRID, ticks: AXIS_TICKS, title: { display: true, text: 'tCO₂-e / month', font: { size: 10 }, color: '#64748B' } },
         },
       },

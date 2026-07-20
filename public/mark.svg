@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <!-- The site mark: "The Segmented Split". Keep in sync with
+       src/components/Mark.jsx and footprint/lib/emblem.js (drawMark). -->
+  <mask id="cut" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+    <rect width="24" height="24" fill="#fff"/>
+    <rect y="10.2" width="24" height="3.6" fill="#000"/>
+  </mask>
+  <circle cx="12" cy="12" r="9" stroke="#B5C42B" stroke-width="2.4" mask="url(#cut)"/>
+</svg>

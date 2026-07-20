@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Renderer, Program, Geometry, Mesh } from 'ogl';
 import { prefersReducedMotion } from '../../utils/media';
-import { stencilPoints, drawEmblemDots, lighten } from '../lib/emblem';
+import { stencilCells, stencilPoints, drawEmblemDots, lighten } from '../lib/emblem';
 
 // The carbon field: a WebGL particle system where one particle is 10 kg of
 // CO2-e, so the audited year is literally on screen as matter. Two modes:
@@ -53,13 +53,33 @@ function swarmTargets(n, radius) {
   return pts;
 }
 
+// n jittered points over a category stencil. Unlike stencilPoints (which
+// wraps cell-first and would draw only the top rows when particles are
+// scarce), this strides evenly across the cells, so a small category still
+// sketches the whole silhouette rather than a fragment of it.
+function shapePoints(stencil, n) {
+  const cells = stencilCells(stencil);
+  if (!cells.length || !n) return [];
+  const rows = stencil.length;
+  const cols = Math.max(...stencil.map((r) => r.length));
+  const jitter = 0.8 / Math.max(rows, cols);
+  const pts = [];
+  for (let i = 0; i < n; i++) {
+    const cell = cells[Math.floor((i * cells.length) / n) % cells.length];
+    const a = ((i * 0.618033) % 1) * 2 - 1;
+    const b = ((i * 0.754877) % 1) * 2 - 1;
+    pts.push({ x: cell.x + a * jitter, y: cell.y + b * jitter });
+  }
+  return pts;
+}
+
 export default function CarbonField({
   mode, total, categories = [], stencil = null, hex = '#B5C42B',
-  focus = null, alpha = 1, className, fallback = null,
+  focus = null, shapes = null, alpha = 1, className, fallback = null,
 }) {
   const ctnRef = useRef(null);
-  const stateRef = useRef({ mode, focus, stencil, hex });
-  stateRef.current = { mode, focus, stencil, hex };
+  const stateRef = useRef({ mode, focus, stencil, hex, shapes });
+  stateRef.current = { mode, focus, stencil, hex, shapes };
   const [failed, setFailed] = useState(false);
   const reduced = prefersReducedMotion();
 
@@ -114,16 +134,30 @@ export default function CarbonField({
 
     const base = swarmTargets(N, 0.72);
     const rebuildTargets = () => {
-      const { mode: m, focus: f, stencil: st } = stateRef.current;
+      const { mode: m, focus: f, stencil: st, shapes: sh } = stateRef.current;
       if (m === 'emblem' && st) {
         const pts = stencilPoints(st, N);
         if (!pts.length) return;
         for (let i = 0; i < N; i++) { target[i * 2] = pts[i].x * 0.78; target[i * 2 + 1] = pts[i].y * 0.78; }
       } else {
         const fi = f ? catHex.findIndex((c) => c.id === f) : -1;
+        // A focused category with a known silhouette morphs into it; its
+        // particles are counted first so the whole shape gets sketched.
+        const shape = fi >= 0 && sh && sh[f] ? sh[f] : null;
+        let shapePts = null;
+        if (shape) {
+          let count = 0;
+          for (let i = 0; i < N; i++) if (catOf[i] === fi) count++;
+          shapePts = shapePoints(shape, count);
+        }
+        let si = 0;
         for (let i = 0; i < N; i++) {
-          if (fi >= 0 && catOf[i] === fi) {
-            // Focused category gathers into a tight inner disc.
+          if (fi >= 0 && catOf[i] === fi && shapePts && shapePts.length) {
+            const p = shapePts[si++] || shapePts[0];
+            target[i * 2] = p.x * 0.72;
+            target[i * 2 + 1] = p.y * 0.72;
+          } else if (fi >= 0 && catOf[i] === fi) {
+            // No silhouette carried: gather into a tight inner disc.
             const a = seeds[i] * Math.PI * 2;
             const r = 0.26 * Math.sqrt((i % 97) / 97);
             target[i * 2] = Math.cos(a) * r;
@@ -216,15 +250,15 @@ export default function CarbonField({
       const sig = m + '|' + (f || '') + '|' + hx;
       if (sig !== lastSig) { lastSig = sig; rebuildTargets(); setColors(m); geometry.attributes.color.needsUpdate = true; }
 
-      const spring = m === 'emblem' ? 4.2 : 1.6;
+      const spring = m === 'emblem' ? 4.2 : f ? 2.8 : 1.6;
       const damp = m === 'emblem' ? 0.86 : 0.92;
       const time = t * 0.001;
       for (let i = 0; i < N; i++) {
         const ix = i * 2, iy = ix + 1;
         let ax = (target[ix] - pos[ix]) * spring;
         let ay = (target[iy] - pos[iy]) * spring;
-        // Gentle organic wobble, calmer once an emblem has formed.
-        const w = m === 'emblem' ? 0.05 : 0.22;
+        // Gentle organic wobble, calmer once an emblem or a shape has formed.
+        const w = m === 'emblem' ? 0.05 : f ? 0.08 : 0.22;
         ax += Math.sin(time * (0.6 + seeds[i]) + seeds[i] * 40) * w;
         ay += Math.cos(time * (0.5 + seeds[i]) + seeds[i] * 60) * w;
         if (pointer.on) {

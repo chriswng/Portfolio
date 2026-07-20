@@ -96,6 +96,8 @@ function buildStoryData(profile, agg, macc, voice) {
   return {
     fy: profile.period.label,
     name: (profile.settings && profile.settings.name || '').trim(),
+    // Picks the diet silhouette (drumstick, fish or leaf) on the total moment.
+    dietType: (profile.settings && profile.settings.dietType) || 'medMeat',
     total: agg.total,
     entryCount: agg.count,
     byScope: agg.byScope,
@@ -231,7 +233,7 @@ export default function Story({ profile, agg, macc, voice, onStart, onSkip, onEn
       {chromeOn && <ChapterRail active={active} chapters={chapters} />}
       {chromeOn && <NextChapter active={active} chapters={chapters} />}
 
-      <Cover d={d} voice={voice} onStart={onStart} reduced={reduced} chapterCount={chapters.length} />
+      <Cover d={d} voice={voice} onStart={onStart} reduced={reduced} />
       <YearTicker d={d} voice={voice} reduced={reduced} />
       <ReferencePoints d={d} voice={voice} goTo={goToMoment} />
       <TotalReveal d={d} voice={voice} onCopyLink={onCopyLink} reduced={reduced} />

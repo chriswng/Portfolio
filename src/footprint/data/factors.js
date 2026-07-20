@@ -451,14 +451,15 @@ export const goodsPerAud = (kind) => {
 // stay" tab. The figures come from the Greenview Hotel Footprinting Tool, built
 // on the Cornell Hotel Sustainability Benchmarking Index, so a night is priced
 // at the country average rather than the specific hotel: an estimate, labelled.
-// Country keys match the ISO codes used in AIRPORTS. The guided audit prices at
-// the home-country (Australia) figure; the worked example uses the country
-// figure for each trip. `default` covers a country not carried here.
+// Country keys match the ISO codes used in AIRPORTS. Both the guided audit
+// and the worked example price each trip's nights at the destination-country
+// figure; nights logged without a flight use the Australian figure. `default`
+// covers a country not carried here.
 // Research notes: docs/footprint-research/factor-sources.md.
 // ---------------------------------------------------------------------------
 export const HOTEL_SOURCE = {
   name: 'UK Government (DESNZ / DEFRA) GHG Conversion Factors 2025, hotel stay',
-  detail: 'kg CO2e per occupied room-night by country, from the "Hotel stay" tab (Greenview Hotel Footprinting Tool, built on the Cornell Hotel Sustainability Benchmarking Index). An estimate priced at the country average, not the specific hotel; the guided audit uses the Australian figure as a home-country default.',
+  detail: 'kg CO2e per occupied room-night by country, from the "Hotel stay" tab (Greenview Hotel Footprinting Tool, built on the Cornell Hotel Sustainability Benchmarking Index). An estimate priced at the country average, not the specific hotel; nights are priced at the destination country of the trip they belong to, with the Australian figure for stays logged without a flight.',
   url: 'https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2025',
 };
 

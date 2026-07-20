@@ -57,6 +57,8 @@
 @media(min-width:760px){ .fp-kpis{ grid-template-columns:repeat(4,1fr); } }
 .fp-kpis-2{ grid-template-columns:repeat(2,1fr); max-width:560px; }
 @media(min-width:760px){ .fp-kpis-2{ grid-template-columns:repeat(2,1fr); } }
+/* Narrow phones: two abreast crushes the range note; stack them. */
+@media(max-width:419px){ .fp-kpis-2{ grid-template-columns:1fr; } }
 .fp-kpi{ background:var(--white); padding:1.1rem 1.25rem; transition:background 0.3s var(--ease); }
 .fp-kpi:hover{ background:oklch(0.975 0.008 118); }
 .fp-kpi.live{ background:rgba(181,196,43,0.10); }
@@ -101,8 +103,16 @@
 
 /* ---- Category rows ---- */
 .fp-cats{ display:flex; flex-direction:column; }
-.fp-cat-row{ display:grid; grid-template-columns:150px 1fr 64px 40px; gap:0.75rem; align-items:center; padding:0.55rem 0; border-bottom:1px solid var(--rule-lt); }
-@media(max-width:559px){ .fp-cat-row{ grid-template-columns:110px 1fr 58px 36px; } }
+.fp-cat-row{ display:grid; grid-template-columns:150px 1fr 64px 40px; grid-template-areas:"name bar val pct"; gap:0.75rem; align-items:center; padding:0.55rem 0; border-bottom:1px solid var(--rule-lt); }
+.fp-cat-name{ grid-area:name; }
+.fp-cat-bar{ grid-area:bar; }
+.fp-cat-val{ grid-area:val; }
+.fp-cat-pct{ grid-area:pct; }
+/* Phones: the four-column row squeezed the bar to nothing. Reflow to two
+   lines: name with the figures on top, the bar full-width beneath. */
+@media(max-width:559px){
+  .fp-cat-row{ grid-template-columns:1fr auto auto; grid-template-areas:"name val pct" "bar bar bar"; gap:0.3rem 0.6rem; padding:0.65rem 0; }
+}
 .fp-cat-row:last-child{ border-bottom:none; }
 .fp-cat-name{ font-size:0.8rem; font-weight:600; color:var(--slate); display:flex; align-items:center; gap:0.45rem; }
 .fp-cat-bar{ height:6px; background:var(--rule-lt); position:relative; }
