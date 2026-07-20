@@ -189,9 +189,18 @@ export function YearTicker({ d, voice, reduced }) {
         <motion.div className="st-center" initial="hidden" whileInView="visible" viewport={inView}>
           <motion.div className="sec-tag" data-idx="" variants={rise}>{YEAR.tag}</motion.div>
           <motion.h2 className="st-h2 display" variants={rise} custom={1}>{YEAR.headline[voice]}</motion.h2>
-          <motion.div className="st-year-count display" variants={rise} custom={2}>
-            <CountUp value={d.entryCount} decimals={0} duration={1.2} />
-            <span className="st-year-count-l">{YEAR.countLabel}</span>
+          <motion.div className="st-year-tallies" variants={rise} custom={2}>
+            {d.tallies.map((t, i) => (
+              <div className={'st-tally' + (i === 0 ? ' lead' : '')} key={t.id}>
+                <span className="st-tally-v display">
+                  <CountUp value={t.v} decimals={0} duration={1.2} delay={i * 0.12} />
+                </span>
+                <span className="st-tally-l">{YEAR.tallies[t.id]}</span>
+                {t.id === 'kmFlown' && d.planetX >= 1 && (
+                  <span className="st-tally-sub">{fill(YEAR.tallies.planet, { x: d.planetX.toFixed(1) })}</span>
+                )}
+              </div>
+            ))}
           </motion.div>
           <motion.p className="st-line" variants={rise} custom={3}>{YEAR.sub[voice]}</motion.p>
         </motion.div>

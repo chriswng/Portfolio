@@ -325,7 +325,7 @@ export const METHOD = {
         items: [
           'Accommodation other than hotels (short-stay rentals, hostels, staying with friends). Hotel nights are counted, but at a country-average factor, not the specific place.',
           'Financial and professional services, and any spending the screening factors above do not cover. The goods estimate is a screening tool, so it catches the shape of the basket, not every dollar.',
-          'Still queued, because the numbers could not be verified to this page’s standard in this edition: household waste to landfill, pets (dog and cat food), the embodied emissions of building or buying a car or a home, mains water supply, an Australian spend-based factor set to replace the US one, and a published Australian rail figure to replace the UK proxy. Each stays out rather than ship an unchecked number, and is recorded in the research trail for the next refresh.',
+          'Still queued, because the numbers could not be verified to this page’s standard in this edition: household waste to landfill, pets (dog and cat food), the embodied emissions of building or buying a car or a home, mains water supply, an Australian spend-based factor set to replace the US one, a published Australian rail figure to replace the UK proxy, and a garment-count clothing option (items bought, priced on published per-garment life-cycle factors such as ADEME Base Empreinte or the Mistra Future Fashion assessments) to complement the spend-based clothing line, which weights dollars rather than garments. Each stays out rather than ship an unchecked number, and is recorded in the research trail for the next refresh.',
         ],
       },
     ],

@@ -51,8 +51,19 @@ export const COVER = {
 export const YEAR = {
   tag: '01 · The year',
   headline: { example: 'Twelve months, itemised', own: 'Your twelve months, itemised' },
-  // Shown beside the big count: what the number actually counts.
-  countLabel: 'priced line items',
+  // Physical tallies, not a row count: how many ledger lines a year becomes
+  // is an artifact of billing (41 lines could be one week of ordinary
+  // spending), so the moment leads with quantities that mean something on
+  // their own. Labels keyed by tally id; only non-zero tallies render.
+  tallies: {
+    kmFlown: 'km flown',
+    planet: '{x}× around the planet',
+    kmGround: 'km on the ground',
+    kwh: 'kWh through the home meter',
+    parcels: 'parcels delivered',
+    nights: 'hotel nights',
+    mealDays: 'days of meals',
+  },
   sub: {
     example: 'A year of real bills, tickets and receipts, each priced on a published factor. Here they come.',
     own: 'Your answers, turned into priced line items: power, travel, flights, food and freight. Here they come.',
