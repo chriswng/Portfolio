@@ -11,7 +11,7 @@ import {
   FREIGHT_MODES, FREIGHT_SOURCE,
   DIET_TYPES, DIET_SOURCE,
   OTHER_FUELS, OTHER_SOURCE,
-  GOODS, GOODS_SOURCE, goodsPerAud,
+  GOODS, GOODS_SOURCE, goodsPerAud, CLOTHING_ITEMS, CLOTHING_ITEMS_SOURCE,
   HOTEL, HOTEL_SOURCE, hotelPerNight,
   QUALITY_TIERS, qualityOf,
 } from '../data/factors';
@@ -138,6 +138,23 @@ export function priceEntry(draft, settings) {
       break;
     }
     case 'goods': {
+      // Two routes into the same category. Clothing counted by item prices
+      // each bucket at the ADEME per-garment life-cycle factor: physical
+      // counts, so ten cheap tees weigh ten tees whatever they cost.
+      if (meta.kind === 'clothingItems') {
+        const items = meta.items || {};
+        let t = 0, count = 0;
+        for (const [k, n] of Object.entries(items)) {
+          if (!CLOTHING_ITEMS[k] || !(n > 0)) continue;
+          t += n * CLOTHING_ITEMS[k].perItem;
+          count += n;
+        }
+        activity = count; unit = 'items';
+        components = [{ scope: '3', tco2e: t / 1000 }];
+        scope = '3';
+        source = CLOTHING_ITEMS_SOURCE.name + ' (per-item, cradle-to-grave)';
+        break;
+      }
       // Spend-based screening: dollars of purchaser-price spend times the EPA
       // per-dollar factor already bridged into Australian dollars. Always
       // scope 3 (embodied in goods and services made elsewhere). activity is

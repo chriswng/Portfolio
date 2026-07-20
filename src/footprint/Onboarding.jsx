@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
-  ELECTRICITY, ROAD_FUELS, DIET_TYPES, GOODS,
+  ELECTRICITY, ROAD_FUELS, DIET_TYPES, GOODS, CLOTHING_ITEMS,
   AIRPORTS, airportByCode, greatCircleKm, flightBandForKm, HOME_AIRPORT, PT_FARE_CAPS, PT_FARE_CAPS_ASOF,
 } from './data/factors';
 import { CONVERSIONS } from './data/vendorMap';
@@ -184,10 +184,23 @@ export function buildProfileFromOnboarding(a) {
     notes: 'From the guided audit: typical week, scaled to the year. Coarse by design.',
   }));
 
-  // Optional detail: goods and services from a monthly spend figure. Each field
-  // defaults to zero, so an untouched or skipped step adds nothing here.
+  // Optional detail. Clothing counted by item prices each bucket at the
+  // ADEME per-garment factor; spend stays available as the fallback. Either
+  // way, an untouched or skipped step adds nothing here.
+  if (a.clothingMode === 'items') {
+    const items = Object.fromEntries(
+      Object.entries(a.clothingItems).filter(([, n]) => n > 0).map(([k, n]) => [k, Math.round(n)]),
+    );
+    if (Object.keys(items).length) {
+      entries.push(E({
+        category: 'goods', date: period.end, period_months: 12, label: 'Clothing and footwear, by item (onboarding)',
+        meta: { kind: 'clothingItems', items },
+        notes: 'From the optional detail: items bought new in the last 12 months, each priced on the ADEME per-garment life-cycle factor.',
+      }));
+    }
+  }
   [
-    ['clothing', a.clothingMonth],
+    ['clothing', a.clothingMode === 'items' ? 0 : a.clothingMonth],
     ['electronics', a.electronicsMonth],
     ['entertainment', a.entertainmentMonth],
     ['health', a.healthMonth],
@@ -213,6 +226,8 @@ export function buildProfileFromOnboarding(a) {
 // it (or finishing without touching it) adds exactly nothing to the audit:
 // no average-person spending is ever substituted in.
 const ADVANCED_DEFAULTS = {
+  clothingMode: 'items',
+  clothingItems: { tops: 0, jumpers: 0, trousers: 0, dresses: 0, coats: 0, shoes: 0 },
   clothingMonth: 0, electronicsMonth: 0, entertainmentMonth: 0, healthMonth: 0, otherGoodsMonth: 0,
 };
 
@@ -652,8 +667,32 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
       </div>
       <p>{ONBOARD.advanced.sub}</p>
       <p className="ob-optnote"><Icon name="spark" size={14} className="ob-label-i" />{ONBOARD.advanced.optional}</p>
-      <SliderField icon="box" label={ONBOARD.advanced.clothing} value={a.clothingMonth} min={0} max={800} step={10} unit="$ / mo"
-        note={ONBOARD.advanced.clothingNote} onChange={(v) => set('clothingMonth', v)} />
+      <Chips
+        icon="box"
+        label={ONBOARD.advanced.clothingHow}
+        options={[
+          { value: 'items', label: ONBOARD.advanced.clothingByItems, note: ONBOARD.advanced.clothingByItemsNote },
+          { value: 'spend', label: ONBOARD.advanced.clothingBySpend },
+        ]}
+        value={a.clothingMode} onChange={(v) => set('clothingMode', v)}
+      />
+      {a.clothingMode === 'items' ? (
+        <div className="ob-field">
+          <span className="ob-label">{ONBOARD.advanced.clothingItemsLabel}</span>
+          <div className="ob-items-grid">
+            {Object.entries(CLOTHING_ITEMS).map(([k, item]) => (
+              <Stepper
+                compact key={k} label={item.label} value={a.clothingItems[k]} min={0} max={200}
+                onChange={(v) => setA((s) => ({ ...s, clothingItems: { ...s.clothingItems, [k]: v } }))}
+              />
+            ))}
+          </div>
+          <span className="ob-note">{ONBOARD.advanced.clothingItemsNote}</span>
+        </div>
+      ) : (
+        <SliderField icon="box" label={ONBOARD.advanced.clothing} value={a.clothingMonth} min={0} max={800} step={10} unit="$ / mo"
+          note={ONBOARD.advanced.clothingNote} onChange={(v) => set('clothingMonth', v)} />
+      )}
       <SliderField icon="phone" label={ONBOARD.advanced.electronics} value={a.electronicsMonth} min={0} max={800} step={10} unit="$ / mo"
         note={ONBOARD.advanced.electronicsNote} onChange={(v) => set('electronicsMonth', v)} />
       <SliderField icon="book" label={ONBOARD.advanced.entertainment} value={a.entertainmentMonth} min={0} max={800} step={10} unit="$ / mo"
