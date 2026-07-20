@@ -7,7 +7,7 @@ import { DASH, DASH_UI, fmtT } from './data/copy';
 import { DASH_EXTRA, fill } from './data/storyCopy';
 import { CountUp } from './story/CountUp';
 import { TrendChart } from './charts';
-import Icon from './Icons';
+import Icon from '../components/Icons';
 
 const monthName = (key) => {
   const [y, m] = key.split('-');

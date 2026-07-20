@@ -19,6 +19,7 @@ import {
   buildGarment, scoreCircularity, COPY,
 } from './data';
 import { prefersReducedMotion } from '../utils/media';
+import Icon from '../components/Icons';
 
 const C = COPY.studio;
 
@@ -28,7 +29,9 @@ const fmtInt = (v) => Math.round(v).toLocaleString('en-AU');
 function StudioHead({ c }) {
   return (
     <>
-      <div className="sec-tag" data-idx={`${c.idx} / `}>{c.sub}</div>
+      <div className="sec-tag" data-idx={`${c.idx} / `}>
+        {c.icon && <Icon name={c.icon} size={15} />}{c.sub}
+      </div>
       <h2 className="display ow-h2">{c.title}</h2>
       <p className="ow-lede">{c.lede}</p>
     </>
