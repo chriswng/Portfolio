@@ -13,7 +13,7 @@ export const INTRO = {
   paras: [
     'I measure carbon for a living, so I pointed the same maths at my own year. This is a plain-English carbon calculator and a visual case study in one: see where a real year of flights, power, food and freight actually goes, then run your own. Your answers stay in this browser.',
   ],
-  chips: ['No account', 'No server', 'Stays in your browser', 'About three minutes'],
+  chips: ['No account', 'No server', 'Stays in your browser', 'Export any time'],
   ctaStart: 'Calculate your own',
   ctaExample: 'See my worked example',
   disc: 'FY2026 example · quantities from bills, meter reads and a year of records · estimates are labelled',
@@ -363,7 +363,7 @@ export const SHARE = {
   // The character verdict carried on the link, when the sharer's audit had one.
   readsAs: 'A year that reads as',
   // The nudge that converts a viewer into a player.
-  tease: 'Reckon yours is smaller? About three minutes to find out.',
+  tease: 'Reckon yours is smaller? Find out.',
   namePrompt: 'Add a name to the shared page? Leave blank to keep it as "My FY2026 carbon emissions".',
   provenance: 'The numbers come from a calculator built on published factors.',
   provenanceCta: 'See how it works',

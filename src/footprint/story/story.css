@@ -694,9 +694,6 @@
    needle as a live toy, and the persistent example CTA
    =================================================================== */
 
-/* Cover: the price of entry, said plainly beside the CTA. */
-.st-cover-time { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--st-dark-mid); }
-
 /* Persistent "calculate your own" pill in the story chrome (example voice). */
 .st-cta-pill {
   font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;

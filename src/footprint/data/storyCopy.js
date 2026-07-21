@@ -51,8 +51,6 @@ export const COVER = {
     own: 'Your {fy} carbon emissions, wrapped',
   },
   start: 'Calculate your own',
-  // Honest about the price of entry: people commit to a toy when they know it.
-  startTime: 'About three minutes of questions, then your reveal',
   // The field behind the words, explained: one dot is ten kilograms.
   startNote: 'Every dot is 10 kg of carbon',
   scrollCue: 'Scroll to begin',
