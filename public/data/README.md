@@ -1,6 +1,6 @@
-# fashion-brands.csv — Openweave research tracker
+# fashion-brands.csv — Cost Per Wear research tracker
 
-This is the human-editable research tracker behind the Openweave fashion
+This is the human-editable research tracker behind the Cost Per Wear fashion
 brand transparency lookup (`/fashion/`). It exists so gaps can be filled in
 over time, from checked sources, without touching the app code.
 

@@ -296,7 +296,7 @@ const book = (
   </>
 );
 
-// --- Fashion / Openweave glyphs -------------------------------------------
+// --- Fashion / Cost Per Wear glyphs -----------------------------------------------
 
 // A swing tag on its string, with a matcha punched hole.
 const tag = (
