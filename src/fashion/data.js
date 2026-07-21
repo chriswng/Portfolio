@@ -1261,13 +1261,13 @@ export const REGULATION = [
 
 // ---------------------------------------------------------------------------
 // "Dig deeper" — reliable link-outs to richer per-brand data on other
-// services. Openweave is a launchpad, not the last word: these send you to
+// services. Cost Per Wear is a launchpad, not the last word: these send you to
 // independent ratings and the primary sources so you can judge for yourself.
 // We only LINK; we never restate another service's rating as our own.
 // Good On You directory pages follow /brand/<slug>; a handful need an
 // explicit slug where the obvious one would not resolve.
 // ---------------------------------------------------------------------------
-// Keys are Openweave brand ids (see slug()); values are the Good On You slug
+// Keys are Cost Per Wear brand ids (see slug()); values are the Good On You slug
 // where it differs from ours. Best effort: a miss still lands on Good On You.
 const GOODONYOU_SLUG = {
   handm: 'h-m', pullandbear: 'pull-bear', 'kmart-australia': 'kmart',
@@ -1333,7 +1333,7 @@ export const LENS_CONCERNS = [
   },
   {
     id: 'ownership', label: 'Ownership and governance', signals: [], ownership: true,
-    why: 'Who actually makes the decisions on targets, suppliers and wages. Openweave verifies this for every brand on file.',
+    why: 'Who actually makes the decisions on targets, suppliers and wages. Cost Per Wear verifies this for every brand on file.',
   },
 ];
 
@@ -1359,7 +1359,7 @@ export const CHANGELOG = [
   { date: '19 July 2026', note: 'Full FTI 2023 universe ingested: 258 brands and retailers on file, 248 with a score read from the report’s Final Scores table. SBTi climate-target status matched for 111 companies; fuzzy name matches discarded.' },
   { date: '19 July 2026', note: 'Ownership provenance lines and the verification stamp added. Bonds and Champion note the Gildan takeover of Hanesbrands agreed in 2025.' },
   { date: '18 July 2026', note: 'Fashion Pact, B Corp and SBTi memberships verified from source, with Hermès marked as having left the Fashion Pact in 2023. Australian labels R.M. Williams, Zimmermann, Camilla, Lorna Jane and Bonds added with verified ownership.' },
-  { date: '18 July 2026', note: 'Openweave launched: verified corporate ownership, segments and headquarters for the initial brand set, with deep-linked lookups and the corporate group lens.' },
+  { date: '18 July 2026', note: 'Cost Per Wear launched: verified corporate ownership, segments and headquarters for the initial brand set, with deep-linked lookups and the corporate group lens.' },
 ];
 
 // ===========================================================================
@@ -1784,7 +1784,7 @@ export const COPY = {
     kicker: 'Fashion brand transparency',
     headA: 'Look up the brands',
     headB: 'you actually wear',
-    stand: 'Before you buy, see what a fashion brand is willing to tell you. Search any major label to find who really owns it, how much it discloses, and what still needs checking. Openweave tracks transparency, not virtue. A brand can disclose a lot and still weigh heavily on the world.',
+    stand: 'Before you buy, see what a fashion brand is willing to tell you. Search any major label to find who really owns it, how much it discloses, and what still needs checking. Cost Per Wear tracks transparency, not virtue. A brand can disclose a lot and still weigh heavily on the world.',
     searchLabel: 'Search a fashion brand',
     searchPlaceholder: 'Try Nike, Zara, Gucci, Kmart, Uniqlo…',
     examplesLabel: 'Popular lookups',
@@ -1825,7 +1825,7 @@ export const COPY = {
     shareDone: 'Link copied',
     researchTag: 'Needs research',
     digLabel: 'Dig deeper',
-    digHint: 'Openweave is a launchpad. Cross-check this brand against independent ratings and the primary sources.',
+    digHint: 'Cost Per Wear is a launchpad. Cross-check this brand against independent ratings and the primary sources.',
     checklistLabel: 'Before you buy',
     checklistHint: 'A quick, practical read for this brand, built from what is on file.',
     commitmentsLabel: 'Commitments and memberships',
@@ -1892,7 +1892,7 @@ export const COPY = {
   spotlight: {
     stat: 'Ten owners',
     line: 'hold most of the brands on this page. The name on the label is rarely the company making the calls on climate, suppliers or wages. If you want the real numbers, read the parent.',
-    sub: 'Which is why Openweave shows you the owner first',
+    sub: 'Which is why Cost Per Wear shows you the owner first',
     mapLede: 'Every owner of more than one brand on this page, sized by how many labels it holds. Tap an owner to open its group in the directory.',
     mapNote: 'Tile size is the number of brands on file under that owner. The number after each name is its brand count.',
     independentsTemplate: '+ {n} standalone labels that own no other brand on file',
@@ -2026,7 +2026,7 @@ export const COPY = {
     icon: 'list',
     title: 'What the signals mean',
     sub: 'Disclosure is not the same as doing well',
-    lede: 'Openweave measures what a brand tells the public, not whether the brand is good. Read these before you draw a conclusion.',
+    lede: 'Cost Per Wear measures what a brand tells the public, not whether the brand is good. Read these before you draw a conclusion.',
     cards: [
       {
         h: 'Transparency is not performance',
@@ -2067,7 +2067,7 @@ export const COPY = {
   footer: {
     method: 'Method: brand ownership from corporate filings and official brand pages. Transparency scores are the Fashion Transparency Index 2023, published by Fashion Revolution, which rates public disclosure only; 2023 was the final edition of that index, and its successor, What Fuels Fashion, is linked from every brand card until its scores are ingested from the primary report. Climate-target status is drawn from the Science Based Targets initiative dashboard; memberships from The Fashion Pact and B Lab. Per-field disclosure statuses are tracked in the repository and marked "Needs research" until a source is confirmed. Garment studio figures are indicative estimates assembled from published life cycle assessment literature (including Mistra Future Fashion’s six-garment study and ADEME’s consumer-goods LCAs), freight and petrol-car factors from the DESNZ and Defra 2026 conversion factors, and public grid intensity data, rounded and simplified so they can be manipulated live. Nothing here is assured reporting, a product footprint, or advice about a real brand.',
     attributionLabel: 'Data and attribution',
-    attribution: 'This tool reproduces published figures with attribution, and claims none of them as its own. Fashion Transparency Index scores are © Fashion Revolution CIC, used for reference under their public research. Science Based Targets initiative data © SBTi. Certification and membership marks belong to their owners: The Fashion Pact, B Lab (B Corp), and the brands named. Company ownership is a matter of public record. Openweave is an independent, non-commercial reference tool and is not affiliated with, or endorsed by, any brand or organisation named. Every figure links to its source so you can check it. If you own a listing and something is wrong, it can be corrected.',
+    attribution: 'This tool reproduces published figures with attribution, and claims none of them as its own. Fashion Transparency Index scores are © Fashion Revolution CIC, used for reference under their public research. Science Based Targets initiative data © SBTi. Certification and membership marks belong to their owners: The Fashion Pact, B Lab (B Corp), and the brands named. Company ownership is a matter of public record. Cost Per Wear is an independent, non-commercial reference tool and is not affiliated with, or endorsed by, any brand or organisation named. Every figure links to its source so you can check it. If you own a listing and something is wrong, it can be corrected.',
     sourcesLabel: 'Sources',
     made: 'Built by Chris Wang in Melbourne.',
     top: 'Back to the top',
