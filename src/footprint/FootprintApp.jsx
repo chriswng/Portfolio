@@ -24,6 +24,7 @@ import Plan from './Plan';
 import Onboarding from './Onboarding';
 import { FootprintNav, FootprintFooter } from './Nav';
 import Icon from '../components/Icons';
+import SiteFooter from '../components/SiteFooter';
 
 // Local date, never toISOString: UTC lands on yesterday in Australian zones.
 const todayIso = () => {
@@ -444,6 +445,7 @@ export default function FootprintApp() {
       </main>
 
       <FootprintFooter />
+      <SiteFooter base="../" />
       </div>
 
       {onboarding && <Onboarding onDone={onOnboardDone} onBuilt={onOnboardBuilt} onCancel={() => setOnboarding(false)} />}

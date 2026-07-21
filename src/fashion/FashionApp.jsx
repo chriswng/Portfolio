@@ -34,6 +34,7 @@ import Aurora from '../components/Aurora';
 import ContourField from '../components/ContourField';
 import Studio from './Studio';
 import { prefersReducedMotion } from '../utils/media';
+import SiteFooter from '../components/SiteFooter';
 
 const MAX_COMPARE = 3;
 const RECENT_KEY = 'ow-recent-v1';
@@ -1611,6 +1612,7 @@ export default function FashionApp() {
         <Backlog />
       </main>
       <Footer />
+      <SiteFooter base="../" />
     </>
   );
 }
