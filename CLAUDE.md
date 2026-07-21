@@ -49,10 +49,12 @@ built as a React + Vite multi-page app and deployed to GitHub Pages.
 - **Every fashion brand carries a logo.** In Openweave each company shows its
   real logo through the `BrandLogo` component (`src/fashion/FashionApp.jsx`),
   loaded at runtime by walking the ordered keyless provider chain
-  `LOGO_SOURCES` in `src/fashion/data.js` (DuckDuckGo icons, then Google s2
-  favicons), keyed by the brand's `BRAND_DOMAIN` entry. A load error moves to
-  the next provider, and a tiny placeholder response (Google's generic globe)
-  is detected by rendered size and treated as a miss. When a domain is missing
+  `LOGO_SOURCES` in `src/fashion/data.js` (Google s2 favicons; the earlier
+  DuckDuckGo provider was dropped because corporate web filters commonly block
+  `icons.duckduckgo.com` as a proxy/anonymiser, which flagged the whole page),
+  keyed by the brand's `BRAND_DOMAIN` entry. A load error moves to the next
+  provider, and a tiny placeholder response (Google's generic globe) is
+  detected by rendered size and treated as a miss. When a domain is missing
   or every provider misses, it falls back to a generated "woven-label" monogram
   (`deriveMonogram()` + `SEGMENT_STYLE`), so every brand always has a mark.
   When adding a brand: add its domain to `BRAND_DOMAIN` (and, for a new
