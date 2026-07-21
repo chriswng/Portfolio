@@ -19,6 +19,9 @@ export const HERO = {
   linkedinLabel: 'linkedin.com/in/itschriswang',
   location: 'Melbourne, Australia',
   prop: 'I help large organisations turn emissions data into governed reporting infrastructure and credible decarbonisation pathways. The work is repeatable, auditable, and built to be owned by the team.',
+  ctas: [
+    { label: 'Get in touch', href: '#contact', primary: true },
+  ],
   // Animated counters: start date drives the live "years" figure.
   instruments: [
     { id: 'years-advisory', label: ['Years sustainability', 'advisory'], start: '2022-02-01', suffix: '+' },
@@ -33,9 +36,9 @@ export const BIO_PARAS = [
 ];
 
 export const OUTCOMES = [
-  { color: 'var(--matcha)', num: '+35', small: '%', what: 'GRESB Infrastructure score uplift in year one', where: 'Major Australian energy distributor · full assessment cycle, then handed over · WSP' },
+  { color: 'var(--accent-ink)', num: '+35', small: '%', what: 'GRESB Infrastructure score uplift in year one', where: 'Major Australian energy distributor · full assessment cycle, then handed over · WSP' },
   { color: 'var(--indigo)', num: '−40', small: '%', what: 'GHG inventory preparation time, through automation', where: 'Excel + Python tooling, documented for internal operation · WSP' },
-  { color: 'var(--amber)', num: '3', small: ' BUs', what: 'Manual emissions data collection eliminated', where: 'Pre-configured templates with automated Envizi upload · Downer EDI' },
+  { color: 'var(--amber-ink)', num: '3', small: ' BUs', what: 'Manual emissions data collection eliminated', where: 'Pre-configured templates with automated Envizi upload · Downer EDI' },
 ];
 
 export const PIPELINE = [
