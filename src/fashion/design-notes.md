@@ -364,13 +364,15 @@ What replaced it doubles down on what only Openweave does:
 silently reduced the page to monograms. Two fixes:
 
 - **A provider chain instead of one CDN.** `LOGO_SOURCES` in `data.js` is an
-  ordered list of keyless icon providers (DuckDuckGo's icon service, then
-  Google's s2 favicon service). `BrandLogo` walks the chain: a load error
-  advances to the next source, and a "success" that is really a placeholder
-  (Google serves a 16px generic globe instead of a 404) is detected by
-  rendered size and treated as a miss. The woven monogram remains the
-  guaranteed base underneath. The chain stays the single swap-point for a
-  future keyed provider.
+  ordered list of keyless icon providers. It currently holds one, Google's s2
+  favicon service; an earlier DuckDuckGo entry was dropped because corporate
+  web filters routinely categorise `icons.duckduckgo.com` under "proxy
+  avoidance / anonymisers" and block it, which flagged the whole page on
+  locked-down networks. `BrandLogo` walks the chain: a load error advances to
+  the next source, and a "success" that is really a placeholder (Google serves
+  a 16px generic globe instead of a 404) is detected by rendered size and
+  treated as a miss. The woven monogram remains the guaranteed base underneath.
+  The chain stays the single swap-point for a future keyed provider.
 - **Domains for the whole universe.** `BRAND_DOMAIN` grew from 57 entries to
   226 of the 258 brands, and `GROUP_DOMAIN` now covers every multi-brand
   parent. Only brands whose primary domain could not be stated with confidence

@@ -67,18 +67,22 @@ export function ftiBand(score) {
 // Each brand shows its REAL mark, loaded at runtime by the company's web
 // domain (BRAND_DOMAIN below). Clearbit's free logo CDN was retired after the
 // HubSpot acquisition, so instead of one provider the page walks an ordered
-// chain of keyless icon services: DuckDuckGo's icon service first (real site
-// icons, misses cleanly), then Google's s2 favicon service as the backstop
-// (never 404s, but serves a tiny generic globe when it has nothing, which
-// BrandLogo detects by rendered size and treats as a miss). If every source
-// misses, the brand falls back to a generated "woven care-label" monogram
-// (deriveMonogram + SEGMENT_STYLE) so every brand always has a mark.
+// chain of keyless icon services: Google's s2 favicon service (never 404s, but
+// serves a tiny generic globe when it has nothing, which BrandLogo detects by
+// rendered size and treats as a miss). If it misses, the brand falls back to a
+// generated "woven care-label" monogram (deriveMonogram + SEGMENT_STYLE) so
+// every brand always has a mark.
+//
+// Only google.com is called at runtime, on purpose: an earlier provider
+// (icons.duckduckgo.com) was dropped because corporate web filters routinely
+// categorise DuckDuckGo under "proxy avoidance / anonymisers" and block it,
+// which flagged the whole page on locked-down networks. google.com is
+// universally allow-listed, so the lookup no longer reaches a blocked host.
 //
 // LOGO_SOURCES stays the single swap-point: to move to a keyed provider later
 // (e.g. Logo.dev or Brandfetch) prepend a URL builder here; nothing else moves.
 // ---------------------------------------------------------------------------
 export const LOGO_SOURCES = [
-  (domain) => `https://icons.duckduckgo.com/ip3/${domain}.ico`,
   (domain) => `https://www.google.com/s2/favicons?domain=${domain}&sz=128`,
 ];
 
