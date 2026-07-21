@@ -211,7 +211,7 @@ function BrandLogo({ brand, name, segment, domain, size = 'md', className = '' }
 }
 
 // =========================================================================
-// Chrome — the site's own nav, as on the footprint pages, so Openweave sits
+// Chrome — the site's own nav, as on the footprint pages, so Cost Per Wear sits
 // inside the portfolio rather than beside it.
 // =========================================================================
 function FashionNav() {

@@ -1,5 +1,5 @@
 // ============================================================================
-// THE GARMENT STUDIO — the working half of Openweave.
+// THE GARMENT STUDIO — the working half of Cost Per Wear.
 //
 // Four tools over one shared garment: the carbon footprint estimator (build
 // it), the fabric comparator (choose its cloth), the supply chain mapper
