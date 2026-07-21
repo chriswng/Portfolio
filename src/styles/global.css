@@ -259,8 +259,6 @@ section { position:relative; }
   .role-cycle{ font-size:1.05rem; }
 }
 .hero-meta{ font-family:var(--mono); font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:rgba(51,65,85,0.9); margin-top:0.8rem; display:flex; flex-direction:column; gap:0.3rem; }
-.hero-meta a{ color:var(--mid); text-decoration:none; transition:color 0.3s var(--ease); }
-.hero-meta a:hover{ color:var(--accent-ink); }
 
 .hero-lower{ position:relative; z-index:2; margin-top:clamp(1.5rem,5vw,3rem); align-items:start; }
 .hero-prop{
@@ -329,7 +327,12 @@ section { position:relative; }
 .pipe-row{ display:flex; flex-direction:column; border:1px solid var(--rule-dk); border-radius:var(--r-lg); overflow:hidden; background:var(--white); box-shadow:var(--shadow-soft); }
 /* The stage number sits on its stage colour as a pill chip — the old 3px left
    spine got clipped by the row's rounded corners and read as a broken line. */
-.pipe-step{ display:flex; align-items:center; gap:0.9rem; padding:0.95rem 1rem; background:var(--white); cursor:pointer; user-select:none; transition:background 0.25s var(--ease); }
+/* flex-wrap is a safety net, not the common case: on a narrow card the longest
+   label ("Communication") plus its badge/chevron doesn't fit one line, and
+   .pipe-row's overflow:hidden was clipping the chevron rather than wrapping
+   it — the badge/chevron drop to their own right-aligned line instead of
+   landing short of the other rows' chevron column. */
+.pipe-step{ display:flex; flex-wrap:wrap; row-gap:0.25rem; align-items:center; gap:0.9rem; padding:0.95rem 1rem; background:var(--white); cursor:pointer; user-select:none; transition:background 0.25s var(--ease); }
 .pipe-step:hover{ background:var(--lime-wash); }
 .pipe-step:focus-visible{ outline:2px solid var(--matcha); outline-offset:-2px; }
 .pipe-n{ font-family:var(--mono); font-size:10px; letter-spacing:0.08em; font-weight:700; color:color-mix(in srgb, var(--pc,var(--matcha)) 72%, var(--slate)); background:color-mix(in srgb, var(--pc,var(--matcha)) 14%, var(--white)); border-radius:var(--r-pill); padding:0.3rem 0.6rem; flex-shrink:0; }
@@ -420,10 +423,14 @@ section { position:relative; }
 .seg-grid .seg-btn{ width:100%; text-align:center; }
 
 /* Operating-profile selector — the work page's segmented pill-tab control:
-   a padded lime-wash tray with each profile as its own pill, so wrapped rows
-   stay clean at any width (no shared clipping container). */
-.seg-profiles{ display:inline-flex; flex-wrap:wrap; gap:0.4rem; margin-top:1.25rem; padding:0.4rem; background:var(--lime-wash); border:1px solid rgba(94,107,30,0.16); border-radius:var(--r-lg); max-width:100%; }
-.seg-profiles .seg-btn{ border:none; border-radius:var(--r-pill); background:transparent; color:var(--mid); padding:0.55rem 1.1rem; font-weight:600; transition:color 0.3s var(--ease),background 0.3s var(--ease),box-shadow 0.3s var(--ease); }
+   a padded lime-wash tray with each profile as its own pill. An even 2-column
+   grid (the same fix as .seg-sm below) rather than a wrapping flex: five
+   variable-length labels wrapped raggedly and could land side by side with
+   only a hair of clearance between them. The lone last pill on an odd count
+   spans both columns instead of sitting off-centre under column one. */
+.seg-profiles{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0.4rem; margin-top:1.25rem; padding:0.4rem; background:var(--lime-wash); border:1px solid rgba(94,107,30,0.16); border-radius:var(--r-lg); max-width:100%; }
+.seg-profiles .seg-btn{ border:none; border-radius:var(--r-pill); background:transparent; color:var(--mid); padding:0.55rem 1.1rem; font-weight:600; width:100%; white-space:normal; line-height:1.3; text-align:center; transition:color 0.3s var(--ease),background 0.3s var(--ease),box-shadow 0.3s var(--ease); }
+.seg-profiles .seg-btn:last-child:nth-child(odd){ grid-column:1 / -1; }
 .seg-profiles .seg-btn:hover:not(.on){ background:rgba(255,255,255,0.6); color:var(--forest); }
 .seg-profiles .seg-btn.on{ background:var(--forest); color:var(--lime-bright); font-weight:600; box-shadow:0 6px 16px rgba(33,48,15,0.18); }
 /* Small (lever) selectors fill their card as an even grid rather than a
@@ -450,13 +457,11 @@ section { position:relative; }
    neighbouring cards land at different heights instead of sharing a row. */
 .lever-card .seg-row{ border-color:var(--rule-lt); background:var(--rule-lt); margin-top:auto; }
 
-/* The one confidently-blocked colour moment mid-page: the model's payoff
-   line, in solid lime rather than the wash used elsewhere on the section. */
-.takeaway{ position:relative; background:linear-gradient(150deg,var(--lime-bright),var(--lime) 70%); padding:1.15rem 1.5rem 1.15rem 1.75rem; margin-bottom:1.5rem; font-family:var(--disp); font-size:clamp(1.05rem,2.6vw,1.4rem); font-weight:600; line-height:1.45; color:var(--forest); letter-spacing:-0.01em; border-radius:var(--r-md); box-shadow:0 6px 20px rgba(33,48,15,0.10),0 1px 2px rgba(15,23,42,0.04); }
-/* Inset rounded bar — sits inside the rounded box, never meeting the curve. */
-.takeaway::before{ content:''; position:absolute; left:0.8rem; top:1.05rem; bottom:1.05rem; width:4px; border-radius:var(--r-pill); background:var(--forest); }
-.takeaway em{ font-style:normal; font-weight:800; color:var(--forest); }
-.takeaway .tk-note{ display:block; font-family:var(--sans); font-size:11px; font-weight:400; color:var(--forest-2); margin-top:0.35rem; letter-spacing:0; line-height:1.5; }
+.takeaway{ position:relative; background:linear-gradient(150deg,var(--lime-wash),var(--white) 70%); padding:1.15rem 1.5rem 1.15rem 1.75rem; margin-bottom:1.5rem; font-family:var(--disp); font-size:clamp(1.05rem,2.6vw,1.4rem); font-weight:600; line-height:1.45; color:var(--slate); letter-spacing:-0.01em; border-radius:var(--r-md); box-shadow:0 6px 20px rgba(33,48,15,0.10),0 1px 2px rgba(15,23,42,0.04); }
+/* Inset rounded gradient bar — sits inside the rounded box, never meeting the curve. */
+.takeaway::before{ content:''; position:absolute; left:0.8rem; top:1.05rem; bottom:1.05rem; width:4px; border-radius:var(--r-pill); background:linear-gradient(180deg,var(--forest-ink),var(--matcha)); }
+.takeaway em{ font-style:normal; color:#75821D; }
+.takeaway .tk-note{ display:block; font-family:var(--sans); font-size:11px; font-weight:400; color:var(--mid); margin-top:0.35rem; letter-spacing:0; line-height:1.5; }
 
 .kpi-strip{ display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--rule-dk); border:1px solid var(--rule-dk); margin-bottom:1.5rem; border-radius:var(--r-md); overflow:hidden; box-shadow:var(--shadow-soft); }
 @media(min-width:580px){ .kpi-strip{ grid-template-columns:repeat(4,1fr); } }
@@ -524,11 +529,12 @@ section { position:relative; }
 /* Buttons — base is shared with the footprint pages, so its look is left as the
    original. The soft-pill treatment is scoped to the home + work pages at the
    bottom of this file (see PAGE-SCOPED ELEVATION). */
-.btn{ display:inline-flex; padding:0.75rem 1.75rem; font-family:var(--sans); font-size:0.85rem; font-weight:600; text-decoration:none; cursor:pointer; transition:background 0.3s var(--ease),border-color 0.3s var(--ease),color 0.3s var(--ease); min-height:44px; align-items:center; }
+.btn{ display:inline-flex; padding:0.75rem 1.75rem; font-family:var(--sans); font-size:0.85rem; font-weight:600; text-decoration:none; cursor:pointer; transition:background 0.3s var(--ease),border-color 0.3s var(--ease),color 0.3s var(--ease); min-height:44px; align-items:center; gap:0.55rem; }
 .btn-primary{ background:var(--matcha); color:var(--slate); border:1px solid var(--matcha); }
 .btn-primary:hover{ background:#8BAD1F; border-color:#8BAD1F; }
 .btn-secondary{ background:transparent; color:var(--slate); border:1px solid #CBD5E1; }
 .btn-secondary:hover{ border-color:var(--matcha); color:var(--matcha); }
+.btn .li-icon{ width:16px; height:16px; }
 
 /* ============================================================================
    EXPERIENCE + TIMELINE RAIL
@@ -580,11 +586,12 @@ section { position:relative; }
   position:relative; background:linear-gradient(150deg,var(--lime-bright) 0%,var(--lime) 42%,var(--sage) 100%);
   --pad-x:clamp(1.5rem,4vw,3rem);
   /* Tab width = the left-aligned wordmark plus equal padding either side, so the
-     notch step sits one padding past the wordmark's rendered width (≈573px at
-     the capped size, measured for the current FOOTER.wordmark string) — the
-     word's left and right gaps match. Re-measure this constant if the wordmark
-     copy changes enough to meaningfully shift its rendered width. Capped at
-     82% so the step never collides with the body's right edge on narrow cards. */
+     notch step sits one padding past the wordmark's rendered width — the word's
+     left and right gaps match. SiteFooter.jsx measures the live text range on
+     mount/resize/font-load and overwrites this with an exact px value; the calc
+     below is only the pre-measurement/no-JS fallback, deliberately rough since
+     it never has to survive on screen. Capped at 82% so the step never collides
+     with the body's right edge on narrow cards. */
   --tab-w:min(calc(2 * var(--pad-x) + 573px),82%);
   --fc-tab-r:1.75rem;   /* tab top-left corner */
   --fc-fillet:1rem;     /* concave curve where the tab meets the body */

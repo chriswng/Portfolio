@@ -4,7 +4,7 @@ import { HERO } from '../data/content';
 import SplitText from './SplitText';
 import ContourField from './ContourField';
 import Aurora from './Aurora';
-import Icon from './Icons';
+import Icon, { LinkedInIcon } from './Icons';
 
 // Live "years" from a start date, matching the original calc.
 function yearsSince(startISO) {
@@ -84,7 +84,6 @@ export default function Hero() {
         <div className="hero-side">
           <RoleCycle roles={HERO.roles} />
           <div className="hero-meta">
-            <a href={HERO.linkedin} target="_blank" rel="noopener noreferrer">{HERO.linkedinLabel}</a>
             <span><Icon name="pin" size={26} className="fpi-lead" />{HERO.location}</span>
           </div>
         </div>
@@ -100,7 +99,9 @@ export default function Hero() {
         <p className="hero-prop">{HERO.prop}</p>
         <div className="hero-cta">
           {HERO.ctas.map((c) => (
-            <a key={c.href} className={'btn ' + (c.primary ? 'btn-primary' : 'btn-secondary')} href={c.href}>{c.label}</a>
+            <a key={c.href} className={'btn ' + (c.primary ? 'btn-primary' : 'btn-secondary')} href={c.href}>
+              {c.icon === 'linkedin' && <LinkedInIcon />}{c.label}
+            </a>
           ))}
         </div>
         <div className="instr-stack">
