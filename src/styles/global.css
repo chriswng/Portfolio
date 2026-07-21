@@ -242,7 +242,7 @@ section { position:relative; }
   grid-column:1 / 13; position:relative; z-index:2;
   font-size:clamp(1.7rem,7.1vw,6.1rem); line-height:0.8; letter-spacing:-0.05em;
   margin-bottom:0.1em;
-  --split-accent:var(--accent-ink);
+  --split-accent:var(--forest);
 }
 .hero-name em{ color:var(--forest-ink); font-style:normal; }
 .hero-side{ grid-column:1 / 10; align-self:start; margin-top:clamp(1rem,2.5vw,1.8rem); }
