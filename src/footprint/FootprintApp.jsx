@@ -37,7 +37,7 @@ function MethodLink() {
   return (
     <section id="fp-methodlink">
       <div className="canvas">
-        <div className="sec-tag" data-idx="04 / "><Icon name="book" size={16} />How it works</div>
+        <div className="sec-tag" data-idx="04 / "><Icon name="book" size={32} />How it works</div>
         <h2 className="display fp-h2"><SplitText text={METHOD_LINK.title[0]} /> <SplitText text={METHOD_LINK.title[1]} accentIndex={1} /></h2>
         <p className="fp-sub">{METHOD_LINK.body}</p>
         <div className="fp-ctrl-row">
@@ -359,7 +359,7 @@ export default function FootprintApp() {
             />
             <ContourField />
             <div className="canvas" style={{ position: 'relative', zIndex: 1 }}>
-              <div className="sec-tag" data-idx="00 / "><Icon name="leaf" size={16} />{INTRO.tag}</div>
+              <div className="sec-tag" data-idx="00 / "><Icon name="leaf" size={32} />{INTRO.tag}</div>
               <h1 className="fp-h1 display">
                 <SplitText text={INTRO.h1a} /> <SplitText text={INTRO.h1b} accentIndex={1} />
               </h1>

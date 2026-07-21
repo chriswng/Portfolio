@@ -272,7 +272,7 @@ const AIRPORT_GROUPS = (() => {
 function Chips({ label, options, value, onChange, note, icon }) {
   return (
     <div className="ob-field" role="group" aria-label={label}>
-      <span className="ob-label">{icon && <Icon name={icon} size={15} className="ob-label-i" />}{label}</span>
+      <span className="ob-label">{icon && <Icon name={icon} size={30} className="ob-label-i" />}{label}</span>
       <div className="ob-chips">
         {options.map((o) => (
           <button
@@ -295,7 +295,7 @@ function Stepper({ label, value, onChange, min = 0, max = 99, step = 1, icon, co
   const clamp = (v) => Math.min(max, Math.max(min, v));
   return (
     <div className={compact ? 'ob-field ob-field-compact' : 'ob-field'}>
-      <span className="ob-label">{icon && <Icon name={icon} size={15} className="ob-label-i" />}{label}</span>
+      <span className="ob-label">{icon && <Icon name={icon} size={30} className="ob-label-i" />}{label}</span>
       <div className="ob-stepper">
         <button type="button" aria-label={'Decrease ' + label} onClick={() => onChange(clamp(value - step))}>−</button>
         <input
@@ -332,7 +332,7 @@ function SliderField({ label, value, onChange, min, max, step, unit, icon, note 
   return (
     <div className="ob-field">
       <div className="ob-slider-head">
-        <span className="ob-label">{icon && <Icon name={icon} size={15} className="ob-label-i" />}{label}</span>
+        <span className="ob-label">{icon && <Icon name={icon} size={30} className="ob-label-i" />}{label}</span>
         <span className="ob-value">
           <input
             type="number" className="ob-value-input" inputMode="decimal"
@@ -386,7 +386,7 @@ function FlightCard({ fl, index, monthOptions, onChange, onRemove }) {
   return (
     <div className="ob-fcard">
       <div className="ob-fcard-head">
-        <span className="ob-fcard-n"><Icon name="plane" size={15} className="ob-flight-i" /> {fill(ONBOARD.flights.tripLabel, { n: index + 1 })}</span>
+        <span className="ob-fcard-n"><Icon name="plane" size={30} className="ob-flight-i" /> {fill(ONBOARD.flights.tripLabel, { n: index + 1 })}</span>
         <button type="button" className="ob-remove" onClick={onRemove}>{ONBOARD.flights.remove} ×</button>
       </div>
       <div className="ob-fcard-route">
@@ -553,7 +553,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
   const steps = [
     <div key="you">
       <div className="ob-stephead">
-        <span className="ob-stephead-i" aria-hidden="true"><Icon name="house" size={26} /></span>
+        <span className="ob-stephead-i" aria-hidden="true"><Icon name="house" size={52} /></span>
         <h3 ref={headRef} tabIndex={-1}>{ONBOARD.you.title}</h3>
       </div>
       <p>{ONBOARD.you.sub}</p>
@@ -577,7 +577,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
     </div>,
     <div key="energy">
       <div className="ob-stephead">
-        <span className="ob-stephead-i" aria-hidden="true"><Icon name="bolt" size={26} /></span>
+        <span className="ob-stephead-i" aria-hidden="true"><Icon name="bolt" size={52} /></span>
         <h3 ref={headRef} tabIndex={-1}>{ONBOARD.energy.title}</h3>
       </div>
       <p>{ONBOARD.energy.sub}</p>
@@ -599,7 +599,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         onChange={(v) => setA((s) => ({ ...s, kwhQuarter: v, energyPreset: null }))} />
       <SliderField icon="flame" label={ONBOARD.energy.mj} value={a.mjQuarter} min={0} max={40000} step={50} unit="MJ"
         onChange={(v) => setA((s) => ({ ...s, mjQuarter: v, energyPreset: null }))} />
-      <p className="ob-splitnote"><Icon name="people" size={14} className="ob-label-i" />{splitNote}</p>
+      <p className="ob-splitnote"><Icon name="people" size={28} className="ob-label-i" />{splitNote}</p>
       <Chips
         icon="leaf"
         label={ONBOARD.energy.greenpower}
@@ -616,7 +616,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
     </div>,
     <div key="travel">
       <div className="ob-stephead">
-        <span className="ob-stephead-i" aria-hidden="true"><Icon name="car" size={26} /></span>
+        <span className="ob-stephead-i" aria-hidden="true"><Icon name="car" size={52} /></span>
         <h3 ref={headRef} tabIndex={-1}>{ONBOARD.travel.title}</h3>
       </div>
       <p>{ONBOARD.travel.sub}</p>
@@ -642,7 +642,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
       {ptCap && (
         <div className="ob-ptcap">
           <p className="ob-note ob-ptcap-note">
-            <Icon name="leaf" size={14} className="ob-label-i" />
+            <Icon name="leaf" size={28} className="ob-label-i" />
             {ptCap.approx
               ? fill(ONBOARD.travel.ptCapNoteApprox, { state: a.state, label: ptCap.label, cap: ptCap.weekly, asOf: PT_FARE_CAPS_ASOF })
               : fill(ONBOARD.travel.ptCapNoteExact, { state: a.state, label: ptCap.label, cap: ptCap.weekly })}
@@ -669,7 +669,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
     </div>,
     <div key="flights">
       <div className="ob-stephead">
-        <span className="ob-stephead-i" aria-hidden="true"><Icon name="plane" size={26} /></span>
+        <span className="ob-stephead-i" aria-hidden="true"><Icon name="plane" size={52} /></span>
         <h3 ref={headRef} tabIndex={-1}>{ONBOARD.flights.title}</h3>
       </div>
       <p>{ONBOARD.flights.sub}</p>
@@ -704,7 +704,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
     </div>,
     <div key="food">
       <div className="ob-stephead">
-        <span className="ob-stephead-i" aria-hidden="true"><Icon name="bowl" size={26} /></span>
+        <span className="ob-stephead-i" aria-hidden="true"><Icon name="bowl" size={52} /></span>
         <h3 ref={headRef} tabIndex={-1}>{ONBOARD.food.title}</h3>
       </div>
       <p>{ONBOARD.food.sub}</p>
@@ -716,11 +716,11 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
     </div>,
     <div key="advanced">
       <div className="ob-stephead">
-        <span className="ob-stephead-i" aria-hidden="true"><Icon name="box" size={26} /></span>
+        <span className="ob-stephead-i" aria-hidden="true"><Icon name="box" size={52} /></span>
         <h3 ref={headRef} tabIndex={-1}>{ONBOARD.advanced.title}</h3>
       </div>
       <p>{ONBOARD.advanced.sub}</p>
-      <p className="ob-optnote"><Icon name="spark" size={14} className="ob-label-i" />{ONBOARD.advanced.optional}</p>
+      <p className="ob-optnote"><Icon name="spark" size={28} className="ob-label-i" />{ONBOARD.advanced.optional}</p>
       <Chips
         icon="box"
         label={ONBOARD.advanced.clothingHow}
@@ -781,10 +781,10 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
       {/* Deliberately spoiler-free: no number here. The total, its shape and
           its context all belong to the reveal below. */}
       <div className="ob-stephead">
-        <span className="ob-stephead-i" aria-hidden="true"><Icon name="spark" size={26} /></span>
+        <span className="ob-stephead-i" aria-hidden="true"><Icon name="spark" size={52} /></span>
         <h3 ref={headRef} tabIndex={-1}>{OB.done.title}</h3>
       </div>
-      <p className="ob-done-ready"><Icon name="spark" size={16} className="ob-label-i" />{OB.done.ready}</p>
+      <p className="ob-done-ready"><Icon name="spark" size={32} className="ob-label-i" />{OB.done.ready}</p>
       <p>{OB.done.sub}</p>
       <div className="ob-done-ctas">
         <button type="button" className="btn btn-primary fp-btn" onClick={() => onDone(doneProfile, { watch: true })}>{OB.done.watch} →</button>
@@ -839,7 +839,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
                 visitor's own numbers, so the reveal keeps its punch. */}
             {step < 6 && OB.facts[step] && (
               <aside className="ob-fact">
-                <span className="ob-fact-k"><Icon name="spark" size={13} className="ob-label-i" />{OB.factKicker}</span>
+                <span className="ob-fact-k"><Icon name="spark" size={26} className="ob-label-i" />{OB.factKicker}</span>
                 <p>{OB.facts[step].text}</p>
                 <span className="ob-fact-src">{OB.facts[step].src}</span>
               </aside>
@@ -854,7 +854,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         <div className="ob-foot">
           <div className="canvas ob-foot-inner">
             <div className="ob-foot-status">
-              <span className="ob-foot-tick" aria-hidden="true"><Icon name="spark" size={14} /></span>
+              <span className="ob-foot-tick" aria-hidden="true"><Icon name="spark" size={28} /></span>
               <span className="ob-foot-status-t">{stepStatus}</span>
               <span className="ob-foot-note">{OB.keepForReveal}</span>
             </div>
