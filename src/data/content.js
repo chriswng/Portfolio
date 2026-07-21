@@ -13,7 +13,7 @@ export const NAV_LINKS = [
 ];
 
 export const HERO = {
-  name: ['Christopher', 'Wang'],
+  name: ['Chris', 'Wang'],
   roles: ['Sustainability Advisor', 'Emissions Modeller', 'ESG Reporting Lead', 'Decarbonisation Strategist'],
   linkedin: 'https://linkedin.com/in/itschriswang',
   linkedinLabel: 'linkedin.com/in/itschriswang',
@@ -179,14 +179,14 @@ export const EDUCATION = {
 // Contact section folded in here: the availability line, the location, and one
 // primary LinkedIn action. There is deliberately no second LinkedIn CTA.
 export const FOOTER = {
-  wordmark: 'Christopher Wang',
+  wordmark: 'Chris Wang',
   availability: 'Open to senior advisory and lead sustainability roles.',
   // Merged from the former Contact section.
   location: 'Melbourne, Australia · flexible on arrangement',
   ctaLabel: 'Connect on LinkedIn',
   ctaHref: 'https://linkedin.com/in/itschriswang',
   ctaHandle: 'linkedin.com/in/itschriswang',
-  rights: 'All rights reserved © 2026 · Christopher Wang',
+  rights: 'All rights reserved © 2026 · Chris Wang',
   tagline: 'Sustainability advisor · Melbourne, Australia',
   // Link columns. hrefs beginning with '#' or a sub-path are prefixed with the
   // page base at render time so the footer works from the root and /work/.

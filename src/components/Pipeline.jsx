@@ -19,7 +19,7 @@ function PipeRow({ item, open, onToggle }) {
         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onToggle(); } }}
       >
         <span className="pipe-n">{item.n}</span>
-        {item.icon && <Icon name={item.icon} size={16} />}
+        {item.icon && <Icon name={item.icon} size={32} />}
         <span className="pipe-label">{item.label}</span>
         <span className="pipe-step-right">
           <span className="pipe-badge">{item.examples.length} example{item.examples.length > 1 ? 's' : ''}</span>

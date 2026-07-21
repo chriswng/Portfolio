@@ -30,7 +30,7 @@ function StudioHead({ c }) {
   return (
     <>
       <div className="sec-tag" data-idx={`${c.idx} / `}>
-        {c.icon && <Icon name={c.icon} size={15} />}{c.sub}
+        {c.icon && <Icon name={c.icon} size={30} />}{c.sub}
       </div>
       <h2 className="display ow-h2">{c.title}</h2>
       <p className="ow-lede">{c.lede}</p>
@@ -493,7 +493,7 @@ function FabricsSection({ onUse }) {
             {rows.map((row) => (
               <div key={row.id} style={{ display: 'contents' }}>
                 <div className="ow-bench-rk">
-                  {c.rows[row.id].icon && <Icon name={c.rows[row.id].icon} size={14} className="fpi-lead" />}{c.rows[row.id].label}
+                  {c.rows[row.id].icon && <Icon name={c.rows[row.id].icon} size={28} className="fpi-lead" />}{c.rows[row.id].label}
                   <span>{c.rows[row.id].unit}</span>
                 </div>
                 {fibres.map((f) => (

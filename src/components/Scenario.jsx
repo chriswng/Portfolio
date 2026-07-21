@@ -10,10 +10,10 @@ import Icon from './Icons';
 import { prefersReducedMotion } from '../utils/media';
 
 const LEVERS = [
-  { key: 'grid', lc: 'var(--indigo)', opts: ['base', 'faster', 'slower', 'off'] },
-  { key: 'lv', lc: 'var(--matcha)', opts: ['base', 'faster', 'slower'] },
-  { key: 'hv', lc: 'var(--amber)', opts: ['base', 'faster', 'slower'] },
-  { key: 'plant', lc: 'var(--berry)', opts: ['base', 'faster', 'slower', 'off'] },
+  { key: 'grid', lc: 'var(--indigo)', sc: 'var(--indigo)', opts: ['base', 'faster', 'slower', 'off'] },
+  { key: 'lv', lc: 'var(--matcha)', sc: 'var(--accent-ink)', opts: ['base', 'faster', 'slower'] },
+  { key: 'hv', lc: 'var(--amber)', sc: 'var(--amber-ink)', opts: ['base', 'faster', 'slower'] },
+  { key: 'plant', lc: 'var(--berry)', sc: 'var(--berry)', opts: ['base', 'faster', 'slower', 'off'] },
 ];
 const OPT_LABEL = { base: 'Base', faster: 'Faster', slower: 'Slower', off: 'Off' };
 const REV_OPTS = [
@@ -32,9 +32,9 @@ const LEGEND_SWATCH = [
   '<span class="cl-swatch dash" style="color:#475569"></span>',
 ];
 
-function Seg({ value, options, onChange, small }) {
+function Seg({ value, options, onChange, sc, small }) {
   return (
-    <div className={'seg-row' + (small ? ' seg-sm' : '')} role="group">
+    <div className={'seg-row' + (small ? ' seg-sm' : '')} role="group" style={small ? { '--sc': sc } : undefined}>
       {options.map((o) => {
         const v = typeof o === 'string' ? o : o.v;
         const l = typeof o === 'string' ? OPT_LABEL[o] : o.l;
@@ -161,7 +161,7 @@ export default function Scenario() {
   return (
     <section id="scenario">
       <div className="canvas">
-        <div className="sec-tag" data-idx="02 / "><Icon name="target" size={15} />Decarbonisation Scenario Model</div>
+        <div className="sec-tag" data-idx="02 / "><Icon name="target" size={30} />Decarbonisation Scenario Model</div>
         <p className="tool-decl" style={{ marginTop: '1.5rem' }}>Every lever has a source. <strong>Set the levers, then read the story.</strong></p>
         <p className="tool-sub">{labels.sub}</p>
         <span className="tool-disc">Illustrative model · stylised numbers · not client data · FY30 used as the interim target year</span>
@@ -170,7 +170,7 @@ export default function Scenario() {
           <div className="scn-controls">
             {/* Step 01 */}
             <div className="scn-step">
-              <span className="scn-step-num"><Icon name="building" size={14} className="fpi-lead" />Step 01</span>
+              <span className="scn-step-num"><Icon name="building" size={28} className="fpi-lead" />Step 01</span>
               <h3 className="scn-step-title">Choose an operating profile</h3>
               <p className="scn-step-sub">Each profile loads a different emissions mix and its own set of abatement levers.</p>
               <div className="seg-profiles" role="group" aria-label="Operating profile">
@@ -183,21 +183,21 @@ export default function Scenario() {
 
             {/* Step 02 */}
             <div className="scn-step">
-              <span className="scn-step-num"><Icon name="bolt" size={14} className="fpi-lead" />Step 02</span>
+              <span className="scn-step-num"><Icon name="bolt" size={28} className="fpi-lead" />Step 02</span>
               <h3 className="scn-step-title">Set the abatement levers</h3>
               <p className="scn-step-sub">Every lever traces to a published source. Card colours match the wedges in the chart.</p>
               <div className="lever-deck">
                 {LEVERS.map((lv) => (
-                  <div className={'lever-card' + (scn[lv.key] !== 'base' ? ' is-active' : '')} key={lv.key} style={{ '--lc': lv.lc }}>
+                  <div className="lever-card" key={lv.key} style={{ '--lc': lv.lc }}>
                     <div className="lever-top"><span className="lever-dot" aria-hidden="true" /><span className="lever-name">{labels[lv.key].name}</span></div>
                     <div className="lever-src">{labels[lv.key].src}</div>
-                    <Seg value={scn[lv.key]} options={lv.opts} onChange={(v) => set(lv.key, v)} small />
+                    <Seg value={scn[lv.key]} options={lv.opts} onChange={(v) => set(lv.key, v)} sc={lv.sc} small />
                   </div>
                 ))}
-                <div className={'lever-card lever-card-rev' + (scn.rev !== 'moderate' ? ' is-active' : '')} style={{ '--lc': 'var(--step-comms)' }}>
+                <div className="lever-card lever-card-rev" style={{ '--lc': 'var(--step-comms)' }}>
                   <div className="lever-top"><span className="lever-dot" aria-hidden="true" /><span className="lever-name">Volume / Revenue Growth Assumption</span></div>
                   <div className="lever-src">Scales gross emissions before abatement is applied</div>
-                  <Seg value={scn.rev} options={REV_OPTS} onChange={(v) => set('rev', v)} small />
+                  <Seg value={scn.rev} options={REV_OPTS} onChange={(v) => set('rev', v)} sc="var(--step-comms)" small />
                 </div>
               </div>
             </div>
@@ -206,7 +206,7 @@ export default function Scenario() {
           {/* Step 03 */}
           <div className="scn-results">
             <div className="scn-step">
-              <span className="scn-step-num"><Icon name="chart" size={14} className="fpi-lead" />Step 03</span>
+              <span className="scn-step-num"><Icon name="chart" size={28} className="fpi-lead" />Step 03</span>
               <h3 className="scn-step-title">Read the result</h3>
               <p className="scn-step-sub">The headline rewrites itself as you move the levers, the way a board slide should.</p>
               <p className="takeaway" aria-live="polite">

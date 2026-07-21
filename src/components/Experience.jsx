@@ -65,7 +65,7 @@ export default function Experience() {
   return (
     <section id="experience">
       <div className="canvas">
-        <div className="sec-tag" data-idx="03 / "><Icon name="building" size={15} />Experience</div>
+        <div className="sec-tag" data-idx="03 / "><Icon name="building" size={30} />Experience</div>
         <h2 className="display" style={{ fontSize: 'clamp(2rem,6vw,4.5rem)', marginTop: '1.2rem' }}>
           <SplitText text="Track record" accentIndex={1} />
         </h2>
@@ -105,7 +105,7 @@ export default function Experience() {
           <div className="exp-entry exp-entry-edu" ref={(el) => (entryRefs.current[EXPERIENCE.length] = el)}>
             <div className="exp-hd">
               <div>
-                <div className="exp-eyebrow"><Icon name="book" size={14} className="fpi-lead" />Education</div>
+                <div className="exp-eyebrow"><Icon name="book" size={28} className="fpi-lead" />Education</div>
                 <div className="exp-org-name">{EDUCATION.org}</div>
                 <div className="exp-dept">{EDUCATION.dept}</div>
               </div>

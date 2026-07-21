@@ -402,7 +402,7 @@ export const DATA_CTRL = {
 };
 
 export const FOOTER = {
-  name: 'Christopher Wang · 2026',
+  name: 'Chris Wang · 2026',
   back: 'Back to profile',
 };
 

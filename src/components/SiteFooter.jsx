@@ -41,7 +41,7 @@ export default function SiteFooter({ base = '' }) {
         <nav className="footer-cols" aria-label="Footer">
           {FOOTER.columns.map((col) => (
             <div className="footer-col" key={col.head}>
-              <div className="footer-col-head">{col.icon && <Icon name={col.icon} size={14} className="fpi-lead" />}{col.head}</div>
+              <div className="footer-col-head">{col.icon && <Icon name={col.icon} size={28} className="fpi-lead" />}{col.head}</div>
               <ul className="footer-col-list">
                 {col.links.map((l) => (
                   <li key={l.label}>
@@ -59,7 +59,7 @@ export default function SiteFooter({ base = '' }) {
         </nav>
 
         <div className="footer-baseline">
-          <a href={base || '#about'} className="footer-mark" aria-label="Christopher Wang, home"><Mark /></a>
+          <a href={base || '#about'} className="footer-mark" aria-label="Chris Wang, home"><Mark /></a>
           <span className="footer-legal">{FOOTER.rights}</span>
         </div>
       </div>

@@ -12,7 +12,7 @@ export function FootprintNav({ home = '../' }) {
   return (
     <nav className="nav" aria-label="Primary">
       <div className="nav-inner canvas">
-        <a href={home} className="nav-logo"><Mark label="Christopher Wang, home" /></a>
+        <a href={home} className="nav-logo"><Mark label="Chris Wang, home" /></a>
         <div className={`nav-links${menuOpen ? ' open' : ''}`}>
           {NAV_LINKS.map((l) => {
             const self = l.href === 'footprint/';
@@ -43,7 +43,7 @@ export function FootprintFooter({ home = '../' }) {
   return (
     <footer className="fp-footer">
       <div className="canvas fp-footer-inner">
-        <a href={home} className="fp-footer-home" aria-label="Christopher Wang, home"><Mark /></a>
+        <a href={home} className="fp-footer-home" aria-label="Chris Wang, home"><Mark /></a>
         <span className="fp-footer-name">{FOOTER.name}</span>
         <a href={home} className="fp-footer-back">← {FOOTER.back}</a>
       </div>
