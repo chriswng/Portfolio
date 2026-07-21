@@ -92,6 +92,19 @@ const BED = [
   '#...........#',
 ];
 
+// Home embodied carbon: a gabled house, roof then body with a door gap.
+const HOUSE = [
+  '......#......',
+  '.....###.....',
+  '....#####....',
+  '...#######...',
+  '..#########..',
+  '.###########.',
+  '..#########..',
+  '..####.####..',
+  '..####.####..',
+];
+
 // Diet wears the shape of the diet actually picked: a drumstick for the meat
 // eaters, a fish for pescetarians, a leaf for the plant-based.
 const DRUMSTICK = [
@@ -169,6 +182,7 @@ export function categoryShapes(dietType) {
     diet: DIET_SHAPES[dietType] || LEAF,
     goods: BAG,
     hotel: BED,
+    dwelling: HOUSE,
     other: ASTERISK,
   };
 }

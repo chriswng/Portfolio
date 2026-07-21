@@ -13,6 +13,7 @@ import {
   OTHER_FUELS, OTHER_SOURCE,
   GOODS, GOODS_SOURCE, goodsPerAud, CLOTHING_ITEMS, CLOTHING_ITEMS_SOURCE,
   HOTEL, HOTEL_SOURCE, hotelPerNight,
+  HOME, HOME_SOURCE,
   QUALITY_TIERS, qualityOf,
 } from '../data/factors';
 import { ABATEMENT_OPTIONS, APPLY_ORDER } from '../data/abatement';
@@ -177,6 +178,22 @@ export function priceEntry(draft, settings) {
       scope = '3';
       const c = HOTEL.countries[country];
       source = HOTEL_SOURCE.name + ' (' + (c ? c.label : 'home-country default') + ', per room-night)';
+      break;
+    }
+    case 'dwelling': {
+      // Upfront (A1-A5) embodied carbon of a home built or bought new, turned
+      // into an annual line by straight-line amortisation over the building
+      // life, then split per adult like the energy bills. activity is the
+      // floor area; the effective factor snapshotted is the annual per-m2
+      // share. A home logged as second-hand never reaches here.
+      const t = HOME.types[meta.dwelling] || HOME.types.house;
+      const area = meta.areaM2 || 0;
+      const annualKg = (area * t.perM2) / HOME.amortiseYears;
+      activity = area; unit = 'm²';
+      components = [{ scope: '3', tco2e: annualKg * share / 1000 }];
+      scope = '3';
+      source = HOME_SOURCE.name.split(',')[0] + ' (' + t.label + ', A1-A5 ÷ ' + HOME.amortiseYears + ' yr'
+        + (share < 1 ? ', per adult' : '') + ')';
       break;
     }
     default:
@@ -344,7 +361,7 @@ export function baselineState(profile, agg) {
   const s = profile.settings;
   const share = 1 / Math.max(1, s.householdSize || 1);
   let kwh = 0, mj = 0, kmCar = 0, kmEv = 0, litres = 0, kmRide = 0, kmPt = 0;
-  let dietDays = 0, freightAirT = 0, freightOtherT = 0, otherT = 0, goodsT = 0;
+  let dietDays = 0, freightAirT = 0, freightOtherT = 0, otherT = 0, goodsT = 0, dwellingT = 0;
   const flights = [];
   for (const e of profile.entries) {
     if (e.date < profile.period.start || e.date > profile.period.end) continue;
@@ -376,6 +393,9 @@ export function baselineState(profile, agg) {
     // annual band: no abatement lever acts on them, so BAU and plan hold them
     // steady while the levers move the categories they do touch.
     else if (e.category === 'goods' || e.category === 'hotel') goodsT += e.tco2e;
+    // Home embodied carbon is already locked in at construction, so no future
+    // lever abates it; it rides through both lines as its own flat band.
+    else if (e.category === 'dwelling') dwellingT += e.tco2e;
   }
   const dietType = s.dietType || 'medMeat';
   return {
@@ -395,7 +415,7 @@ export function baselineState(profile, agg) {
     droppedFlightT: 0,
     dietPerDay: DIET_TYPES[dietType].perDay,
     dietDays: dietDays || 365,
-    freightAirT, freightOtherT, otherT, goodsT,
+    freightAirT, freightOtherT, otherT, goodsT, dwellingT,
     agg,
   };
 }
@@ -420,8 +440,8 @@ export function stateEmissions(st, yearOffset) {
   const freight = st.freightAirT * (1 - (st.seaShift || 0) * (1 - 0.016 / 1.13)) + st.freightOtherT;
 
   return {
-    total: elec + gas + road + flight + diet + freight + st.otherT + (st.goodsT || 0),
-    byCategory: { electricity: elec, gas, road, flight, diet, freight, other: st.otherT, goods: st.goodsT || 0 },
+    total: elec + gas + road + flight + diet + freight + st.otherT + (st.goodsT || 0) + (st.dwellingT || 0),
+    byCategory: { electricity: elec, gas, road, flight, diet, freight, other: st.otherT, goods: st.goodsT || 0, dwelling: st.dwellingT || 0 },
   };
 }
 

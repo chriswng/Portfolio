@@ -346,7 +346,7 @@ export function classifyCharacter(agg) {
     ['road', share('road')],
     ['diet', share('diet')],
     ['freight', share('freight')],
-    ['home', share('electricity') + share('gas') + share('other')],
+    ['home', share('electricity') + share('gas') + share('other') + share('dwelling')],
     // The optional consumption basket, when it is switched on.
     ['goods', share('goods') + share('hotel')],
   ].sort((a, b) => b[1] - a[1]);

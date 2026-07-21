@@ -36,4 +36,4 @@ export const AUS_AVG = BENCHMARKS[2];
 
 // Boundary caveat shown wherever a benchmark comparison appears.
 export const BENCHMARK_CAVEAT =
-  'Boundary note: this counts household energy, personal travel, freight and diet, plus the optional goods and hotel basket if you added it. National per-capita figures still cover a wider boundary, so any total here understates a full consumption footprint.';
+  'Boundary note: this counts household energy, personal travel, freight and diet, plus the optional goods, hotel and new-build home basket if you added it. National per-capita figures still cover a wider boundary, so any total here understates a full consumption footprint.';

@@ -33,6 +33,11 @@ export const CATEGORIES = [
   // and dark teal, both dark enough for white-on-fill labels).
   { id: 'goods', label: 'Goods & services', color: 'var(--fp-goods)', hex: '#8E2D6E' },
   { id: 'hotel', label: 'Hotel nights', color: 'var(--fp-hotel)', hex: '#1F5F6E' },
+  // Optional home-embodied module: the upfront (A1-A5) carbon of a home you
+  // built or bought new, amortised over the building life and split per adult.
+  // Appended last so the core order stays stable; a warm umber, dark enough
+  // for white-on-fill labels and CVD-distinct from the browns above.
+  { id: 'dwelling', label: 'Home (embodied)', color: 'var(--fp-dwelling)', hex: '#7A5C3E' },
 ];
 
 export const categoryById = (id) =>
@@ -554,6 +559,40 @@ export const hotelPerNight = (country) => {
 };
 
 // ---------------------------------------------------------------------------
+// Home embodied carbon (optional). The upfront (A1-A5) carbon locked into a
+// home when it is built: manufacture and transport of materials plus
+// construction. Counted only for a home you built or bought new, on the
+// demand-side view that a new purchase is what pulled that construction into
+// existence. A second-hand purchase caused no new build and carries nothing
+// here, so buying existing reads as the lower-carbon choice it is.
+//
+// The one-off pulse is turned into an annual line by straight-line
+// amortisation over a 50-year building life (the design life the GBCA and NCC
+// treat as a residential minimum), then split per adult like the energy bills.
+// Per-m2 intensities are indicative: residential upfront carbon spans a wide
+// range in the literature, so treat this as a screening estimate, not a
+// measured figure. kg CO2-e per m2 of gross floor area, A1-A5.
+// ---------------------------------------------------------------------------
+export const HOME_SOURCE = {
+  name: 'Indicative residential upfront embodied carbon (A1-A5), amortised over a 50-year life',
+  detail: 'Detached-house intensity from Illankoon et al. 2023 (Buildings 13(10):2559), three Class 1a case-study homes at 193-233 kg CO2-e/m2 A1-A5; apartment intensity set higher for the concrete structure, basement and shared cores, anchored on GBCA and thinkstep-anz 2021 (Embodied Carbon and Embodied Energy in Australia\'s Buildings). Both are indicative screening figures across a wide literature range, amortised straight-line over 50 years and split per adult. Counted only for a home built or bought new.',
+  url: 'https://www.mdpi.com/2075-5309/13/10/2559',
+};
+
+// Amortisation life in years, and the per-m2 upfront (A1-A5) intensity by
+// dwelling type. Keys match the onboarding dwelling chips (house / apartment).
+export const HOME = {
+  amortiseYears: 50,
+  types: {
+    house: { label: 'House (detached)', perM2: 210 },
+    apartment: { label: 'Apartment / unit', perM2: 500 },
+  },
+};
+
+export const dwellingPerM2 = (dwelling) =>
+  (HOME.types[dwelling] || HOME.types.house).perM2;
+
+// ---------------------------------------------------------------------------
 // Data quality tiers and the uncertainty band each carries. The central
 // estimate never moves; the tiers only set the width of the range shown
 // around the total. Band percentages are stated assumptions of this method
@@ -593,6 +632,8 @@ export const DEFAULT_QUALITY = {
   road: 'estimated', freight: 'estimated', diet: 'estimated',
   // Spend-based goods and hotel nights are always screening estimates.
   goods: 'estimated', hotel: 'estimated',
+  // Home embodied carbon is an indicative per-m2 estimate across a wide range.
+  dwelling: 'estimated',
 };
 
 export const qualityOf = (entry) =>
