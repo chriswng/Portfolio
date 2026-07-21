@@ -628,10 +628,16 @@ section { position:relative; }
 @media(max-width:600px){
   .footer-card{
     padding-top:4.6rem;
-    --tab-w:min(calc(2 * var(--pad-x) + 573px),94%);
+    /* Capped tighter than desktop (88% vs 82%) so the leftover strip right of
+       the tab still clears fc-fillet + fc-body-r — on a narrow card that strip
+       is only a few dozen px, and the body-r arc below was previously left at
+       the desktop 30px, wider than the strip itself, which made the tab/body
+       join double back on itself into a detached-looking flag. */
+    --tab-w:min(calc(2 * var(--pad-x) + 573px),88%);
     --fc-tab-h:3.75rem;
     --fc-tab-r:1.25rem;
-    --fc-fillet:0.75rem;
+    --fc-fillet:0.65rem;
+    --fc-body-r:1rem;
   }
 }
 .footer-wordmark{
