@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { motion, useMotionValue, useScroll, useSpring, useTransform } from 'framer-motion';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { animate, motion, useMotionValue, useScroll, useSpring, useTransform } from 'framer-motion';
 import { canHover, prefersReducedMotion } from '../../utils/media';
 import SplitText from '../../components/SplitText';
 import CarbonField from './CarbonField';
@@ -8,8 +8,11 @@ import { fmtT } from '../data/copy';
 import { categoryShapes } from '../data/shapes';
 import ShareSheet from './ShareSheet';
 import { renderShare } from '../lib/shareCard';
+import { EQUIVALENCES, equivCount } from '../data/equivalences';
+import { baselineState, stateEmissions } from '../lib/engine';
+import { ABATEMENT_OPTIONS, APPLY_ORDER } from '../data/abatement';
 import {
-  CHROME, COVER, YEAR, GUESS, TOTAL, SCOPES, HOTSPOTS_ST,
+  CHROME, COVER, YEAR, GUESS, LOCKIN, TOTAL, EQUIV_ST, SCOPES, HOTSPOTS_ST,
   MONTHS_ST, BENCH_ST, NEEDLE, OUTRO, SHARE_ST, fill,
 } from '../data/storyCopy';
 
@@ -139,6 +142,7 @@ export function Cover({ d, voice, onStart, reduced }) {
         {voice === 'example' && (
           <div className="st-cover-cta">
             <button type="button" className="btn btn-primary fp-btn" onClick={onStart}>{COVER.start} →</button>
+            <span className="st-cover-time">{COVER.startTime}</span>
           </div>
         )}
         <p className="st-cover-note">
@@ -172,7 +176,26 @@ export function ScrollHint({ progress, fadeEnd = 0.45, label = CHROME.keepScroll
 // then the log itself streams past: three rows of priced line items, tinted
 // by category, drifting on their own and steered by the scroll.
 // ---------------------------------------------------------------------------
-export function YearTicker({ d, voice, reduced }) {
+// Animates a number toward its latest value, for the live toys: the needle's
+// rebuilt total and the equivalence counter. Reduced motion snaps.
+function useAnimatedNumber(value) {
+  const [disp, setDisp] = useState(value);
+  const prevRef = useRef(value);
+  useEffect(() => {
+    const from = prevRef.current;
+    prevRef.current = value;
+    if (prefersReducedMotion() || from === value) { setDisp(value); return undefined; }
+    const controls = animate(from, value, {
+      duration: 0.7,
+      ease: [0.25, 1, 0.5, 1],
+      onUpdate: (v) => setDisp(v),
+    });
+    return () => controls.stop();
+  }, [value]);
+  return disp;
+}
+
+export function YearTicker({ d, voice, tags, reduced }) {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
   const rows = [[], [], []];
@@ -187,7 +210,7 @@ export function YearTicker({ d, voice, reduced }) {
       <div className="st-sticky">
         <div className="st-ghost st-ghost-year" aria-hidden="true">{d.fy}</div>
         <motion.div className="st-center" initial="hidden" whileInView="visible" viewport={inView}>
-          <motion.div className="sec-tag" data-idx="" variants={rise}>{YEAR.tag}</motion.div>
+          <motion.div className="sec-tag" data-idx="" variants={rise}>{tags['st-year']}</motion.div>
           <motion.h2 className="st-h2 display" variants={rise} custom={1}>{YEAR.headline[voice]}</motion.h2>
           <motion.div className="st-year-count display" variants={rise} custom={2}>
             <CountUp value={d.entryCount} decimals={0} duration={1.2} />
@@ -220,11 +243,11 @@ export function YearTicker({ d, voice, reduced }) {
 // context instead of arriving cold. Replaces the old "guess my number", which
 // asked people to guess against nothing.
 // ---------------------------------------------------------------------------
-export function ReferencePoints({ d, voice, goTo }) {
+export function ReferencePoints({ d, voice, tags, goTo }) {
   return (
     <section className="st-moment st-guess" id="st-guess" aria-label="Reference points">
       <motion.div className="st-center st-wide" initial="hidden" whileInView="visible" viewport={inView}>
-        <motion.div className="sec-tag" data-idx="" variants={rise}>{GUESS.tag}</motion.div>
+        <motion.div className="sec-tag" data-idx="" variants={rise}>{tags['st-guess']}</motion.div>
         <motion.h2 className="st-h2 display" variants={rise} custom={1}>{GUESS.headline[voice]}</motion.h2>
         <motion.p className="st-line" variants={rise} custom={2}>{GUESS.sub[voice]}</motion.p>
         <div className="st-ref-cards">
@@ -241,9 +264,53 @@ export function ReferencePoints({ d, voice, goTo }) {
             );
           })}
         </div>
-        <motion.button type="button" className="btn btn-secondary" variants={rise} custom={6} onClick={() => goTo('st-total')}>
+        <motion.button
+          type="button" className="btn btn-secondary" variants={rise} custom={6}
+          onClick={() => goTo(voice === 'example' ? 'st-total' : 'st-lockin')}
+        >
           {voice === 'example' ? GUESS.cont : GUESS.contOwn} ↓
         </motion.button>
+      </motion.div>
+    </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 2b · The lock-in (own voice only): call the number before it lands. The
+// guess is display-only theatre, but it is the single most memorable stat the
+// reveal produces, so locked means locked; the verdict waits on the total.
+// ---------------------------------------------------------------------------
+export function LockIn({ tags, goTo, guess, setGuess, locked, onLock, onSkip }) {
+  return (
+    <section className="st-moment st-lockin" id="st-lockin" aria-label="Your guess">
+      <motion.div className="st-center" initial="hidden" whileInView="visible" viewport={inView}>
+        <motion.div className="sec-tag" data-idx="" variants={rise}>{tags['st-lockin']}</motion.div>
+        <motion.h2 className="st-h2 display" variants={rise} custom={1}>{LOCKIN.headline}</motion.h2>
+        <motion.p className="st-line" variants={rise} custom={2}>{LOCKIN.sub}</motion.p>
+        <motion.div className="st-guess-box" variants={rise} custom={3}>
+          <div className="st-guess-num display" aria-hidden="true">{fmtT(guess)}<span> {LOCKIN.unit}</span></div>
+          <input
+            type="range" className="st-slider"
+            min={0.5} max={40} step={0.5} value={guess}
+            aria-label={LOCKIN.sliderLabel}
+            aria-valuetext={fmtT(guess) + ' tonnes'}
+            disabled={locked}
+            onChange={(e) => setGuess(Number(e.target.value))}
+          />
+          <div className="st-guess-ctas">
+            {locked ? (
+              <>
+                <p className="st-locked" role="status">{fill(LOCKIN.locked, { g: fmtT(guess) })}</p>
+                <button type="button" className="btn btn-primary fp-btn" onClick={() => goTo('st-total')}>{LOCKIN.cta} ↓</button>
+              </>
+            ) : (
+              <>
+                <button type="button" className="btn btn-primary fp-btn" onClick={onLock}>{LOCKIN.lock}</button>
+                <button type="button" className="st-quiet" onClick={() => { onSkip(); goTo('st-total'); }}>{LOCKIN.skip}</button>
+              </>
+            )}
+          </div>
+        </motion.div>
       </motion.div>
     </section>
   );
@@ -256,7 +323,18 @@ export function ReferencePoints({ d, voice, goTo }) {
 // category pulls its share of the particles into that category's silhouette:
 // the flights become a plane, dinner becomes a drumstick, a fish or a leaf.
 // ---------------------------------------------------------------------------
-export function TotalReveal({ d, voice, onCopyLink, reduced }) {
+export function TotalReveal({ d, voice, guess, onCopyLink, reduced }) {
+  // The guess, settled: under, over, or close enough to brag about.
+  let guessLine = null;
+  if (guess != null && d.total > 0.005) {
+    const diff = guess - d.total;
+    const offPct = Math.abs(diff) / d.total;
+    guessLine = offPct <= 0.1
+      ? fill(TOTAL.guess.close, { g: fmtT(guess), pct: Math.max(1, Math.round(offPct * 100)) })
+      : diff < 0
+        ? fill(TOTAL.guess.under, { g: fmtT(guess), d: fmtT(-diff) })
+        : fill(TOTAL.guess.over, { g: fmtT(guess), d: fmtT(diff) });
+  }
   const ref = useRef(null);
   // One particle per 10 kg. Pinned (clicked) and hover/focus previews are
   // separate states so a tap pins, a second tap unpins, and mouse traversal
@@ -294,6 +372,9 @@ export function TotalReveal({ d, voice, onCopyLink, reduced }) {
               transition={{ duration: 0.5, delay: 0.35, ease: [0.25, 1, 0.5, 1] }}
             >
               <p className="st-line">{TOTAL.line[voice]}</p>
+              {guessLine && (
+                <p className="st-verdict"><strong>{TOTAL.guess.kicker}.</strong> {guessLine}</p>
+              )}
               <p className="st-enote">{TOTAL.eNote}</p>
               {onCopyLink && (
                 <div className="st-share-row">
@@ -342,18 +423,84 @@ export function TotalReveal({ d, voice, onCopyLink, reduced }) {
 }
 
 // ---------------------------------------------------------------------------
+// 3b · Everyday equivalences: the same total counted out in things a person
+// actually chooses. A live toy: pick a unit, the counter re-rolls and the
+// dot wall rebuilds. Factors and assumptions live in data/equivalences.js
+// and on the method page; nothing here changes any number.
+// ---------------------------------------------------------------------------
+const fmtCount = (v) => (v >= 20 ? Math.round(v).toLocaleString('en-AU') : String(Math.round(v * 10) / 10));
+
+const DOT_RENDER_CAP = 168;
+
+export function Equivalences({ d, voice, tags }) {
+  const [sel, setSel] = useState(EQUIVALENCES[0].id);
+  const eq = EQUIVALENCES.find((e) => e.id === sel) || EQUIVALENCES[0];
+  const { count, dots, per } = useMemo(() => equivCount(d.total, eq), [d.total, eq]);
+  const disp = useAnimatedNumber(count);
+  const unit = count >= 1.5 ? eq.unit[1] : eq.unit[0];
+
+  let cadLine = EQUIV_ST.cadence.year;
+  if (eq.cadence !== 'year') {
+    const n = eq.cadence === 'day' ? count / 365 : count / 52;
+    cadLine = fill(EQUIV_ST.cadence[eq.cadence], { n: fmtCount(n) });
+  }
+  const legend = per > 1
+    ? fill(EQUIV_ST.legendMany, { k: per.toLocaleString('en-AU'), unit: eq.unit[1] })
+    : fill(EQUIV_ST.legendOne, { unit: eq.unit[0] });
+
+  return (
+    <section className="st-moment st-equiv" id="st-equiv" aria-label="The total in everyday things">
+      <motion.div className="st-center st-wide" initial="hidden" whileInView="visible" viewport={inView}>
+        <motion.div className="sec-tag" data-idx="" variants={rise}>{tags['st-equiv']}</motion.div>
+        <motion.h2 className="st-h2 display" variants={rise} custom={1}>{EQUIV_ST.headline[voice]}</motion.h2>
+        <motion.p className="st-line" variants={rise} custom={2}>{EQUIV_ST.sub[voice]}</motion.p>
+        <motion.div className="st-eq-chips" role="group" aria-label={EQUIV_ST.chipsLabel} variants={rise} custom={3}>
+          {EQUIVALENCES.map((e) => (
+            <button
+              key={e.id} type="button"
+              className={'st-eq-chip' + (sel === e.id ? ' on' : '')}
+              aria-pressed={sel === e.id}
+              onClick={() => setSel(e.id)}
+            >
+              {e.label}
+            </button>
+          ))}
+        </motion.div>
+        <motion.div className="st-eq-stage" variants={rise} custom={4}>
+          <div className="st-eq-big" role="status">
+            <span className="st-eq-num display">{fmtCount(disp)}</span>
+            <span className="st-eq-unit">{unit}</span>
+          </div>
+          <p className="st-eq-cad">{cadLine}</p>
+          {/* The wall of dots: felt scale, one glance. Decorative; the readout
+              above carries the number. */}
+          <div className="st-eq-dots" key={eq.id} aria-hidden="true">
+            {Array.from({ length: Math.min(dots, DOT_RENDER_CAP) }).map((_, i) => (
+              <i key={i} style={{ animationDelay: `${Math.min(i * 7, 1100)}ms` }} />
+            ))}
+          </div>
+          <p className="st-eq-legend" aria-hidden="true">{legend}</p>
+          <p className="st-eq-basis">{eq.basis}</p>
+        </motion.div>
+        <motion.p className="st-caveat" variants={rise} custom={5}>{EQUIV_ST.note}</motion.p>
+      </motion.div>
+    </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // 4 · Scopes
 // ---------------------------------------------------------------------------
 // Light-to-dark matcha steps for the stacked scope bar (light scene).
 const SCOPE_STEPS = ['#DCE3A8', '#B5C42B', '#75821D'];
 
-export function Scopes({ d, voice }) {
+export function Scopes({ d, voice, tags }) {
   const total = Math.max(d.total, 0.001);
   const s3pct = Math.round((d.byScope['3'] / total) * 100);
   return (
     <section className="st-moment st-scopes" id="st-scopes" aria-label="The three scopes">
       <motion.div className="st-center st-wide" initial="hidden" whileInView="visible" viewport={inView}>
-        <motion.div className="sec-tag" data-idx="" variants={rise}>{SCOPES.tag}</motion.div>
+        <motion.div className="sec-tag" data-idx="" variants={rise}>{tags['st-scopes']}</motion.div>
         <motion.h2 className="st-h2 display" variants={rise} custom={1}>{SCOPES.headline}</motion.h2>
         <motion.p className="st-line" variants={rise} custom={1.5}>{SCOPES.gloss[voice]}</motion.p>
         <div className="st-scope-rows">
@@ -388,7 +535,7 @@ export function Scopes({ d, voice }) {
 // ---------------------------------------------------------------------------
 // 5 · Hotspots: title card, then the ranked bars build.
 // ---------------------------------------------------------------------------
-export function Hotspots({ d, voice, reduced }) {
+export function Hotspots({ d, voice, tags, reduced }) {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end end'] });
   const top = d.ranked[0];
@@ -450,12 +597,12 @@ function StoryBar({ c, i, max, progress, reduced }) {
 // ---------------------------------------------------------------------------
 // 6 · Worst month
 // ---------------------------------------------------------------------------
-export function WorstMonth({ d, voice }) {
+export function WorstMonth({ d, voice, tags }) {
   if (!d.worst) return null;
   return (
     <section className="st-moment st-months" id="st-months" aria-label="The worst month">
       <motion.div className="st-center st-wide" initial="hidden" whileInView="visible" viewport={inView}>
-        <motion.div className="sec-tag" data-idx="" variants={rise}>{MONTHS_ST.tag}</motion.div>
+        <motion.div className="sec-tag" data-idx="" variants={rise}>{tags['st-months']}</motion.div>
         <motion.h2 className="st-h2 display" variants={rise} custom={1}>{d.worst.name}</motion.h2>
         <motion.p className="st-line" variants={rise} custom={2}>
           <CountUp value={d.worst.total} decimals={1} className="st-line-num" /> t {MONTHS_ST.line[voice]}
@@ -492,7 +639,7 @@ const ratioLabel = (total, base) => {
   return r < 1 ? Math.round(r * 100) + '%' : (Math.round(r * 10) / 10).toFixed(1) + '×';
 };
 
-export function Bench({ d, voice }) {
+export function Bench({ d, voice, tags }) {
   const max = Math.max(...d.bench.map((b) => b.t));
   const tiles = [
     { key: 'aus', base: d.bench[1] },
@@ -502,7 +649,7 @@ export function Bench({ d, voice }) {
   return (
     <section className="st-moment st-bench" id="st-bench" aria-label="Context and benchmarks">
       <motion.div className="st-center st-wide" initial="hidden" whileInView="visible" viewport={inView}>
-        <motion.div className="sec-tag" data-idx="" variants={rise}>{BENCH_ST.tag}</motion.div>
+        <motion.div className="sec-tag" data-idx="" variants={rise}>{tags['st-bench']}</motion.div>
         <motion.h2 className="st-h2 display" variants={rise} custom={1}>{BENCH_ST.headline[voice]}</motion.h2>
         <div className="st-bench-tiles">
           {tiles.map((t, i) => (
@@ -551,26 +698,80 @@ export function Bench({ d, voice }) {
 }
 
 // ---------------------------------------------------------------------------
-// 8 · The needle
+// 8 · The needle, as a live toy: the top three cuts are switches. Flipping
+// them re-prices the year through the same engine the pathway uses, applied
+// in APPLY_ORDER at full phase, so overlapping levers compose instead of
+// double counting; the standalone figure on each card stays the honest
+// "this one alone" number.
 // ---------------------------------------------------------------------------
-export function Needle({ d, voice, onPlan }) {
+export function Needle({ d, profile, agg, voice, tags, onPlan }) {
+  const [on, setOn] = useState(() => new Set());
+  const base = useMemo(() => baselineState(profile, agg), [profile, agg]);
+  const before = useMemo(() => stateEmissions({ ...base, addedKwh0: 0 }, 0).total, [base]);
+  const reduction = useMemo(() => {
+    if (!on.size) return 0;
+    const st = { ...base, addedKwh0: 0 };
+    for (const id of APPLY_ORDER) {
+      if (!on.has(id)) continue;
+      const opt = ABATEMENT_OPTIONS.find((o) => o.id === id);
+      if (opt && opt.applicable(base)) opt.apply(st, 1);
+    }
+    return Math.max(0, before - stateEmissions(st, 0).total);
+  }, [base, before, on]);
+  const newTotal = Math.max(0, agg.total - reduction);
+  const disp = useAnimatedNumber(newTotal);
+  const pct = agg.total > 0 ? Math.round((reduction / agg.total) * 100) : 0;
+  const budgetFrac = agg.total > 0 ? 2.5 / agg.total : 0;
+  const toggle = (id) => setOn((s) => {
+    const next = new Set(s);
+    if (next.has(id)) next.delete(id); else next.add(id);
+    return next;
+  });
+
   if (!d.needle.length) return null;
   return (
     <section className="st-moment st-needle" id="st-needle" aria-label="How to cut it down">
       <motion.div className="st-center st-wide" initial="hidden" whileInView="visible" viewport={inView}>
-        <motion.div className="sec-tag" data-idx="" variants={rise}>{NEEDLE.tag}</motion.div>
+        <motion.div className="sec-tag" data-idx="" variants={rise}>{tags['st-needle']}</motion.div>
         <motion.h2 className="st-h2 display" variants={rise} custom={1}>{voice === 'example' ? NEEDLE.headline : NEEDLE.headlineOwn}</motion.h2>
         <motion.p className="st-line" variants={rise} custom={2}>{NEEDLE.sub[voice]}</motion.p>
         <div className="st-needle-cards">
-          {d.needle.map((a, i) => (
-            <motion.div className="st-needle-card" key={a.id} variants={rise} custom={3 + i} style={{ '--ac': a.hex }}>
-              <div className="st-needle-t display">-<CountUp value={a.pct} decimals={0} delay={0.15 + i * 0.12} /><span className="st-needle-pct">%</span></div>
-              <div className="st-needle-of">{NEEDLE.ofYear} · {fmtT(a.reduction)} {NEEDLE.perYear}</div>
-              <div className="st-needle-name">{a.action}</div>
-              <div className="st-needle-effort">{a.effortLabel}</div>
-            </motion.div>
-          ))}
+          {d.needle.map((a, i) => {
+            const isOn = on.has(a.id);
+            return (
+              <motion.button
+                type="button"
+                className={'st-needle-card st-needle-btn' + (isOn ? ' on' : '')}
+                key={a.id} variants={rise} custom={3 + i}
+                style={{ '--ac': a.hex }}
+                aria-pressed={isOn}
+                onClick={() => toggle(a.id)}
+              >
+                <span className="st-needle-state" aria-hidden="true">{isOn ? NEEDLE.live.on : NEEDLE.live.off}</span>
+                <span className="st-needle-t display">-<CountUp value={a.pct} decimals={0} delay={0.15 + i * 0.12} /><span className="st-needle-pct">%</span></span>
+                <span className="st-needle-of">{NEEDLE.ofYear} · {fmtT(a.reduction)} {NEEDLE.perYear}</span>
+                <span className="st-needle-name">{a.action}</span>
+                <span className="st-needle-effort">{a.effortLabel}</span>
+              </motion.button>
+            );
+          })}
         </div>
+        <motion.div className="st-needle-live" variants={rise} custom={6} role="status">
+          <span className="st-needle-live-l">{NEEDLE.live.label[voice]}</span>
+          <span className="st-needle-live-num display">{fmtT(disp)}<span> t</span></span>
+          <span className="st-needle-live-line">
+            {on.size === 0 ? NEEDLE.live.none : fill(NEEDLE.live.cut, { cut: fmtT(reduction), pct })}
+          </span>
+          <span className="st-needle-track" aria-hidden="true">
+            <span className="st-needle-fill" style={{ width: `${agg.total > 0 ? (newTotal / agg.total) * 100 : 0}%` }} />
+            {budgetFrac > 0 && budgetFrac < 1 && (
+              <span className="st-needle-tick" style={{ left: `${budgetFrac * 100}%` }}>
+                <i /><em>{NEEDLE.live.benchTick}</em>
+              </span>
+            )}
+          </span>
+          {on.size > 1 && <span className="st-caveat">{NEEDLE.live.note}</span>}
+        </motion.div>
         <motion.p className="st-punch" variants={rise} custom={7}>{NEEDLE.punch}</motion.p>
         <motion.div className="st-share-row" variants={rise} custom={8}>
           <button type="button" className="btn btn-secondary" onClick={onPlan}>{NEEDLE.cta} ↓</button>
@@ -585,15 +786,13 @@ export function Needle({ d, voice, onPlan }) {
 // horizontal scroller, so they never interrupt the reveal itself: someone
 // leaving to post something does it once, at the end.
 // ---------------------------------------------------------------------------
-export function Outro({ d, voice, character, onStart, onExplore, onReplay, onCopyLink, endRef }) {
+export function Outro({ d, voice, character, tags, onStart, onExplore, onReplay, onCopyLink, endRef }) {
   const top = d.ranked[0];
   // Put a name on the marquee card when we have one: "ADA'S CARBON EMISSIONS".
   const totalTitle = d.name ? d.name.toUpperCase() + '’S CARBON EMISSIONS' : SHARE_ST.cards.total[voice];
   const cards = [];
-  cards.push({
-    key: 'total', kind: 'total', label: 'The total',
-    data: { title: totalTitle, total: fmtT(d.total), cats: d.ranked.map((c) => ({ label: c.label, t: c.t })) },
-  });
+  // The character leads the gallery: it is the most identity-shaped card, the
+  // one people actually post. The plain total follows for the literal-minded.
   if (character) {
     cards.push({
       key: 'character', kind: 'character', label: 'Your result',
@@ -608,6 +807,10 @@ export function Outro({ d, voice, character, onStart, onExplore, onReplay, onCop
       },
     });
   }
+  cards.push({
+    key: 'total', kind: 'total', label: 'The total',
+    data: { title: totalTitle, total: fmtT(d.total), cats: d.ranked.map((c) => ({ label: c.label, t: c.t })) },
+  });
   if (top) {
     cards.push({
       key: 'hotspot', kind: 'hotspot', label: 'Biggest source',
@@ -632,7 +835,7 @@ export function Outro({ d, voice, character, onStart, onExplore, onReplay, onCop
     <section className="st-moment st-outro" id="st-outro" aria-label="Share">
       <div ref={endRef} className="st-end-sentinel" aria-hidden="true" />
       <motion.div className="st-center st-wide" initial="hidden" whileInView="visible" viewport={inView}>
-        <motion.div className="sec-tag" data-idx="" variants={rise}>{OUTRO.tag}</motion.div>
+        <motion.div className="sec-tag" data-idx="" variants={rise}>{tags['st-outro']}</motion.div>
         <motion.h2 className="st-h2 display" variants={rise} custom={1}>{OUTRO.headline[voice]}</motion.h2>
         <motion.p className="st-line" variants={rise} custom={2}>{OUTRO.sub[voice]}</motion.p>
 

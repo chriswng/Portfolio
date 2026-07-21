@@ -13,7 +13,7 @@ export const INTRO = {
   paras: [
     'I measure carbon for a living, so I pointed the same maths at my own year. This is a plain-English carbon calculator and a visual case study in one: see where a real year of flights, power, food and freight actually goes, then run your own. Your answers stay in this browser.',
   ],
-  chips: ['No account', 'No server', 'Stays in your browser', 'Export any time'],
+  chips: ['No account', 'No server', 'Stays in your browser', 'About three minutes'],
   ctaStart: 'Calculate your own',
   ctaExample: 'See my worked example',
   disc: 'FY2026 example · quantities from bills, meter reads and a year of records · estimates are labelled',
@@ -28,7 +28,6 @@ export const MODE = {
   startCta: 'Calculate your own',
   resumeNote: 'Your answers auto-save here as you edit.',
   yearLabel: 'Year',
-  freshness: 'Newest entry is {months} months old. Add your next quarterly bill and the range tightens.',
 };
 
 // Year rollover and the multi-year record.
@@ -64,18 +63,18 @@ export const DASH = {
 };
 
 export const PLAN = {
-  tag: '02 / Cut it down',
-  title: ['The biggest practical', 'reductions'],
-  sub: 'Each change here is worked out against the real numbers above, not a national average. Pick the ones that fit your life and watch the line move toward the benchmark. Offsets and green-power products are left out on purpose: they shuffle certificates, they do not remove the emissions.',
+  tag: '02 / What if',
+  title: ['Replay the year', 'differently'],
+  sub: 'A sandbox, not a pledge. Every change here is priced against the real numbers above, not a national average: flip one on and see the year you could have had, and the decade that follows. Offsets and green-power products are left out on purpose: they shuffle certificates, they do not remove the emissions.',
   scenarioTitle: 'Where it goes from here',
-  scenarioSub: 'Two lines. The lower one is where your choices take you; the upper dashed one is where you stay if nothing changes. They sit together until you switch a change on. The grid keeps getting cleaner in the background either way, and bigger changes take longer to phase in.',
+  scenarioSub: 'Two lines. The lower one is the version of the year you just built, carried forward; the upper dashed one is where things stay if nothing changes. They sit together until you switch a change on. The grid keeps getting cleaner in the background either way, and bigger changes take longer to phase in.',
   budgetLabel: '1.5°C lifestyle benchmark · 2.5 t a person',
   bauLabel: 'If nothing changes',
   planLabel: 'With your changes',
-  tableTitle: 'Pick your changes',
-  tableSub: 'Turn a change on and the chart beside it rebuilds. Each card shows what changes, roughly how much it saves a year, and how hard it is.',
-  toggleOn: 'Chosen',
-  toggleOff: 'Add this',
+  tableTitle: 'Flip the switches',
+  tableSub: 'Turn a change on and the chart beside it rebuilds. Each card shows what changes, roughly how much it would save in a year, and how hard it would be. Nothing here is a commitment; it is a working model of your own year.',
+  toggleOn: 'On',
+  toggleOff: 'Try it',
   na: 'Not relevant here',
   ofYear: 'of this year',
   reductionLabel: 'a year',
@@ -85,9 +84,9 @@ export const PLAN = {
   prev: 'Previous options',
   next: 'More options',
   impact: {
-    label: 'Your choices so far',
-    none: 'Nothing chosen yet. Add a change and watch the line pull away from "if nothing changes".',
-    line: '{n} change{s} on. By 2030 you land at {at2030} t, down {pct}% from the {bau2030} t you reach if nothing changes',
+    label: 'Switched on so far',
+    none: 'Nothing switched on yet. Flip a change and watch the line pull away from "if nothing changes".',
+    line: '{n} change{s} on. By 2030 this version of you lands at {at2030} t, down {pct}% from the {bau2030} t on the do-nothing line',
     over: '{gap} t over the 2.5 t benchmark',
     within: 'inside the 2.5 t benchmark',
     saves: 'about ${n} a year back in your pocket',
@@ -301,6 +300,13 @@ export const METHOD = {
       'The 40% and 2× cut-offs are editorial choices for the labels only. They never change any number.',
     ],
   },
+  equiv: {
+    title: 'How the everyday equivalences are worked out',
+    paras: [
+      'The reveal offers the total re-counted in everyday things: beef burgers, flat whites, hot showers, dryer loads, kilometres of driving, phone charges and a familiar domestic flight. Each is the same tonnes divided by a per-item figure, stated with its assumptions in the table below. They are display conversions only: they never change any number, and the units are deliberately things a person chooses, so the scale of the year lands in decisions rather than abstractions.',
+      'Where an equivalence depends on the grid or a fuel it derives live from the same factor tables the calculator prices from, with the NSW grid and metro gas as the stated reference case. The food items use Poore & Nemecek 2018 means, the same source as the per-kilogram reference table. The reveal also invites a guess at the total before it lands; the guess is kept on the page for the comparison and stored nowhere.',
+    ],
+  },
   factorsTitle: 'The factors it uses',
   factorsSub: 'These tables are the exact factors the calculator prices from.',
   exclusions: {
@@ -354,6 +360,10 @@ export const SHARE = {
   // {who} is a possessive ("Ada’s" or "My"); {label} is the period.
   bannerTitle: '{who} {label} carbon emissions',
   bannerBody: 'Someone shared their footprint summary with you. Totals and categories only; their details stayed in their browser.',
+  // The character verdict carried on the link, when the sharer's audit had one.
+  readsAs: 'A year that reads as',
+  // The nudge that converts a viewer into a player.
+  tease: 'Reckon yours is smaller? About three minutes to find out.',
   namePrompt: 'Add a name to the shared page? Leave blank to keep it as "My FY2026 carbon emissions".',
   provenance: 'The numbers come from a calculator built on published factors.',
   provenanceCta: 'See how it works',
