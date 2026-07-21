@@ -592,37 +592,55 @@ section { position:relative; }
   --pad-x:clamp(1.5rem,4vw,3rem);
   /* Tab width = the left-aligned wordmark plus equal padding either side, so the
      notch step sits one padding past "Christopher" (≈573px at the capped size)
-     — the word's left and right gaps match. */
-  --tab-w:calc(2 * var(--pad-x) + 573px);
+     — the word's left and right gaps match. Capped at 82% so the step never
+     collides with the body's right edge on narrow cards. */
+  --tab-w:min(calc(2 * var(--pad-x) + 573px),82%);
+  --fc-tab-r:1.75rem;   /* tab top-left corner */
+  --fc-fillet:1rem;     /* concave curve where the tab meets the body */
+  --fc-body-r:var(--r-2xl);
+  --fc-tab-h:clamp(4.5rem,10vw,6.5rem);
   border-radius:var(--r-2xl); padding:clamp(1.9rem,5vw,3.4rem) var(--pad-x) clamp(1.6rem,3.5vw,2.4rem);
   color:var(--forest);
-  /* Folder tab: a genuine cut (XOR mask), not a painted-over rectangle. The
-     notch is a custom folder path, NOT a rounded rectangle — the two outer
-     step corners (tab top-right, body top-right) round convex, but the inner
-     corner where the tall tab meets the lower body rounds CONCAVE (the fillet
-     scoops into the lime the other way). Its top-right is square so it meets
-     the card edge. Corners stay circular at any width because they're baked
-     into the SVG at fixed px and the mask isn't scaled. No box-shadow: it would
-     follow the un-notched border box and leak around the cut; the reference
-     card is flat anyway. The notch shrinks on narrow screens so the tab stays a
-     tab, and mobile gets top padding so the wordmark clears the notch band. */
-  /* Left-anchored notch: the shaped left side (tab corner + concave step) sits
-     at the tab width; the flat top extends right, off the card, so the cut
-     always reaches the fluid right edge. The card's rounded body-TR is picked
-     up separately by border-radius below. */
-  --notch:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='1600'%20height='106'%3E%3Cpath%20d='M66,0L1600,0L1600,90L54,90A16,16,0,0,0,38,106L38,28A28,28,0,0,1,66,0Z'%20fill='%23000'/%3E%3C/svg%3E");
-  --corner:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='30'%20height='30'%3E%3Cpath%20d='M2,0L30,0L30,28A28,28,0,0,0,2,0Z'%20fill='%23000'/%3E%3C/svg%3E");
-  -webkit-mask:linear-gradient(#000 0 0) 0 0/100% 100% no-repeat, var(--notch) calc(var(--tab-w) - 38px) 0/auto no-repeat, var(--corner) 100% 90px/auto no-repeat;
-  mask:linear-gradient(#000 0 0) 0 0/100% 100% no-repeat, var(--notch) calc(var(--tab-w) - 38px) 0/auto no-repeat, var(--corner) 100% 90px/auto no-repeat;
-  -webkit-mask-composite:xor;
-  mask-composite:exclude;
+  /* Folder tab: a genuine clip (CSS Shapes API), not a painted-over rectangle
+     or a raster mask. Same technique as EventsWatercolouring's `.folder-cell`
+     (src/index.css): one continuous path expressed in %/calc() against custom
+     properties, so it scales with the card at any width instead of relying on
+     a fixed-px SVG asset. The two outer step corners (tab top-right, body
+     top-right) round convex; the inner corner where the tab meets the body
+     rounds CONCAVE via the fillet arc. No box-shadow: it would follow the
+     un-clipped border box and leak past the cut edge. */
+  border-radius:0;
+  clip-path:polygon(
+    0 0, var(--tab-w) 0, var(--tab-w) var(--fc-tab-h), 100% var(--fc-tab-h),
+    100% 100%, 0 100%
+  );
+}
+@supports (clip-path: shape(from 0 0, close)){
+  .footer-card{
+    clip-path:shape(
+      from 0 var(--fc-tab-r),
+      arc to var(--fc-tab-r) 0 of var(--fc-tab-r) cw,
+      line to calc(var(--tab-w) - var(--fc-tab-r)) 0,
+      arc to var(--tab-w) var(--fc-tab-r) of var(--fc-tab-r) cw,
+      line to var(--tab-w) calc(var(--fc-tab-h) - var(--fc-fillet)),
+      arc to calc(var(--tab-w) + var(--fc-fillet)) var(--fc-tab-h) of var(--fc-fillet) ccw,
+      line to calc(100% - var(--fc-body-r)) var(--fc-tab-h),
+      arc to 100% calc(var(--fc-tab-h) + var(--fc-body-r)) of var(--fc-body-r) cw,
+      line to 100% calc(100% - var(--fc-body-r)),
+      arc to calc(100% - var(--fc-body-r)) 100% of var(--fc-body-r) cw,
+      line to var(--fc-body-r) 100%,
+      arc to 0 calc(100% - var(--fc-body-r)) of var(--fc-body-r) cw,
+      close
+    );
+  }
 }
 @media(max-width:600px){
   .footer-card{
     padding-top:4.6rem;
-    --notch:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='160'%20height='70'%3E%3Cpath%20d='M48,0L160,0L160,36A18,18,0,0,1,142,54L40,54A10,10,0,0,0,30,64L30,18A18,18,0,0,1,48,0Z'%20fill='%23000'/%3E%3C/svg%3E");
-    -webkit-mask:linear-gradient(#000 0 0) 0 0/100% 100% no-repeat, var(--notch) top right/auto no-repeat;
-    mask:linear-gradient(#000 0 0) 0 0/100% 100% no-repeat, var(--notch) top right/auto no-repeat;
+    --tab-w:min(calc(2 * var(--pad-x) + 573px),94%);
+    --fc-tab-h:3.75rem;
+    --fc-tab-r:1.25rem;
+    --fc-fillet:0.75rem;
   }
 }
 .footer-wordmark{
