@@ -51,7 +51,7 @@ export default function Dashboard({ agg, period, compareAgg, comparePeriod, isEx
   return (
     <section id="fp-dash">
       <div className="canvas">
-        <div className="sec-tag" data-idx="01 / "><Icon name="chart" size={16} />The detail · {period.label}</div>
+        <div className="sec-tag" data-idx="01 / "><Icon name="chart" size={32} />The detail · {period.label}</div>
         <h2 className="display fp-h2"><SplitText text={DASH.title[0]} /> <SplitText text={DASH.title[1]} accentIndex={1} /></h2>
         <p className="fp-sub">{DASH.sub}</p>
 

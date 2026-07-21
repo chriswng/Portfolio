@@ -1776,7 +1776,7 @@ export function scoreCircularity(g, choices) {
 export const COPY = {
   brand: 'OPENWEAVE',
   strap: 'Fashion brand transparency, in plain English',
-  byline: 'A working tool by Christopher Wang',
+  byline: 'A working tool by Chris Wang',
   backLabel: 'itschriswang.com',
   backHref: 'https://itschriswang.com/',
 
@@ -2069,7 +2069,7 @@ export const COPY = {
     attributionLabel: 'Data and attribution',
     attribution: 'This tool reproduces published figures with attribution, and claims none of them as its own. Fashion Transparency Index scores are © Fashion Revolution CIC, used for reference under their public research. Science Based Targets initiative data © SBTi. Certification and membership marks belong to their owners: The Fashion Pact, B Lab (B Corp), and the brands named. Company ownership is a matter of public record. Openweave is an independent, non-commercial reference tool and is not affiliated with, or endorsed by, any brand or organisation named. Every figure links to its source so you can check it. If you own a listing and something is wrong, it can be corrected.',
     sourcesLabel: 'Sources',
-    made: 'Built by Christopher Wang in Melbourne.',
+    made: 'Built by Chris Wang in Melbourne.',
     top: 'Back to the top',
   },
 

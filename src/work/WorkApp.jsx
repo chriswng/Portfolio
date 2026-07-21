@@ -22,7 +22,7 @@ function WorkNav() {
   return (
     <nav className="nav" aria-label="Primary">
       <div className="nav-inner canvas">
-        <a href="../" className="nav-logo"><Mark label="Christopher Wang, home" /></a>
+        <a href="../" className="nav-logo"><Mark label="Chris Wang, home" /></a>
         <div className={`nav-links${menuOpen ? ' open' : ''}`} role="navigation">
           {NAV_LINKS.map((l) => {
             // Self-link stays './'; every other target (anchors on the main
@@ -197,7 +197,7 @@ export default function WorkApp() {
         />
         <ContourField />
         <div className="canvas" style={{ position: 'relative', zIndex: 1 }}>
-          <div className="sec-tag" data-idx="01 / "><Icon name="chart" size={15} />Work Samples</div>
+          <div className="sec-tag" data-idx="01 / "><Icon name="chart" size={30} />Work Samples</div>
           <h1 className="wi-title display"><SplitText text="Frameworks" /> <SplitText text="in practice." accentIndex={1} /></h1>
           <p className="wi-sub">Four analytical frameworks, each shown as a live working example drawn from production engagements across infrastructure, built environment, and government. Select a tab to explore the methodology.</p>
           <a href="../" className="wi-back"><span>←</span>&nbsp;Back to profile</a>
@@ -215,7 +215,7 @@ export default function WorkApp() {
                 aria-selected={tab === t.id}
                 onClick={() => setTab(t.id)}
               >
-                {t.icon && <Icon name={t.icon} size={15} className="fpi-lead" />}<span className="tab-lt">{t.letter}&nbsp;</span>{t.label}
+                {t.icon && <Icon name={t.icon} size={30} className="fpi-lead" />}<span className="tab-lt">{t.letter}&nbsp;</span>{t.label}
               </button>
             ))}
           </div>
@@ -235,7 +235,7 @@ export default function WorkApp() {
 
       <section id="casestudy">
         <div className="canvas">
-          <div className="sec-tag" data-idx="02 / "><Icon name="book" size={15} />Case Study · Baseline to Boardroom</div>
+          <div className="sec-tag" data-idx="02 / "><Icon name="book" size={30} />Case Study · Baseline to Boardroom</div>
           <h2 className="display" style={{ fontSize: 'clamp(1.8rem,5vw,3.5rem)', marginTop: '1.2rem', marginBottom: '1rem' }}>
             <SplitText text="Baseline to boardroom" accentIndex={2} />
           </h2>

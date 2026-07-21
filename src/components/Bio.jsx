@@ -14,7 +14,7 @@ export default function Bio() {
     <section id="bio">
       <div className="canvas matrix bio-matrix">
         <div className="bio-head">
-          <div className="sec-tag" data-idx="00 / "><Icon name="people" size={15} />Profile</div>
+          <div className="sec-tag" data-idx="00 / "><Icon name="people" size={30} />Profile</div>
         </div>
         <div className="bio-body">
           {BIO_PARAS.map((p, i) => (
@@ -25,7 +25,7 @@ export default function Bio() {
 
       <div className="canvas">
         <div className="outcomes" aria-label="Selected outcomes">
-          <div className="outcomes-head"><Icon name="chart" size={15} />Selected outcomes</div>
+          <div className="outcomes-head"><Icon name="chart" size={30} />Selected outcomes</div>
           <div className="outcomes-grid">
             {OUTCOMES.map((o, i) => (
               <motion.div
