@@ -356,6 +356,37 @@ remain queued to swap in at the next reachable session. See
   2024 edition was corrected 30 Oct 2024 (v1.1) for Business Travel - Land
   rounding errors, so 2024 values must come from v1.1.
 
+## Home embodied carbon (optional, shipped as indicative)
+
+`HOME` in `factors.js`. Upfront (A1-A5) embodied carbon per m2 GFA, amortised
+straight-line over a 50-year life and split per adult. Demand-side and
+new-build only: a second-hand purchase caused no new construction, so it
+carries nothing (mirrors the GBCA reuse = zero / age-decay logic in the /work
+LCA sample). Previously on the queued/excluded list; shipped this edition as an
+explicitly indicative screening line after the sources below were held.
+
+- **Detached house: 210 kg CO2-e/m2 A1-A5.** Anchored on Illankoon, Lu &
+  Karunasena (2023), "Embodied Carbon in Australian Residential Houses: A
+  Preliminary Study", *Buildings* 13(10):2559 (MDPI, open access, University of
+  Canberra): three Class 1a case-study homes, GFA 200-240 m2, 193-233
+  kg CO2-e/m2 A1-A5. 210 is ~the midpoint.
+- **Apartment / unit: 500 kg CO2-e/m2 A1-A5** (indicative, higher for the
+  concrete structure, basement parking and shared cores). Anchored on GBCA &
+  thinkstep-anz (2021), *Embodied Carbon and Embodied Energy in Australia's
+  Buildings* (residential materials ~228 kg/m2 A1-A3, non-residential ~433
+  kg/m2; GBCA commercial markers 500 = low, 1000 = high), positioning
+  multi-residential between detached houses and commercial.
+- **Life = 50 years**: GBCA Upfront Carbon guide and the NCC treat ~50 years as
+  a residential minimum design life.
+- **Flag:** the wider Australian literature spans ~179-1050 kg CO2-e/m2
+  (Schmidt et al. 2020 report 515-687 for single dwellings), so both values are
+  screening estimates, not measured figures; the entry carries the `estimated`
+  uncertainty tier and the UI says so. The MDPI and thinkstep-anz PDFs were
+  publisher-blocked (HTTP 403) this session; figures rest on search-indexed
+  content of the primary plus two independent cross-checks. Re-read the primary
+  PDFs at refresh and consider a NABERS Embodied Carbon residential benchmark
+  once published.
+
 ## Annual refresh checklist
 
 1. NGA Factors (new edition ~August): Tables 1, 5, 6, 9 → `factors.js`
