@@ -1487,6 +1487,14 @@ export function analyseClaim(text) {
 // intensity data), rounded hard and simplified so they can be manipulated
 // live. They support decisions and intuition. They are not an audit, and the
 // UI says so in plain sight, once.
+//
+// Anchor sources (see docs/footprint-research/clothing/ and the footer Sources
+// list):
+//   Mistra Future Fashion 2019:05 (Sandin et al.) - six-garment cradle-to-grave
+//     LCA, wet-treatment heat, cutting-loss and process-stage assumptions
+//   ADEME 2018 (Lhotellier et al.) - per-fibre and per-garment LCAs
+//   WRAP 2017, Valuing Our Clothes - UK use-phase and garment-life data
+//   DESNZ/Defra 2026 GHG conversion factors - freight, grid and petrol car
 // ===========================================================================
 
 // Fibres the estimator and comparator share. One row per fibre:
@@ -1600,20 +1608,24 @@ export const WORLD_MASK = [
 ];
 
 // Process constants. Rounded, indicative, and labelled as such in the UI.
+// Freight and the petrol-car equivalence are anchored to the DESNZ/Defra 2026
+// conversion factors; wet-treatment heat matches Mistra Future Fashion's
+// 30 MJ/kg fossil-fired dye bath; cutting loss sits at the low end of the
+// 15 to 20 per cent range Mistra reports.
 export const STUDIO_FACTORS = {
   spinKwhPerKg: 3.4,      // yarn prep, spinning, knitting or weaving
-  dyeThermalPerKg: 2.2,   // kg CO2e per kg, boiler fuel for hot wet processing
+  dyeThermalPerKg: 2.2,   // ~30 MJ/kg fossil boiler heat (Mistra 2019), light fuel oil
   dyeElecKwhPerKg: 3.2,   // pumps, jets, drying, grid powered
   dyeWaterLPerKg: 120,    // process water for dye and finish
   makeKwhPerKg: 1.6,      // cut, sew, press
   trimsKg: 0.25,          // threads, labels, zips, buttons, flat allowance
-  seaPerKgKm: 0.000012,   // container sea freight, kg CO2e per kg per km
-  airPerKgKm: 0.00085,    // long-haul air freight, kg CO2e per kg per km
+  seaPerKgKm: 0.000016,   // Defra 2026 container ship average, 0.0161 kg CO2e/tonne.km
+  airPerKgKm: 0.0009,     // Defra 2026 long-haul air freight incl. RF, 0.899 kg CO2e/tonne.km
   roadKm: 300,            // domestic road leg to the store
-  roadPerKgKm: 0.00011,   // road freight, kg CO2e per kg per km
+  roadPerKgKm: 0.0001,    // Defra 2026 average laden HGV, 0.104 kg CO2e/tonne.km
   retailKg: 0.28,         // packaging, DC and store overhead allowance
-  cutLoss: 0.85,          // 15 per cent of cloth becomes offcut
-  carKgPerKm: 0.17,       // average petrol car, for the equivalence line
+  cutLoss: 0.85,          // 15 per cent of cloth becomes offcut (Mistra 15 to 20 per cent)
+  carKgPerKm: 0.16,       // Defra 2026 average petrol car, 0.162 kg CO2e/km
 };
 
 // The four streams the particle field renders, in the same chart-grade hues
@@ -2049,7 +2061,7 @@ export const COPY = {
   },
 
   footer: {
-    method: 'Method: brand ownership from corporate filings and official brand pages. Transparency scores are the Fashion Transparency Index 2023, published by Fashion Revolution, which rates public disclosure only; 2023 was the final edition of that index, and its successor, What Fuels Fashion, is linked from every brand card until its scores are ingested from the primary report. Climate-target status is drawn from the Science Based Targets initiative dashboard; memberships from The Fashion Pact and B Lab. Per-field disclosure statuses are tracked in the repository and marked "Needs research" until a source is confirmed. Nothing here is assured reporting, a product footprint, or advice about a real brand.',
+    method: 'Method: brand ownership from corporate filings and official brand pages. Transparency scores are the Fashion Transparency Index 2023, published by Fashion Revolution, which rates public disclosure only; 2023 was the final edition of that index, and its successor, What Fuels Fashion, is linked from every brand card until its scores are ingested from the primary report. Climate-target status is drawn from the Science Based Targets initiative dashboard; memberships from The Fashion Pact and B Lab. Per-field disclosure statuses are tracked in the repository and marked "Needs research" until a source is confirmed. Garment studio figures are indicative estimates assembled from published life cycle assessment literature (including Mistra Future Fashion’s six-garment study and ADEME’s consumer-goods LCAs), freight and petrol-car factors from the DESNZ and Defra 2026 conversion factors, and public grid intensity data, rounded and simplified so they can be manipulated live. Nothing here is assured reporting, a product footprint, or advice about a real brand.',
     attributionLabel: 'Data and attribution',
     attribution: 'This tool reproduces published figures with attribution, and claims none of them as its own. Fashion Transparency Index scores are © Fashion Revolution CIC, used for reference under their public research. Science Based Targets initiative data © SBTi. Certification and membership marks belong to their owners: The Fashion Pact, B Lab (B Corp), and the brands named. Company ownership is a matter of public record. Openweave is an independent, non-commercial reference tool and is not affiliated with, or endorsed by, any brand or organisation named. Every figure links to its source so you can check it. If you own a listing and something is wrong, it can be corrected.',
     sourcesLabel: 'Sources',
@@ -2091,4 +2103,8 @@ export const SOURCES = [
   { label: 'H&M Group · Sustainability', url: 'https://hmgroup.com/sustainability/' },
   { label: 'Fast Retailing · Sustainability', url: 'https://www.fastretailing.com/eng/sustainability/' },
   { label: 'VF Corporation · Our Impact', url: 'https://www.vfc.com/our-impact' },
+  { label: 'Sandin, Roos et al. · Environmental assessment of Swedish clothing consumption, six garments (Mistra Future Fashion 2019:05)', url: 'https://mistrafuturefashion.com/' },
+  { label: 'WRAP · Valuing Our Clothes: the cost of UK fashion (2017)', url: 'https://wrap.org.uk/resources/report/valuing-our-clothes-cost-uk-fashion' },
+  { label: 'ADEME · Modélisation et évaluation ACV de produits de consommation et biens d’équipement (2018)', url: 'https://librairie.ademe.fr/' },
+  { label: 'DESNZ & Defra · UK Government GHG conversion factors for company reporting 2026', url: 'https://www.gov.uk/government/collections/government-conversion-factors-for-company-reporting' },
 ];
