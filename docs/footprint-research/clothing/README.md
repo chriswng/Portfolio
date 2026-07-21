@@ -3,7 +3,7 @@
 The life cycle assessment (LCA) and emission-factor documents in this folder
 inform two parts of the site:
 
-- the **Openweave Garment Studio** (`/fashion/`) — the carbon estimator, fabric
+- the **Cost Per Wear Garment Studio** (`/fashion/`) — the carbon estimator, fabric
   comparator, supply chain mapper and circularity scorecard, whose factors live
   in `STUDIO_FIBRES`, `ORIGINS` and `STUDIO_FACTORS` in `src/fashion/data.js`;
 - the **Life Footprint** clothing category (`/footprint/`), which prices

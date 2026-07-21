@@ -1,6 +1,6 @@
-# Openweave — data provenance and attribution
+# Cost Per Wear — data provenance and attribution
 
-This documents where every figure on the Openweave fashion transparency tool
+This documents where every figure on the Cost Per Wear fashion transparency tool
 (`/fashion/`) comes from, so the data can be traced and is properly credited.
 The live dataset is `src/fashion/data.js`; the editable tracker is
 `public/data/fashion-brands.csv`. Every figure on the page also links to its
@@ -8,7 +8,7 @@ source in the page itself.
 
 ## Principle
 
-Openweave reproduces **published facts and figures with attribution** and
+Cost Per Wear reproduces **published facts and figures with attribution** and
 claims none of them as its own. Facts (a company's owner, a published index
 score) are cited to their source. To avoid redistributing third parties'
 copyrighted reports, the full report PDFs are **not** stored here; download them
@@ -44,7 +44,7 @@ kept in-repo as working provenance.
 
 ## Not affiliated
 
-Openweave is an independent, non-commercial reference tool. It is not
+Cost Per Wear is an independent, non-commercial reference tool. It is not
 affiliated with, sponsored by, or endorsed by any brand or organisation named.
 Trademarks and report titles belong to their respective owners. If you own a
 listing and something is wrong, it can be corrected.

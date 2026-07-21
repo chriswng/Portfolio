@@ -1,4 +1,4 @@
-# Openweave — design notes
+# Cost Per Wear — design notes
 
 Not built or bundled (plain `.md`). The record of what the page is for, how it
 is built, and the honesty rules it holds to.
@@ -112,7 +112,7 @@ guidance):
 - **Dig deeper.** Every brand card links out to independent second opinions and
   the primary sources: the brand's own report, its Good On You rating
   (`directory.goodonyou.eco/brand/<slug>`), Baptist World Aid's Australian
-  ethical-fashion score, and the Fashion Transparency Index. Openweave is a
+  ethical-fashion score, and the Fashion Transparency Index. Cost Per Wear is a
   launchpad; it links, it never restates another service's rating as its own.
   Note: Baptist World Aid moved from A-F letters to a score out of 100 in 2022,
   so we link to the guide rather than assert a grade.
@@ -216,7 +216,7 @@ verified figures read straight from source.
   more), each with a verified parent and, where confirmed, SBTi and Fashion Pact
   status. Only 8 brands remain "Needs research".
 - **Attribution, because facts must be credited, not claimed.** A "Data and
-  attribution" block in the footer states plainly that Openweave reproduces
+  attribution" block in the footer states plainly that Cost Per Wear reproduces
   published figures with attribution and claims none as its own (FTI © Fashion
   Revolution CIC; SBTi © SBTi; marks belong to The Fashion Pact, B Lab and the
   brands), that it is independent and non-commercial, and that every figure
@@ -264,7 +264,7 @@ type, this section supersedes them.
 
 - **Shared chrome, actually shared.** The page now imports `global.css` first
   (exactly as the footprint pages do) and uses the real site nav (`NAV_LINKS`
-  + the Segmented Split mark, Openweave active), the shared grain, and the
+  + the Segmented Split mark, Cost Per Wear active), the shared grain, and the
   `.canvas` / `.sec-tag` / `.display` section language. Fonts are the site's:
   Space Grotesk display, Inter body, JetBrains Mono data. Palette is the
   chartreuse/forest/matcha system; data accents are the same chart-grade hues
@@ -279,7 +279,7 @@ type, this section supersedes them.
   work pages; the directory view toggle became the work page's segmented pill
   control.
 - **The Garment Studio.** The speciality is back: four working tools over one
-  shared garment, reviving the old Sevenfold instruments inside Openweave's
+  shared garment, reviving the old Sevenfold instruments inside Cost Per Wear's
   honest, real-data frame.
   1. *Carbon footprint estimator* — cut, size, cloth weight, a real blend
      builder (main fibre + second fibre + percentage split), and origin chosen
@@ -324,7 +324,7 @@ buy from this brand, who owns it and what does it tell me?") and its factors,
 however honestly labelled, sat one notch below the page's sourced-facts
 standard. `Studio.jsx`, the studio factor set and the world-map data are gone.
 Where earlier sections above describe the studio, this section supersedes them.
-What replaced it doubles down on what only Openweave does:
+What replaced it doubles down on what only Cost Per Wear does:
 
 - **The field guide.** The four explainers (materials, certifications,
   regulation radar, claim check) collapsed into one tabbed section, so the
