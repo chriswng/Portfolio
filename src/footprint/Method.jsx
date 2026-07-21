@@ -12,6 +12,7 @@ import {
   CLOTHING_ITEMS, CLOTHING_ITEMS_SOURCE,
   HOTEL, HOTEL_SOURCE,
 } from './data/factors';
+import { EQUIVALENCES, EQUIV_SOURCE } from './data/equivalences';
 import { METHOD } from './data/copy';
 import Icon from '../components/Icons';
 
@@ -72,6 +73,10 @@ export default function Method() {
           <div className="fp-method-block fp-method-wide">
             <h3><Icon name="people" size={16} className="fpi-lead" />{METHOD.character.title}</h3>
             {METHOD.character.paras.map((p, i) => <p key={i}>{p}</p>)}
+          </div>
+          <div className="fp-method-block fp-method-wide">
+            <h3>{METHOD.equiv.title}</h3>
+            {METHOD.equiv.paras.map((p, i) => <p key={i}>{p}</p>)}
           </div>
         </div>
 
@@ -138,6 +143,12 @@ export default function Method() {
             head={['Food', 'kg CO₂-e per kg']}
             rows={FOOD_PER_KG.rows.map(([f, v]) => [f, v.toFixed(1)])}
             source={{ name: FOOD_PER_KG.source, detail: '' }}
+          />
+          <FTable
+            caption="Everyday equivalences · kg CO₂-e per item (display only, never used in pricing)"
+            head={['Item', 'kg CO₂-e each', 'Basis']}
+            rows={EQUIVALENCES.map((e) => [e.label, e.kg < 0.05 ? e.kg.toFixed(3) : e.kg.toFixed(2), e.basis])}
+            source={EQUIV_SOURCE}
           />
           <FTable
             caption="Goods & services (optional detail) · spend-based screening estimate"
