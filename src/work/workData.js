@@ -186,7 +186,7 @@ export const MCA_ANALYSIS = {
 
 export const LCA = {
   claim: 'Upfront embodied carbon is front-loaded in the construction phase. The window to reduce it closes at design stage.',
-  meta: 'Illustrative · representative commercial office typology · not client data',
+  meta: 'Illustrative · representative commercial office typology · method per GBCA Upfront Carbon Reduction guide v1.1 · not client data',
   modulesHead: 'System boundary: lifecycle modules in scope',
   modules: [
     { ref: 'A1-A3', label: 'Product stage', state: 'active' },
@@ -201,6 +201,25 @@ export const LCA = {
     { cls: 'not', text: 'Module D: noted, not included in total' },
     { cls: 'oot', text: 'Out of scope for this assessment' },
   ],
+  methodHead: 'Method: Upfront Carbon Reduction credit, Green Star Buildings v1.1',
+  methodNote: 'Upfront carbon (A1-A5) is calculated to EN 15978 and EN 15804+A2, GWP100 on IPCC AR6 factors, over Gross Floor Area, aligned to the NABERS Embodied Carbon Rules. A reduction is demonstrated against one of two baselines. The companion Impacts Disclosure credit reports the same assessment across life cycle modules B to D.',
+  pathwaysHead: 'Comparison pathways',
+  pathways: [
+    { tag: 'Pathway A · Benchmark', body: 'Beat a GBCA-defined carbon intensity benchmark for the building class. The direct route where a benchmark already exists.' },
+    { tag: 'Pathway B · Reference building', body: 'Beat a self-built reference building of the same size, shape and function, priced on present-day typical construction and default specifications.' },
+    { tag: 'Pathway C · NABERS Embodied Carbon', body: 'Reads across from the project NABERS Embodied Carbon rating. Noted in the guide as in development at the time of publication.' },
+  ],
+  hierarchy: {
+    caption: 'Emission factor hierarchy: best available data first',
+    head: ['Rank', 'Source', 'Basis'],
+    rows: [
+      ['01', 'Product-specific declaration', 'EPD, product carbon footprint or Climate Active certification for the actual product used'],
+      ['02', 'Industry-average EPD', 'Worst-case value from the published industry range'],
+      ['03', 'Database default', 'NABERS national material emission factors database, or a generic value from an LCA tool'],
+      ['04', 'Global literature scan', 'Worst credible value for the product type, used only where nothing above is available'],
+    ],
+  },
+  systemsHead: 'Upfront carbon by building system',
   systems: [
     { tag: 'Structural frame', pct: '65%', body: 'Concrete (in-situ and precast) and reinforcing steel. Primary hotspot. Reduction via structural efficiency, low-carbon concrete specification, and supplier EPD procurement.' },
     { tag: 'Envelope & MEP', pct: '27%', body: 'Building envelope (cladding, glazing, roofing) plus mechanical, electrical, and hydraulic services. Reduction via specification choices and system right-sizing.' },
@@ -217,25 +236,25 @@ export const LCA = {
   benchHead: 'Benchmark comparison: upfront embodied carbon intensity (kgCO₂-e/m² GFA)',
   benchTicks: ['0', '200', '400', '600', '800'],
   benchLegend: [
-    { color: '#CBBFB4', text: 'GBCA / IStructE reference range (400-700 kgCO₂-e/m²)' },
+    { color: '#CBBFB4', text: 'Reference building / benchmark range (400-700 kgCO₂-e/m²)' },
     { color: 'var(--matcha)', text: 'Illustrative building (520 kgCO₂-e/m²)' },
     { color: 'rgba(62,110,52,0.45)', text: 'Best practice target (<400 kgCO₂-e/m²)' },
   ],
-  benchNote: 'Reference ranges sourced from GBCA Carbon Positive Roadmap and IStructE How to Calculate Embodied Carbon (2nd ed.). Commercial office, GFA basis, A1-A5 boundary.',
+  benchNote: 'Ranges indicative for a commercial office, GFA basis, A1-A5 boundary. Method follows the GBCA Upfront Carbon Reduction calculation guide v1.1 and the NABERS Embodied Carbon Rules.',
   levers: {
     caption: 'Reduction levers',
     head: ['Lever', 'Module', 'Reduction potential', 'Notes'],
     rows: [
-      ['Structural efficiency (design-led)', 'A1-A3', '10-15%', 'Optimised structural form, reduced over-design, post-tensioning to reduce concrete volume. Requires early engagement with structural engineer.'],
-      ['Low-carbon concrete specification', 'A1-A3', '15-30%', 'Supplementary cementitious materials (fly ash, GGBFS) to reduce clinker ratio. EPD-backed specification. Feasible now on most projects.'],
-      ['EPD-informed procurement', 'A1-A3', '5-20%', 'Require supplier Environmental Product Declarations. Compare across steel grades, concrete mixes, and envelope systems. Drives market signal.'],
-      ['Whole-life carbon assessment', 'A1-C4', 'Varies', 'Extends boundary to include operational and end-of-life emissions. Informs all-electric design decisions and material durability trade-offs.'],
+      ['Structural efficiency (design-led)', 'A1-A3', '10-15%', 'Optimised structural form, reduced over-design, post-tensioning to cut concrete volume. Measured against the reference building at detailed design. Requires early engagement with the structural engineer.'],
+      ['Low-carbon concrete specification', 'A1-A3', '15-30%', 'Supplementary cementitious materials (fly ash, GGBFS) to reduce clinker ratio. The reference building already defaults to 20-30% replacement, so gains are claimed above that baseline. EPD-backed and feasible now on most projects.'],
+      ['EPD-informed procurement', 'A1-A3', '5-20%', 'Product-specific EPDs sit at the top of the emission factor hierarchy and displace worst-case industry averages. Compare across steel grades, concrete mixes and envelope systems to drive the market signal.'],
+      ['Material reuse and retention', 'A1-A5', 'Varies', 'Reused materials carry zero embodied carbon in the assessment, transport and reprocessing aside. Retaining existing structure also avoids the demolition emissions owed under the Existing Building Compensation criterion on buildings under 50 years old.'],
     ],
   },
   tiles: [
     { h: 'Embodied carbon is front-loaded', b: '65% of the lifecycle carbon footprint is locked in before practical completion. Procurement and specification decisions, not operational management, determine the outcome.' },
     { h: 'Operational carbon is addressable', b: 'All-electric design paired with a grid decarbonisation trajectory can drive use-phase Scope 2 emissions to near-zero by the mid-2030s. This is the primary lever for buildings with long asset lives.' },
-    { h: 'Module D credits are real, but not a substitute', b: 'Beyond-boundary credits from reuse, recycling, and energy recovery (Module D) are valid in whole-life assessments. They should not be used to offset A1-A5 hotspots.' },
+    { h: 'Removals are counted separately, not netted off', b: 'Carbon offsets, carbon-neutral certified products and stored biogenic carbon no longer reduce a project upfront carbon. Under v1.1 they are reported on their own in the Upfront Carbon Compensation credit, so A1-A5 hotspots have to be designed out, not bought back.' },
   ],
 };
 
