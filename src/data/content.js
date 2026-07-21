@@ -166,7 +166,7 @@ export const EDUCATION = {
   mark: 'UNSW', clr: 'unsw',
   org: 'University of New South Wales',
   dept: 'Bachelor of Engineering (Civil with Architecture)',
-  roles: [{ title: 'Honours Class 1', date: '2016 - 2021' }],
+  roles: [{ title: 'Honours Class 1' }],
   bullets: [
     { lead: 'Honours', text: 'First Class, Dean’s Honours List.' },
     { lead: 'Thesis · 92/100', text: 'Vertical Greenery Systems and the Indoor Setting.' },
