@@ -32,6 +32,19 @@ html { scroll-behavior: smooth; overflow-x: clip; }
   --forest:#21300F;
   --forest-2:#31461A;
   --forest-ink:#5E6B1E;
+  /* Green-as-text roles, kept separate from the surface greens above:
+     --matcha is a FILL only (glyph accents on dark, aurora, icon dots,
+     hover backgrounds) — it fails contrast as text on any light surface.
+     --accent-ink is the one green permitted as text on light (eyebrows,
+     numerals, lever labels): darker than the old ad-hoc #75821D so it
+     clears 4.5:1 on white and lime-wash. --amber-ink is the equivalent
+     darkened companion for --amber numerals. */
+  --accent-ink:#6A7614;
+  --amber-ink:#B56A00;
+  /* Warm neutral band — same lightness as a stock cool grey, but tinted to
+     the brand hue so a "grey" section doesn't look like it escaped the
+     palette. */
+  --band:oklch(0.966 0.008 118);
   /* Soft-geometry radius scale. */
   --r-2xl:30px;
   --r-xl:26px;
@@ -179,14 +192,14 @@ section { position:relative; }
    ============================================================================ */
 .nav{ position:sticky; top:0; z-index:var(--z-nav); background:rgba(248,250,252,0.82); backdrop-filter:blur(10px); border-bottom:1px solid var(--rule-dk); }
 .nav-inner{ display:flex; justify-content:space-between; align-items:center; min-height:52px; gap:0.5rem; padding-top:0.3rem; padding-bottom:0.3rem; flex-wrap:wrap; }
-.nav-logo{ font-family:var(--mono); font-size:1rem; font-weight:500; color:var(--matcha); text-decoration:none; letter-spacing:-0.02em; flex-shrink:0; transition:opacity 0.25s; order:1; display:inline-flex; align-items:center; }
+.nav-logo{ font-family:var(--mono); font-size:1rem; font-weight:500; color:var(--accent-ink); text-decoration:none; letter-spacing:-0.02em; flex-shrink:0; transition:opacity 0.25s; order:1; display:inline-flex; align-items:center; }
 .nav-logo:hover{ opacity:0.55; }
 /* The site mark ("The Segmented Split"): a square ring cut into two hemispheres.
    Sized in em so it tracks each host link's font-size; colour via currentColor. */
 .nav-logo svg, .footer-mark svg, .fp-footer-home svg, .st-home svg{ width:1.3em; height:1.3em; display:block; }
 .nav-links{ display:flex; flex-wrap:wrap; justify-content:flex-end; gap:0.1rem 0.2rem; order:2; }
 .nav-links a{ position:relative; font-family:var(--mono); font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--mid); text-decoration:none; padding:0.45rem 0.7rem; transition:color 0.3s var(--ease); white-space:nowrap; }
-.nav-links a:hover, .nav-links a.active{ color:var(--matcha); }
+.nav-links a:hover, .nav-links a.active{ color:var(--accent-ink); }
 /* Editorial underline: wipes in from the left on hover, holds on the active link. */
 .nav-links a::after{ content:''; position:absolute; left:0.7rem; right:0.7rem; bottom:0.2rem; height:1px; background:var(--matcha); transform:scaleX(0); transform-origin:left; transition:transform 0.3s var(--ease); }
 .nav-links a:hover::after, .nav-links a.active::after{ transform:scaleX(1); }
@@ -211,7 +224,7 @@ section { position:relative; }
 /* ============================================================================
    HERO / ABOUT
    ============================================================================ */
-#about{ background:linear-gradient(168deg,var(--lime-soft) 0%,var(--lime-wash) 34%,var(--bg) 82%); border-bottom:1px solid var(--rule-dk); padding:0 0 clamp(3rem,7vw,6rem); overflow:hidden; }
+#about{ background:linear-gradient(168deg,color-mix(in srgb,var(--lime) 40%,var(--lime-soft)) 0%,var(--lime-soft) 28%,var(--lime-wash) 55%,var(--bg) 85%); border-bottom:1px solid var(--rule-dk); padding:0 0 clamp(3rem,7vw,6rem); overflow:hidden; }
 .bloom-wrap{ position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:0; }
 .bloom{ position:absolute; border-radius:50%; filter:blur(90px); mix-blend-mode:multiply; }
 .bloom-a{ width:560px; height:380px; background:radial-gradient(ellipse,rgba(181,196,43,0.10) 0%,transparent 70%); top:-60px; left:-80px; animation:bloomA 26s ease-in-out infinite; }
@@ -229,11 +242,21 @@ section { position:relative; }
   grid-column:1 / 13; position:relative; z-index:2;
   font-size:clamp(1.7rem,7.1vw,6.1rem); line-height:0.8; letter-spacing:-0.05em;
   margin-bottom:0.1em;
+  --split-accent:var(--accent-ink);
 }
 .hero-name em{ color:var(--forest-ink); font-style:normal; }
+/* Wraps the accented name so a matcha underline can swipe in beneath it
+   without interfering with SplitText's own per-glyph stagger. */
+.hero-accent-word{ position:relative; display:inline-block; }
+.hero-accent-word::after{
+  content:''; position:absolute; left:0; right:0; bottom:0.04em; height:0.09em;
+  background:var(--matcha); transform-origin:left; transform:scaleX(0);
+  animation:accentSwipe 0.6s var(--ease) 0.75s forwards;
+}
+@keyframes accentSwipe{ from{ transform:scaleX(0); } to{ transform:scaleX(1); } }
 .hero-side{ grid-column:1 / 10; align-self:start; margin-top:clamp(1rem,2.5vw,1.8rem); }
 @media(max-width:680px){
-  .hero-name{ grid-column:1 / 5; font-size:clamp(1.1rem,7vw,2.5rem); }
+  .hero-name{ grid-column:1 / 5; font-size:clamp(2.5rem,12.5vw,3.4rem); line-height:0.85; }
   .hero-side{ grid-column:1 / 5; margin-top:1.2rem; }
 }
 .role-cycle{
@@ -241,27 +264,38 @@ section { position:relative; }
   letter-spacing:-0.035em; color:var(--forest-ink); line-height:1.02; display:inline-block;
   text-align:left; max-width:100%;
 }
+@media(max-width:680px){
+  .role-cycle{ font-size:1.05rem; }
+}
 .hero-meta{ font-family:var(--mono); font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:rgba(51,65,85,0.9); margin-top:0.8rem; display:flex; flex-direction:column; gap:0.3rem; }
 .hero-meta a{ color:var(--mid); text-decoration:none; transition:color 0.3s var(--ease); }
-.hero-meta a:hover{ color:var(--matcha); }
+.hero-meta a:hover{ color:var(--accent-ink); }
 
 .hero-lower{ position:relative; z-index:2; margin-top:clamp(1.5rem,5vw,3rem); align-items:start; }
 .hero-prop{
   grid-column:1 / 8; font-weight:400; font-size:clamp(1rem,1.6vw,1.3rem); line-height:1.6;
   color:#3f5133; padding:0.2rem 0 0.2rem 1.2rem; border-left:3px solid var(--forest-ink);
 }
-.instr-stack{ grid-column:9 / 13; display:grid; grid-template-columns:1fr 1fr; gap:1px; background:rgba(94,107,30,0.16); border:1px solid rgba(94,107,30,0.16); margin-top:0.2rem; border-radius:var(--r-2xl); overflow:hidden; box-shadow:var(--shadow-card); }
+.hero-cta{ grid-column:1 / 8; display:flex; flex-wrap:wrap; gap:0.75rem; margin-top:1.5rem; }
+/* Confident solid blocks (lime, then forest) replacing the earlier
+   translucent-wash tiles — the pairing already proven in the footer card. */
+.instr-stack{ grid-column:9 / 13; display:grid; grid-template-columns:1fr 1fr; gap:0.7rem; margin-top:0.2rem; }
 @media(max-width:680px){
-  .hero-prop{ grid-column:1 / 4; grid-row:1; }
-  .instr-stack{ grid-column:2 / 5; grid-row:2; margin-top:1.4rem; }
+  .hero-prop{ grid-column:1 / 4; grid-row:1; font-size:0.95rem; }
+  .hero-cta{ grid-column:1 / 5; grid-row:2; }
+  .instr-stack{ grid-column:1 / 5; grid-row:3; margin-top:1.4rem; }
 }
-/* Two-tone stat pair — one chartreuse, one sage — so the block reads as a
-   considered palette rather than a single flat lime. */
-.instr{ background:linear-gradient(155deg,var(--lime-soft),var(--white) 80%); padding:1.2rem 1.3rem; }
-.instr:nth-child(2){ background:linear-gradient(150deg,var(--sage),var(--white) 84%); }
-.instr-lbl{ font-family:var(--mono); font-size:9px; letter-spacing:0.1em; text-transform:uppercase; color:var(--forest-ink); line-height:1.4; margin-bottom:0.5rem; font-weight:600; }
+.instr{
+  background:linear-gradient(150deg,var(--lime-bright),var(--lime));
+  border-radius:var(--r-xl); box-shadow:var(--shadow-card); padding:1.2rem 1.3rem;
+  display:flex; flex-direction:column; justify-content:space-between; min-height:7.5rem;
+}
+.instr:nth-child(2){ background:var(--forest); }
+.instr-lbl{ font-family:var(--mono); font-size:9px; letter-spacing:0.1em; text-transform:uppercase; color:var(--forest-2); line-height:1.4; margin-bottom:0.5rem; font-weight:600; }
+.instr:nth-child(2) .instr-lbl{ color:var(--lime); }
 .instr-val{ font-family:var(--disp); font-size:clamp(2rem,4vw,2.6rem); font-weight:700; color:var(--forest); line-height:1; letter-spacing:-0.02em; }
-.scroll-hint{ display:flex; align-items:center; gap:0.6rem; font-family:var(--mono); font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--subtle); margin-top:clamp(2rem,5vw,3rem); }
+.instr:nth-child(2) .instr-val{ color:var(--lime-bright); }
+.scroll-hint{ display:flex; align-items:center; gap:0.6rem; font-family:var(--mono); font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--mid); margin-top:clamp(2rem,5vw,3rem); }
 .scroll-hint-line{ width:48px; height:1px; background:var(--rule-dk); }
 
 /* ============================================================================
@@ -285,9 +319,9 @@ section { position:relative; }
    sits ON its accent colour instead of under a floating hairline (a border-top
    accent got clipped by the grid's rounded corners and read as a broken line). */
 .outcome{ background:var(--white); padding:0 0 1.6rem; transition:background 0.3s var(--ease); }
-.outcome:hover{ background:var(--lime-wash); }
+.outcome:hover{ background:color-mix(in srgb, var(--lime-wash) 45%, var(--white)); }
 .outcome-what, .outcome-where{ padding:0 1.6rem; }
-.outcome-num{ font-family:var(--disp); font-size:clamp(2.4rem,6vw,3.4rem); font-weight:700; line-height:1; color:var(--oc,var(--matcha)); letter-spacing:-0.03em; margin-bottom:0.9rem; padding:1.3rem 1.6rem 0.9rem; background:color-mix(in srgb, var(--oc,var(--matcha)) 12%, var(--white)); }
+.outcome-num{ font-family:var(--disp); font-size:clamp(2.4rem,6vw,3.4rem); font-weight:700; line-height:1; color:var(--oc,var(--accent-ink)); letter-spacing:-0.03em; margin-bottom:0.9rem; padding:1.3rem 1.6rem 0.9rem; background:color-mix(in srgb, var(--oc,var(--accent-ink)) 15%, var(--white)); }
 .outcome-num small{ font-size:0.42em; font-weight:600; letter-spacing:0; }
 .outcome-what{ font-weight:600; font-size:0.88rem; color:var(--slate); margin-bottom:0.3rem; line-height:1.4; }
 .outcome-where{ font-family:var(--mono); font-size:11px; color:var(--mid); letter-spacing:0.02em; line-height:1.5; }
@@ -310,8 +344,8 @@ section { position:relative; }
 .pipe-n{ font-family:var(--mono); font-size:10px; letter-spacing:0.08em; font-weight:700; color:color-mix(in srgb, var(--pc,var(--matcha)) 72%, var(--slate)); background:color-mix(in srgb, var(--pc,var(--matcha)) 14%, var(--white)); border-radius:var(--r-pill); padding:0.3rem 0.6rem; flex-shrink:0; }
 .pipe-label{ font-family:var(--mono); font-size:0.82rem; letter-spacing:0.08em; text-transform:uppercase; font-weight:600; color:var(--pc,var(--slate)); }
 .pipe-step-right{ display:flex; align-items:center; gap:0.6rem; margin-left:auto; flex-shrink:0; }
-.pipe-badge{ font-family:var(--mono); font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:var(--mid); background:#F1F5F9; border:1px solid var(--rule-dk); padding:0.25rem 0.7rem; border-radius:var(--r-pill); white-space:nowrap; transition:all 0.2s; }
-.pipe-step:hover .pipe-badge, .pipe-step.open .pipe-badge{ background:rgba(181,196,43,0.14); color:#75821D; border-color:rgba(181,196,43,0.35); }
+.pipe-badge{ font-family:var(--mono); font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:var(--mid); background:var(--band); border:1px solid var(--rule-dk); padding:0.25rem 0.7rem; border-radius:var(--r-pill); white-space:nowrap; transition:all 0.2s; }
+.pipe-step:hover .pipe-badge, .pipe-step.open .pipe-badge{ background:rgba(181,196,43,0.14); color:var(--accent-ink); border-color:rgba(181,196,43,0.35); }
 .pipe-chevron{ font-size:0.7rem; color:var(--subtle); transition:transform 0.32s var(--ease),color 0.2s; line-height:1; }
 .pipe-step.open .pipe-chevron{ transform:rotate(180deg); color:var(--matcha); }
 .pipe-panel-inner{ padding:1.25rem 1.5rem 1.6rem; background:#FAFBFC; overflow:hidden; }
@@ -321,8 +355,8 @@ section { position:relative; }
 .pipe-example:hover{ border-left-color:var(--matcha); }
 .pipe-ex-title{ font-weight:700; font-size:0.86rem; color:var(--slate); margin-bottom:0.3rem; line-height:1.3; }
 .pipe-ex-body{ font-size:0.8rem; color:#475569; line-height:1.65; margin-bottom:0.35rem; }
-.pipe-ex-outcome{ font-family:var(--mono); font-size:11px; color:#75821D; letter-spacing:0.02em; line-height:1.5; }
-.pipe-cta{ display:inline-flex; align-items:center; gap:0.35rem; margin-top:1.25rem; font-family:var(--mono); font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:#75821D; text-decoration:none; font-weight:600; transition:opacity 0.2s; }
+.pipe-ex-outcome{ font-family:var(--mono); font-size:11px; color:var(--accent-ink); letter-spacing:0.02em; line-height:1.5; }
+.pipe-cta{ display:inline-flex; align-items:center; gap:0.35rem; margin-top:1.25rem; font-family:var(--mono); font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:var(--accent-ink); text-decoration:none; font-weight:600; transition:opacity 0.2s; }
 .pipe-cta:hover{ opacity:0.7; }
 
 /* ============================================================================
@@ -340,7 +374,7 @@ section { position:relative; }
     align-items:start;
   }
 }
-.princ-num{ font-family:var(--mono); font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:#75821D; margin-bottom:1.1rem; }
+.princ-num{ font-family:var(--mono); font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:var(--accent-ink); margin-bottom:1.1rem; }
 @media(min-width:640px){
   .princ-num{
     font-family:var(--disp); font-size:clamp(2.2rem,4vw,3.2rem);
@@ -356,13 +390,13 @@ section { position:relative; }
 /* ============================================================================
    TICKER
    ============================================================================ */
-.ticker-band{ overflow:hidden; border-top:1px solid var(--rule-dk); border-bottom:1px solid var(--rule-dk); padding:0.8rem 0; background:#F1F5F9; position:relative; }
+.ticker-band{ overflow:hidden; border-top:1px solid var(--rule-dk); border-bottom:1px solid var(--rule-dk); padding:0.8rem 0; background:var(--band); position:relative; }
 .ticker-track{ display:flex; white-space:nowrap; width:max-content; will-change:transform; animation:tick 48s linear infinite; }
 .ticker-track.paused{ animation-play-state:paused; }
 @keyframes tick{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
-.ticker-run{ font-family:var(--mono); font-size:10px; letter-spacing:0.13em; text-transform:uppercase; color:#64748B; flex-shrink:0; display:flex; align-items:center; }
+.ticker-run{ font-family:var(--mono); font-size:10px; letter-spacing:0.13em; text-transform:uppercase; color:var(--mid); flex-shrink:0; display:flex; align-items:center; }
 .t-term{ cursor:pointer; padding:0 0.45em; border-radius:1px; transition:background 0.18s ease,color 0.18s ease; }
-.t-term:hover, .t-term.t-active{ background:var(--matcha); color:var(--bg); }
+.t-term:hover, .t-term.t-active{ background:var(--matcha); color:var(--forest); }
 .t-sep{ color:var(--mid); padding:0 0.2em; }
 .ticker-tip{ position:fixed; background:var(--slate); color:var(--bg); font-family:var(--mono); font-size:10px; letter-spacing:0.03em; padding:0.65rem 1.9rem 0.65rem 0.8rem; z-index:var(--z-tooltip); max-width:260px; line-height:1.6; border-left:2px solid var(--matcha); white-space:normal; }
 .ticker-tip-close{ position:absolute; top:0.25rem; right:0.4rem; font-family:var(--mono); font-size:0.85rem; line-height:1; color:rgba(248,250,252,0.55); background:none; border:none; cursor:pointer; padding:0.15rem 0.25rem; transition:color 0.2s; }
@@ -375,13 +409,13 @@ section { position:relative; }
    premium cards on a soft surface, not tiles on a slab. */
 #scenario{ background:radial-gradient(ellipse 90% 55% at 100% 0%,rgba(181,196,43,0.06) 0%,transparent 60%),var(--bg); border-top:1px solid var(--rule-lt); border-bottom:1px solid var(--rule-dk); padding:clamp(5rem,11vw,8.5rem) 0; overflow:clip; }
 .tool-decl{ font-family:var(--sans); font-size:clamp(1.2rem,2.8vw,1.8rem); font-weight:400; color:var(--slate); max-width:640px; line-height:1.4; margin-bottom:0.75rem; }
-.tool-decl strong{ font-weight:700; color:#75821D; }
+.tool-decl strong{ font-weight:700; color:var(--accent-ink); }
 .tool-sub{ font-size:0.85rem; font-weight:400; color:var(--mid); max-width:600px; line-height:1.65; margin-bottom:0.75rem; }
-.tool-disc{ display:inline-block; font-family:var(--mono); font-size:11px; color:var(--mid); border:1px solid var(--rule-dk); padding:0.3rem 0.75rem; }
+.tool-disc{ display:inline-block; font-family:var(--mono); font-size:11px; color:var(--mid); }
 .sector-desc{ font-size:0.86rem; color:#475569; margin-top:1.1rem; line-height:1.65; max-width:62ch; }
 
 .scn-step{ margin-top:clamp(2.5rem,6vw,3.5rem); padding-top:2rem; border-top:1px solid var(--rule-dk); }
-.scn-step-num{ font-family:var(--mono); font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:#75821D; font-weight:700; display:block; margin-bottom:0.4rem; }
+.scn-step-num{ font-family:var(--mono); font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:var(--accent-ink); font-weight:700; display:block; margin-bottom:0.4rem; }
 .scn-step-title{ font-family:var(--disp); font-size:clamp(1.3rem,3vw,1.9rem); font-weight:700; letter-spacing:-0.02em; color:var(--slate); line-height:1.1; margin-bottom:0.4rem; }
 .scn-step-sub{ font-size:0.85rem; font-weight:400; color:var(--mid); line-height:1.6; max-width:60ch; }
 
@@ -407,25 +441,33 @@ section { position:relative; }
 .seg-sm{ margin-top:0; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); width:100%; }
 .seg-sm .seg-btn{ font-size:0.74rem; padding:0.5rem 0.85rem; width:100%; text-align:center; }
 .seg-sm .seg-btn:last-child:nth-child(odd){ grid-column:1 / -1; }
-.seg-sm .seg-btn.on{ background:var(--sc,var(--slate)); color:#fff; }
+/* Every active control on the section — profile picker, chart legend, these
+   lever toggles — shares one forest/lime-bright fill, so the eye reads
+   "selected" once rather than chasing five different lever colours. */
+.seg-sm .seg-btn.on{ background:var(--forest); color:var(--lime-bright); }
 
 .lever-deck{ display:grid; grid-template-columns:1fr; gap:1px; background:var(--rule-dk); border:1px solid var(--rule-dk); margin-top:1.25rem; border-radius:var(--r-lg); overflow:hidden; box-shadow:var(--shadow-soft); }
 @media(min-width:720px){ .lever-deck{ grid-template-columns:1fr 1fr; } }
 /* Flat white card; the colour tie to the chart wedge is carried by the dot and
    the active segment, not a wash — keeps the deck calm and consistent. */
-.lever-card{ background:var(--white); padding:1.25rem 1.4rem; }
+.lever-card{ background:var(--white); padding:1.25rem 1.4rem; border-left:3px solid transparent; transition:border-color 0.25s var(--ease); }
+/* Set when a lever is off its default — the coloured edge replaces the
+   loud full-fill toggle as the "this one's been changed" cue. */
+.lever-card.is-active{ border-left-color:var(--lc,var(--matcha)); }
 .lever-card-rev{ grid-column:1/-1; }
 .lever-top{ display:flex; align-items:center; gap:0.55rem; margin-bottom:0.25rem; }
 .lever-dot{ width:9px; height:9px; border-radius:50%; background:var(--lc,var(--matcha)); flex-shrink:0; }
 .lever-name{ font-size:0.9rem; font-weight:700; color:var(--slate); line-height:1.35; }
 .lever-src{ font-family:var(--mono); font-size:11px; color:var(--mid); margin-bottom:0.8rem; letter-spacing:0.02em; line-height:1.5; }
-.lever-card .seg-row{ border-color:var(--rule-lt); background:var(--rule-lt); }
+.lever-card .seg-row{ border:none; background:var(--rule-lt); }
 
-.takeaway{ position:relative; background:linear-gradient(150deg,var(--lime-wash),var(--white) 70%); padding:1.15rem 1.5rem 1.15rem 1.75rem; margin-bottom:1.5rem; font-family:var(--disp); font-size:clamp(1.05rem,2.6vw,1.4rem); font-weight:600; line-height:1.45; color:var(--slate); letter-spacing:-0.01em; border-radius:var(--r-md); box-shadow:0 6px 20px rgba(33,48,15,0.10),0 1px 2px rgba(15,23,42,0.04); }
-/* Inset rounded gradient bar — sits inside the rounded box, never meeting the curve. */
-.takeaway::before{ content:''; position:absolute; left:0.8rem; top:1.05rem; bottom:1.05rem; width:4px; border-radius:var(--r-pill); background:linear-gradient(180deg,var(--forest-ink),var(--matcha)); }
-.takeaway em{ font-style:normal; color:#75821D; }
-.takeaway .tk-note{ display:block; font-family:var(--sans); font-size:11px; font-weight:400; color:var(--mid); margin-top:0.35rem; letter-spacing:0; line-height:1.5; }
+/* The one confidently-blocked colour moment mid-page: the model's payoff
+   line, in solid lime rather than the wash used elsewhere on the section. */
+.takeaway{ position:relative; background:linear-gradient(150deg,var(--lime-bright),var(--lime) 70%); padding:1.15rem 1.5rem 1.15rem 1.75rem; margin-bottom:1.5rem; font-family:var(--disp); font-size:clamp(1.05rem,2.6vw,1.4rem); font-weight:600; line-height:1.45; color:var(--forest); letter-spacing:-0.01em; border-radius:var(--r-md); box-shadow:0 6px 20px rgba(33,48,15,0.10),0 1px 2px rgba(15,23,42,0.04); }
+/* Inset rounded bar — sits inside the rounded box, never meeting the curve. */
+.takeaway::before{ content:''; position:absolute; left:0.8rem; top:1.05rem; bottom:1.05rem; width:4px; border-radius:var(--r-pill); background:var(--forest); }
+.takeaway em{ font-style:normal; font-weight:800; color:var(--forest); }
+.takeaway .tk-note{ display:block; font-family:var(--sans); font-size:11px; font-weight:400; color:var(--forest-2); margin-top:0.35rem; letter-spacing:0; line-height:1.5; }
 
 .kpi-strip{ display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--rule-dk); border:1px solid var(--rule-dk); margin-bottom:1.5rem; border-radius:var(--r-md); overflow:hidden; box-shadow:var(--shadow-soft); }
 @media(min-width:580px){ .kpi-strip{ grid-template-columns:repeat(4,1fr); } }
@@ -457,7 +499,7 @@ section { position:relative; }
 @media(max-width:559px){ .cbar{ gap:0.5rem; } }
 .cbar:last-child{ margin-bottom:0; }
 .cbar-name{ font-size:0.78rem; font-weight:600; }
-.cbar-name.grid{ color:var(--indigo); } .cbar-name.lv{ color:#75821D; } .cbar-name.hv{ color:#B56A00; } .cbar-name.plant{ color:var(--berry); }
+.cbar-name.grid{ color:var(--indigo); } .cbar-name.lv{ color:var(--accent-ink); } .cbar-name.hv{ color:var(--amber-ink); } .cbar-name.plant{ color:var(--berry); }
 .cbar-track{ height:6px; background:#E2E8F0; overflow:hidden; border-radius:var(--r-pill); }
 .cbar-fill{ height:100%; transition:width 0.35s var(--ease); }
 .cbar-val{ font-family:var(--mono); font-size:0.7rem; color:#475569; text-align:right; }
@@ -532,11 +574,11 @@ section { position:relative; }
 .exp-bullets{ list-style:none; display:flex; flex-direction:column; gap:0.6rem; }
 .exp-bullets li{ font-size:0.86rem; font-weight:400; color:#475569; line-height:1.7; padding-left:1.1rem; position:relative; }
 .exp-bullets li.has-mark::before{ content:'›'; position:absolute; left:0; color:var(--matcha); font-size:1rem; line-height:1.5; }
-.exp-section-lbl{ font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:#75821D; font-weight:600; display:block; margin-top:1.1rem; padding-left:0; }
+.exp-section-lbl{ font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--accent-ink); font-weight:600; display:block; margin-top:1.1rem; padding-left:0; }
 
 /* Education entry: same layout as the roles above. An eyebrow label stands in
    for the employer logo so the header aligns; a bold lead-in labels each fact. */
-.exp-eyebrow{ font-family:var(--mono); font-size:10px; letter-spacing:0.16em; text-transform:uppercase; color:#75821D; font-weight:600; margin-bottom:0.6rem; }
+.exp-eyebrow{ font-family:var(--mono); font-size:10px; letter-spacing:0.16em; text-transform:uppercase; color:var(--accent-ink); font-weight:600; margin-bottom:0.6rem; }
 .exp-bullet-lead{ font-weight:600; color:var(--slate); }
 .exp-bullet-lead::after{ content:': '; color:var(--subtle); font-weight:400; }
 
@@ -651,3 +693,7 @@ section { position:relative; }
 .page-home .btn-primary:hover, .page-work .btn-primary:hover{ background:var(--forest-2); border-color:var(--forest-2); transform:translateY(-1px); box-shadow:0 8px 22px rgba(33,48,15,0.22); }
 .page-home .btn-secondary, .page-work .btn-secondary{ border-color:var(--forest-ink); color:var(--forest); }
 .page-home .btn-secondary:hover, .page-work .btn-secondary:hover{ border-color:var(--forest); color:var(--forest); background:var(--lime-soft); }
+/* The home page's section-index digit sits on light backgrounds only, so it
+   needs the readable ink rather than the fill-only matcha the dark story/
+   footprint contexts use. */
+.page-home .sec-tag::before{ color:var(--accent-ink); }
