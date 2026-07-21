@@ -9,13 +9,21 @@ export const CHROME = {
   progressLabel: 'Story progress',
   next: 'Next:',
   keepScrolling: 'Keep scrolling',
+  // The persistent way into the audit while the worked example plays.
+  floatCta: 'Calculate your own',
 };
 
+// Chapter order for the rail and the section numbering. Tags on each moment
+// are numbered live from this list as it renders for the audit on screen, so
+// a skipped moment (no worst month, no guess on the example) never leaves a
+// hole in the numbering.
 export const CHAPTERS = [
   { id: 'st-cover', label: 'Open' },
   { id: 'st-year', label: 'The year' },
   { id: 'st-guess', label: 'Reference points' },
+  { id: 'st-lockin', label: 'Your guess' },
   { id: 'st-total', label: 'The number' },
+  { id: 'st-equiv', label: 'In real things' },
   { id: 'st-scopes', label: 'Where it comes from' },
   { id: 'st-hotspots', label: 'Hotspots' },
   { id: 'st-months', label: 'Worst month' },
@@ -49,7 +57,7 @@ export const COVER = {
 };
 
 export const YEAR = {
-  tag: '01 · The year',
+  tag: 'The year',
   headline: { example: 'Twelve months, itemised', own: 'Your twelve months, itemised' },
   // Physical tallies, not a row count: how many ledger lines a year becomes
   // is an artifact of billing (41 lines could be one week of ordinary
@@ -74,7 +82,7 @@ export const YEAR = {
 // Reference points shown before the total, so the number lands with context
 // instead of arriving cold. Three published benchmarks, most-to-least.
 export const GUESS = {
-  tag: '02 · Reference points',
+  tag: 'Reference points',
   headline: { example: 'Three numbers to hold on to', own: 'Three numbers to hold on to' },
   sub: {
     example: 'Before you see my total, here is what a year of carbon looks like for other people. Keep these in mind.',
@@ -86,11 +94,26 @@ export const GUESS = {
     { id: 'budget', label: '1.5°C lifestyle benchmark', unit: 't a person', note: 'where a fair share needs to be by 2030' },
   ],
   cont: 'See where I land',
-  contOwn: 'See where you land',
+  contOwn: 'Take a guess',
+};
+
+// The lock-in: own voice only, between the reference points and the number.
+// Prediction error is the single most memorable stat a reveal can produce,
+// so the visitor calls their year before it lands. Locked means locked.
+export const LOCKIN = {
+  tag: 'Your guess',
+  headline: 'Before it lands, call it',
+  sub: 'Slide to what you reckon your year adds up to, then lock it in. The three reference points are your bearings.',
+  sliderLabel: 'Your guess, tonnes of CO₂-e',
+  unit: 't CO₂-e',
+  lock: 'Lock it in',
+  locked: 'Locked: {g} t. No changing it now. The number is next.',
+  skip: 'No guess, just show me',
+  cta: 'Reveal the number',
 };
 
 export const TOTAL = {
-  tag: '03 · The number',
+  tag: 'The number',
   chipsLabel: 'Tap a category to see its share of the dots gather into its shape',
   chipsHint: 'Tap a category: its share of the dots gathers into its shape.',
   kicker: { example: 'My FY2026 carbon emissions', own: 'Your year in carbon' },
@@ -101,10 +124,42 @@ export const TOTAL = {
     example: 'Every flight, power bill, parcel and dinner, added up.',
     own: 'Everything you entered, added up. The awkward bits left in.',
   },
+  // The guess, settled. Shown only when a guess was locked in; "close" is
+  // within ten percent either way.
+  guess: {
+    kicker: 'Your guess',
+    under: 'You guessed {g} t. Under by {d} t: your year runs bigger than you thought.',
+    over: 'You guessed {g} t. Over by {d} t: your year is smaller than you feared.',
+    close: 'You guessed {g} t. Within {pct}% of the audit. Honestly impressive calibration.',
+  },
+};
+
+// The total re-counted in everyday things. Tangible, controllable units only:
+// no coal barges, no wind turbines, nothing a person cannot order or switch
+// off themselves. Factors and assumptions live in data/equivalences.js and on
+// the method page.
+export const EQUIV_ST = {
+  tag: 'In real things',
+  headline: { example: 'My year, counted in burgers', own: 'Your year, counted in burgers' },
+  sub: {
+    example: 'Tonnes are abstract. Here is the same total counted out in things I actually choose, at published factors. Pick a unit.',
+    own: 'Tonnes are abstract. Here is your same total counted out in things you actually choose, at published factors. Pick a unit.',
+  },
+  chipsLabel: 'Count the year in a different unit',
+  // {n} pre-formatted; {unit} singular or plural to match.
+  headcount: '{unit}',
+  cadence: {
+    day: 'about {n} a day, every day of the year',
+    week: 'about {n} a week, every week of the year',
+    year: 'across the whole year',
+  },
+  legendOne: 'one dot = one {unit}',
+  legendMany: 'one dot = {k} {unit}',
+  note: 'Display conversions only: nothing here changes your total, and every factor and assumption is on the how-it-works page.',
 };
 
 export const SCOPES = {
-  tag: '04 · Where it comes from',
+  tag: 'Where it comes from',
   headline: 'Three places emissions come from',
   gloss: {
     example: 'Companies sort their emissions into Scope 1, 2 and 3: what they burn, the energy they buy, and everything caused by their choices further down the chain. The same three buckets work for a person.',
@@ -146,7 +201,7 @@ export const SCOPES = {
 };
 
 export const HOTSPOTS_ST = {
-  tag: '05 · Hotspots',
+  tag: 'Hotspots',
   rankWord: 'Hotspot',
   headline: { example: 'Where the tonnes actually are', own: 'Where your tonnes actually are' },
   ofYear: 'of the year',
@@ -170,7 +225,7 @@ export const CATEGORY_QUIPS = {
 };
 
 export const MONTHS_ST = {
-  tag: '06 · The worst month',
+  tag: 'The worst month',
   kicker: 'Worst month',
   line: {
     example: 'in a single month, almost all of it flights. One month of travel outweighed the rest of the year.',
@@ -180,7 +235,7 @@ export const MONTHS_ST = {
 };
 
 export const BENCH_ST = {
-  tag: '07 · In context',
+  tag: 'In context',
   headline: { example: 'How my year compares', own: 'How your year compares' },
   rows: {
     you: { example: 'My emissions', own: 'Your emissions' },
@@ -212,21 +267,33 @@ export const BENCH_ST = {
 };
 
 export const NEEDLE = {
-  tag: '09 · The needle',
+  tag: 'The needle',
   headline: 'How could I have cut my carbon this year?',
   headlineOwn: 'How could you cut your carbon this year?',
   sub: {
-    example: 'The three changes that would cut the biggest share of my actual year, not of a national average. Ranked by size.',
-    own: 'The three changes that would cut the biggest share of your actual year, not of a national average. Ranked by size.',
+    example: 'The three changes that would have cut the biggest share of my actual year, not of a national average. Tap them on and off and watch the year rebuild.',
+    own: 'The three changes that would cut the biggest share of your actual year, not of a national average. Tap them on and off and watch your year rebuild.',
   },
   ofYear: 'of the year',
   perYear: 't / yr',
+  // The live readout under the cards: the year re-priced with the switched-on
+  // changes applied in the pathway's sequence, so overlapping levers compose
+  // instead of double counting.
+  live: {
+    label: { example: 'My year, rebuilt', own: 'Your year, rebuilt' },
+    none: 'All three are off. Tap a card and watch the number fall.',
+    cut: '{cut} t off · down {pct}%',
+    note: 'Changes overlap, so together they are priced as a sequence, never a straight sum.',
+    benchTick: '2.5 t benchmark',
+    on: 'On',
+    off: 'Off',
+  },
   punch: 'One big change beats fifty small habits.',
-  cta: 'See the full options',
+  cta: 'Open the what-if machine',
 };
 
 export const OUTRO = {
-  tag: '10 · Share',
+  tag: 'Share',
   headline: { example: 'Share the year', own: 'Share your year' },
   sub: {
     example: 'Save a card to post, or send the link. The supporting detail, the reduction options and how it all works are below.',
@@ -282,7 +349,7 @@ export const SHARE_ST = {
 };
 
 export const CHARACTER_ST = {
-  tag: '08 · Your result',
+  tag: 'Your result',
   kicker: { example: 'My year in carbon is', own: 'Your year in carbon is' },
   // The reveal leads; the workings follow under this small heading.
   howTitle: 'How this was read',
@@ -354,6 +421,38 @@ export const OB = {
     advanced: 'Optional detail (skip any time)',
   },
   stepLabels: ['You', 'Home energy', 'Getting around', 'Flights', 'Food & parcels', 'More detail'],
+  // One playful, sourced fact per step: about the world, never about the
+  // visitor's own numbers, so the reveal keeps its punch. Figures match the
+  // factor set this calculator prices from.
+  factKicker: 'While you are here',
+  facts: [
+    {
+      text: 'The average Australian sits near 22 tonnes of CO₂-e a year, more than three times the world average.',
+      src: 'EDGAR / JRC 2024',
+    },
+    {
+      text: 'The same home reads very differently by state: Tasmania\'s grid factor is about a quarter of Victoria\'s.',
+      src: 'DCCEEW NGA Factors 2025',
+    },
+    {
+      text: 'Per kilometre, rideshare carries about six and a half times the carbon of the train.',
+      src: 'NGA 2025 and DESNZ / DEFRA 2025 factors',
+    },
+    {
+      text: 'One Sydney to London economy return is about 4 tonnes with the high-altitude effect counted: more than a year of electricity for most whole households.',
+      src: 'DESNZ / DEFRA 2025 factors',
+    },
+    {
+      text: 'The gap between a high-meat year and a vegan year is about 1.6 tonnes, roughly 8,000 km of petrol driving.',
+      src: 'Scarborough et al. 2014',
+    },
+    {
+      text: 'Every $100 a month of general spending adds roughly 0.12 tonnes a year, which is why this step is worth the extra minute.',
+      src: 'US EPA supply-chain factors',
+    },
+  ],
+  // The corner swarm that thickens as answers land: felt mass, never a number.
+  swarmLabel: 'Your year, gathering',
   done: {
     title: 'That is everything',
     sub: 'Your footprint is saved to this browser. Now the fun part: your reveal walks you through what it all adds up to, where it lands, and how to cut it down.',

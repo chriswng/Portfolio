@@ -64,7 +64,7 @@ function AxisMeter({ axisKey, level, frac, reading, ticks, accent, i }) {
 // meters that produced the verdict follow as the workings, and the full
 // 3 x 4 taxonomy sits last with the visitor's cell lit, because a grid you
 // can locate yourself in is half the fun.
-export default function CharacterMoment({ d, voice, character }) {
+export default function CharacterMoment({ d, voice, tags, character }) {
   const accent = lighten(character.hex, 0.25);
   const ax = character.axes;
 
@@ -101,7 +101,7 @@ export default function CharacterMoment({ d, voice, character }) {
   return (
     <section className="st-moment st-character" id="st-character" aria-label="Your carbon character">
       <motion.div className="st-center st-wide" initial="hidden" whileInView="visible" viewport={inView}>
-        <motion.div className="sec-tag" data-idx="" variants={rise}>{CHARACTER_ST.tag}</motion.div>
+        <motion.div className="sec-tag" data-idx="" variants={rise}>{tags['st-character']}</motion.div>
 
         <motion.div className="st-char-stage" variants={rise} custom={1}>
           <div className="st-char-field">

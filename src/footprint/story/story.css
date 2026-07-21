@@ -699,3 +699,100 @@
    light surface; on the blackout they need the dark-scene ink. */
 .st-outro .fp-linkbtn { color: var(--st-dark-ink); border-color: var(--st-dark-rule); }
 .st-outro .fp-linkbtn:hover { color: var(--matcha); border-color: var(--matcha); }
+
+/* ===================================================================
+   One-shot toy additions: lock-in guess, everyday equivalences, the
+   needle as a live toy, and the persistent example CTA
+   =================================================================== */
+
+/* Persistent "calculate your own" pill in the story chrome (example voice). */
+.st-cta-pill {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+  font-weight: 700; color: var(--slate); background: var(--matcha);
+  border: 1px solid var(--matcha); border-radius: 999px; padding: 0.5rem 0.95rem; cursor: pointer;
+  white-space: nowrap; display: inline-flex; align-items: center; gap: 0.4rem;
+  transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+.st-cta-pill:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(181, 196, 43, 0.35); }
+@media (max-width: 680px) {
+  .st-cta-pill { max-width: 40vw; overflow: hidden; text-overflow: ellipsis; padding: 0.45rem 0.7rem; }
+}
+
+/* ---- Lock-in (own voice): call the number before it lands ---- */
+.st-lockin { background: var(--bg); border-bottom: 1px solid var(--rule-lt); }
+.st-lockin .st-center { text-align: center; }
+.st-lockin .st-line, .st-lockin .st-h2 { margin-left: auto; margin-right: auto; }
+.st-slider:disabled { opacity: 0.45; cursor: default; }
+.st-locked {
+  font-size: 0.95rem; font-weight: 600; color: var(--slate); line-height: 1.6;
+  border-left: 3px solid var(--matcha); padding-left: 0.8rem; text-align: left;
+}
+
+/* ---- Everyday equivalences: the total counted in real things ---- */
+.st-equiv { background: #F4F6EE; border-top: 1px solid var(--rule-lt); border-bottom: 1px solid var(--rule-lt); }
+.st-equiv .st-center { text-align: center; }
+.st-equiv .st-line, .st-equiv .st-h2 { margin-left: auto; margin-right: auto; }
+.st-equiv .st-caveat { margin-left: auto; margin-right: auto; }
+.st-eq-chips { display: flex; gap: 0.45rem; flex-wrap: wrap; justify-content: center; margin: 1.8rem auto 0; max-width: 720px; }
+.st-eq-chip {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.05em; font-weight: 600;
+  color: var(--slate); background: var(--white); border: 1px solid var(--rule-dk);
+  border-radius: 999px; padding: 0.5rem 0.9rem; cursor: pointer;
+  transition: border-color 0.25s var(--ease), background 0.25s var(--ease), transform 0.25s var(--ease);
+}
+.st-eq-chip:hover { border-color: var(--matcha); transform: translateY(-1px); }
+.st-eq-chip.on { background: var(--matcha); border-color: var(--matcha); font-weight: 700; }
+.st-eq-stage { margin: 2rem auto 0; max-width: 720px; }
+.st-eq-big { display: flex; align-items: baseline; justify-content: center; gap: 0.7rem; flex-wrap: wrap; }
+.st-eq-num {
+  font-weight: 700; font-size: clamp(3.6rem, 12vw, 7.5rem); line-height: 0.95;
+  letter-spacing: -0.04em; color: var(--slate); font-variant-numeric: tabular-nums;
+}
+.st-eq-unit { font-family: var(--mono); font-size: clamp(0.72rem, 1.4vw, 0.9rem); letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); font-weight: 600; max-width: 220px; text-align: left; line-height: 1.5; }
+.st-eq-cad { font-family: var(--disp); font-weight: 600; font-size: clamp(1.05rem, 2.2vw, 1.4rem); color: #75821D; margin-top: 0.7rem; }
+.st-eq-dots { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; margin: 1.5rem auto 0.6rem; max-width: 560px; min-height: 44px; }
+.st-eq-dots i {
+  width: 9px; height: 9px; border-radius: 50%; background: var(--matcha);
+  border: 1px solid #75821D; opacity: 0; transform: scale(0.2);
+  animation: st-eq-pop 0.35s var(--ease) forwards;
+}
+@keyframes st-eq-pop { to { opacity: 1; transform: scale(1); } }
+.st-eq-legend { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mid); font-weight: 600; }
+.st-eq-basis { font-size: 0.85rem; color: #475569; line-height: 1.65; max-width: 620px; margin: 1.2rem auto 0; border-left: 3px solid var(--matcha); padding: 0.5rem 0 0.5rem 1rem; text-align: left; background: rgba(181, 196, 43, 0.06); }
+@media (prefers-reduced-motion: reduce) {
+  .st-eq-dots i { animation: none; opacity: 1; transform: none; }
+  .st-eq-chip, .st-cta-pill { transition: none; }
+}
+
+/* ---- The needle as a live toy ---- */
+.st-needle-btn {
+  display: flex; flex-direction: column; align-items: flex-start; text-align: left;
+  font: inherit; color: inherit; cursor: pointer; position: relative;
+  border-left: none; border-right: none; border-bottom: none;
+}
+.st-needle-btn:focus-visible { outline: 2px solid var(--matcha); outline-offset: -2px; }
+.st-needle-btn.on { background: #FBFDF2; box-shadow: inset 0 0 0 2px var(--ac); }
+.st-needle-state {
+  position: absolute; top: 0.9rem; right: 0.9rem;
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+  font-weight: 700; color: var(--mid); border: 1px solid var(--rule-dk);
+  border-radius: 999px; padding: 0.2rem 0.55rem;
+  transition: background 0.25s var(--ease), color 0.25s var(--ease), border-color 0.25s var(--ease);
+}
+.st-needle-btn.on .st-needle-state { background: var(--matcha); border-color: var(--matcha); color: var(--slate); }
+.st-needle-live {
+  display: flex; flex-direction: column; gap: 0.35rem; align-items: flex-start;
+  margin-top: 1.6rem; padding: 1.2rem 1.4rem; background: var(--white);
+  border: 1px solid var(--rule-dk); border-left: 3px solid var(--matcha);
+}
+.st-needle-live-l { font-family: var(--mono); font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase; color: #75821D; font-weight: 700; }
+.st-needle-live-num { font-weight: 700; font-size: clamp(2.4rem, 6vw, 3.8rem); line-height: 1; color: var(--slate); font-variant-numeric: tabular-nums; }
+.st-needle-live-num span { font-family: var(--mono); font-size: 0.35em; font-weight: 600; color: var(--mid); letter-spacing: 0.06em; }
+.st-needle-live-line { font-size: 0.9rem; font-weight: 500; color: #475569; line-height: 1.5; }
+.st-needle-track { position: relative; display: block; width: 100%; height: 12px; border-radius: 999px; background: var(--rule-lt); margin-top: 0.6rem; overflow: visible; }
+.st-needle-fill { position: absolute; top: 0; left: 0; bottom: 0; border-radius: 999px; background: #75821D; transition: width 0.6s var(--ease); }
+.st-needle-tick { position: absolute; top: -4px; width: 0; }
+.st-needle-tick i { display: block; width: 2px; height: 20px; background: #C7274A; }
+.st-needle-tick em { position: absolute; top: 21px; left: 0; transform: translateX(-50%); white-space: nowrap; font-style: normal; font-family: var(--mono); font-size: 8px; letter-spacing: 0.08em; text-transform: uppercase; color: #C7274A; font-weight: 700; }
+.st-needle-live .st-caveat { margin-top: 1.4rem; }
+@media (prefers-reduced-motion: reduce) { .st-needle-fill { transition: none; } }

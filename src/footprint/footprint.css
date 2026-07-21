@@ -549,3 +549,64 @@
 .fp-excl-group:first-of-type{ margin-top:0.6rem; }
 .fp-excl-group .fp-card-head{ margin-bottom:0.6rem; }
 
+
+/* ===================================================================
+   One-shot toy additions: shared-snapshot hero, audit factoids, swarm
+   =================================================================== */
+
+/* The shared link opens on a taste of the reveal, not a table. */
+.fp-snaphero {
+  position: relative; overflow: clip;
+  background: #171C13; color: #F4F6EE;
+  border-bottom: 1px solid rgba(244, 246, 238, 0.16);
+  padding: clamp(4.5rem, 10vh, 7rem) 0 clamp(3rem, 7vh, 5rem);
+}
+.fp-snaphero-field { position: absolute; inset: 0; z-index: 0; -webkit-mask-image: radial-gradient(120% 100% at 50% 40%, #000 30%, transparent 82%); mask-image: radial-gradient(120% 100% at 50% 40%, #000 30%, transparent 82%); }
+.fp-snaphero-field canvas { display: block; width: 100%; height: 100%; }
+.fp-snaphero-inner { position: relative; z-index: 1; }
+.fp-snaphero-inner::before { content: ''; position: absolute; inset: -8% -6%; z-index: -1; background: radial-gradient(100% 85% at 35% 45%, rgba(23, 28, 19, 0.85), rgba(23, 28, 19, 0.45) 55%, transparent 84%); pointer-events: none; }
+.fp-snaphero .sec-tag { color: #A9B4A2; }
+.fp-snaphero-num {
+  font-weight: 700; font-size: clamp(3.4rem, 11vw, 7.5rem); line-height: 0.95;
+  letter-spacing: -0.045em; color: #F4F6EE; font-variant-numeric: tabular-nums;
+  margin: 0.9rem 0 0.6rem;
+}
+.fp-snaphero-num span { font-family: var(--mono); font-size: clamp(0.75rem, 1.6vw, 1rem); font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--matcha); }
+.fp-snaphero-char { display: flex; align-items: center; gap: 0.7rem; margin: 0.7rem 0 1rem; font-size: 0.95rem; color: #A9B4A2; }
+.fp-snaphero-char strong { color: #F4F6EE; font-family: var(--disp); font-size: 1.15rem; letter-spacing: -0.01em; }
+.fp-snaphero-cats { display: flex; gap: 0.45rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+.fp-snaphero-cat {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  font-family: var(--mono); font-size: 10.5px; font-weight: 600; color: #F4F6EE;
+  background: rgba(244, 246, 238, 0.06); border: 1px solid rgba(244, 246, 238, 0.24);
+  border-radius: 999px; padding: 0.45rem 0.8rem;
+}
+.fp-snaphero-body { font-size: 0.88rem; color: #A9B4A2; line-height: 1.65; max-width: 520px; margin-bottom: 0.5rem; }
+.fp-snaphero-tease { font-family: var(--disp); font-weight: 600; font-size: clamp(1.05rem, 2.2vw, 1.35rem); color: #F4F6EE; margin-bottom: 1.2rem; }
+.fp-snaphero-quiet { color: #F4F6EE; border-color: rgba(244, 246, 238, 0.28); }
+.fp-snaphero-quiet:hover { color: var(--matcha); border-color: var(--matcha); }
+.fp-snaphero-note { color: #A9B4A2; margin-top: 1.1rem; }
+.fp-snaphero-note a { color: var(--matcha); }
+
+/* One sourced fact per audit step: about the world, never about the visitor. */
+.ob-fact {
+  margin-top: 1.8rem; max-width: 520px;
+  border: 1px solid var(--rule-lt); border-left: 3px solid var(--matcha);
+  border-radius: 0 12px 12px 0; background: var(--white); padding: 0.9rem 1.1rem;
+}
+.ob-fact-k { display: block; font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.22em; text-transform: uppercase; color: #75821D; font-weight: 700; margin-bottom: 0.35rem; }
+.ob-fact p { font-size: 0.88rem; color: var(--slate); line-height: 1.6; margin: 0 0 0.35rem; }
+.ob-fact-src { font-family: var(--mono); font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mid); }
+
+/* The corner swarm: the year gathering as answers land. Decorative. */
+.ob-swarm { position: fixed; left: 1.4rem; bottom: 6.2rem; z-index: 81; pointer-events: none; display: flex; flex-direction: column; align-items: center; gap: 0.2rem; }
+.ob-swarm-dots { position: relative; width: 120px; height: 104px; }
+.ob-swarm-dots i {
+  position: absolute; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--matcha); border: 1px solid #75821D; opacity: 0; transform: scale(0.2);
+  animation: ob-swarm-pop 0.4s var(--ease) forwards;
+}
+@keyframes ob-swarm-pop { to { opacity: 0.85; transform: scale(1); } }
+.ob-swarm-l { font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid); font-weight: 600; }
+@media (max-width: 1080px) { .ob-swarm { display: none; } }
+@media (prefers-reduced-motion: reduce) { .ob-swarm-dots i { animation: none; opacity: 0.85; transform: none; } }

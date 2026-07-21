@@ -2,13 +2,32 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { prefersReducedMotion } from '../../utils/media';
 import { CATEGORIES, categoryById } from '../data/factors';
 import { BENCHMARKS } from '../data/benchmarks';
-import { CHROME, CHAPTERS, CATEGORY_QUIPS, BENCH_ST } from '../data/storyCopy';
+import {
+  CHROME, CHAPTERS, CATEGORY_QUIPS, BENCH_ST,
+  YEAR, GUESS, LOCKIN, EQUIV_ST, SCOPES, MONTHS_ST, CHARACTER_ST, NEEDLE, OUTRO,
+} from '../data/storyCopy';
 import { classifyCharacter } from '../data/characters';
 import {
-  Cover, YearTicker, ReferencePoints, TotalReveal, Scopes, Hotspots, WorstMonth, Bench, Needle, Outro,
+  Cover, YearTicker, ReferencePoints, LockIn, TotalReveal, Equivalences,
+  Scopes, Hotspots, WorstMonth, Bench, Needle, Outro,
 } from './moments';
 import CharacterMoment from './CharacterMoment';
 import Mark from '../../components/Mark';
+
+// Section-tag text per chapter, numbered live from the rendered chapter list
+// so a skipped moment never leaves a hole in the numbering.
+const TAG_TEXT = {
+  'st-year': YEAR.tag,
+  'st-guess': GUESS.tag,
+  'st-lockin': LOCKIN.tag,
+  'st-equiv': EQUIV_ST.tag,
+  'st-scopes': SCOPES.tag,
+  'st-months': MONTHS_ST.tag,
+  'st-bench': BENCH_ST.tag,
+  'st-character': CHARACTER_ST.tag,
+  'st-needle': NEEDLE.tag,
+  'st-outro': OUTRO.tag,
+};
 
 const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -186,16 +205,28 @@ export default function Story({ profile, agg, macc, voice, onStart, onSkip, onEn
   const character = useMemo(() => classifyCharacter(agg), [agg]);
   const [active, setActive] = useState('st-cover');
   const [chromeOn, setChromeOn] = useState(true);
+  // The lock-in guess (own voice only). Locked means locked: the verdict on
+  // the total moment reads from it, and it never travels anywhere.
+  const [guess, setGuess] = useState(10);
+  const [guessLocked, setGuessLocked] = useState(false);
   const rootRef = useRef(null);
   const endRef = useRef(null);
 
   // Chapters whose moments actually render for this audit.
   const chapters = useMemo(() => CHAPTERS.filter((c) => {
+    if (c.id === 'st-lockin') return voice === 'own';
+    if (c.id === 'st-equiv') return d.total > 0.005;
     if (c.id === 'st-months') return !!d.worst;
     if (c.id === 'st-needle') return d.needle.length > 0;
     if (c.id === 'st-hotspots') return d.ranked.length > 0;
     return true;
-  }), [d]);
+  }), [d, voice]);
+
+  // "03 · Your guess" style section tags, numbered by on-screen position.
+  const tags = useMemo(() => chapters.reduce((acc, c, i) => {
+    if (TAG_TEXT[c.id]) acc[c.id] = String(i).padStart(2, '0') + ' · ' + TAG_TEXT[c.id];
+    return acc;
+  }, {}), [chapters]);
 
   // Track the active chapter for the rail. Re-registered whenever the
   // chapter set changes, so moments that appear or vanish after a log edit
@@ -244,6 +275,11 @@ export default function Story({ profile, agg, macc, voice, onStart, onSkip, onEn
         <div className="st-chrome">
           <a href="../" className="st-home" aria-label="Back to the profile"><Mark /></a>
           <div className="st-chrome-right">
+            {/* The worked example keeps a way in on screen the whole way
+                through: motivation peaks mid-story, not at the cover. */}
+            {voice === 'example' && active !== 'st-cover' && (
+              <button type="button" className="st-cta-pill" onClick={onStart}>{CHROME.floatCta} →</button>
+            )}
             <button type="button" className="st-skip" onClick={onSkip}>{CHROME.skip} ↓</button>
           </div>
         </div>
@@ -252,16 +288,25 @@ export default function Story({ profile, agg, macc, voice, onStart, onSkip, onEn
       {chromeOn && <NextChapter active={active} chapters={chapters} />}
 
       <Cover d={d} voice={voice} onStart={onStart} reduced={reduced} />
-      <YearTicker d={d} voice={voice} reduced={reduced} />
-      <ReferencePoints d={d} voice={voice} goTo={goToMoment} />
-      <TotalReveal d={d} voice={voice} onCopyLink={onCopyLink} reduced={reduced} />
-      <Scopes d={d} voice={voice} />
-      <Hotspots d={d} voice={voice} reduced={reduced} />
-      <WorstMonth d={d} voice={voice} />
-      <Bench d={d} voice={voice} />
-      <CharacterMoment d={d} voice={voice} character={character} />
-      <Needle d={d} voice={voice} onPlan={onPlan} />
-      <Outro d={d} voice={voice} character={character} onStart={onStart} onExplore={onExplore} onReplay={onReplay} onCopyLink={onCopyLink} endRef={endRef} />
+      <YearTicker d={d} voice={voice} tags={tags} reduced={reduced} />
+      <ReferencePoints d={d} voice={voice} tags={tags} goTo={goToMoment} />
+      {voice === 'own' && (
+        <LockIn
+          tags={tags} goTo={goToMoment}
+          guess={guess} setGuess={setGuess} locked={guessLocked}
+          onLock={() => setGuessLocked(true)}
+          onSkip={() => setGuessLocked(false)}
+        />
+      )}
+      <TotalReveal d={d} voice={voice} guess={guessLocked ? guess : null} onCopyLink={onCopyLink} reduced={reduced} />
+      {d.total > 0.005 && <Equivalences d={d} voice={voice} tags={tags} />}
+      <Scopes d={d} voice={voice} tags={tags} />
+      <Hotspots d={d} voice={voice} tags={tags} reduced={reduced} />
+      <WorstMonth d={d} voice={voice} tags={tags} />
+      <Bench d={d} voice={voice} tags={tags} />
+      <CharacterMoment d={d} voice={voice} tags={tags} character={character} />
+      <Needle d={d} profile={profile} agg={agg} voice={voice} tags={tags} onPlan={onPlan} />
+      <Outro d={d} voice={voice} character={character} tags={tags} onStart={onStart} onExplore={onExplore} onReplay={onReplay} onCopyLink={onCopyLink} endRef={endRef} />
     </div>
   );
 }
