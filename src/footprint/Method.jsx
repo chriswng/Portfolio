@@ -11,6 +11,7 @@ import {
   GOODS, GOODS_SOURCE, GOODS_FX, goodsPerAud,
   CLOTHING_ITEMS, CLOTHING_ITEMS_SOURCE,
   HOTEL, HOTEL_SOURCE,
+  HOME, HOME_SOURCE,
 } from './data/factors';
 import { EQUIVALENCES, EQUIV_SOURCE } from './data/equivalences';
 import { METHOD } from './data/copy';
@@ -170,6 +171,12 @@ export default function Method() {
             head={['Country', 'kg CO₂-e / room-night']}
             rows={Object.values(HOTEL.countries).map((h) => [h.label, h.perNight.toFixed(1)])}
             source={HOTEL_SOURCE}
+          />
+          <FTable
+            caption={'Home embodied carbon (optional detail) · upfront (A1-A5) kg CO₂-e per m², amortised over ' + HOME.amortiseYears + ' years'}
+            head={['Dwelling type', 'kg CO₂-e / m² upfront', 'Annual per m² (÷ ' + HOME.amortiseYears + ')']}
+            rows={Object.values(HOME.types).map((t) => [t.label, t.perM2.toFixed(0), (t.perM2 / HOME.amortiseYears).toFixed(1)])}
+            source={HOME_SOURCE}
           />
         </div>
 

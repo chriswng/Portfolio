@@ -17,6 +17,9 @@
      and dark enough for white-on-fill labels. */
   --fp-goods: #8E2D6E;
   --fp-hotel: #1F5F6E;
+  /* Optional home-embodied module: a warm umber, dark enough for white-on-fill
+     labels and CVD-distinct from the road/other browns. */
+  --fp-dwelling: #7A5C3E;
 }
 
 /* ---- Intro ---- */

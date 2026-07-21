@@ -213,6 +213,18 @@ export function buildProfileFromOnboarding(a) {
       notes: 'From the optional detail: about $' + monthly + ' a month, a spend-based screening estimate.',
     }));
   });
+
+  // Optional home embodied carbon: only for a home built or bought new. The
+  // whole-home upfront figure is split per adult and amortised over 50 years
+  // by the engine, so it lands as a small annual share, not a one-off spike.
+  if (a.homeNewBuild && a.homeAreaM2 > 0) {
+    entries.push(E({
+      category: 'dwelling', date: period.end, period_months: 12, label: 'Home embodied carbon (onboarding)',
+      meta: { dwelling: a.dwelling, areaM2: Math.round(a.homeAreaM2), wholeHousehold: true },
+      notes: 'From the optional detail: a ' + (a.dwelling === 'apartment' ? 'new apartment' : 'new-build home')
+        + ' of about ' + Math.round(a.homeAreaM2) + ' m², its upfront (A1-A5) carbon amortised over 50 years and split per adult. Indicative only.',
+    }));
+  }
   return {
     schema: 'cw-footprint/2',
     kind: 'own',
@@ -229,6 +241,9 @@ const ADVANCED_DEFAULTS = {
   clothingMode: 'items',
   clothingItems: { tops: 0, jumpers: 0, trousers: 0, dresses: 0, coats: 0, shoes: 0 },
   clothingMonth: 0, electronicsMonth: 0, entertainmentMonth: 0, healthMonth: 0, otherGoodsMonth: 0,
+  // Home embodied carbon is opt-in and new-build only: off by default, and a
+  // second-hand home stays off, so skipping adds nothing.
+  homeNewBuild: false, homeAreaM2: 0,
 };
 
 const DEFAULTS = {
@@ -420,7 +435,8 @@ function SwarmMeter({ answers: a, step }) {
     + (a.hotelNightsOther > 0 ? 1 : 0)
     + (a.parcelsMonth > 0 ? 1 : 0) + (a.intlOrdersMonth > 0 ? 1 : 0)
     + [a.clothingMonth, a.electronicsMonth, a.entertainmentMonth, a.healthMonth, a.otherGoodsMonth]
-      .filter((v) => v > 0).length;
+      .filter((v) => v > 0).length
+    + (a.homeNewBuild && a.homeAreaM2 > 0 ? 2 : 0);
   const n = Math.min(64, 6 + signals * 2);
   const GA = 2.399963;
   return (
@@ -739,6 +755,23 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         note={ONBOARD.advanced.healthNote} onChange={(v) => set('healthMonth', v)} />
       <SliderField icon="globe" label={ONBOARD.advanced.other} value={a.otherGoodsMonth} min={0} max={1500} step={10} unit="$ / mo"
         note={ONBOARD.advanced.otherNote} onChange={(v) => set('otherGoodsMonth', v)} />
+      <Chips
+        icon="house"
+        label={ONBOARD.advanced.homeQuestion}
+        options={[
+          { value: false, label: ONBOARD.advanced.homeNo, note: ONBOARD.advanced.homeNoNote },
+          { value: true, label: ONBOARD.advanced.homeYes },
+        ]}
+        value={a.homeNewBuild} onChange={(v) => set('homeNewBuild', v)}
+        note={ONBOARD.advanced.homeNote}
+      />
+      {a.homeNewBuild && (
+        <SliderField
+          icon="building"
+          label={fill(ONBOARD.advanced.homeArea, { type: a.dwelling === 'apartment' ? 'apartment' : 'home' })}
+          value={a.homeAreaM2} min={0} max={500} step={5} unit="m²"
+          note={ONBOARD.advanced.homeAreaNote} onChange={(v) => set('homeAreaM2', v)} />
+      )}
       <details className="ob-disclose">
         <summary>{ONBOARD.advanced.sourceSummary}</summary>
         <p>{ONBOARD.advanced.sourceBody}</p>
