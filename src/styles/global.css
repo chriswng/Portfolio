@@ -442,13 +442,16 @@ section { position:relative; }
 
 .lever-deck{ display:grid; grid-template-columns:1fr; gap:1px; background:var(--rule-dk); border:1px solid var(--rule-dk); margin-top:1.25rem; border-radius:var(--r-lg); overflow:hidden; box-shadow:var(--shadow-soft); }
 @media(min-width:720px){ .lever-deck{ grid-template-columns:1fr 1fr; } }
-.lever-card{ background:var(--white); padding:1.25rem 1.4rem; }
+.lever-card{ background:var(--white); padding:1.25rem 1.4rem; display:flex; flex-direction:column; }
 .lever-card-rev{ grid-column:1/-1; }
 .lever-top{ display:flex; align-items:center; gap:0.55rem; margin-bottom:0.25rem; }
 .lever-dot{ width:9px; height:9px; border-radius:50%; background:var(--lc,var(--matcha)); flex-shrink:0; }
 .lever-name{ font-size:0.9rem; font-weight:700; color:var(--slate); line-height:1.35; }
 .lever-src{ font-family:var(--mono); font-size:11px; color:var(--mid); margin-bottom:0.8rem; letter-spacing:0.02em; line-height:1.5; }
-.lever-card .seg-row{ border-color:var(--rule-lt); background:var(--rule-lt); }
+/* Pin the button row to the card's bottom edge — titles/sources wrap to a
+   different number of lines per card, and without this the buttons in
+   neighbouring cards land at different heights instead of sharing a row. */
+.lever-card .seg-row{ border-color:var(--rule-lt); background:var(--rule-lt); margin-top:auto; }
 
 /* The one confidently-blocked colour moment mid-page: the model's payoff
    line, in solid lime rather than the wash used elsewhere on the section. */
@@ -506,7 +509,7 @@ section { position:relative; }
   .scn-controls .lever-deck{ margin-top:1rem; }
   .scn-controls .lever-card{ padding:0.85rem 1rem; }
   .scn-controls .lever-src{ margin-bottom:0.6rem; }
-  .scn-controls .seg-row{ margin-top:1rem; }
+  .scn-controls .seg-row{ margin-top:auto; }
   /* Tighten the result stack and let the chart flex to the viewport height. */
   .scn-results .takeaway{ margin-bottom:1rem; }
   .scn-results .kpi-strip{ margin-bottom:1rem; }
