@@ -258,7 +258,7 @@ section { position:relative; }
 @media(max-width:680px){
   .role-cycle{ font-size:1.05rem; }
 }
-.hero-meta{ font-family:var(--mono); font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:rgba(51,65,85,0.9); margin-top:0.8rem; display:flex; flex-direction:column; gap:0.3rem; }
+.hero-meta{ font-family:var(--mono); font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:color-mix(in oklch, var(--slate) 90%, transparent); margin-top:0.8rem; display:flex; flex-direction:column; gap:0.3rem; }
 
 .hero-lower{ position:relative; z-index:2; margin-top:clamp(1.5rem,5vw,3rem); align-items:start; }
 .hero-prop{
