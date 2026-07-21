@@ -4,6 +4,7 @@ import { HERO } from '../data/content';
 import SplitText from './SplitText';
 import ContourField from './ContourField';
 import Aurora from './Aurora';
+import Icon from './Icons';
 
 // Live "years" from a start date, matching the original calc.
 function yearsSince(startISO) {
@@ -84,7 +85,7 @@ export default function Hero() {
           <RoleCycle roles={HERO.roles} />
           <div className="hero-meta">
             <a href={HERO.linkedin} target="_blank" rel="noopener noreferrer">{HERO.linkedinLabel}</a>
-            <span>{HERO.location}</span>
+            <span><Icon name="pin" size={13} className="fpi-lead" />{HERO.location}</span>
           </div>
         </div>
       </motion.div>

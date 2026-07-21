@@ -375,3 +375,12 @@ silently reduced the page to monograms. Two fixes:
   226 of the 258 brands, and `GROUP_DOMAIN` now covers every multi-brand
   parent. Only brands whose primary domain could not be stated with confidence
   were left out, on purpose: a wrong logo is worse than a monogram.
+
+### Merge note: the studio survives the lookup-first restructure
+
+The lookup-first restructure (personal lens, ownership treemap, tabbed field
+guide) was developed in parallel and its merge dropped the Garment Studio.
+Restored deliberately: the studio now sits between the directory and the
+field guide as sections 05-08, renumbering the guide (09), signals (10) and
+backlog (11). Both ideas hold: the lookup stays the spine, the studio stays
+the speciality.

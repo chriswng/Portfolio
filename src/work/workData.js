@@ -2,10 +2,10 @@
 // from the original page.
 
 export const TABS = [
-  { id: 'baseline', letter: 'A', label: 'Emissions Baseline' },
-  { id: 'roadmap', letter: 'B', label: 'Decarb Roadmap' },
-  { id: 'mca', letter: 'C', label: 'MCA Framework' },
-  { id: 'lca', letter: 'D', label: 'Lifecycle Carbon' },
+  { id: 'baseline', letter: 'A', label: 'Emissions Baseline', icon: 'chart' },
+  { id: 'roadmap', letter: 'B', label: 'Decarb Roadmap', icon: 'target' },
+  { id: 'mca', letter: 'C', label: 'MCA Framework', icon: 'list' },
+  { id: 'lca', letter: 'D', label: 'Lifecycle Carbon', icon: 'leaf' },
 ];
 
 export const BASELINE_SECTORS = {

@@ -1,4 +1,5 @@
 import { FOOTER } from '../data/content';
+import Icon from './Icons';
 import Mark from './Mark';
 
 // LinkedIn wordmark, inlined so it inherits currentColor and needs no request.
@@ -40,7 +41,7 @@ export default function SiteFooter({ base = '' }) {
         <nav className="footer-cols" aria-label="Footer">
           {FOOTER.columns.map((col) => (
             <div className="footer-col" key={col.head}>
-              <div className="footer-col-head">{col.head}</div>
+              <div className="footer-col-head">{col.icon && <Icon name={col.icon} size={14} className="fpi-lead" />}{col.head}</div>
               <ul className="footer-col-list">
                 {col.links.map((l) => (
                   <li key={l.label}>
