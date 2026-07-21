@@ -58,7 +58,7 @@ export function Nav() {
   return (
     <nav className="nav" aria-label="Primary" ref={navRef}>
       <div className="nav-inner canvas">
-        <a href="#about" className="nav-logo" onClick={(e) => onClick(e, '#about')}><Mark label="Christopher Wang, home" /></a>
+        <a href="#about" className="nav-logo" onClick={(e) => onClick(e, '#about')}><Mark label="Chris Wang, home" /></a>
         <div className={`nav-links${menuOpen ? ' open' : ''}`} role="navigation">
           {NAV_LINKS.map((l) => {
             const isActive = !l.external && active === l.href.slice(1);

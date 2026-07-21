@@ -243,17 +243,11 @@ section { position:relative; }
   font-size:clamp(1.7rem,7.1vw,6.1rem); line-height:0.8; letter-spacing:-0.05em;
   margin-bottom:0.1em;
   --split-accent:var(--accent-ink);
+  /* A soft light halo so the dark glyphs stay legible over the aurora's
+     drifting colour, without flattening the aurora itself. */
+  text-shadow:0 2px 26px rgba(250,251,244,0.55), 0 1px 4px rgba(250,251,244,0.4);
 }
 .hero-name em{ color:var(--forest-ink); font-style:normal; }
-/* Wraps the accented name so a matcha underline can swipe in beneath it
-   without interfering with SplitText's own per-glyph stagger. */
-.hero-accent-word{ position:relative; display:inline-block; }
-.hero-accent-word::after{
-  content:''; position:absolute; left:0; right:0; bottom:0.04em; height:0.09em;
-  background:var(--matcha); transform-origin:left; transform:scaleX(0);
-  animation:accentSwipe 0.6s var(--ease) 0.75s forwards;
-}
-@keyframes accentSwipe{ from{ transform:scaleX(0); } to{ transform:scaleX(1); } }
 .hero-side{ grid-column:1 / 10; align-self:start; margin-top:clamp(1rem,2.5vw,1.8rem); }
 @media(max-width:680px){
   .hero-name{ grid-column:1 / 5; font-size:clamp(2.5rem,12.5vw,3.4rem); line-height:0.85; }
@@ -441,25 +435,20 @@ section { position:relative; }
 .seg-sm{ margin-top:0; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); width:100%; }
 .seg-sm .seg-btn{ font-size:0.74rem; padding:0.5rem 0.85rem; width:100%; text-align:center; }
 .seg-sm .seg-btn:last-child:nth-child(odd){ grid-column:1 / -1; }
-/* Every active control on the section — profile picker, chart legend, these
-   lever toggles — shares one forest/lime-bright fill, so the eye reads
-   "selected" once rather than chasing five different lever colours. */
-.seg-sm .seg-btn.on{ background:var(--forest); color:var(--lime-bright); }
+/* Each lever keeps its own colour when active — the same hue as its dot and
+   its wedge in the chart, so the toggle you just pressed is easy to find
+   again at a glance. */
+.seg-sm .seg-btn.on{ background:var(--sc,var(--slate)); color:#fff; }
 
 .lever-deck{ display:grid; grid-template-columns:1fr; gap:1px; background:var(--rule-dk); border:1px solid var(--rule-dk); margin-top:1.25rem; border-radius:var(--r-lg); overflow:hidden; box-shadow:var(--shadow-soft); }
 @media(min-width:720px){ .lever-deck{ grid-template-columns:1fr 1fr; } }
-/* Flat white card; the colour tie to the chart wedge is carried by the dot and
-   the active segment, not a wash — keeps the deck calm and consistent. */
-.lever-card{ background:var(--white); padding:1.25rem 1.4rem; border-left:3px solid transparent; transition:border-color 0.25s var(--ease); }
-/* Set when a lever is off its default — the coloured edge replaces the
-   loud full-fill toggle as the "this one's been changed" cue. */
-.lever-card.is-active{ border-left-color:var(--lc,var(--matcha)); }
+.lever-card{ background:var(--white); padding:1.25rem 1.4rem; }
 .lever-card-rev{ grid-column:1/-1; }
 .lever-top{ display:flex; align-items:center; gap:0.55rem; margin-bottom:0.25rem; }
 .lever-dot{ width:9px; height:9px; border-radius:50%; background:var(--lc,var(--matcha)); flex-shrink:0; }
 .lever-name{ font-size:0.9rem; font-weight:700; color:var(--slate); line-height:1.35; }
 .lever-src{ font-family:var(--mono); font-size:11px; color:var(--mid); margin-bottom:0.8rem; letter-spacing:0.02em; line-height:1.5; }
-.lever-card .seg-row{ border:none; background:var(--rule-lt); }
+.lever-card .seg-row{ border-color:var(--rule-lt); background:var(--rule-lt); }
 
 /* The one confidently-blocked colour moment mid-page: the model's payoff
    line, in solid lime rather than the wash used elsewhere on the section. */
@@ -591,9 +580,11 @@ section { position:relative; }
   position:relative; background:linear-gradient(150deg,var(--lime-bright) 0%,var(--lime) 42%,var(--sage) 100%);
   --pad-x:clamp(1.5rem,4vw,3rem);
   /* Tab width = the left-aligned wordmark plus equal padding either side, so the
-     notch step sits one padding past "Christopher" (≈573px at the capped size)
-     — the word's left and right gaps match. Capped at 82% so the step never
-     collides with the body's right edge on narrow cards. */
+     notch step sits one padding past the wordmark's rendered width (≈573px at
+     the capped size, measured for the current FOOTER.wordmark string) — the
+     word's left and right gaps match. Re-measure this constant if the wordmark
+     copy changes enough to meaningfully shift its rendered width. Capped at
+     82% so the step never collides with the body's right edge on narrow cards. */
   --tab-w:min(calc(2 * var(--pad-x) + 573px),82%);
   --fc-tab-r:1.75rem;   /* tab top-left corner */
   --fc-fillet:1rem;     /* concave curve where the tab meets the body */

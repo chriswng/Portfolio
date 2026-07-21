@@ -71,22 +71,21 @@ export default function Hero() {
       </div>
       <Aurora
         colorStops={['#635BFF', '#B5C42B', '#FF9500', '#FF3B60']}
-        amplitude={0.9}
-        blend={0.65}
-        opacity={0.5}
+        amplitude={0.8}
+        blend={0.55}
+        opacity={0.38}
       />
       <ContourField />
 
       <motion.div className="canvas matrix hero-grid" style={{ y: baseY }}>
         <motion.h1 className="hero-name display" style={{ y: velY }}>
-          <SplitText text={HERO.name[0]} />{' '}
-          <span className="hero-accent-word"><SplitText text={HERO.name[1]} accentIndex={0} /></span>
+          <SplitText text={HERO.name[0]} /> <SplitText text={HERO.name[1]} accentIndex={0} />
         </motion.h1>
         <div className="hero-side">
           <RoleCycle roles={HERO.roles} />
           <div className="hero-meta">
             <a href={HERO.linkedin} target="_blank" rel="noopener noreferrer">{HERO.linkedinLabel}</a>
-            <span><Icon name="pin" size={13} className="fpi-lead" />{HERO.location}</span>
+            <span><Icon name="pin" size={26} className="fpi-lead" />{HERO.location}</span>
           </div>
         </div>
       </motion.div>

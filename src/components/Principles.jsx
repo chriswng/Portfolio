@@ -12,7 +12,7 @@ export default function Principles() {
   return (
     <section id="principles">
       <div className="canvas">
-        <div className="sec-tag" data-idx="01 / "><Icon name="leaf" size={15} />My Practice</div>
+        <div className="sec-tag" data-idx="01 / "><Icon name="leaf" size={30} />My Practice</div>
         <h2 className="display princ-headline">
           <SplitText text="How I work" accentIndex={1} />
         </h2>
@@ -24,7 +24,7 @@ export default function Principles() {
             >
               <div className="princ-num">{p.num}</div>
               <div className="princ-main">
-                <div className="princ-title">{p.icon && <Icon name={p.icon} size={18} className="fpi-lead" />}{p.title}</div>
+                <div className="princ-title">{p.icon && <Icon name={p.icon} size={36} className="fpi-lead" />}{p.title}</div>
                 <div className="princ-body">{p.body}</div>
               </div>
             </motion.div>
