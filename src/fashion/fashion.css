@@ -678,3 +678,182 @@ a.ow-badge:hover { transform: translateY(-1px); }
   .ow-swing, .ow-tag, .ow-search-box, .ow-card, .ow-group, .ow-familychip, .ow-groupchip,
   .ow-diglink, .ow-badge, .ow-btn, .ow-chip, .ow-tmap-tile { transition: none !important; animation: none !important; }
 }
+
+/* ============================================================================
+   THE GARMENT STUDIO
+   ============================================================================ */
+.ow-studio-intro { margin-bottom: 2.2rem; padding: 1.15rem 1.5rem; border-radius: var(--r-lg); background: linear-gradient(150deg, var(--lime-wash), var(--white) 70%); box-shadow: 0 6px 20px rgba(33, 48, 15, 0.1), 0 1px 2px rgba(15, 23, 42, 0.04); }
+.ow-studio-intro .kicker { color: #5F6A17; font-weight: 700; }
+.ow-studio-intro p { font-family: var(--disp); font-size: clamp(1rem, 2.4vw, 1.3rem); font-weight: 600; letter-spacing: -0.01em; line-height: 1.45; color: var(--slate); margin-top: 0.5rem; max-width: 52ch; }
+
+.ow-est-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.25rem; }
+@media (min-width: 980px) {
+  .ow-est-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
+  .ow-est-readout { position: sticky; top: 76px; }
+}
+.ow-est-controls { padding: 1.4rem 1.5rem; display: flex; flex-direction: column; gap: 1.4rem; }
+.ow-ctl-l { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: oklch(0.48 0.022 118); font-weight: 600; margin-bottom: 0.55rem; }
+.ow-ctl-note { font-family: var(--mono); font-size: 10.5px; color: var(--mid); line-height: 1.6; margin-top: 0.6rem; max-width: 60ch; }
+
+.ow-pills { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+.ow-pillbtn {
+  font-family: var(--sans); font-size: 0.82rem; font-weight: 600; color: var(--slate);
+  background: var(--white); border: 1px solid var(--rule-dk); border-radius: var(--r-pill);
+  padding: 0.5rem 0.95rem; transition: all 0.2s var(--ease);
+}
+.ow-pillbtn.sm { padding: 0.4rem 0.8rem; font-size: 0.78rem; }
+.ow-pillbtn:hover:not(.on) { border-color: var(--matcha); transform: translateY(-1px); }
+.ow-pillbtn.on { background: var(--forest); border-color: var(--forest); color: var(--lime-bright); box-shadow: 0 4px 12px rgba(33, 48, 15, 0.16); }
+
+.ow-blend { display: flex; gap: 0.9rem; flex-wrap: wrap; }
+.ow-field { display: flex; flex-direction: column; gap: 0.3rem; flex: 1; min-width: 150px; }
+.ow-field > span { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mid); font-weight: 600; }
+.ow-field select {
+  font-family: var(--sans); font-size: 0.85rem; color: var(--slate); background: var(--bg);
+  border: 1px solid var(--rule-dk); border-radius: var(--r-sm); padding: 0.5rem 0.6rem; min-height: 40px; cursor: pointer;
+}
+.ow-field select:focus-visible { outline: 2px solid var(--matcha); outline-offset: 2px; }
+
+.ow-slider { display: flex; flex-direction: column; gap: 0.2rem; margin-top: 0.6rem; }
+.ow-slider input[type='range'] { -webkit-appearance: none; appearance: none; width: 100%; height: 32px; background: transparent; cursor: pointer; }
+.ow-slider input[type='range']::-webkit-slider-runnable-track { height: 4px; background: var(--rule-dk); border-radius: 2px; }
+.ow-slider input[type='range']::-moz-range-track { height: 4px; background: var(--rule-dk); border-radius: 2px; }
+.ow-slider input[type='range']::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--matcha); border: 3px solid var(--slate); margin-top: -9px; transition: transform 0.2s var(--ease); }
+.ow-slider input[type='range']::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: var(--matcha); border: 3px solid var(--slate); }
+.ow-slider input[type='range']:active::-webkit-slider-thumb { transform: scale(1.15); }
+.ow-slider input[type='range']:focus-visible { outline: 2px solid var(--matcha); outline-offset: 2px; }
+.ow-slider-v { font-family: var(--mono); font-size: 10.5px; font-weight: 700; color: var(--ow-green); font-variant-numeric: tabular-nums; }
+
+/* the particle readout */
+.ow-est-readout { padding: 1.3rem 1.5rem 1.4rem; }
+.ow-motes { position: relative; height: clamp(240px, 34vw, 340px); border-radius: var(--r-lg); background: radial-gradient(ellipse 80% 70% at 50% 42%, var(--lime-wash) 0%, var(--white) 75%); border: 1px solid var(--rule-lt); overflow: hidden; margin-bottom: 1.1rem; }
+.ow-motes-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.ow-garment { position: absolute; left: 50%; top: 44%; width: clamp(90px, 12vw, 130px); transform: translate(-50%, -50%); }
+.ow-garment path { fill: rgba(255, 255, 255, 0.75); stroke: var(--forest); stroke-width: 2.2; stroke-linejoin: round; }
+
+.ow-total { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.ow-total .l { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); font-weight: 600; }
+.ow-total .n { font-family: var(--disp); font-size: clamp(2.1rem, 5vw, 3rem); font-weight: 700; line-height: 1; letter-spacing: -0.03em; color: var(--forest); font-variant-numeric: tabular-nums; }
+.ow-total .n em { font-style: normal; font-size: 0.38em; color: var(--mid); font-weight: 600; letter-spacing: 0; }
+
+.ow-streams { display: grid; gap: 0.45rem; border-top: 1px solid var(--rule-lt); padding-top: 0.9rem; }
+.ow-stream { display: grid; grid-template-columns: 10px 82px 1fr 70px; gap: 0.6rem; align-items: center; }
+.ow-stream .dot { width: 9px; height: 9px; border-radius: 2px; }
+.ow-stream .sl { font-size: 0.8rem; font-weight: 600; color: var(--slate); }
+.ow-stream .bar { height: 6px; background: var(--rule-lt); border-radius: var(--r-pill); overflow: hidden; }
+.ow-stream .bar i { display: block; height: 100%; border-radius: var(--r-pill); transition: width 0.35s var(--ease); }
+.ow-stream .sv { font-family: var(--mono); font-size: 0.72rem; color: var(--slate); font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; }
+
+.ow-est-facts { display: flex; flex-direction: column; gap: 0.3rem; border-top: 1px solid var(--rule-lt); margin-top: 0.9rem; padding-top: 0.9rem; font-family: var(--mono); font-size: 10.5px; color: var(--mid); line-height: 1.6; }
+.ow-est-facts b { color: var(--slate); }
+.ow-disclaimer { font-family: var(--mono); font-size: 10px; color: var(--mid); line-height: 1.6; border-top: 1px dashed var(--rule-dk); margin-top: 0.9rem; padding-top: 0.8rem; }
+
+/* the dot map */
+.ow-map { display: block; width: 100%; height: auto; margin-top: 0.8rem; }
+.ow-map.tall { margin-top: 0; }
+.owm-dot { fill: var(--sage-2); }
+.owm-pin { cursor: pointer; }
+.owm-pin .hit { fill: transparent; }
+.owm-pin .dot { fill: var(--forest-ink); transition: fill 0.2s var(--ease); }
+.owm-pin:hover .dot, .owm-pin:focus-visible .dot { fill: var(--forest); }
+.owm-pin:focus-visible { outline: 2px solid var(--matcha); outline-offset: 2px; border-radius: 50%; }
+.owm-pin.on .dot { fill: var(--forest); }
+.owm-pin .ring { fill: none; stroke: var(--matcha); stroke-width: 2; }
+.owm-pin .lbl, .owm-dest .lbl { font-family: var(--mono); font-size: 11px; font-weight: 600; fill: var(--slate); paint-order: stroke; stroke: var(--white); stroke-width: 3; }
+.owm-dest rect { fill: var(--ow-red); }
+.owm-route { fill: none; stroke: var(--forest); stroke-width: 2; stroke-dasharray: 4 7; stroke-linecap: round; }
+.owm-route.air { stroke: var(--ow-red); stroke-dasharray: 2 9; }
+@media (prefers-reduced-motion: no-preference) {
+  .owm-route { animation: owm-dash 1.4s linear infinite; }
+  .owm-route.air { animation-duration: 0.8s; }
+}
+@keyframes owm-dash { to { stroke-dashoffset: -11; } }
+
+/* the bench (fabric comparator) */
+.ow-shelf { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; margin-bottom: 1.6rem; }
+.ow-shelf-l { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mid); font-weight: 600; margin-right: 0.4rem; }
+.ow-bench {
+  display: grid; grid-template-columns: minmax(130px, 0.9fr) repeat(var(--cols), minmax(0, 1fr));
+  background: var(--white); border: 1px solid var(--rule-dk); border-radius: var(--r-xl); overflow: hidden; box-shadow: var(--shadow-soft);
+}
+.ow-bench-corner { border-bottom: 1px solid var(--rule-dk); }
+.ow-bench-head { padding: 1rem 1.1rem 0.8rem; border-bottom: 1px solid var(--rule-dk); border-left: 1px solid var(--rule-lt); background: var(--lime-wash); }
+.ow-bench-head .fn { display: block; font-family: var(--disp); font-weight: 700; font-size: 1.05rem; letter-spacing: -0.01em; color: var(--slate); }
+.ow-bench-head .fk { font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mid); }
+.ow-bench-rk { padding: 0.85rem 1.1rem; border-bottom: 1px solid var(--rule-lt); font-size: 0.8rem; font-weight: 600; color: var(--slate); line-height: 1.4; background: var(--bg); }
+.ow-bench-rk span { display: block; font-family: var(--mono); font-size: 9px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--mid); font-weight: 500; margin-top: 0.15rem; }
+.ow-bench-rk.last { border-bottom: 0; }
+.ow-bench-cell { padding: 0.85rem 1.1rem; border-bottom: 1px solid var(--rule-lt); border-left: 1px solid var(--rule-lt); display: flex; flex-direction: column; gap: 0.4rem; justify-content: center; }
+.ow-bench-cell .v { font-family: var(--mono); font-size: 0.82rem; font-weight: 600; color: var(--slate); font-variant-numeric: tabular-nums; }
+.ow-bench-cell .bar { height: 6px; background: var(--rule-lt); border-radius: var(--r-pill); overflow: hidden; }
+.ow-bench-cell .bar i { display: block; height: 100%; background: var(--ow-amber); border-radius: var(--r-pill); transition: width 0.35s var(--ease); }
+.ow-bench-cell .bar.good i { background: var(--ow-green); }
+.ow-bench-cell.read { border-bottom: 0; gap: 0.7rem; }
+.ow-bench-cell.read p { font-size: 0.8rem; color: #475569; line-height: 1.6; }
+.ow-bench-cell.read .ow-btn { align-self: flex-start; }
+@media (max-width: 700px) {
+  .ow-bench { grid-template-columns: minmax(96px, 0.9fr) repeat(var(--cols), minmax(0, 1fr)); }
+  .ow-bench-rk, .ow-bench-cell, .ow-bench-head { padding: 0.7rem 0.7rem; }
+  .ow-bench-cell.read p { display: none; } /* the read lines need room; values stay */
+}
+.ow-note-line { font-family: var(--mono); font-size: 10.5px; color: var(--mid); line-height: 1.7; margin-top: 1.1rem; max-width: 72ch; }
+
+/* the supply chain mapper */
+.ow-chain-card { padding: 1.2rem 1.4rem 1.3rem; margin-bottom: 1.25rem; }
+.ow-chain-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.8rem; }
+.ow-route-l { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; color: var(--slate); font-weight: 600; }
+.ow-seg2 { display: inline-flex; border: 1px solid var(--rule-dk); border-radius: var(--r-pill); overflow: hidden; }
+.ow-seg2 button { font-family: var(--sans); font-size: 0.8rem; font-weight: 600; color: var(--slate); background: var(--white); padding: 0.5rem 1rem; transition: background 0.2s var(--ease), color 0.2s var(--ease); }
+.ow-seg2 button + button { border-left: 1px solid var(--rule-dk); }
+.ow-seg2 button.on { background: var(--forest); color: var(--lime-bright); }
+.ow-airwarn { margin-top: 0.9rem; font-size: 0.85rem; font-weight: 500; color: var(--slate); line-height: 1.6; background: rgba(255, 59, 96, 0.07); border-left: 3px solid var(--ow-red); border-radius: 0 var(--r-sm) var(--r-sm) 0; padding: 0.7rem 0.95rem; max-width: 62ch; }
+
+.ow-stages { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1px; background: var(--rule-dk); border: 1px solid var(--rule-dk); border-radius: var(--r-xl); overflow: hidden; box-shadow: var(--shadow-soft); }
+.ow-stage { background: var(--white); padding: 1.1rem 1.2rem; display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto auto 1fr; gap: 0.25rem 0.6rem; align-items: baseline; }
+.ow-stage.hot { background: var(--lime-wash); }
+.ow-stage .n { font-family: var(--mono); font-size: 10px; color: var(--subtle); }
+.ow-stage.hot .n { color: var(--ow-green); font-weight: 700; }
+.ow-stage .sn { font-weight: 700; font-size: 0.9rem; color: var(--slate); }
+.ow-stage .sv { grid-column: 2; font-family: var(--mono); font-size: 0.78rem; font-weight: 600; color: var(--ow-green); font-variant-numeric: tabular-nums; }
+.ow-stage .bar { grid-column: 1 / -1; height: 6px; background: var(--rule-lt); border-radius: var(--r-pill); overflow: hidden; margin: 0.3rem 0; }
+.ow-stage .bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--forest-ink), var(--matcha)); border-radius: var(--r-pill); transition: width 0.35s var(--ease); }
+.ow-stage p { grid-column: 1 / -1; font-size: 0.78rem; color: #475569; line-height: 1.6; }
+
+/* the circularity scorecard */
+.ow-loop-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.25rem; }
+@media (min-width: 900px) { .ow-loop-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); align-items: start; } }
+.ow-choices { display: grid; gap: 0.7rem; }
+.ow-choice {
+  text-align: left; border: 1px solid var(--rule-dk); border-radius: var(--r-lg); background: var(--white);
+  padding: 0.95rem 1.1rem; transition: all 0.2s var(--ease); display: grid; gap: 0.25rem;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+.ow-choice:hover { border-color: var(--matcha); transform: translateY(-1px); }
+.ow-choice.on { background: rgba(181, 196, 43, 0.1); border-color: var(--forest-ink); }
+.ow-choice .cl { font-weight: 700; font-size: 0.9rem; color: var(--slate); display: inline-flex; align-items: center; gap: 0.5rem; }
+.ow-choice .cl::before { content: ''; width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid var(--subtle); transition: all 0.2s var(--ease); flex: none; }
+.ow-choice.on .cl::before { background: var(--matcha); border-color: var(--forest-ink); }
+.ow-choice .cb { font-size: 0.8rem; color: #475569; line-height: 1.55; }
+
+.ow-loop-score { padding: 1.4rem 1.5rem; }
+.ow-score-dial { display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 1px solid var(--rule-lt); }
+.ow-score-dial .n { font-family: var(--disp); font-size: clamp(2.6rem, 6vw, 3.6rem); font-weight: 700; line-height: 1; letter-spacing: -0.03em; color: var(--forest); font-variant-numeric: tabular-nums; }
+.ow-score-dial .d { font-family: var(--mono); font-size: 0.85rem; color: var(--mid); font-weight: 600; }
+.ow-score-dial .band { margin-left: auto; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; padding: 0.4rem 0.85rem; border-radius: var(--r-pill); border: 1px solid; }
+.ow-score-dial .b-closed { color: var(--ow-green); border-color: rgba(117, 130, 29, 0.5); background: rgba(181, 196, 43, 0.14); }
+.ow-score-dial .b-near { color: var(--ow-green); border-color: rgba(117, 130, 29, 0.4); background: rgba(181, 196, 43, 0.08); }
+.ow-score-dial .b-half { color: var(--ow-amber); border-color: rgba(181, 106, 0, 0.45); background: rgba(255, 149, 0, 0.08); }
+.ow-score-dial .b-linear { color: var(--ow-red); border-color: rgba(199, 39, 74, 0.4); background: rgba(255, 59, 96, 0.07); }
+.ow-rubric { display: grid; gap: 0.85rem; }
+.ow-rubric-row { display: grid; grid-template-columns: 1fr auto; gap: 0.15rem 0.8rem; align-items: baseline; }
+.ow-rubric-row .rl { font-weight: 700; font-size: 0.86rem; color: var(--slate); }
+.ow-rubric-row .rp { font-family: var(--mono); font-size: 0.78rem; font-weight: 700; color: var(--forest); font-variant-numeric: tabular-nums; }
+.ow-rubric-row .rp em { font-style: normal; color: var(--mid); font-weight: 500; }
+.ow-rubric-row .bar { grid-column: 1 / -1; height: 5px; background: var(--rule-lt); border-radius: var(--r-pill); overflow: hidden; }
+.ow-rubric-row .bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--forest-ink), var(--matcha)); border-radius: var(--r-pill); transition: width 0.35s var(--ease); }
+.ow-rubric-row p { grid-column: 1 / -1; font-size: 0.78rem; color: #475569; line-height: 1.55; }
+
+/* Studio motion under reduced-motion preferences. */
+@media (prefers-reduced-motion: reduce) {
+  .ow-pillbtn, .ow-choice, .owm-route { transition: none !important; animation: none !important; }
+}

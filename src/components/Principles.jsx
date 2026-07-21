@@ -24,7 +24,7 @@ export default function Principles() {
             >
               <div className="princ-num">{p.num}</div>
               <div className="princ-main">
-                <div className="princ-title">{p.title}</div>
+                <div className="princ-title">{p.icon && <Icon name={p.icon} size={18} className="fpi-lead" />}{p.title}</div>
                 <div className="princ-body">{p.body}</div>
               </div>
             </motion.div>

@@ -32,6 +32,7 @@ import Mark from '../components/Mark';
 import Icon from '../components/Icons';
 import Aurora from '../components/Aurora';
 import ContourField from '../components/ContourField';
+import Studio from './Studio';
 import { prefersReducedMotion } from '../utils/media';
 
 const MAX_COMPARE = 3;
@@ -551,7 +552,7 @@ function BrandCard({ brand, inCompare, onToggleCompare, onSelect, onOpenGroup })
       </div>
 
       <div className="ow-signals">
-        <div className="ow-signals-h"><span className="t">Disclosure signals</span></div>
+        <div className="ow-signals-h"><span className="t"><Icon name="chart" size={15} className="fpi-lead" />Disclosure signals</span></div>
         <TransparencyRow brand={brand} />
         <div className="ow-signal-list">
           {SIGNAL_FIELDS.filter((f) => f.id !== 'transparency').map((f) => (
@@ -567,7 +568,7 @@ function BrandCard({ brand, inCompare, onToggleCompare, onSelect, onOpenGroup })
       </div>
 
       <div className="ow-commit">
-        <div className="ow-commit-h">{COPY.lookup.commitmentsLabel} <span>· {COPY.lookup.commitmentsHint}</span></div>
+        <div className="ow-commit-h"><Icon name="target" size={14} className="fpi-lead" />{COPY.lookup.commitmentsLabel} <span>· {COPY.lookup.commitmentsHint}</span></div>
         <div className="ow-commit-row">
           {(() => {
             const badges = [];
@@ -586,7 +587,7 @@ function BrandCard({ brand, inCompare, onToggleCompare, onSelect, onOpenGroup })
 
       {family.length > 0 && (
         <div className="ow-family">
-          <div className="ow-family-h">{COPY.lookup.familyLabel} <span>· {COPY.lookup.familyHint}</span></div>
+          <div className="ow-family-h"><Icon name="people" size={14} className="fpi-lead" />{COPY.lookup.familyLabel} <span>· {COPY.lookup.familyHint}</span></div>
           <div className="ow-family-chips">
             {family.map((b) => (
               <button key={b.id} className="ow-familychip" onClick={() => onSelect(b.id)}>
@@ -600,7 +601,7 @@ function BrandCard({ brand, inCompare, onToggleCompare, onSelect, onOpenGroup })
       )}
 
       <div className="ow-buy">
-        <div className="ow-buy-h">{COPY.lookup.checklistLabel} <span>· {COPY.lookup.checklistHint}</span></div>
+        <div className="ow-buy-h"><Icon name="list" size={14} className="fpi-lead" />{COPY.lookup.checklistLabel} <span>· {COPY.lookup.checklistHint}</span></div>
         <ol className="ow-buy-list">
           {beforeYouBuy(brand, family).map((line, i) => (
             <li key={i}><span className="n">{String(i + 1).padStart(2, '0')}</span>{line}</li>
@@ -609,7 +610,7 @@ function BrandCard({ brand, inCompare, onToggleCompare, onSelect, onOpenGroup })
       </div>
 
       <div className="ow-dig">
-        <div className="ow-dig-h">{COPY.lookup.digLabel} <span>· {COPY.lookup.digHint}</span></div>
+        <div className="ow-dig-h"><Icon name="globe" size={14} className="fpi-lead" />{COPY.lookup.digLabel} <span>· {COPY.lookup.digHint}</span></div>
         <div className="ow-dig-links">
           {digLinks(brand).map((l) => (
             <a key={l.label} className="ow-diglink" href={l.url} target="_blank" rel="noopener noreferrer">
@@ -1024,7 +1025,7 @@ function StatBand() {
         {COPY.stats.map((s) => (
           <div className="ow-statcell" key={s.from}>
             <span className="n">{values[s.from]}</span>
-            <span className="k">{s.k}</span>
+            <span className="k">{s.icon && <Icon name={s.icon} size={15} className="fpi-lead" />}{s.k}</span>
           </div>
         ))}
       </div>
@@ -1440,18 +1441,18 @@ function Footer() {
       <div className="ow-wrap">
         <div className="ow-footer-grid">
           <div>
-            <h4>Method</h4>
+            <h4><Icon name="book" size={14} className="fpi-lead" />Method</h4>
             <p className="method">{COPY.footer.method}</p>
           </div>
           <div>
-            <h4>{COPY.footer.sourcesLabel}</h4>
+            <h4><Icon name="list" size={14} className="fpi-lead" />{COPY.footer.sourcesLabel}</h4>
             {SOURCES.map((s) => (
               <a className="src" key={s.url} href={s.url} target="_blank" rel="noopener noreferrer">{s.label} ↗</a>
             ))}
           </div>
         </div>
         <div className="ow-attribution">
-          <h4>{COPY.footer.attributionLabel}</h4>
+          <h4><Icon name="tag" size={14} className="fpi-lead" />{COPY.footer.attributionLabel}</h4>
           <p>{COPY.footer.attribution}</p>
         </div>
         <div className="ow-footer-base">
@@ -1604,6 +1605,7 @@ export default function FashionApp() {
         <LensSection selected={selected} />
         <Directory onSelect={select} view={dirView} setView={setDirView} focusGroup={focusGroup} />
         <Spotlight onOpenGroup={openGroup} />
+        <Studio />
         <FieldGuide />
         <SignalsExplainer />
         <Backlog />

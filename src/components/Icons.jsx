@@ -326,12 +326,30 @@ const scissors = (
   </>
 );
 
+// A water drop with a matcha catchlight.
+const drop = (
+  <>
+    <path d="M16 4.5 Q23.5 14 23.5 19.5 Q23.5 26.5 16 26.5 Q8.5 26.5 8.5 19.5 Q8.5 14 16 4.5 Z" />
+    <path className="fpi-fill" d="M12.4 18.2 Q12 22.4 15 23.4 Q11.6 24.4 10.6 21 Q10.2 19.4 11 18.2 Z" stroke="none" />
+  </>
+);
+
+// Two arrows closing a loop; one matcha arrowhead.
+const loop = (
+  <>
+    <path d="M9.5 12.5 Q11 7.5 16 7.5 Q21.5 7.5 23.5 12.5" />
+    <path d="M22.5 19.5 Q21 24.5 16 24.5 Q10.5 24.5 8.5 19.5" />
+    <path d="M23.5 12.5 L26 8.5 M23.5 12.5 L19.5 11" />
+    <path className="fpi-fill" d="M8.5 19.5 L5.6 23.2 L12.4 21.4 Z" stroke="none" />
+  </>
+);
+
 const GLYPHS = {
   house, bolt, car, plane, bowl, spark,
   pin, people, building, flame, leaf, fuel, phone, bus, fork, box, globe, clock,
   bag, bed, coins, bin,
   chart, target, list, book,
-  tag, shirt, scissors,
+  tag, shirt, scissors, drop, loop,
 };
 
 // Public component: <Icon name="bolt" size={28} />. Unknown names render
