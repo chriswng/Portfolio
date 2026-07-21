@@ -1,5 +1,5 @@
 /* ============================================================================
-   OPENWEAVE — stylesheet for the fashion transparency lookup + garment studio.
+   OPENWEAVE — stylesheet for the fashion transparency lookup.
 
    Sits ON TOP of global.css (imported first in main.jsx), exactly as the
    footprint pages do: design tokens, nav, grain, .canvas / .sec-tag /
@@ -55,7 +55,7 @@ a { text-decoration: none; }
 .ow-kicker b { color: #5F6A17; font-weight: 700; }
 .ow-kicker::before { content: ''; width: 26px; height: 1px; background: var(--matcha); display: inline-block; }
 
-/* Soft card shared by the studio tools. */
+/* Soft card shared by the lens concern cards (and any future tool panel). */
 .ow-card-soft {
   background: var(--white); border: 1px solid var(--rule-dk);
   border-radius: var(--r-xl); box-shadow: var(--shadow-soft);
@@ -621,6 +621,64 @@ a.ow-badge:hover { transform: translateY(-1px); }
 .ow-caveat h3 { font-family: var(--disp); font-size: 1.1rem; font-weight: 700; color: var(--lime-bright); margin-bottom: 0.6rem; }
 .ow-caveat p { color: rgba(241, 247, 216, 0.85); font-size: 0.88rem; line-height: 1.75; max-width: 74ch; }
 
+/* ------------------------------------------------------- field guide tabs - */
+/* Reuses the segmented-pill control; panels get breathing room and any tab
+   content wider than the viewport scrolls inside the panel, not the page. */
+.ow-guidetabs { flex-wrap: wrap; }
+.ow-guidepanel { padding-top: 0.4rem; }
+.ow-guidepanel > .ow-sublede { max-width: 72ch; }
+
+/* --------------------------------------------------------------- the lens - */
+.ow-lens-pick { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; margin-bottom: 1.8rem; }
+.ow-lens-pick .lbl { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mid); font-weight: 600; margin-right: 0.4rem; }
+.ow-lens-brand { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1.2rem; }
+.ow-lens-brand .bn { display: block; font-family: var(--disp); font-weight: 700; font-size: 1.25rem; letter-spacing: -0.02em; color: var(--slate); line-height: 1.1; }
+.ow-lens-brand .bp { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mid); margin-top: 0.2rem; }
+.ow-lens-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 1rem; }
+.ow-lens-card { padding: 1.2rem 1.3rem 1.1rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.ow-lens-card h3 { font-family: var(--disp); font-size: 1.05rem; font-weight: 700; letter-spacing: -0.01em; color: var(--slate); }
+.ow-lens-card .why { font-size: 0.82rem; color: #475569; line-height: 1.6; padding-bottom: 0.6rem; border-bottom: 1px dashed var(--rule-lt); }
+.ow-lens-card .rows { display: grid; gap: 0.65rem; }
+.ow-lens-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.8rem; }
+.ow-lens-row .sname { display: block; font-weight: 600; font-size: 0.86rem; color: var(--slate); }
+.ow-lens-row .shelp { display: block; font-size: 0.76rem; color: var(--mid); line-height: 1.5; margin-top: 0.1rem; max-width: 40ch; }
+.ow-lens-row .ow-pill { flex: none; margin-top: 0.1rem; }
+.ow-lens-summary { margin-top: 1.6rem; font-family: var(--disp); font-size: clamp(1.05rem, 2.4vw, 1.35rem); font-weight: 600; letter-spacing: -0.01em; line-height: 1.5; color: var(--slate); max-width: 56ch; }
+.ow-lens-note { margin-top: 0.7rem; font-size: 0.85rem; color: #475569; line-height: 1.7; max-width: 70ch; }
+
+/* -------------------------------------------------------- ownership map --- */
+.ow-tmap-wrap { margin-top: 2.4rem; }
+.ow-tmap-lede { font-size: 0.88rem; color: rgba(241, 247, 216, 0.8); line-height: 1.7; max-width: 62ch; margin-bottom: 1.1rem; }
+.ow-tmap { position: relative; width: 100%; aspect-ratio: 100 / 46; border-radius: var(--r-lg); overflow: hidden; }
+@media (max-width: 700px) { .ow-tmap { aspect-ratio: 100 / 72; } }
+.ow-tmap-tile {
+  position: absolute; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start;
+  padding: clamp(0.3rem, 0.8vw, 0.7rem); text-align: left; overflow: hidden;
+  background: rgba(241, 247, 216, 0.07); border: 1px solid rgba(241, 247, 216, 0.16);
+  transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+.ow-tmap-tile:hover, .ow-tmap-tile:focus-visible { background: rgba(181, 196, 43, 0.22); border-color: var(--matcha); z-index: 2; }
+.ow-tmap-tile:focus-visible { outline: 2px solid var(--matcha); outline-offset: -3px; }
+.ow-tmap-tile .tn { font-weight: 600; font-size: clamp(0.62rem, 1.3vw, 0.85rem); line-height: 1.2; letter-spacing: -0.01em; color: var(--lime-wash); }
+.ow-tmap-tile .tc { font-family: var(--mono); font-size: clamp(0.6rem, 1.1vw, 0.75rem); font-weight: 700; color: var(--lime-bright); }
+.ow-tmap-tile.sm .tn { font-size: 0.58rem; }
+.ow-tmap-tile.sm .tc { display: none; }
+.ow-tmap-note { margin-top: 0.9rem; font-family: var(--mono); font-size: 10.5px; color: rgba(241, 247, 216, 0.6); line-height: 1.7; max-width: 78ch; }
+
+/* ------------------------------------------------------------ change log -- */
+.ow-log { list-style: none; display: grid; gap: 0.75rem; max-width: 78ch; }
+.ow-log li { display: grid; grid-template-columns: 110px 1fr; gap: 1rem; align-items: baseline; padding-bottom: 0.75rem; border-bottom: 1px solid var(--rule-lt); }
+.ow-log li:last-child { border-bottom: 0; }
+.ow-log .d { font-family: var(--mono); font-size: 10.5px; font-weight: 700; color: var(--ow-green); letter-spacing: 0.03em; }
+.ow-log .t { font-size: 0.86rem; color: #475569; line-height: 1.65; }
+@media (max-width: 560px) { .ow-log li { grid-template-columns: 1fr; gap: 0.2rem; } }
+
+/* ------------------------------------------------------------------ misc -- */
+@media (prefers-reduced-motion: reduce) {
+  .ow-swing, .ow-tag, .ow-search-box, .ow-card, .ow-group, .ow-familychip, .ow-groupchip,
+  .ow-diglink, .ow-badge, .ow-btn, .ow-chip, .ow-tmap-tile { transition: none !important; animation: none !important; }
+}
+
 /* ============================================================================
    THE GARMENT STUDIO
    ============================================================================ */
@@ -795,8 +853,7 @@ a.ow-badge:hover { transform: translateY(-1px); }
 .ow-rubric-row .bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--forest-ink), var(--matcha)); border-radius: var(--r-pill); transition: width 0.35s var(--ease); }
 .ow-rubric-row p { grid-column: 1 / -1; font-size: 0.78rem; color: #475569; line-height: 1.55; }
 
-/* ------------------------------------------------------------------ misc -- */
+/* Studio motion under reduced-motion preferences. */
 @media (prefers-reduced-motion: reduce) {
-  .ow-swing, .ow-tag, .ow-search-box, .ow-card, .ow-group, .ow-familychip, .ow-groupchip,
-  .ow-diglink, .ow-badge, .ow-btn, .ow-chip, .ow-pillbtn, .ow-choice, .owm-route { transition: none !important; animation: none !important; }
+  .ow-pillbtn, .ow-choice, .owm-route { transition: none !important; animation: none !important; }
 }

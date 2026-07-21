@@ -64,18 +64,27 @@ export function ftiBand(score) {
 // ---------------------------------------------------------------------------
 // BRAND LOGOS.
 //
-// Each brand shows its REAL logo, loaded at runtime from a logo CDN keyed by
-// the company's web domain (BRAND_DOMAIN below). If a domain is not on file, or
-// the logo fails to load, the brand falls back to a generated "woven care-label"
-// monogram (deriveMonogram + SEGMENT_STYLE) so every brand always has a mark.
+// Each brand shows its REAL mark, loaded at runtime by the company's web
+// domain (BRAND_DOMAIN below). Clearbit's free logo CDN was retired after the
+// HubSpot acquisition, so instead of one provider the page walks an ordered
+// chain of keyless icon services: DuckDuckGo's icon service first (real site
+// icons, misses cleanly), then Google's s2 favicon service as the backstop
+// (never 404s, but serves a tiny generic globe when it has nothing, which
+// BrandLogo detects by rendered size and treats as a miss). If every source
+// misses, the brand falls back to a generated "woven care-label" monogram
+// (deriveMonogram + SEGMENT_STYLE) so every brand always has a mark.
 //
-// LOGO_CDN is a single swap-point. logo.clearbit.com needs no API key; to move
-// to a keyed provider later (e.g. Logo.dev) only this line changes.
+// LOGO_SOURCES stays the single swap-point: to move to a keyed provider later
+// (e.g. Logo.dev or Brandfetch) prepend a URL builder here; nothing else moves.
 // ---------------------------------------------------------------------------
-export const LOGO_CDN = 'https://logo.clearbit.com/';
+export const LOGO_SOURCES = [
+  (domain) => `https://icons.duckduckgo.com/ip3/${domain}.ico`,
+  (domain) => `https://www.google.com/s2/favicons?domain=${domain}&sz=128`,
+];
 
-export function logoUrl(domain) {
-  return domain ? `${LOGO_CDN}${domain}` : null;
+export function logoUrl(domain, source = 0) {
+  if (!domain || source < 0 || source >= LOGO_SOURCES.length) return null;
+  return LOGO_SOURCES[source](domain);
 }
 
 // Primary web domain per brand, used to fetch the logo. Kept as a flat map so
@@ -137,6 +146,178 @@ export const BRAND_DOMAIN = {
   'Cotton On': 'cottonon.com',
   'Country Road': 'countryroad.com.au',
   'The Iconic': 'theiconic.com.au',
+  'R.M. Williams': 'rmwilliams.com.au',
+  Zimmermann: 'zimmermann.com',
+  Camilla: 'camilla.com',
+  'Lorna Jane': 'lornajane.com.au',
+  Bonds: 'bonds.com.au',
+  Converse: 'converse.com',
+  Jordan: 'nike.com',
+  Champion: 'champion.com',
+  Reebok: 'reebok.com',
+  Fila: 'fila.com',
+  Skechers: 'skechers.com',
+  Speedo: 'speedo.com',
+  Gymshark: 'gymshark.com',
+  Lacoste: 'lacoste.com',
+  Decathlon: 'decathlon.com',
+  UGG: 'ugg.com',
+  'Dr. Martens': 'drmartens.com',
+  'Columbia Sportswear': 'columbia.com',
+  Kathmandu: 'kathmandu.com.au',
+  Guess: 'guess.com',
+  'G-Star RAW': 'g-star.com',
+  Diesel: 'diesel.com',
+  Wrangler: 'wrangler.com',
+  'C&A': 'c-and-a.com',
+  'United Colors of Benetton': 'benetton.com',
+  Mango: 'mango.com',
+  'Massimo Dutti': 'massimodutti.com',
+  Stradivarius: 'stradivarius.com',
+  Superdry: 'superdry.com',
+  'River Island': 'riverisland.com',
+  'Abercrombie & Fitch': 'abercrombie.com',
+  OVS: 'ovs.it',
+  PrettyLittleThing: 'prettylittlething.com',
+  'Marks & Spencer': 'marksandspencer.com',
+  'Old Navy': 'oldnavy.gap.com',
+  'Victoria’s Secret': 'victoriassecret.com',
+  'Hugo Boss': 'hugoboss.com',
+  Armani: 'armani.com',
+  'Michael Kors': 'michaelkors.com',
+  Versace: 'versace.com',
+  'Salvatore Ferragamo': 'ferragamo.com',
+  // Full-coverage batch. Confident, well-known primary domains only: a brand
+  // whose domain is uncertain is left out on purpose and keeps its monogram.
+  Aeropostale: 'aeropostale.com',
+  AJIO: 'ajio.com',
+  'ALDI Nord': 'aldi-nord.de',
+  'ALDI SOUTH': 'aldi-sued.de',
+  ALDO: 'aldoshoes.com',
+  Amazon: 'amazon.com',
+  'American Eagle': 'ae.com',
+  Anthropologie: 'anthropologie.com',
+  Aritzia: 'aritzia.com',
+  Asda: 'asda.com',
+  Bally: 'bally.com',
+  'Banana Republic': 'bananarepublic.gap.com',
+  Billabong: 'billabong.com',
+  "Bloomingdale's": 'bloomingdales.com',
+  Bonprix: 'bonprix.de',
+  'Brooks Sports': 'brooksrunning.com',
+  'Brunello Cucinelli': 'brunellocucinelli.com',
+  Buckle: 'buckle.com',
+  Burlington: 'burlington.com',
+  Calzedonia: 'calzedonia.com',
+  'Canada Goose': 'canadagoose.com',
+  Carhartt: 'carhartt.com',
+  'Carolina Herrera': 'carolinaherrera.com',
+  Carrefour: 'carrefour.com',
+  "Carter's": 'carters.com',
+  celio: 'celio.com',
+  "Chico's": 'chicos.com',
+  Chloé: 'chloe.com',
+  Clarks: 'clarks.com',
+  Costco: 'costco.com',
+  Deichmann: 'deichmann.com',
+  Desigual: 'desigual.com',
+  "Dick's Sporting Goods": 'dickssportinggoods.com',
+  "Dillard's": 'dillards.com',
+  Disney: 'disney.com',
+  DKNY: 'dkny.com',
+  'Dolce & Gabbana': 'dolcegabbana.com',
+  Dressmann: 'dressmann.com',
+  DSW: 'dsw.com',
+  'Eddie Bauer': 'eddiebauer.com',
+  'El Corte Inglés': 'elcorteingles.es',
+  'Ermenegildo Zegna': 'zegna.com',
+  Esprit: 'esprit.com',
+  Express: 'express.com',
+  Fabletics: 'fabletics.com',
+  Falabella: 'falabella.com',
+  'Famous Footwear': 'famousfootwear.com',
+  Fanatics: 'fanatics.com',
+  'Fashion Nova': 'fashionnova.com',
+  Fjällräven: 'fjallraven.com',
+  'Foot Locker': 'footlocker.com',
+  Fossil: 'fossil.com',
+  'Free People': 'freepeople.com',
+  'Fruit of the Loom': 'fruit.com',
+  Furla: 'furla.com',
+  'Gerry Weber': 'gerryweber.com',
+  Gildan: 'gildan.com',
+  Hanes: 'hanes.com',
+  'Helly Hansen': 'hellyhansen.com',
+  HEMA: 'hema.nl',
+  'Hollister Co.': 'hollisterco.com',
+  "Hudson's Bay": 'thebay.com',
+  Intimissimi: 'intimissimi.com',
+  'Jack & Jones': 'jackjones.com',
+  'Jack Wolfskin': 'jack-wolfskin.com',
+  'Jil Sander': 'jilsander.com',
+  Jockey: 'jockey.com',
+  'Joe Fresh': 'joefresh.com',
+  'John Lewis': 'johnlewis.com',
+  'K-Way': 'k-way.com',
+  Kaufland: 'kaufland.de',
+  Kiabi: 'kiabi.com',
+  KiK: 'kik.de',
+  "Kohl's": 'kohls.com',
+  'La Redoute': 'laredoute.fr',
+  "Lands' End": 'landsend.com',
+  'LC Waikiki': 'lcwaikiki.com',
+  Lidl: 'lidl.com',
+  Lindex: 'lindex.com',
+  'LL Bean': 'llbean.com',
+  Longchamp: 'longchamp.com',
+  "Macy's": 'macys.com',
+  Mammut: 'mammut.com',
+  'Marc Jacobs': 'marcjacobs.com',
+  Marni: 'marni.com',
+  Matalan: 'matalan.co.uk',
+  'Max Mara': 'maxmara.com',
+  Merrell: 'merrell.com',
+  Mizuno: 'mizuno.com',
+  Monoprix: 'monoprix.fr',
+  Morrisons: 'morrisons.com',
+  Muji: 'muji.com',
+  'New Look': 'newlook.com',
+  'Nine West': 'ninewest.com',
+  Nordstrom: 'nordstrom.com',
+  Otto: 'otto.de',
+  'Pepe Jeans': 'pepejeans.com',
+  Quiksilver: 'quiksilver.com',
+  REI: 'rei.com',
+  Reserved: 'reserved.com',
+  REVOLVE: 'revolve.com',
+  Romwe: 'romwe.com',
+  Roxy: 'roxy.com',
+  'Russell Athletic': 'russellathletic.com',
+  's.Oliver': 'soliver.com',
+  "Sainsbury's": 'sainsburys.co.uk',
+  'Saks Fifth Avenue': 'saksfifthavenue.com',
+  Sandro: 'sandro-paris.com',
+  'Savage X Fenty': 'savagex.com',
+  'Sports Direct': 'sportsdirect.com',
+  'Steve Madden': 'stevemadden.com',
+  Tchibo: 'tchibo.de',
+  'Ted Baker': 'tedbaker.com',
+  Tesco: 'tesco.com',
+  Tezenis: 'tezenis.com',
+  "The Children's Place": 'childrensplace.com',
+  'The Warehouse': 'thewarehouse.co.nz',
+  "Tod's": 'tods.com',
+  'Tom Ford': 'tomford.com',
+  'Tommy Bahama': 'tommybahama.com',
+  'Tory Burch': 'toryburch.com',
+  Triumph: 'triumph.com',
+  'Urban Outfitters': 'urbanoutfitters.com',
+  Valentino: 'valentino.com',
+  'Vero Moda': 'veromoda.com',
+  Very: 'very.co.uk',
+  Walmart: 'walmart.com',
+  'Woolworths South Africa': 'woolworths.co.za',
+  Zeeman: 'zeeman.com',
 };
 
 // Corporate-parent domains, for the real logo shown on each group card.
@@ -151,6 +332,24 @@ export const GROUP_DOMAIN = {
   'PVH Corp.': 'pvh.com',
   'Tapestry, Inc.': 'tapestry.com',
   Wesfarmers: 'wesfarmers.com.au',
+  'Nike, Inc.': 'nike.com',
+  'Capri Holdings': 'capriholdings.com',
+  Hanesbrands: 'hanesbrands.com',
+  'Gap Inc.': 'gapinc.com',
+  'Authentic Brands Group': 'authentic.com',
+  URBN: 'urbn.com',
+  'Calzedonia Group': 'calzedoniagroup.com',
+  Boardriders: 'boardriders.com',
+  'Schwarz Group': 'gruppe.schwarz',
+  'Reliance Retail': 'relianceretail.com',
+  'Otto Group': 'ottogroup.com',
+  'OTB Group': 'otb.net',
+  'Macy’s, Inc.': 'macysinc.com',
+  'Landmark Group': 'landmarkgroup.com',
+  'Hudson’s Bay Company': 'hbc.com',
+  Bestseller: 'bestseller.com',
+  'Berkshire Hathaway': 'berkshirehathaway.com',
+  'Abercrombie & Fitch Co.': 'abercrombie.com',
 };
 
 // ---------------------------------------------------------------------------
@@ -880,7 +1079,7 @@ function buildBrand(raw) {
   const fti = raw.fti != null ? raw.fti : (FTI_2023[id] != null ? FTI_2023[id] : null);
   const band = ftiBand(fti);
   const ftiNote = raw.ftiNote || FTI_2023_NOTE[id]
-    || (FTI_2023[id] != null ? 'Fashion Transparency Index 2023, published by Fashion Revolution.' : '');
+    || (FTI_2023[id] != null ? 'Fashion Transparency Index 2023 (final edition), published by Fashion Revolution.' : '');
   return {
     id,
     name: raw.name,
@@ -1085,7 +1284,8 @@ export function digLinks(brand) {
   links.push({ label: 'Good On You rating', url: goodOnYouUrl(brand), note: 'Independent people, planet and animal score' });
   links.push({ label: 'Baptist World Aid (AU)', url: 'https://baptistworldaid.org.au/resources/ethical-fashion-guide/', note: 'Australian worker-rights and environment score out of 100' });
   links.push({ label: 'SBTi climate targets', url: 'https://sciencebasedtargets.org/target-dashboard', note: 'Check for a validated science-based emissions target' });
-  links.push({ label: 'Fashion Transparency Index', url: 'https://www.fashionrevolution.org/about/transparency/', note: 'The source of the disclosure score above' });
+  links.push({ label: 'Fashion Transparency Index', url: 'https://www.fashionrevolution.org/about/transparency/', note: 'The source of the disclosure score above. 2023 was its final edition' });
+  links.push({ label: 'What Fuels Fashion (2024)', url: 'https://www.fashionrevolution.org/what-fuels-fashion/', note: 'Fashion Revolution’s successor index, scoring decarbonisation disclosure' });
   return links;
 }
 
@@ -1098,6 +1298,64 @@ export const SIGNAL_FIELDS = [
   { id: 'materials', label: 'Materials', help: 'What fibres and materials the brand reports using.' },
   { id: 'supplyChain', label: 'Supplier list', help: 'A published list of manufacturing facilities.' },
   { id: 'circularity', label: 'Circularity', help: 'Repair, resale, take-back or recycling programmes.' },
+];
+
+// ---------------------------------------------------------------------------
+// THE LENS — "what you can't know", by concern.
+//
+// The tool's decision aid, built without breaking the no-ranking rule: instead
+// of scoring brands, it scores the COMPLETENESS of what a shopper can verify.
+// Each concern maps onto the disclosure signals above; the lens then reads a
+// brand's statuses and reports what can be checked, what only the parent
+// publishes, what is not published, and what this tool has not verified yet.
+// No new metric is invented: it is a re-reading of statuses already on file.
+// ---------------------------------------------------------------------------
+export const LENS_CONCERNS = [
+  {
+    id: 'climate', label: 'Climate', signals: ['climateTarget', 'scope12', 'scope3'],
+    why: 'A dated target plus reported Scope 1, 2 and 3 emissions. Scope 3, the supply chain, is where most of fashion’s footprint sits.',
+  },
+  {
+    id: 'supply', label: 'Supply chain and labour', signals: ['supplyChain'],
+    why: 'A published factory list is the entry ticket. A brand that will not name its factories is choosing what you can check.',
+  },
+  {
+    id: 'materials', label: 'Materials and fibres', signals: ['materials'],
+    why: 'What the brand reports using. Fibre choice drives water use, microplastic shedding and what happens at end of life.',
+  },
+  {
+    id: 'circularity', label: 'Circularity and waste', signals: ['circularity'],
+    why: 'Repair, resale, take-back or recycling programmes with a real destination, beyond a bin at the door.',
+  },
+  {
+    id: 'ownership', label: 'Ownership and governance', signals: [], ownership: true,
+    why: 'Who actually makes the decisions on targets, suppliers and wages. Openweave verifies this for every brand on file.',
+  },
+];
+
+// How a disclosure status reads through the lens. 'research' is kept honestly
+// distinct from 'notFound': the first is this tool's gap, the second is the
+// brand's silence.
+export const LENS_READING = {
+  disclosed: { id: 'open', label: 'You can check this' },
+  partial: { id: 'part', label: 'Partly checkable' },
+  parent: { id: 'parent', label: 'Only the parent publishes' },
+  notFound: { id: 'dark', label: 'Not published' },
+  research: { id: 'unverified', label: 'Not verified here yet' },
+};
+
+// ---------------------------------------------------------------------------
+// CHANGE LOG — the freshness discipline made visible. Real, dated entries for
+// every change to the dataset or the tool's method, newest first. Dates are
+// the actual dates the changes landed in the repository.
+// ---------------------------------------------------------------------------
+export const CHANGELOG = [
+  { date: '20 July 2026', note: 'The four explainers consolidated into one field guide; the personal lens and the ownership map added; the garment studio retired. Logo loading moved from the retired Clearbit CDN to a keyless multi-provider chain, with domains on file for the full brand universe.' },
+  { date: '20 July 2026', note: 'Fashion Transparency Index 2023 relabelled as the final edition of that index. What Fuels Fashion 2024, Fashion Revolution’s successor on decarbonisation, added as a per-brand link-out; its scores await ingestion from the primary report.' },
+  { date: '19 July 2026', note: 'Full FTI 2023 universe ingested: 258 brands and retailers on file, 248 with a score read from the report’s Final Scores table. SBTi climate-target status matched for 111 companies; fuzzy name matches discarded.' },
+  { date: '19 July 2026', note: 'Ownership provenance lines and the verification stamp added. Bonds and Champion note the Gildan takeover of Hanesbrands agreed in 2025.' },
+  { date: '18 July 2026', note: 'Fashion Pact, B Corp and SBTi memberships verified from source, with Hermès marked as having left the Fashion Pact in 2023. Australian labels R.M. Williams, Zimmermann, Camilla, Lorna Jane and Bonds added with verified ownership.' },
+  { date: '18 July 2026', note: 'Openweave launched: verified corporate ownership, segments and headquarters for the initial brand set, with deep-linked lookups and the corporate group lens.' },
 ];
 
 // ===========================================================================
@@ -1217,6 +1475,7 @@ export function analyseClaim(text) {
 // ---------------------------------------------------------------------------
 // Editorial copy. Australian English, plain, active. No em dashes.
 // ---------------------------------------------------------------------------
+
 // ===========================================================================
 // THE GARMENT STUDIO — model factors for the four working tools: the carbon
 // footprint estimator, the fabric comparator, the supply chain mapper and the
@@ -1557,7 +1816,7 @@ export const COPY = {
     commitmentsHint: 'Industry pledges this brand has signed. A commitment, not a result.',
     commitmentsNone: 'No memberships confirmed on file yet.',
     provenanceLabel: 'Ownership',
-    freshnessTemplate: 'Ownership and memberships verified as of {d}. Transparency score: Fashion Transparency Index 2023.',
+    freshnessTemplate: 'Ownership and memberships verified as of {d}. Transparency score: Fashion Transparency Index 2023, the final edition of that index.',
   },
 
   compare: {
@@ -1571,8 +1830,24 @@ export const COPY = {
     brandCol: 'Signal',
   },
 
-  directory: {
+  lens: {
     idx: '03',
+    icon: 'target',
+    title: 'What you can’t know',
+    sub: 'Pick what you care about',
+    lede: 'Most tools tell you which brands are good. This one tells you what you can and cannot verify. Choose the things you care about, and the lens reads the selected brand against them: what it publishes, what only its parent publishes, and what stays dark.',
+    pickLabel: 'I care about',
+    emptyTitle: 'No brand under the lens yet',
+    emptyBody: 'Look up a brand above and this section will read it against the things you care about.',
+    noneChecked: 'Pick at least one concern above to read this brand against it.',
+    ownershipLine: 'Verified: {p}.',
+    ownershipFallback: 'Verified owner: {p}.',
+    summaryTemplate: 'Of the {n} signals behind what you care about, {open} can be checked, {parent} only through the parent, {dark} are not published, and {unverified} have not been verified by this tool yet.',
+    note: 'This is not a score. A brand can publish a lot and still weigh heavily on the world. But a dark signal means you are being asked to trust, not check.',
+  },
+
+  directory: {
+    idx: '04',
     icon: 'building',
     title: 'The directory',
     sub: 'Every brand, and every owner',
@@ -1602,6 +1877,9 @@ export const COPY = {
     stat: 'Ten owners',
     line: 'hold most of the brands on this page. The name on the label is rarely the company making the calls on climate, suppliers or wages. If you want the real numbers, read the parent.',
     sub: 'Which is why Openweave shows you the owner first',
+    mapLede: 'Every owner of more than one brand on this page, sized by how many labels it holds. Tap an owner to open its group in the directory.',
+    mapNote: 'Tile size is the number of brands on file under that owner. The number after each name is its brand count.',
+    independentsTemplate: '+ {n} standalone labels that own no other brand on file',
   },
 
   // The Garment Studio: four working tools that show the speciality, not just
@@ -1610,7 +1888,7 @@ export const COPY = {
     kicker: 'The garment studio',
     lede: 'The lookup tells you what a brand says. The studio shows you what a garment costs the world, and where. Build one, follow it, then design its second life.',
     estimator: {
-      idx: '04',
+      idx: '05',
       icon: 'spark',
       title: 'Carbon footprint estimator',
       sub: 'Build a garment, watch it cost',
@@ -1634,7 +1912,7 @@ export const COPY = {
       srField: 'Decorative particle field showing the estimate as drifting motes; the figures are in the readout beside it.',
     },
     fabrics: {
-      idx: '05',
+      idx: '06',
       icon: 'leaf',
       title: 'Fabric comparator',
       sub: 'Three cloths on the bench',
@@ -1651,7 +1929,7 @@ export const COPY = {
       decayCapNote: '500 means it effectively never leaves; polyester survives centuries.',
     },
     chain: {
-      idx: '06',
+      idx: '07',
       icon: 'globe',
       title: 'Supply chain mapper',
       sub: 'Follow the garment you just built',
@@ -1664,7 +1942,7 @@ export const COPY = {
       airWarnTemplate: 'Air freight multiplies the transport stream by roughly {n}×. Nothing else you choose moves the number this hard, this fast.',
     },
     loop: {
-      idx: '07',
+      idx: '08',
       icon: 'loop',
       title: 'Circularity scorecard',
       sub: 'Design its second life',
@@ -1676,9 +1954,30 @@ export const COPY = {
     },
   },
 
-  claim: {
-    idx: '08',
+  // The field guide: one section, four tabs. The working knowledge that used
+  // to sprawl across four separate sections (materials, certifications,
+  // regulation, claim check), collapsed so the page's spine stays the lookup.
+  guide: {
+    idx: '09',
     icon: 'book',
+    title: 'Field guide',
+    sub: 'Materials, labels, rules and claims',
+    lede: 'The working knowledge behind the lookup, in one place: what the common fibres trade off, what certifications actually verify, the rules about to change what brands must tell you, and a checker for the claims on the swing tag.',
+    tabs: [
+      { id: 'materials', label: 'Materials' },
+      { id: 'certs', label: 'Certifications' },
+      { id: 'regulation', label: 'Regulation' },
+      { id: 'claim', label: 'Claim check' },
+    ],
+    certTitle: 'What the certifications actually verify',
+    certLede: 'A certificate proves one specific, bounded thing. Knowing its edge is how you avoid reading a single label as a blanket "this is good".',
+    certVerifies: 'Verifies',
+    certEdge: 'Its edge',
+    regTitle: 'Regulation radar',
+    regLede: 'The rules that will change what brands must tell you. Forward-looking, and deliberately not a claim about any one brand.',
+  },
+
+  claim: {
     title: 'Claim check',
     sub: 'Paste a green claim, see what holds up',
     lede: 'Marketing is where a brand chooses its words. Paste any sustainability claim and this checks it against the way regulators read it: flagging vague and absolute terms, and the qualifiers each one demands. It reads what you paste. It makes no judgement about any real brand.',
@@ -1696,8 +1995,6 @@ export const COPY = {
   },
 
   materials: {
-    idx: '09',
-    icon: 'shirt',
     title: 'Materials',
     sub: 'What the fabric is telling you',
     lede: 'Half of a garment’s story is the fibre it is cut from. This is a plain read of the common ones, and their trade-offs. It is not a ranking, on purpose.',
@@ -1732,13 +2029,7 @@ export const COPY = {
         b: 'You will see Disclosed, Not found, Parent-level only, and Needs research. You will not see "good", "bad", "ethical" or "sustainable" attached to a brand, because those words hide the working. This tool tracks what can be found publicly, and hands you the sources to judge for yourself.',
       },
     ],
-    disclaimer: 'Transparency is not the same as performance. A brand can disclose a lot and still have significant impacts. This tool tracks what can be found publicly, not a moral ranking.',
-    certTitle: 'What the certifications actually verify',
-    certLede: 'A certificate proves one specific, bounded thing. Knowing its edge is how you avoid reading a single label as a blanket "this is good".',
-    certVerifies: 'Verifies',
-    certEdge: 'Its edge',
-    regTitle: 'Regulation radar',
-    regLede: 'The rules that will change what brands must tell you. Forward-looking, and deliberately not a claim about any one brand.',
+    disclaimer: 'Transparency is not the same as performance. A brand can disclose a lot and still have significant impacts. This tool tracks what can be found publicly, not a moral ranking. The score it carries is the Fashion Transparency Index 2023, the final edition of that index; its successor, What Fuels Fashion, is linked from every brand card.',
   },
 
   backlog: {
@@ -1746,7 +2037,9 @@ export const COPY = {
     icon: 'scissors',
     title: 'Research backlog',
     sub: 'What still needs a human',
-    lede: 'This tool is honest about its gaps. Structural facts, parent, segment, headquarters, are verified. Quantified disclosure fields are being filled in over time. Anything marked "Needs research" below is waiting for a checked source.',
+    lede: 'This tool is honest about its gaps. Structural facts, parent, segment, headquarters, are verified. Quantified disclosure fields are being filled in over time. Anything marked "Needs research" below is waiting for a checked source. Next on the list: verified What Fuels Fashion 2024 scores, read from the primary report, to succeed the retired Transparency Index.',
+    logTitle: 'Change log',
+    logLede: 'Freshness is a discipline, not a stamp. Every change to the dataset or the method, dated.',
     fileNote: 'The editable tracker lives in the repository at',
     filePath: 'public/data/fashion-brands.csv',
     fileHref: 'https://github.com/itschriswang/portfolio/blob/main/public/data/fashion-brands.csv',
@@ -1756,7 +2049,7 @@ export const COPY = {
   },
 
   footer: {
-    method: 'Method: brand ownership from corporate filings and official brand pages. Transparency scores are the Fashion Transparency Index 2023, published by Fashion Revolution, which rates public disclosure only. Climate-target status is drawn from the Science Based Targets initiative dashboard; memberships from The Fashion Pact and B Lab. Per-field disclosure statuses are tracked in the repository and marked "Needs research" until a source is confirmed. Garment studio figures are indicative estimates assembled from published life cycle assessment literature, freight factors and public grid intensity data, rounded and simplified so they can be manipulated live. Nothing here is assured reporting, a product footprint, or advice about a real brand.',
+    method: 'Method: brand ownership from corporate filings and official brand pages. Transparency scores are the Fashion Transparency Index 2023, published by Fashion Revolution, which rates public disclosure only; 2023 was the final edition of that index, and its successor, What Fuels Fashion, is linked from every brand card until its scores are ingested from the primary report. Climate-target status is drawn from the Science Based Targets initiative dashboard; memberships from The Fashion Pact and B Lab. Per-field disclosure statuses are tracked in the repository and marked "Needs research" until a source is confirmed. Nothing here is assured reporting, a product footprint, or advice about a real brand.',
     attributionLabel: 'Data and attribution',
     attribution: 'This tool reproduces published figures with attribution, and claims none of them as its own. Fashion Transparency Index scores are © Fashion Revolution CIC, used for reference under their public research. Science Based Targets initiative data © SBTi. Certification and membership marks belong to their owners: The Fashion Pact, B Lab (B Corp), and the brands named. Company ownership is a matter of public record. Openweave is an independent, non-commercial reference tool and is not affiliated with, or endorsed by, any brand or organisation named. Every figure links to its source so you can check it. If you own a listing and something is wrong, it can be corrected.',
     sourcesLabel: 'Sources',
@@ -1768,13 +2061,13 @@ export const COPY = {
   rail: [
     { label: 'Lookup', id: 'lookup' },
     { label: 'Compare', id: 'compare' },
+    { label: 'Your lens', id: 'lens' },
     { label: 'Directory', id: 'directory' },
     { label: 'Estimator', id: 'estimator' },
     { label: 'Fabrics', id: 'fabrics' },
     { label: 'Supply chain', id: 'chain' },
     { label: 'Circularity', id: 'loop' },
-    { label: 'Claim check', id: 'claim' },
-    { label: 'Materials', id: 'materials' },
+    { label: 'Field guide', id: 'guide' },
     { label: 'Signals', id: 'signals' },
     { label: 'Backlog', id: 'backlog' },
   ],

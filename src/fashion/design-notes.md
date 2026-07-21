@@ -315,3 +315,72 @@ type, this section supersedes them.
 - On phones the hero hugs its content instead of reserving a near-full
   viewport; the swing tags are hidden there, so the old min-height left a
   blank band.
+
+## The lookup owns the page (v10)
+
+The Garment Studio is retired. Building a hypothetical garment read as a
+demo, not a decision aid; it pulled the page away from its one job ("before I
+buy from this brand, who owns it and what does it tell me?") and its factors,
+however honestly labelled, sat one notch below the page's sourced-facts
+standard. `Studio.jsx`, the studio factor set and the world-map data are gone.
+Where earlier sections above describe the studio, this section supersedes them.
+What replaced it doubles down on what only Openweave does:
+
+- **The field guide.** The four explainers (materials, certifications,
+  regulation radar, claim check) collapsed into one tabbed section, so the
+  page's spine reads search → card → lens → compare → directory → done. The
+  tabs are the ARIA tabs pattern (roving tabindex, arrow keys) on the
+  segmented-pill control; each panel keeps its full content, including the
+  working claim checker. "What the signals mean" stays its own section: it is
+  load-bearing, not reference.
+- **The lens: "what you can't know".** The decision aid that keeps the
+  no-ranking rule. The user picks concerns (climate, supply chain and labour,
+  materials, circularity, ownership) and the lens re-reads the selected
+  brand's existing disclosure statuses against them, tallying what can be
+  checked, what only the parent publishes, what is not published, and what
+  this tool has not verified yet. That last distinction is deliberate: "Needs
+  research" is our gap and is never presented as the brand's silence. No new
+  metric is invented; it is a re-reading of statuses already on file. The
+  chosen concerns persist in localStorage.
+- **The ownership map.** The concentration thesis made explorable: a
+  squarified treemap of every multi-brand owner, sized by brand count only
+  (no invented weighting), sitting inside the dark spotlight band. Every tile
+  is a real button that opens the group in the directory; the standalone-label
+  count is stated alongside so the picture stays honest.
+- **The index succession, stated plainly.** The Fashion Transparency Index
+  ended with its 2023 edition, so the score is now labelled "final edition"
+  wherever it appears, and What Fuels Fashion 2024 (Fashion Revolution's
+  successor, scoring decarbonisation disclosure) is a per-brand "Dig deeper"
+  link. Its scores are NOT ingested yet: consistent with v6, verified figures
+  come only from the primary report, and that ingestion sits in the research
+  backlog.
+- **The change log.** Freshness became a discipline instead of a stamp: a
+  dated, human-readable log of every change to the dataset or method, rendered
+  in the backlog section, with dates taken from the repository history.
+
+## Brand logos, provider chain (v10)
+
+`logo.clearbit.com` was retired after the HubSpot acquisition, which had
+silently reduced the page to monograms. Two fixes:
+
+- **A provider chain instead of one CDN.** `LOGO_SOURCES` in `data.js` is an
+  ordered list of keyless icon providers (DuckDuckGo's icon service, then
+  Google's s2 favicon service). `BrandLogo` walks the chain: a load error
+  advances to the next source, and a "success" that is really a placeholder
+  (Google serves a 16px generic globe instead of a 404) is detected by
+  rendered size and treated as a miss. The woven monogram remains the
+  guaranteed base underneath. The chain stays the single swap-point for a
+  future keyed provider.
+- **Domains for the whole universe.** `BRAND_DOMAIN` grew from 57 entries to
+  226 of the 258 brands, and `GROUP_DOMAIN` now covers every multi-brand
+  parent. Only brands whose primary domain could not be stated with confidence
+  were left out, on purpose: a wrong logo is worse than a monogram.
+
+### Merge note: the studio survives the lookup-first restructure
+
+The lookup-first restructure (personal lens, ownership treemap, tabbed field
+guide) was developed in parallel and its merge dropped the Garment Studio.
+Restored deliberately: the studio now sits between the directory and the
+field guide as sections 05-08, renumbering the guide (09), signals (10) and
+backlog (11). Both ideas hold: the lookup stays the spine, the studio stays
+the speciality.
