@@ -222,6 +222,7 @@ export const CATEGORY_QUIPS = {
   other: { example: 'Everything else.', own: 'Everything else.' },
   goods: { example: 'The stuff, tallied up.', own: 'Clothes, gadgets and the rest.' },
   hotel: { example: 'Nights away from home.', own: 'Nights away from home.' },
+  dwelling: { example: 'The carbon poured into the walls.', own: 'The carbon poured into your walls.' },
 };
 
 export const MONTHS_ST = {
