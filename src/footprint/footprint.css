@@ -146,7 +146,7 @@
 /* ---- The planner: option carousel + sticky impact readout ---- */
 /* Options and the pathway chart sit side by side on wide screens so the chart
    stays in view while you pick changes; the impact readout spans the width. */
-.fp-planner{ position:relative; display:grid; gap:1.25rem; }
+.fp-planner{ position:relative; display:grid; grid-template-columns:minmax(0,1fr); gap:1.25rem; }
 @media (min-width:980px){
   .fp-planner{ grid-template-columns:minmax(0,1fr) minmax(0,1fr); align-items:start; }
   .fp-planner-cards{ grid-column:1; margin-bottom:0; }
