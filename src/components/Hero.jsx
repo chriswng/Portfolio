@@ -71,15 +71,16 @@ export default function Hero() {
       </div>
       <Aurora
         colorStops={['#635BFF', '#B5C42B', '#FF9500', '#FF3B60']}
-        amplitude={0.7}
-        blend={0.5}
-        opacity={0.26}
+        amplitude={0.9}
+        blend={0.65}
+        opacity={0.5}
       />
       <ContourField />
 
       <motion.div className="canvas matrix hero-grid" style={{ y: baseY }}>
         <motion.h1 className="hero-name display" style={{ y: velY }}>
-          <SplitText text={HERO.name[0]} /> <SplitText text={HERO.name[1]} accentIndex={0} />
+          <SplitText text={HERO.name[0]} />{' '}
+          <span className="hero-accent-word"><SplitText text={HERO.name[1]} accentIndex={0} /></span>
         </motion.h1>
         <div className="hero-side">
           <RoleCycle roles={HERO.roles} />
@@ -98,6 +99,11 @@ export default function Hero() {
         transition={{ duration: 0.8, delay: 0.25, ease: [0.25, 1, 0.5, 1] }}
       >
         <p className="hero-prop">{HERO.prop}</p>
+        <div className="hero-cta">
+          {HERO.ctas.map((c) => (
+            <a key={c.href} className={'btn ' + (c.primary ? 'btn-primary' : 'btn-secondary')} href={c.href}>{c.label}</a>
+          ))}
+        </div>
         <div className="instr-stack">
           {HERO.instruments.map((it) => (
             <div className="instr" key={it.id}>

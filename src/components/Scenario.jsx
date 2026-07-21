@@ -10,10 +10,10 @@ import Icon from './Icons';
 import { prefersReducedMotion } from '../utils/media';
 
 const LEVERS = [
-  { key: 'grid', lc: 'var(--indigo)', sc: 'var(--indigo)', opts: ['base', 'faster', 'slower', 'off'] },
-  { key: 'lv', lc: 'var(--matcha)', sc: '#75821D', opts: ['base', 'faster', 'slower'] },
-  { key: 'hv', lc: 'var(--amber)', sc: '#B56A00', opts: ['base', 'faster', 'slower'] },
-  { key: 'plant', lc: 'var(--berry)', sc: 'var(--berry)', opts: ['base', 'faster', 'slower', 'off'] },
+  { key: 'grid', lc: 'var(--indigo)', opts: ['base', 'faster', 'slower', 'off'] },
+  { key: 'lv', lc: 'var(--matcha)', opts: ['base', 'faster', 'slower'] },
+  { key: 'hv', lc: 'var(--amber)', opts: ['base', 'faster', 'slower'] },
+  { key: 'plant', lc: 'var(--berry)', opts: ['base', 'faster', 'slower', 'off'] },
 ];
 const OPT_LABEL = { base: 'Base', faster: 'Faster', slower: 'Slower', off: 'Off' };
 const REV_OPTS = [
@@ -32,9 +32,9 @@ const LEGEND_SWATCH = [
   '<span class="cl-swatch dash" style="color:#475569"></span>',
 ];
 
-function Seg({ value, options, onChange, sc, small }) {
+function Seg({ value, options, onChange, small }) {
   return (
-    <div className={'seg-row' + (small ? ' seg-sm' : '')} role="group" style={small ? { '--sc': sc } : undefined}>
+    <div className={'seg-row' + (small ? ' seg-sm' : '')} role="group">
       {options.map((o) => {
         const v = typeof o === 'string' ? o : o.v;
         const l = typeof o === 'string' ? OPT_LABEL[o] : o.l;
@@ -188,16 +188,16 @@ export default function Scenario() {
               <p className="scn-step-sub">Every lever traces to a published source. Card colours match the wedges in the chart.</p>
               <div className="lever-deck">
                 {LEVERS.map((lv) => (
-                  <div className="lever-card" key={lv.key} style={{ '--lc': lv.lc }}>
+                  <div className={'lever-card' + (scn[lv.key] !== 'base' ? ' is-active' : '')} key={lv.key} style={{ '--lc': lv.lc }}>
                     <div className="lever-top"><span className="lever-dot" aria-hidden="true" /><span className="lever-name">{labels[lv.key].name}</span></div>
                     <div className="lever-src">{labels[lv.key].src}</div>
-                    <Seg value={scn[lv.key]} options={lv.opts} onChange={(v) => set(lv.key, v)} sc={lv.sc} small />
+                    <Seg value={scn[lv.key]} options={lv.opts} onChange={(v) => set(lv.key, v)} small />
                   </div>
                 ))}
-                <div className="lever-card lever-card-rev" style={{ '--lc': 'var(--step-comms)' }}>
+                <div className={'lever-card lever-card-rev' + (scn.rev !== 'moderate' ? ' is-active' : '')} style={{ '--lc': 'var(--step-comms)' }}>
                   <div className="lever-top"><span className="lever-dot" aria-hidden="true" /><span className="lever-name">Volume / Revenue Growth Assumption</span></div>
                   <div className="lever-src">Scales gross emissions before abatement is applied</div>
-                  <Seg value={scn.rev} options={REV_OPTS} onChange={(v) => set('rev', v)} sc="var(--step-comms)" small />
+                  <Seg value={scn.rev} options={REV_OPTS} onChange={(v) => set('rev', v)} small />
                 </div>
               </div>
             </div>
