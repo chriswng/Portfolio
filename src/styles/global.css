@@ -248,9 +248,11 @@ section { position:relative; }
   text-shadow:0 2px 26px rgba(250,251,244,0.55), 0 1px 4px rgba(250,251,244,0.4);
 }
 .hero-name em{ color:var(--forest-ink); font-style:normal; }
-/* The brand mark sits between the two words as a flat, translucent
-   spacer — no blur, no glow, just a light-coloured echo of the logo. */
-.hero-name-mark{ display:inline-flex; align-items:center; justify-content:center; width:0.62em; height:0.62em; margin:0 0.06em; color:var(--bg); opacity:0.65; vertical-align:0.03em; }
+/* The brand mark sits behind the name, centred over the gap between the
+   two words — flat and translucent, no blur, no glow, tucked under the
+   letters rather than spacing them apart. */
+.hero-name-inner{ position:relative; display:inline-block; }
+.hero-name-mark{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:1.5em; height:1.5em; color:var(--bg); opacity:0.55; z-index:-1; }
 .hero-name-mark svg{ width:100%; height:100%; display:block; }
 .hero-side{ grid-column:1 / 10; align-self:start; margin-top:clamp(1rem,2.5vw,1.8rem); }
 @media(max-width:680px){

@@ -80,7 +80,10 @@ export default function Hero() {
 
       <motion.div className="canvas matrix hero-grid" style={{ y: baseY }}>
         <motion.h1 className="hero-name display" style={{ y: velY }}>
-          <SplitText text={HERO.name[0]} /><span className="hero-name-mark" aria-hidden="true"><Mark /></span><SplitText text={HERO.name[1]} accentIndex={0} />
+          <span className="hero-name-inner">
+            <span className="hero-name-mark" aria-hidden="true"><Mark /></span>
+            <SplitText text={HERO.name[0]} /> <SplitText text={HERO.name[1]} accentIndex={0} />
+          </span>
         </motion.h1>
         <div className="hero-side">
           <RoleCycle roles={HERO.roles} />
