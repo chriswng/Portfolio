@@ -391,6 +391,44 @@ function FlightCard({ fl, index, monthOptions, onChange, onRemove }) {
   );
 }
 
+// The corner swarm: a cluster of dots that thickens as answers land, echoing
+// the reveal's one-dot-is-ten-kilograms field. Felt mass with no number
+// attached, so the reveal keeps its punch: the count follows how many
+// questions have answers, never how big the answers are. Positions are a
+// deterministic golden-angle spiral; purely decorative.
+function SwarmMeter({ answers: a, step }) {
+  const signals =
+    2 + step * 2
+    + (a.kwhQuarter > 0 ? 2 : 0) + (a.mjQuarter > 0 ? 2 : 0)
+    + (a.carKmWeek > 0 ? 2 : 0) + (a.rideshareWeek > 0 ? 1 : 0) + (a.ptWeek > 0 ? 1 : 0)
+    + a.flights.filter((f) => flightMeta(f)).length * 4
+    + (a.hotelNightsOther > 0 ? 1 : 0)
+    + (a.parcelsMonth > 0 ? 1 : 0) + (a.intlOrdersMonth > 0 ? 1 : 0)
+    + [a.clothingMonth, a.electronicsMonth, a.entertainmentMonth, a.healthMonth, a.otherGoodsMonth]
+      .filter((v) => v > 0).length;
+  const n = Math.min(64, 6 + signals * 2);
+  const GA = 2.399963;
+  return (
+    <div className="ob-swarm" aria-hidden="true">
+      <div className="ob-swarm-dots">
+        {Array.from({ length: n }).map((_, i) => {
+          const r = 5.5 * Math.sqrt(i);
+          return (
+            <i
+              key={i}
+              style={{
+                left: 58 + Math.cos(i * GA) * r + 'px',
+                top: 50 + Math.sin(i * GA) * r * 0.82 + 'px',
+              }}
+            />
+          );
+        })}
+      </div>
+      <span className="ob-swarm-l">{OB.swarmLabel}</span>
+    </div>
+  );
+}
+
 // ---------------------------------------------------------------------------
 // The guided audit, staged full-screen. The visitor answers five short steps;
 // the profile is built the moment the last step lands. Deliberately spoiler-
@@ -725,9 +763,20 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         <AnimatePresence mode="wait" initial={false}>
           <motion.div key={step} {...stepMotion} className="ob-pane">
             {steps[step]}
+            {/* One sourced fact per step: about the world, never about the
+                visitor's own numbers, so the reveal keeps its punch. */}
+            {step < 6 && OB.facts[step] && (
+              <aside className="ob-fact">
+                <span className="ob-fact-k"><Icon name="spark" size={13} className="ob-label-i" />{OB.factKicker}</span>
+                <p>{OB.facts[step].text}</p>
+                <span className="ob-fact-src">{OB.facts[step].src}</span>
+              </aside>
+            )}
           </motion.div>
         </AnimatePresence>
       </div>
+
+      {step < 6 && <SwarmMeter answers={a} step={step} />}
 
       {step < 6 && (
         <div className="ob-foot">

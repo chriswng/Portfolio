@@ -5,7 +5,11 @@ import SplitText from '../components/SplitText';
 import { buildSeedProfile, SEED_SETTINGS } from './data/seedProfile';
 import { INTRO, MODE, SHARE, DATA_CTRL, TOASTS, YEARS, METHOD_LINK, fmtT } from './data/copy';
 import { DASH_EXTRA, fill } from './data/storyCopy';
-import { categoryById } from './data/factors';
+import { CATEGORIES, categoryById } from './data/factors';
+import { CHARACTERS, classifyCharacter } from './data/characters';
+import CarbonField, { EmblemDots } from './story/CarbonField';
+import { CountUp } from './story/CountUp';
+import { lighten } from './lib/emblem';
 import { aggregate, projectPathway, maccData, rolloverProfile } from './lib/engine';
 import {
   loadOwnProfile, saveOwnProfile, clearOwnProfile, exportProfile, parseImported,
@@ -23,11 +27,6 @@ import Icon from './Icons';
 const todayIso = () => {
   const d = new Date();
   return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-};
-
-const monthsOld = (iso) => {
-  const t = todayIso();
-  return (Number(t.slice(0, 4)) - Number(iso.slice(0, 4))) * 12 + (Number(t.slice(5, 7)) - Number(iso.slice(5, 7)));
 };
 
 // Compact pointer to the basis of preparation page: the method itself, with
@@ -115,10 +114,6 @@ export default function FootprintApp() {
   const voice = isExample ? 'example' : 'own';
   // The open year is due to close once today passes its end date.
   const rolloverDue = !isExample && !archived && todayIso() > own.period.end;
-  const newestEntry = !isExample && !archived && own.entries.length
-    ? own.entries.reduce((a, e) => (e.date > a ? e.date : a), own.entries[0].date)
-    : null;
-  const staleMonths = newestEntry && !rolloverDue ? monthsOld(newestEntry) : 0;
 
   const agg = useMemo(() => aggregate(profile), [profile]);
   const macc = useMemo(() => maccData(profile, agg), [profile, agg]);
@@ -176,6 +171,9 @@ export default function FootprintApp() {
       name: name || undefined,
       total: Math.round(agg.total * 100) / 100,
       cats,
+      // The character travels as its id only; the stencil and name resolve
+      // locally on the other side, and old links without it still decode.
+      ch: classifyCharacter(agg).id,
       plan: pathway.enabled.length,
       at2030: Math.round((pathway.plan[Math.max(0, pathway.years.indexOf(2030))] || 0) * 100) / 100,
     });
@@ -301,27 +299,52 @@ export default function FootprintApp() {
       {!storyOpen && <FootprintNav />}
 
       <main id="main-content">
-        {snapshot && (
-          <section className="fp-snapshot" aria-label="Shared snapshot">
-            <div className="canvas">
-              <div className="fp-snap-card">
-                <div className="fp-card-head">{fill(SHARE.bannerTitle, { who: snapshot.name ? snapshot.name + '’s' : 'My', label: snapshot.label })}</div>
-                <p className="fp-card-sub">{SHARE.bannerBody}</p>
-                <div className="fp-snap-kpis">
-                  <div className="fp-kpi live"><div className="fp-kpi-l">{snapshot.label} total</div><div className="fp-kpi-v">{fmtT(snapshot.total)}<span> t</span></div></div>
-                  {snapshot.cats.map(([label, t]) => (
-                    <div className="fp-kpi" key={label}><div className="fp-kpi-l">{label}</div><div className="fp-kpi-v">{fmtT(t)}<span> t</span></div></div>
+        {snapshot && (() => {
+          // A taste of the reveal, not a table: the recipient should feel the
+          // toy for ten seconds, because that is what sells the click-through.
+          const snapCats = (snapshot.cats || []).map(([label, t]) => ({
+            label, t,
+            hex: (CATEGORIES.find((c) => c.label === label) || {}).hex || '#6E7469',
+          }));
+          const snapChar = snapshot.ch ? CHARACTERS.find((c) => c.id === snapshot.ch) : null;
+          return (
+            <section className="fp-snaphero" aria-label="Shared snapshot">
+              <CarbonField
+                mode="swarm"
+                total={snapshot.total}
+                categories={snapCats.map((c) => ({ id: c.label, hex: c.hex, share: c.t }))}
+                alpha={0.5}
+                className="fp-snaphero-field"
+              />
+              <div className="canvas fp-snaphero-inner">
+                <div className="sec-tag" data-idx="">{fill(SHARE.bannerTitle, { who: snapshot.name ? snapshot.name + '’s' : 'My', label: snapshot.label })}</div>
+                <div className="fp-snaphero-num display">
+                  <CountUp value={snapshot.total} decimals={1} duration={1.1} /><span> t CO₂-e</span>
+                </div>
+                {snapChar && (
+                  <div className="fp-snaphero-char">
+                    <EmblemDots stencil={snapChar.stencil} hex={lighten(snapChar.hex, 0.25)} size={44} />
+                    <span>{SHARE.readsAs} <strong>{snapChar.name}</strong></span>
+                  </div>
+                )}
+                <div className="fp-snaphero-cats" role="list">
+                  {snapCats.map((c) => (
+                    <span role="listitem" className="fp-snaphero-cat" key={c.label}>
+                      <span className="fp-leg-dot" style={{ background: c.hex }} aria-hidden="true" />{c.label} · {fmtT(c.t)} t
+                    </span>
                   ))}
                 </div>
-                <p className="fp-note">{SHARE.provenance} <a href="method/">{SHARE.provenanceCta}</a></p>
+                <p className="fp-snaphero-body">{SHARE.bannerBody}</p>
+                <p className="fp-snaphero-tease">{SHARE.tease}</p>
                 <div className="fp-ctrl-row">
                   <button type="button" className="btn btn-primary fp-btn" onClick={() => { dismissSnapshot(); setOnboarding(true); }}>{SHARE.cta} →</button>
-                  <button type="button" className="fp-linkbtn" onClick={dismissSnapshot}>{SHARE.dismiss}</button>
+                  <button type="button" className="fp-linkbtn fp-snaphero-quiet" onClick={dismissSnapshot}>{SHARE.dismiss}</button>
                 </div>
+                <p className="fp-note fp-snaphero-note">{SHARE.provenance} <a href="method/">{SHARE.provenanceCta}</a></p>
               </div>
-            </div>
-          </section>
-        )}
+            </section>
+          );
+        })()}
 
         {!storyOpen && (
           <section id="fp-intro">
@@ -351,9 +374,6 @@ export default function FootprintApp() {
               {isExample ? MODE.example : archived ? MODE.archived : MODE.mine}
               {!isExample && !archived && own.period.note && (
                 <span className="fp-fresh"> {fill(YEARS.gapNote, { note: own.period.note })}</span>
-              )}
-              {!isExample && !archived && staleMonths >= 3 && (
-                <span className="fp-fresh"> {fill(MODE.freshness, { months: staleMonths })}</span>
               )}
             </span>
             <span className="fp-modebar-btns">
