@@ -5,7 +5,6 @@ import SplitText from './SplitText';
 import ContourField from './ContourField';
 import Aurora from './Aurora';
 import Icon from './Icons';
-import Mark from './Mark';
 
 // Live "years" from a start date, matching the original calc.
 function yearsSince(startISO) {
@@ -80,10 +79,7 @@ export default function Hero() {
 
       <motion.div className="canvas matrix hero-grid" style={{ y: baseY }}>
         <motion.h1 className="hero-name display" style={{ y: velY }}>
-          <span className="hero-name-inner">
-            <span className="hero-name-mark" aria-hidden="true"><Mark /></span>
-            <SplitText text={HERO.name[0]} /> <SplitText text={HERO.name[1]} accentIndex={0} />
-          </span>
+          <SplitText text={HERO.name[0]} /> <SplitText text={HERO.name[1]} accentIndex={0} />
         </motion.h1>
         <div className="hero-side">
           <RoleCycle roles={HERO.roles} />
