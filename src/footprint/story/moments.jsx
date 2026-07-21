@@ -142,7 +142,6 @@ export function Cover({ d, voice, onStart, reduced }) {
         {voice === 'example' && (
           <div className="st-cover-cta">
             <button type="button" className="btn btn-primary fp-btn" onClick={onStart}>{COVER.start} →</button>
-            <span className="st-cover-time">{COVER.startTime}</span>
           </div>
         )}
         <p className="st-cover-note">
