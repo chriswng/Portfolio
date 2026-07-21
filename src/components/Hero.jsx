@@ -5,6 +5,7 @@ import SplitText from './SplitText';
 import ContourField from './ContourField';
 import Aurora from './Aurora';
 import Icon from './Icons';
+import Mark from './Mark';
 
 // Live "years" from a start date, matching the original calc.
 function yearsSince(startISO) {
@@ -67,7 +68,8 @@ export default function Hero() {
   return (
     <section id="about" ref={sectionRef}>
       <div className="bloom-wrap" aria-hidden="true">
-        <div className="bloom bloom-a" /><div className="bloom bloom-b" /><div className="bloom bloom-c" />
+        <div className="hero-mark-glow"><Mark /></div>
+        <div className="bloom bloom-b" /><div className="bloom bloom-c" />
       </div>
       <Aurora
         colorStops={['#635BFF', '#B5C42B', '#FF9500', '#FF3B60']}
