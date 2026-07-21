@@ -122,6 +122,17 @@ function LcaPanel() {
           ))}
         </div>
       </div>
+      <div className="sec-sub mt2">{LCA.methodHead}</div>
+      <p className="panel-intro">{LCA.methodNote}</p>
+      <div className="sec-sub">{LCA.pathwaysHead}</div>
+      <div className="scope-grid" style={{ marginTop: '1px' }}>
+        {LCA.pathways.map((p, i) => (
+          <div className="scope-cell" key={i}><div className="scope-tag">{p.tag}</div><div className="scope-body">{p.body}</div></div>
+        ))}
+      </div>
+      <div className="sec-sub">{LCA.hierarchy.caption}</div>
+      <DataTable data={LCA.hierarchy} />
+      <div className="sec-sub mt2">{LCA.systemsHead}</div>
       <div className="scope-grid" style={{ marginTop: '1px' }}>
         {LCA.systems.map((s, i) => (
           <div className="scope-cell" key={i}><div className="scope-tag">{s.tag}</div><div className="scope-pct">{s.pct}</div><div className="scope-body">{s.body}</div></div>
