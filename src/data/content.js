@@ -15,12 +15,10 @@ export const NAV_LINKS = [
 export const HERO = {
   name: ['Chris', 'Wang'],
   roles: ['Sustainability Advisor', 'Emissions Modeller', 'ESG Reporting Lead', 'Decarbonisation Strategist'],
-  linkedin: 'https://linkedin.com/in/itschriswang',
-  linkedinLabel: 'linkedin.com/in/itschriswang',
   location: 'Melbourne, Australia',
   prop: 'I help large organisations turn emissions data into governed reporting infrastructure and credible decarbonisation pathways. The work is repeatable, auditable, and built to be owned by the team.',
   ctas: [
-    { label: 'Get in touch', href: '#contact', primary: true },
+    { label: 'Get in touch', href: '#contact', primary: true, icon: 'linkedin' },
   ],
   // Animated counters: start date drives the live "years" figure.
   instruments: [
