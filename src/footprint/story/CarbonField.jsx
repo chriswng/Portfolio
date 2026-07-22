@@ -163,8 +163,19 @@ export default function CarbonField({
             target[i * 2] = Math.cos(a) * r;
             target[i * 2 + 1] = Math.sin(a) * r;
           } else if (fi >= 0) {
-            target[i * 2] = base[i * 2] * 1.35;
-            target[i * 2 + 1] = base[i * 2 + 1] * 1.35;
+            // Other categories clear the centre entirely: a filled disc would
+            // sit on top of the focused silhouette and hide it, so remap each
+            // dot's radius into a ring outside the symbol while keeping its
+            // golden-angle bearing (the organic spread survives, the middle
+            // opens up for the shape). u: 0 at the disc centre, 1 at its edge.
+            const bx = base[i * 2], by = base[i * 2 + 1];
+            const r0 = Math.sqrt(bx * bx + by * by);
+            const u = Math.min(1, r0 / 0.72);
+            const RIN = 0.9, ROUT = 1.12;
+            const rn = Math.sqrt(RIN * RIN + u * u * (ROUT * ROUT - RIN * RIN));
+            const ang = r0 > 1e-4 ? Math.atan2(by, bx) : seeds[i] * Math.PI * 2;
+            target[i * 2] = Math.cos(ang) * rn;
+            target[i * 2 + 1] = Math.sin(ang) * rn;
           } else {
             target[i * 2] = base[i * 2];
             target[i * 2 + 1] = base[i * 2 + 1];
