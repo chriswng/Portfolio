@@ -12,10 +12,47 @@
 // never silently re-prices old entries. It is a data key, not a brand: the
 // UI shows the plain source list below, never this string.
 export const FACTOR_SET = {
-  id: 'nga2025-ukghg2025',
+  id: 'nga2025-ukghg2025-intl1',
   updated: 'July 2026',
-  note: 'Australian electricity, gas and transport fuels use the DCCEEW National Greenhouse Accounts Factors (2025). Flights and freight use the UK Government conversion factors (2025 edition), published by DESNZ and still widely known as the DEFRA factors. Updated when new editions are published and verified against the source workbook.',
+  note: 'Australian electricity, gas and transport fuels use the DCCEEW National Greenhouse Accounts Factors (2025). United States factors use the US EPA GHG Emission Factors Hub defaults and the EIA national grid average; New Zealand electricity uses the MfE Measuring Emissions Catalogue grid factor, with the Australian combustion factors as stated proxies for fuels. Flights and freight use the UK Government conversion factors (2025 edition), published by DESNZ and still widely known as the DEFRA factors. Updated when new editions are published and verified against the source workbook.',
 };
+
+// ---------------------------------------------------------------------------
+// Countries the audit can run in. `region` describes what the place picker
+// asks for; `gasUnit` is the unit a local bill shows (converted to MJ before
+// pricing, so the engine stays single-unit); `defaultRegion` keys ELECTRICITY.
+// Settings saved before country support carry no `country`, so countryOf()
+// treats a missing value as Australia and nothing old re-prices.
+// ---------------------------------------------------------------------------
+export const COUNTRIES = {
+  AU: {
+    label: 'Australia', currency: 'A$', defaultRegion: 'NSW',
+    regionQuestion: 'Which state or territory?',
+    gasUnit: 'MJ', mjPerGasUnit: 1, gasMax: 40000, gasStep: 50,
+    homeAirport: 'SYD',
+    renewableQuestion: 'Is your electricity on GreenPower?',
+    renewableNote: 'GreenPower is an optional 100% renewable add-on some electricity plans include. If you have never heard of it, you are almost certainly not on it, so choose No or Not sure.',
+  },
+  NZ: {
+    label: 'New Zealand', currency: 'NZ$', defaultRegion: 'NZ',
+    regionQuestion: null, // one national grid, nothing to pick
+    gasUnit: 'kWh', mjPerGasUnit: 3.6, gasMax: 11000, gasStep: 25,
+    homeAirport: 'AKL',
+    renewableQuestion: 'Is your electricity on a certified 100% renewable plan?',
+    renewableNote: 'A certified renewable plan retires certificates for the power you use. If you have never chosen one, you are almost certainly not on it, so choose No or Not sure.',
+  },
+  US: {
+    label: 'United States', currency: 'US$', defaultRegion: 'US',
+    regionQuestion: null, // priced at the national grid average; state factors queued
+    gasUnit: 'therms', mjPerGasUnit: 105.505, gasMax: 400, gasStep: 5,
+    homeAirport: 'JFK',
+    renewableQuestion: 'Is your electricity on a 100% renewable (green power) plan?',
+    renewableNote: 'A certified green power plan retires renewable certificates for the power you use. If you have never chosen one, you are almost certainly not on it, so choose No or Not sure.',
+  },
+};
+
+export const countryOf = (settings) =>
+  settings && COUNTRIES[settings.country] ? settings.country : 'AU';
 
 // Canonical category order: identity colours and stack order everywhere.
 // Palette validated for CVD separation and contrast (dataviz six checks).
@@ -55,26 +92,61 @@ export const ELECTRICITY_SOURCE = {
   url: 'https://www.dcceew.gov.au/climate-change/publications/national-greenhouse-accounts-factors-2025',
 };
 
-// label: the full state or territory name, used consistently everywhere the
-// visitor picks a place (guided audit) and on the method factor table. grid:
-// the named interconnected system the factor applies to, shown only on the
-// method table where the region detail belongs. ACT sits on the NSW grid.
-export const ELECTRICITY = {
-  NSW: { label: 'New South Wales & ACT', s2: 0.64, s3: 0.03 },
-  VIC: { label: 'Victoria', s2: 0.78, s3: 0.09 },
-  QLD: { label: 'Queensland', s2: 0.67, s3: 0.09 },
-  SA: { label: 'South Australia', s2: 0.22, s3: 0.04 },
-  WA: { label: 'Western Australia', grid: 'SWIS grid', s2: 0.50, s3: 0.06 },
-  TAS: { label: 'Tasmania', s2: 0.20, s3: 0.03 },
-  NT: { label: 'Northern Territory', grid: 'Darwin-Katherine (DKIS)', s2: 0.56, s3: 0.09 },
+// Grid factors for the other two countries. Both are national figures: New
+// Zealand genuinely runs one national grid factor (MfE publishes a single
+// grid average), and the United States is priced at the national average
+// because the state-level eGRID table could not be verified against the EPA
+// workbook from this edition's environment; state factors are recorded as
+// queued in the method's exclusions rather than shipped unchecked.
+export const ELECTRICITY_SOURCE_NZ = {
+  name: 'NZ Ministry for the Environment, Measuring Emissions Catalogue (2025)',
+  detail: 'Purchased grid-average electricity for the national grid, about 85% renewable (hydro, wind, geothermal). The primary workbook could not be reached from this edition\'s environment, so the value is carried from the catalogue as republished by multiple secondary sources and is queued for cell-level verification. The separate transmission-and-distribution loss factor is queued with it, so scope 3 currently reads zero and slightly understates.',
+  url: 'https://measuringemissionsguide.environment.govt.nz/',
 };
+
+export const ELECTRICITY_SOURCE_US = {
+  name: 'US EIA (2023 national average), corroborated against EPA eGRID2023',
+  detail: 'US utility-scale generation averaged about 0.81 lb CO2 per kWh in 2023 (EIA FAQ), about 0.37 kg CO2e per kWh with the small CH4 and N2O share included, consistent with eGRID-based republications near 370 g/kWh. Scope 3 is transmission and distribution losses at about 5% of generation (EIA); upstream fuel-cycle is not counted. State-level eGRID factors are queued: the grid varies widely by state, and the method says so.',
+  url: 'https://www.eia.gov/tools/faqs/faq.php?id=74&t=11',
+};
+
+// label: the full place name, used consistently everywhere the visitor picks
+// a place (guided audit) and on the method factor table. grid: the named
+// interconnected system the factor applies to, shown only on the method
+// table where the region detail belongs. ACT sits on the NSW grid. Keys are
+// stable storage keys (settings.state), so the Australian ones never change;
+// NZ and US carry one national row each (see the sources above for why).
+export const ELECTRICITY = {
+  NSW: { label: 'New South Wales & ACT', country: 'AU', s2: 0.64, s3: 0.03 },
+  VIC: { label: 'Victoria', country: 'AU', s2: 0.78, s3: 0.09 },
+  QLD: { label: 'Queensland', country: 'AU', s2: 0.67, s3: 0.09 },
+  SA: { label: 'South Australia', country: 'AU', s2: 0.22, s3: 0.04 },
+  WA: { label: 'Western Australia', country: 'AU', grid: 'SWIS grid', s2: 0.50, s3: 0.06 },
+  TAS: { label: 'Tasmania', country: 'AU', s2: 0.20, s3: 0.03 },
+  NT: { label: 'Northern Territory', country: 'AU', grid: 'Darwin-Katherine (DKIS)', s2: 0.56, s3: 0.09 },
+  NZ: { label: 'New Zealand', country: 'NZ', grid: 'national grid', s2: 0.073, s3: 0 },
+  US: { label: 'United States', country: 'US', grid: 'national average', s2: 0.37, s3: 0.02 },
+};
+
+// Regions offered by the guided audit's place picker for a country, in table
+// order. NZ and US return a single row, so the picker hides itself.
+export const regionsForCountry = (country) =>
+  Object.entries(ELECTRICITY).filter(([, r]) => r.country === country);
+
+// The electricity row for a settings object, falling back to the home
+// country's default region rather than always NSW.
+export const electricityFor = (settings) =>
+  ELECTRICITY[settings && settings.state] || ELECTRICITY[COUNTRIES[countryOf(settings)].defaultRegion];
+
+export const electricitySourceFor = (country) =>
+  country === 'NZ' ? ELECTRICITY_SOURCE_NZ : country === 'US' ? ELECTRICITY_SOURCE_US : ELECTRICITY_SOURCE;
 
 // Stylised grid decarbonisation trajectory used only by the pathway model:
 // annual multiplicative decline applied to the scope 2 factor, floored.
 export const GRID_DECLINE = {
   ratePerYear: 0.92,
   floor: 0.05,
-  source: 'Stylised from DCCEEW, Australia’s emissions projections 2024 (electricity sector decline to 2035 under the 82% renewables trajectory), flattened to a single annual rate.',
+  source: 'Stylised from DCCEEW, Australia’s emissions projections 2024 (electricity sector decline to 2035 under the 82% renewables trajectory), flattened to a single annual rate and applied as the background decline for whichever grid is home; a US or NZ audit inherits it as a stated simplification.',
 };
 
 // ---------------------------------------------------------------------------
@@ -96,6 +168,50 @@ export const GAS = {
 
 export const gasS3 = (state) => GAS.s3_per_MJ[state] ?? GAS.s3_per_MJ.NSW;
 
+// US and NZ natural gas. The US scope 1 figure is the EPA GHG Emission
+// Factors Hub stationary-combustion default (53.06 kg CO2 plus 1.0 g CH4 and
+// 0.10 g N2O per MMBtu at AR5 GWPs, about 53.11 kg CO2e per MMBtu, converted
+// at 1,055.06 MJ per MMBtu). New Zealand uses the Australian NGA combustion
+// factor as a stated proxy: the fuel is chemically near-identical and
+// published NZ figures sit within a few per cent; the MfE cell is queued for
+// primary verification. Neither country ships an upstream (fuel-cycle) gas
+// factor here: distribution losses are network-specific, so scope 3 reads
+// zero for gas outside Australia and the method says the line understates.
+export const GAS_SOURCE_US = {
+  name: 'US EPA GHG Emission Factors Hub (2025), natural gas stationary combustion',
+  detail: '53.06 kg CO2, 1.0 g CH4 and 0.10 g N2O per MMBtu (AR5 GWPs), about 53.11 kg CO2e per MMBtu, converted at 1,055.06 MJ per MMBtu; bills in therms convert at 105.505 MJ per therm. Upstream fuel-cycle and distribution losses are not counted, so the line understates slightly.',
+  url: 'https://www.epa.gov/climateleadership/ghg-emission-factors-hub',
+};
+
+export const GAS_SOURCE_NZ = {
+  name: 'Australian NGA combustion factor, used as a stated proxy for NZ reticulated gas',
+  detail: 'Natural gas combustion chemistry is near-identical across the two markets; the MfE Measuring Emissions Catalogue publishes an NZ-specific factor a few per cent higher that is queued for primary verification. Upstream fuel-cycle and distribution losses are not counted, so the line understates slightly.',
+  url: 'https://measuringemissionsguide.environment.govt.nz/',
+};
+
+export const GAS_INTL = {
+  US: { s1_per_MJ: 0.05034, s3_per_MJ: 0 },
+  NZ: { s1_per_MJ: 0.05153, s3_per_MJ: 0 },
+};
+
+// Effective gas factors for a settings object: AU prices per state; US and
+// NZ price at the national figures above.
+export function gasFactorsFor(settings) {
+  const country = countryOf(settings);
+  if (country === 'AU') {
+    return {
+      s1: GAS.s1_per_MJ, s3: gasS3(settings.state),
+      source: GAS_SOURCE.name + ' (metro, ' + (settings.state || 'NSW') + ')',
+    };
+  }
+  const g = GAS_INTL[country];
+  const src = country === 'US' ? GAS_SOURCE_US : GAS_SOURCE_NZ;
+  return { s1: g.s1_per_MJ, s3: g.s3_per_MJ, source: src.name };
+}
+
+export const gasSourceFor = (country) =>
+  country === 'US' ? GAS_SOURCE_US : country === 'NZ' ? GAS_SOURCE_NZ : GAS_SOURCE;
+
 // ---------------------------------------------------------------------------
 // Road transport. NGA Factors 2025, Table 9 (cars and light commercial
 // vehicles), converted to kg CO2-e per litre via published energy contents.
@@ -112,6 +228,47 @@ export const ROAD_FUELS = {
   diesel: { label: 'Diesel', s1_per_L: 2.72, s3_per_L: 0.67, defaultL100km: 6.5 },
   ev: { label: 'Electric (grid-charged)', s1_per_L: 0, s3_per_L: 0, kWhPerKm: 0.16 },
 };
+
+// US combustion factors are the EPA defaults (8.78 kg CO2 per gallon of
+// gasoline, 10.21 for diesel, at 3.78541 L per gallon; the per-mile CH4 and
+// N2O factors add under 1% and are left out, stated). New Zealand uses the
+// Australian NGA combustion factors as a stated proxy (published NZ figures:
+// petrol about 2.31, diesel about 2.68 kg CO2 per litre, within a few per
+// cent). Both countries keep the NGA fuel-cycle (scope 3) factors as a
+// stated proxy so the well-to-tank boundary matches across countries:
+// refining and crude supply chains are close enough for a screening line,
+// and dropping them would make one country's petrol read dishonestly light.
+export const ROAD_SOURCE_US = {
+  name: 'US EPA GHG Emission Factors Hub (2025), mobile combustion',
+  detail: 'Motor gasoline 8.78 and diesel 10.21 kg CO2 per gallon (2.32 and 2.70 per litre); per-mile CH4 and N2O add under 1% and are left out, stated. Fuel-cycle (scope 3) uses the Australian NGA factors as a stated proxy so the boundary matches the other countries. A hybrid burns petrol at the petrol factors; only the default consumption differs.',
+  url: 'https://www.epa.gov/climateleadership/ghg-emission-factors-hub',
+};
+
+export const ROAD_SOURCE_NZ = {
+  name: 'Australian NGA combustion and fuel-cycle factors, used as a stated proxy for NZ',
+  detail: 'Published NZ figures (petrol about 2.31, diesel about 2.68 kg CO2 per litre) sit within a few per cent of the NGA values used here; the MfE cells are queued for primary verification. A hybrid burns petrol at the petrol factors; only the default consumption differs.',
+  url: 'https://measuringemissionsguide.environment.govt.nz/',
+};
+
+export const ROAD_FUELS_INTL = {
+  US: {
+    petrol: { label: 'Petrol (gasoline)', s1_per_L: 2.32, s3_per_L: 0.59, defaultL100km: 9.0 },
+    hybrid: { label: 'Hybrid (gasoline)', s1_per_L: 2.32, s3_per_L: 0.59, defaultL100km: 4.5 },
+    diesel: { label: 'Diesel', s1_per_L: 2.70, s3_per_L: 0.67, defaultL100km: 8.0 },
+    ev: { label: 'Electric (grid-charged)', s1_per_L: 0, s3_per_L: 0, kWhPerKm: 0.16 },
+  },
+  NZ: ROAD_FUELS,
+};
+
+export const roadFuelSetFor = (country) => ROAD_FUELS_INTL[country] || ROAD_FUELS;
+
+export const roadFuelFor = (country, fuel) => {
+  const set = roadFuelSetFor(country);
+  return set[fuel] || set.petrol;
+};
+
+export const roadSourceFor = (country) =>
+  country === 'US' ? ROAD_SOURCE_US : country === 'NZ' ? ROAD_SOURCE_NZ : ROAD_SOURCE;
 
 // Car-free ground transport, per passenger-km. Someone else's vehicle, so
 // scope 3 in a personal inventory.
@@ -145,8 +302,12 @@ export const FLIGHT_SOURCE = {
   url: 'https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2025',
 };
 
-// Bands: domestic (within Australia, DEFRA domestic average-passenger proxy),
-// short-haul international (< 3,700 km), long-haul international (>= 3,700 km).
+// Bands: domestic (a sector within one country, DEFRA domestic
+// average-passenger proxy), short-haul international (< 3,700 km), long-haul
+// international (>= 3,700 km). A domestic sector at or beyond 3,700 km (a US
+// transcontinental or Hawaii leg; no Australian pair reaches it) prices at
+// the long-haul factor instead: the domestic band describes short sectors,
+// and stretching it across an ocean would overstate by half.
 // kg CO2-e per passenger-km, with RF.
 export const FLIGHT_FACTORS = {
   domestic: {
@@ -185,6 +346,17 @@ export const FLIGHT_ROUTES = [
   { id: 'SYD-MNL', label: 'Sydney to Manila', km: 6264, band: 'longIntl' },
   { id: 'SYD-LAX', label: 'Sydney to Los Angeles', km: 12051, band: 'longIntl' },
   { id: 'SYD-LHR', label: 'Sydney to London', km: 17016, band: 'longIntl' },
+  // New Zealand and United States quick-adds. A domestic sector at or beyond
+  // 3,700 km (LA to New York, LA to Honolulu) prices at the long-haul factor
+  // per flightBandForKm, and the band here says so.
+  { id: 'AKL-WLG', label: 'Auckland to Wellington', km: 480, band: 'domestic' },
+  { id: 'AKL-CHC', label: 'Auckland to Christchurch', km: 744, band: 'domestic' },
+  { id: 'AKL-ZQN', label: 'Auckland to Queenstown', km: 1019, band: 'domestic' },
+  { id: 'AKL-SYD', label: 'Auckland to Sydney', km: 2156, band: 'shortIntl' },
+  { id: 'LAX-SFO', label: 'Los Angeles to San Francisco', km: 543, band: 'domestic' },
+  { id: 'LAX-JFK', label: 'Los Angeles to New York', km: 3983, band: 'longIntl' },
+  { id: 'LAX-HNL', label: 'Los Angeles to Honolulu', km: 4113, band: 'longIntl' },
+  { id: 'JFK-LHR', label: 'New York to London', km: 5540, band: 'longIntl' },
 ];
 
 // ---------------------------------------------------------------------------
@@ -209,8 +381,12 @@ export const AIRPORTS = [
   { code: 'HBA', city: 'Hobart', country: 'AU', region: 'Australia', lat: -42.84, lon: 147.51 },
   { code: 'DRW', city: 'Darwin', country: 'AU', region: 'Australia', lat: -12.41, lon: 130.88 },
   { code: 'AYQ', city: 'Uluru (Ayers Rock)', country: 'AU', region: 'Australia', lat: -25.19, lon: 130.98 },
+  // New Zealand
+  { code: 'AKL', city: 'Auckland', country: 'NZ', region: 'New Zealand', lat: -37.01, lon: 174.79 },
+  { code: 'WLG', city: 'Wellington', country: 'NZ', region: 'New Zealand', lat: -41.33, lon: 174.81 },
+  { code: 'CHC', city: 'Christchurch', country: 'NZ', region: 'New Zealand', lat: -43.49, lon: 172.53 },
+  { code: 'ZQN', city: 'Queenstown', country: 'NZ', region: 'New Zealand', lat: -45.02, lon: 168.74 },
   // Asia Pacific
-  { code: 'AKL', city: 'Auckland', country: 'NZ', region: 'Asia Pacific', lat: -37.01, lon: 174.79 },
   { code: 'DPS', city: 'Bali (Denpasar)', country: 'ID', region: 'Asia Pacific', lat: -8.75, lon: 115.17 },
   { code: 'CGK', city: 'Jakarta', country: 'ID', region: 'Asia Pacific', lat: -6.13, lon: 106.66 },
   { code: 'SIN', city: 'Singapore', country: 'SG', region: 'Asia Pacific', lat: 1.36, lon: 103.99 },
@@ -234,7 +410,15 @@ export const AIRPORTS = [
   // Americas
   { code: 'LAX', city: 'Los Angeles', country: 'US', region: 'Americas', lat: 33.94, lon: -118.41 },
   { code: 'SFO', city: 'San Francisco', country: 'US', region: 'Americas', lat: 37.62, lon: -122.38 },
+  { code: 'SEA', city: 'Seattle', country: 'US', region: 'Americas', lat: 47.45, lon: -122.31 },
+  { code: 'LAS', city: 'Las Vegas', country: 'US', region: 'Americas', lat: 36.08, lon: -115.15 },
+  { code: 'DEN', city: 'Denver', country: 'US', region: 'Americas', lat: 39.86, lon: -104.67 },
+  { code: 'DFW', city: 'Dallas-Fort Worth', country: 'US', region: 'Americas', lat: 32.90, lon: -97.04 },
+  { code: 'ORD', city: 'Chicago', country: 'US', region: 'Americas', lat: 41.98, lon: -87.90 },
+  { code: 'ATL', city: 'Atlanta', country: 'US', region: 'Americas', lat: 33.64, lon: -84.43 },
+  { code: 'MIA', city: 'Miami', country: 'US', region: 'Americas', lat: 25.79, lon: -80.29 },
   { code: 'JFK', city: 'New York', country: 'US', region: 'Americas', lat: 40.64, lon: -73.78 },
+  { code: 'BOS', city: 'Boston', country: 'US', region: 'Americas', lat: 42.36, lon: -71.01 },
   { code: 'HNL', city: 'Honolulu', country: 'US', region: 'Americas', lat: 21.32, lon: -157.92 },
   { code: 'YVR', city: 'Vancouver', country: 'CA', region: 'Americas', lat: 49.19, lon: -123.18 },
   // Europe
@@ -261,14 +445,16 @@ export function greatCircleKm(a, b) {
   return Math.round(2 * R * Math.asin(Math.min(1, Math.sqrt(s))));
 }
 
-// Home airport suggested per state, so a new flight card opens from a sensible
-// origin without ever forcing it. ACT rides on the NSW label.
+// Home airport suggested per region, so a new flight card opens from a
+// sensible origin without ever forcing it. ACT rides on the NSW label; the
+// national NZ and US rows fall through to the country default in COUNTRIES.
 export const HOME_AIRPORT = {
   NSW: 'SYD', VIC: 'MEL', QLD: 'BNE', SA: 'ADL', WA: 'PER', TAS: 'HBA', NT: 'DRW',
+  NZ: 'AKL', US: 'JFK',
 };
 
 export function flightBandForKm(km, international) {
-  if (!international) return 'domestic';
+  if (!international) return km < 3700 ? 'domestic' : 'longIntl';
   return km < 3700 ? 'shortIntl' : 'longIntl';
 }
 
@@ -404,14 +590,32 @@ export const GOODS_SOURCE = {
 };
 
 // Currency and inflation bridge from a 2022-USD factor to spend logged in
-// current Australian dollars. audUsd is USD per 1 AUD; inflation is the US
-// CPI-U ratio from the 2022 annual average to the reporting year. The combined
-// multiplier applied to every base factor is audUsd / inflation.
+// the visitor's own current dollars. rate is USD per 1 local dollar;
+// inflation is the US CPI-U ratio from the 2022 annual average to the
+// reporting year, shared by all three countries because the factor itself is
+// priced in 2022 US dollars. The combined multiplier applied to every base
+// factor is rate / inflation. GOODS_FX keeps the AU fields as the flat
+// canonical shape old code and the method page read.
 export const GOODS_FX = {
   audUsd: 0.6785,
   audUsdNote: 'FY2026 average (July 2025 to June 2026), USD per 1 AUD, from the RBA daily exchange-rate series (Statistical Table F11.1, mean of the 251 trading days).',
   inflation: 1.120,
   inflationNote: 'US CPI-U (all items) rose about 12% from the 2022 annual average (292.7) to the FY2026 average (327.7), per the US Bureau of Labor Statistics series CUUR0000SA0.',
+};
+
+export const GOODS_FX_BY_COUNTRY = {
+  AU: {
+    rate: GOODS_FX.audUsd,
+    rateNote: GOODS_FX.audUsdNote,
+  },
+  NZ: {
+    rate: 0.5873,
+    rateNote: 'Rolling 12-month average to July 2025, USD per 1 NZD, from the NZ Inland Revenue overseas currency rates tables.',
+  },
+  US: {
+    rate: 1,
+    rateNote: 'Spend is already in US dollars, so only the inflation bridge to the 2022 factor year applies.',
+  },
 };
 
 // Per sub-category: usPerUsd is the EPA v1.3.0 with-margins factor (kg CO2e per
@@ -441,14 +645,17 @@ export const GOODS = {
   },
 };
 
-// kg CO2e per Australian dollar of spend, ready for the engine: the EPA
-// per-2022-USD factor bridged into current AUD. round to 4 dp so the method
-// table and pricing agree exactly.
-export const goodsPerAud = (kind) => {
+// kg CO2e per local dollar of spend, ready for the engine: the EPA
+// per-2022-USD factor bridged into the home country's current dollars. round
+// to 4 dp so the method table and pricing agree exactly.
+export const goodsPerDollar = (kind, country = 'AU') => {
   const g = GOODS[kind] || GOODS.other;
-  const v = (g.usPerUsd * GOODS_FX.audUsd) / GOODS_FX.inflation;
+  const fx = GOODS_FX_BY_COUNTRY[country] || GOODS_FX_BY_COUNTRY.AU;
+  const v = (g.usPerUsd * fx.rate) / GOODS_FX.inflation;
   return Math.round(v * 10000) / 10000;
 };
+
+export const goodsPerAud = (kind) => goodsPerDollar(kind, 'AU');
 
 // ---------------------------------------------------------------------------
 // Clothing by item count: the physical alternative to the spend line above.
@@ -519,13 +726,16 @@ export const CLOTHING_ITEMS = {
 // ---------------------------------------------------------------------------
 export const HOTEL_SOURCE = {
   name: 'UK Government (DESNZ / DEFRA) GHG Conversion Factors 2025, hotel stay',
-  detail: 'kg CO2e per occupied room-night by country, from the "Hotel stay" tab (Greenview Hotel Footprinting Tool, built on the Cornell Hotel Sustainability Benchmarking Index). An estimate priced at the country average, not the specific hotel; nights are priced at the destination country of the trip they belong to, with the Australian figure for stays logged without a flight.',
+  detail: 'kg CO2e per occupied room-night by country, from the "Hotel stay" tab (Greenview Hotel Footprinting Tool, built on the Cornell Hotel Sustainability Benchmarking Index). An estimate priced at the country average, not the specific hotel; nights are priced at the destination country of the trip they belong to, with the home country\'s figure for stays logged without a flight (New Zealand is not listed in the verified table, so it uses the Australian figure as a stated proxy).',
   url: 'https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2025',
 };
 
-// Per occupied room-night, kg CO2e. `default` is the Australian figure, applied
-// when a country is not carried here (for example New Zealand or Taiwan, which
-// the DEFRA table does not list).
+// Per occupied room-night, kg CO2e. `default` is the Australian figure,
+// applied when a country is not carried here (for example New Zealand or
+// Taiwan, which the DEFRA table this was verified against does not list).
+// Nights logged with no flight attached price at the home country's own row
+// where one exists; a New Zealand home therefore prices at the default, a
+// stated proxy queued for a published NZ figure.
 export const HOTEL = {
   default: 35,
   countries: {

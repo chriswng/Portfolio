@@ -4,14 +4,14 @@
 
 import {
   FACTOR_SET,
-  ELECTRICITY, ELECTRICITY_SOURCE, GRID_DECLINE,
-  GAS, GAS_SOURCE, gasS3,
-  ROAD_FUELS, ROAD_MODES, ROAD_SOURCE,
+  GRID_DECLINE, countryOf, COUNTRIES, electricityFor, electricitySourceFor,
+  gasFactorsFor,
+  ROAD_FUELS, ROAD_MODES, roadFuelFor, roadSourceFor,
   FLIGHT_FACTORS, FLIGHT_SOURCE, FLIGHT_DISTANCE_UPLIFT, flightBandForKm,
   FREIGHT_MODES, FREIGHT_SOURCE,
   DIET_TYPES, DIET_SOURCE,
   OTHER_FUELS, OTHER_SOURCE,
-  GOODS, GOODS_SOURCE, goodsPerAud, CLOTHING_ITEMS, CLOTHING_ITEMS_SOURCE,
+  GOODS, GOODS_SOURCE, goodsPerDollar, CLOTHING_ITEMS, CLOTHING_ITEMS_SOURCE,
   HOTEL, HOTEL_SOURCE, hotelPerNight,
   HOME, HOME_SOURCE,
   QUALITY_TIERS, qualityOf,
@@ -33,30 +33,33 @@ const round = (v, dp = 4) => Math.round(v * 10 ** dp) / 10 ** dp;
 // ---------------------------------------------------------------------------
 export function priceEntry(draft, settings) {
   const meta = draft.meta || {};
+  const country = countryOf(settings);
   const share = meta.wholeHousehold ? 1 / Math.max(1, settings.householdSize || 1) : 1;
   let activity = 0, unit = '', components = [], scope = '3', source = '';
 
   switch (draft.category) {
     case 'electricity': {
-      const f = ELECTRICITY[settings.state] || ELECTRICITY.NSW;
+      const f = electricityFor(settings);
       const gp = Math.min(1, Math.max(0, (settings.greenpowerPct || 0) / 100));
       activity = meta.kwh; unit = 'kWh';
-      // Market-based scope 2 nets off GreenPower; scope 3 retained in full
-      // (conservative treatment of losses and fuel cycle).
+      // Market-based scope 2 nets off certified renewable purchases (GreenPower
+      // in Australia); scope 3 retained in full (conservative treatment of
+      // losses and fuel cycle).
       components = [
         { scope: '2', tco2e: activity * f.s2 * (1 - gp) * share / 1000 },
         { scope: '3', tco2e: activity * f.s3 * share / 1000 },
       ];
-      scope = '2'; source = ELECTRICITY_SOURCE.name + ' (' + f.label + (gp > 0 ? ', ' + Math.round(gp * 100) + '% GreenPower market-based' : '') + ')';
+      scope = '2'; source = electricitySourceFor(f.country).name + ' (' + f.label + (gp > 0 ? ', ' + Math.round(gp * 100) + '% renewable market-based' : '') + ')';
       break;
     }
     case 'gas': {
+      const g = gasFactorsFor(settings);
       activity = meta.mj; unit = 'MJ';
       components = [
-        { scope: '1', tco2e: activity * GAS.s1_per_MJ * share / 1000 },
-        { scope: '3', tco2e: activity * gasS3(settings.state) * share / 1000 },
+        { scope: '1', tco2e: activity * g.s1 * share / 1000 },
+        { scope: '3', tco2e: activity * g.s3 * share / 1000 },
       ];
-      scope = '1'; source = GAS_SOURCE.name + ' (metro, ' + (settings.state || 'NSW') + ')';
+      scope = '1'; source = g.source;
       break;
     }
     case 'road': {
@@ -73,18 +76,18 @@ export function priceEntry(draft, settings) {
         // Average occupancy splits car emissions per person, the same
         // equal-share attribution used for household bills.
         const occ = Math.max(1, Math.round(meta.occupants || 1));
-        const f = ELECTRICITY[settings.state] || ELECTRICITY.NSW;
+        const f = electricityFor(settings);
         const kwh = meta.km * ROAD_FUELS.ev.kWhPerKm / occ;
         activity = meta.km; unit = 'km';
         components = [
           { scope: '2', tco2e: kwh * f.s2 / 1000 },
           { scope: '3', tco2e: kwh * f.s3 / 1000 },
         ];
-        scope = '2'; source = ELECTRICITY_SOURCE.name + ' (EV at ' + ROAD_FUELS.ev.kWhPerKm + ' kWh/km, ' + f.label + ')'
+        scope = '2'; source = electricitySourceFor(f.country).name + ' (EV at ' + ROAD_FUELS.ev.kWhPerKm + ' kWh/km, ' + f.label + ')'
           + (occ > 1 ? ', split across ' + occ + ' occupants' : '');
       } else {
         const occ = Math.max(1, Math.round(meta.occupants || 1));
-        const fuel = ROAD_FUELS[meta.fuel] || ROAD_FUELS.petrol;
+        const fuel = roadFuelFor(country, meta.fuel);
         const litres = meta.litres != null ? meta.litres : (meta.km * (meta.l100km || fuel.defaultL100km)) / 100;
         activity = meta.litres != null ? litres : meta.km;
         unit = meta.litres != null ? 'L' : 'km';
@@ -92,7 +95,7 @@ export function priceEntry(draft, settings) {
           { scope: '1', tco2e: litres * fuel.s1_per_L / occ / 1000 },
           { scope: '3', tco2e: litres * fuel.s3_per_L / occ / 1000 },
         ];
-        scope = '1'; source = ROAD_SOURCE.name + ' (' + fuel.label.toLowerCase() + ')'
+        scope = '1'; source = roadSourceFor(country).name + ' (' + fuel.label.toLowerCase() + ')'
           + (occ > 1 ? ', split across ' + occ + ' occupants' : '');
       }
       break;
@@ -157,26 +160,28 @@ export function priceEntry(draft, settings) {
         break;
       }
       // Spend-based screening: dollars of purchaser-price spend times the EPA
-      // per-dollar factor already bridged into Australian dollars. Always
+      // per-dollar factor bridged into the home country's dollars. Always
       // scope 3 (embodied in goods and services made elsewhere). activity is
-      // the spend in AUD; the effective factor snapshotted is per dollar.
+      // the spend in local dollars (the meta key keeps its original spendAud
+      // name so nothing stored re-prices); the snapshotted factor is per
+      // dollar.
       const kind = GOODS[meta.kind] ? meta.kind : 'other';
       activity = meta.spendAud || 0; unit = '$';
-      components = [{ scope: '3', tco2e: activity * goodsPerAud(kind) / 1000 }];
+      components = [{ scope: '3', tco2e: activity * goodsPerDollar(kind, country) / 1000 }];
       scope = '3';
-      source = GOODS_SOURCE.name + ' (' + GOODS[kind].label.toLowerCase() + ', spend-based screening)';
+      source = GOODS_SOURCE.name + ' (' + GOODS[kind].label.toLowerCase() + ', spend-based screening, ' + COUNTRIES[country].currency + ')';
       break;
     }
     case 'hotel': {
       // Per occupied room-night at the country factor. Scope 3 (accommodation
-      // energy bought on your behalf elsewhere). The guided audit defaults the
-      // country to Australia; the worked example sets it per trip.
-      const country = meta.country || 'AU';
-      const perNight = hotelPerNight(country);
+      // energy bought on your behalf elsewhere). Nights logged without a trip
+      // country price at the home country; the worked example sets it per trip.
+      const stayCountry = meta.country || country;
+      const perNight = hotelPerNight(stayCountry);
       activity = meta.nights || 0; unit = 'nights';
       components = [{ scope: '3', tco2e: activity * perNight / 1000 }];
       scope = '3';
-      const c = HOTEL.countries[country];
+      const c = HOTEL.countries[stayCountry];
       source = HOTEL_SOURCE.name + ' (' + (c ? c.label : 'home-country default') + ', per room-night)';
       break;
     }
@@ -380,7 +385,7 @@ export function baselineState(profile, agg) {
       else if (mode === 'pt') kmPt += m.km || 0;
       else if (m.fuel === 'ev') { kmCar += (m.km || 0) / occ; kmEv += (m.km || 0) / occ; }
       else {
-        const dflt = (ROAD_FUELS[m.fuel] || ROAD_FUELS.petrol).defaultL100km || 7;
+        const dflt = roadFuelFor(countryOf(s), m.fuel).defaultL100km || 7;
         if (m.litres != null) { litres += m.litres / occ; kmCar += (m.litres * 100) / (m.l100km || dflt) / occ; }
         else { kmCar += (m.km || 0) / occ; litres += ((m.km || 0) * (m.l100km || dflt)) / 100 / occ; }
       }
@@ -399,14 +404,15 @@ export function baselineState(profile, agg) {
   }
   const dietType = s.dietType || 'medMeat';
   return {
-    state: s.state || 'NSW',
+    country: countryOf(s),
+    state: s.state || COUNTRIES[countryOf(s)].defaultRegion,
     dwelling: s.dwelling || 'house',
     greenpowerPct: (s.greenpowerPct || 0) / 100,
     kwh, mj,
     kmCar, kmRide, kmPt,
     // l100km describes the combustion share only; audited EV kilometres set
     // the starting evShare so an EV driver is never offered "switch to an EV".
-    l100km: kmCar - kmEv > 0 ? (litres / (kmCar - kmEv)) * 100 : (ROAD_FUELS[s.fuelType || 'petrol'].defaultL100km || 7),
+    l100km: kmCar - kmEv > 0 ? (litres / (kmCar - kmEv)) * 100 : (roadFuelFor(countryOf(s), s.fuelType || 'petrol').defaultL100km || 7),
     fuelType: s.fuelType || 'petrol',
     evShare: kmCar > 0 ? kmEv / kmCar : 0,
     solarReduction: 0, seaShift: 0,
@@ -422,15 +428,16 @@ export function baselineState(profile, agg) {
 
 // Emissions (tCO2e/yr) for an activity state in projection year offset i.
 export function stateEmissions(st, yearOffset) {
-  const f = ELECTRICITY[st.state] || ELECTRICITY.NSW;
+  const f = electricityFor({ state: st.state, country: st.country });
   const s2f = Math.max(GRID_DECLINE.floor, f.s2 * Math.pow(GRID_DECLINE.ratePerYear, Math.max(0, yearOffset)));
-  const fuel = ROAD_FUELS[st.fuelType] || ROAD_FUELS.petrol;
+  const fuel = roadFuelFor(st.country, st.fuelType);
 
   const evKwh = st.kmCar * st.evShare * ROAD_FUELS.ev.kWhPerKm;
   const gridKwh = (st.kwh + st.addedKwh0 + evKwh) * (1 - st.solarReduction);
   const elec = (gridKwh * s2f * (1 - st.greenpowerPct) + gridKwh * f.s3) / 1000;
 
-  const gas = (st.mj * (GAS.s1_per_MJ + gasS3(st.state))) / 1000;
+  const g = gasFactorsFor({ state: st.state, country: st.country });
+  const gas = (st.mj * (g.s1 + g.s3)) / 1000;
   const litres = (st.kmCar * (1 - st.evShare) * st.l100km) / 100;
   const road = (litres * (fuel.s1_per_L + fuel.s3_per_L)
     + st.kmRide * ROAD_MODES.rideshare.perKm

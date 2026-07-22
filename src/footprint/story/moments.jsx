@@ -266,7 +266,7 @@ export function ReferencePoints({ d, voice, tags, goTo }) {
                 <div className="st-ref-v display">
                   <CountUp value={b ? b.t : 0} decimals={1} delay={0.2 + i * 0.15} /><span> {r.unit}</span>
                 </div>
-                <div className="st-ref-label">{r.label}</div>
+                <div className="st-ref-label">{r.label || (b ? b.label : '')}</div>
                 <div className="st-ref-note">{r.note}</div>
               </motion.div>
             );
@@ -650,7 +650,7 @@ const ratioLabel = (total, base) => {
 export function Bench({ d, voice, tags }) {
   const max = Math.max(...d.bench.map((b) => b.t));
   const tiles = [
-    { key: 'aus', base: d.bench[1] },
+    { key: 'home', base: d.bench[1] },
     { key: 'global', base: d.bench[2] },
     { key: 'budget', base: d.bench[3] },
   ].filter((t) => t.base && t.base.t > 0);
@@ -664,7 +664,11 @@ export function Bench({ d, voice, tags }) {
             <motion.div className="st-bench-tile" key={t.key} variants={rise} custom={1.5 + i * 0.5}>
               <span className="st-bench-tile-v display">{ratioLabel(d.total, t.base.t)}</span>
               <span className="st-bench-tile-l">
-                {d.total / t.base.t < 1 ? BENCH_ST.tiles[t.key] : BENCH_ST.tiles[t.key].replace(/^of /, '')}
+                {(() => {
+                  // The home tile carries the home country's own label.
+                  const label = fill(BENCH_ST.tiles[t.key], { name: t.base.label });
+                  return d.total / t.base.t < 1 ? label : label.replace(/^of /, '');
+                })()}
               </span>
             </motion.div>
           ))}

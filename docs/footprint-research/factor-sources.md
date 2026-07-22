@@ -405,3 +405,72 @@ explicitly indicative screening line after the sources below were held.
 6. Benchmarks: EDGAR annual report, DCCEEW quarterly inventory.
 7. Entries pin their factor set id (`factor_set`); closed years are never
    re-priced. New factors apply forward only.
+
+## International audits: United States and New Zealand (added July 2026)
+
+Country support added in the `nga2025-ukghg2025-intl1` factor set. The build
+environment for this change had no egress to epa.gov, eia.gov,
+environment.govt.nz, measuringemissionsguide.environment.govt.nz or
+edgar.jrc.ec.europa.eu (organisation proxy policy), so nothing below is
+workbook-cell verified; every value rests on search-indexed corroboration of
+the primary publisher, and each carries a flag. Re-verify all of them against
+the primary files at the next refresh, from an environment that can reach them.
+
+### US electricity (national average)
+
+- Scope 2: 0.37 kg CO2-e/kWh. EIA FAQ 74: 2023 US utility-scale average
+  0.81 lb CO2/kWh (~0.367 kg), corroborated by eGRID-based republications
+  near 370 g/kWh. CO2-only plus the small CH4/N2O share reads ~0.37.
+- Scope 3: 0.02 kg/kWh, derived as ~5% T&D losses on generation (EIA's
+  long-standing loss share). No upstream fuel-cycle counted.
+- **Flag:** national average only. The eGRID2023 state table (ST sheet,
+  total output CO2e rate) could not be downloaded; state-level factors are
+  recorded as queued on the method page. eGRID2023 Rev 2 released 2025-06-12.
+
+### NZ electricity (national grid)
+
+- Scope 2: 0.073 kg CO2-e/kWh, MfE Measuring Emissions Catalogue (2025;
+  a 2026 catalogue is live at measuringemissionsguide.environment.govt.nz).
+  Corroborated by two independent republishers; the catalogue's Table 5.2
+  cell could not be read directly.
+- Scope 3: 0 — MfE publishes a separate T&D-losses factor that could not be
+  verified, so it is queued and the line understates slightly.
+- **Flag:** single-source class of corroboration; verify Table 5.2 and the
+  loss factor at refresh.
+
+### US gas and road fuels (EPA GHG Emission Factors Hub, Jan 2025 edition)
+
+- Natural gas: 53.06 kg CO2 + 1.0 g CH4 + 0.10 g N2O per MMBtu (AR5) =
+  53.11 kg CO2e/MMBtu = 0.05034 kg/MJ. Therm bills convert at 105.505 MJ.
+- Gasoline 8.78 and diesel 10.21 kg CO2/gallon = 2.32 / 2.70 kg/L. Per-mile
+  CH4/N2O (<1%) left out, stated in the method.
+- These are decade-stable 40 CFR Part 98 defaults, corroborated across many
+  editions; confidence is the highest of this section.
+- Scope 3 for liquid fuels keeps the NGA fuel-cycle factors as a stated proxy
+  (boundary consistency across countries); gas fuel-cycle not counted.
+
+### NZ gas and road fuels
+
+- Australian NGA combustion factors used as stated proxies. Cross-checks:
+  published NZ figures petrol ~2.31, diesel ~2.68 kg CO2/L; NZ pipeline gas
+  runs a few per cent above the NGA figure. **Flag:** replace with MfE
+  catalogue cells at refresh.
+
+### Benchmarks
+
+- US: ~17.3 t CO2-e/person (2024, EDGAR 2025 report basis via republications;
+  one secondary source reads 17.7 for an adjacent vintage). **Flag.**
+- NZ: 14.6 t derived — NZ GHG Inventory 1990-2023 gross 76.4 Mt CO2-e over
+  ~5.22 M resident population. Inventory figure well corroborated.
+
+### Goods FX
+
+- NZD/USD 0.5873: IRD rolling 12-month average to July 2025 (primary,
+  via the IRD 2026 rolling-average PDF). US spend needs no rate; the shared
+  US CPI-U bridge (1.120) applies to all three countries.
+
+### Hotel nights
+
+- US 16.1 kg/room-night was already in the verified DEFRA 2025 set. NZ is
+  not listed in that set; the Australian default (35) stands in for NZ home
+  nights, stated. **Flag:** check the DESNZ 2026 edition for an NZ row.
