@@ -207,5 +207,14 @@ export const FOOTER = {
         { label: 'Cost Per Wear', href: 'fashion/' },
       ],
     },
+    {
+      head: 'Tools', icon: 'spark',
+      links: [
+        { label: 'Grid Intensity', href: 'grid/' },
+        { label: 'Sustainability Daily', href: 'daily/' },
+        { label: 'Super Fund Holdings', href: 'super/' },
+        { label: 'Climate Progress', href: 'progress/' },
+      ],
+    },
   ],
 };

@@ -429,12 +429,8 @@
 .fp-toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
 
 /* ---- Footer ---- */
-.fp-footer{ border-top:1px solid var(--rule-dk); background:var(--bg); padding:1.6rem 0; }
-.fp-footer-inner{ display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
-.fp-footer-home{ color:var(--matcha); font-family:var(--mono); font-size:0.9rem; text-decoration:none; opacity:0.85; display:inline-flex; align-items:center; }
-.fp-footer-name{ font-family:var(--mono); font-size:10px; letter-spacing:0.06em; color:var(--mid); }
-.fp-footer-back{ font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--mid); text-decoration:none; font-weight:600; }
-.fp-footer-back:hover{ color:var(--matcha); }
+/* The compact footer strip (.fp-footer*) moved to global.css: it is shared by
+   the footprint pages and the standalone tool pages via ToolFooter. */
 
 /* Motion preferences: the blooms animate in global.css; stop them here too. */
 @media (prefers-reduced-motion: reduce){

@@ -8,23 +8,32 @@ built as a React + Vite multi-page app and deployed to GitHub Pages.
 - React 18 + Vite 5, `framer-motion` for motion, `chart.js` for the scenario
   model, `ogl` for the hero aurora (WebGL), plus a hand-written canvas renderer
   (contour field).
-- Five pages: the main profile (`index.html` → `src/main.jsx` → `App.jsx`), a
+- Pages: the main profile (`index.html` → `src/main.jsx` → `App.jsx`), a
   standalone work-samples page (`work/index.html` → `src/work/main.jsx`) at
   `/work/`, the Life Footprint dashboard (`footprint/index.html` →
   `src/footprint/main.jsx`) at `/footprint/`, its basis of preparation
   (`footprint/method/index.html` → `src/footprint/method/main.jsx`) at
-  `/footprint/method/`, and Cost Per Wear, the fashion brand transparency lookup
-  (`fashion/index.html` → `src/fashion/main.jsx`) at `/fashion/`.
+  `/footprint/method/`, Cost Per Wear, the fashion brand transparency lookup
+  (`fashion/index.html` → `src/fashion/main.jsx`) at `/fashion/`, and four
+  standalone tools: Grid Intensity at `/grid/`, Sustainability Daily at
+  `/daily/`, Super Fund Holdings at `/super/` (methodology at
+  `/super/method/`), and Australia's Climate Progress at `/progress/`, each
+  with its entry html at the repo root and its source under `src/<tool>/`.
 
 ## Layout
 
 | Path | What lives here |
 |---|---|
-| `src/components/` | Main-page sections (Hero, Bio, Principles, Ticker, Scenario, Experience, Contact) plus the shared SiteFooter (big lime card with signup + link columns, used by the home and work pages), shared Chrome (nav, grain, scroll progress, skip link), the shared hand-drawn `Icons` set (round line art, one matcha accent shape per glyph, used beside sec-tags on every page), and the `Aurora` (WebGL) + `ContourField` (canvas) hero backdrops, mounted on the home, work, footprint and fashion intros. |
+| `src/components/` | Main-page sections (Hero, Bio, Principles, Ticker, Scenario, Experience, Contact) plus the shared SiteFooter (big lime card with signup + link columns, used by the home and work pages), shared Chrome (nav, grain, scroll progress, skip link), the shared hand-drawn `Icons` set (round line art, one matcha accent shape per glyph, used beside sec-tags on every page), and the `Aurora` (WebGL) + `ContourField` (canvas) hero backdrops, mounted on the home, work, footprint and fashion intros. `ToolNav.jsx` carries the shared nav + compact footer for the standalone tool pages (`/grid/`, `/daily/`, `/super/`, `/progress/`). |
 | `src/work/` | Work-samples page: `WorkApp`, `Baseline`, `CaseStudy`, data in `workData.js`, styles in `work.css`. |
 | `src/footprint/` | Life Footprint page: calculation engine and factor data in `lib/` and `data/` (keep rigorous; every factor cites its source), the Wrapped-style reveal in `story/` (WebGL carbon field, carbon characters, share cards), guided audit in `Onboarding.jsx`, dashboard sections alongside. Copy lives in `data/copy.js` and `data/storyCopy.js`. |
 | `src/footprint/method/` | The basis of preparation page (`/footprint/method/`): the written method plus the live factor tables, rendered from the same factor set the engine prices from. |
 | `src/fashion/` | Cost Per Wear (`/fashion/`): fashion brand transparency lookup. `FashionApp.jsx` holds the page spine: lookup, compare, the personal lens ("what you can't know": user-picked concerns read against a brand's disclosure statuses, never a brand ranking), directory, the ownership-map treemap in the dark spotlight band, the tabbed field guide (materials, certifications, regulation, claim check), the signals explainer, and the backlog with its dated change log. Between the directory and the field guide sits the Garment Studio (`Studio.jsx`: carbon footprint estimator with live CO2e particle streams, fabric comparator, supply chain mapper over the dot-matrix world map, circularity scorecard; all studio factors are indicative published-LCA estimates and the UI says so once, plainly). All brand data, studio factors, lens concerns, changelog and editorial copy in `data.js`, styles in `fashion.css` (layered on `global.css` tokens like the footprint pages), intent in `design-notes.md`. Every company shows its real logo via `BrandLogo` (walked through the keyless `LOGO_SOURCES` provider chain by `BRAND_DOMAIN` in `data.js`), with a generated woven-label monogram (`deriveMonogram`/`SEGMENT_STYLE`) as the automatic fallback. |
+| `src/grid/` | Grid Intensity (`/grid/`): live NEM emissions-intensity view ("run it now or wait") plus the Scope 2 explorer (location-based vs market-based factors with GreenPower/PPA and LGC toggles). Copy and factors in `data.js`, styles in `grid.css` (`gi-` prefix). |
+| `src/daily/` | Sustainability Daily (`/daily/`): two independent daily games, Guess the Footprint and Greenwash or Not, each with its own streak and share card. Puzzles rotate deterministically by date; results and streaks live in localStorage only. Item and claim pools with sources in `data.js`; the claim reasoning stays consistent with the Cost Per Wear claim checker. Styles in `daily.css` (`dy-` prefix). |
+| `src/super/` | Super Fund Holdings (`/super/`): default (MySuper) option holdings and sector exposure next to each fund's own sustainability marketing, with flagged holdings named under stated criteria and a per-fund "last verified" date. Methodology on its own route (`/super/method/`, from the same data). All fund data and copy in `data.js`, styles in `super.css` (`sf-` prefix). |
+| `src/progress/` | Australia's Climate Progress (`/progress/`): scroll-driven reveal of national numbers (grid mix, EV sales, capacity additions, emissions vs target), each with a reference point, ending on a progress-and-shortfall summary. Reviewed quarterly; the last-updated date renders from one field in `data.js`. Styles in `progress.css` (`pr-` prefix). |
+| `src/lib/` | `opennem.js` — the one shared OpenNEM/AEMO client both `/grid/` and `/progress/` read (live NEM data with honest `{ live: false }` failure; callers must label fallbacks as estimates). |
 | `src/data/` | Content and model inputs: `content.js` (all editorial copy, including footer links), `scenario.js` (decarbonisation model). |
 | `src/hooks/` | `useMagnetic` — cursor-follow interaction. |
 | `src/utils/` | `media.js` — `prefersReducedMotion()` / `canHover()` guards. |
@@ -63,6 +72,14 @@ built as a React + Vite multi-page app and deployed to GitHub Pages.
   entry only for a house whose established lettermark differs from the plain
   initials (e.g. Gucci `GG`, Saint Laurent `YSL`). `LOGO_SOURCES` is the single
   swap-point for the logo providers.
+- **Every tool states its basis.** Each of the four tool pages carries its own
+  methodology section (Super Fund Holdings has a whole route,
+  `/super/method/`) in the footprint-method pattern: sources with URLs and
+  access dates, calculation logic, exclusions named, update cadence, and
+  estimate-vs-sourced flags wherever the two mix. A change to a tool's data
+  or logic updates its methodology in the same change. On `/super/` every
+  fund shows its "last verified" date; on `/progress/` the last-updated date
+  renders from a single field in `data.js`.
 - **Motion respects preferences.** Gate every animation/loop on
   `prefersReducedMotion()` and cursor-only interactions on `canHover()` (both
   from `src/utils/media.js`). Canvas/WebGL loops must pause off-screen via
