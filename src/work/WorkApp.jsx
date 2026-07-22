@@ -4,7 +4,7 @@ import { Grain, ScrollProgress, SkipLink } from '../components/Chrome';
 import SplitText from '../components/SplitText';
 import { NAV_LINKS } from '../data/content';
 import {
-  TABS, ROADMAP_INTRO, ROADMAP_STAGES, ROADMAP_LEVERS,
+  TABS, WORK_NARRATIVE, ROADMAP_INTRO, ROADMAP_STAGES, ROADMAP_LEVERS,
   MCA_INTRO, MCA_CRITERIA, MCA_ANALYSIS, LCA,
   CASE_INTRO,
 } from './workData';
@@ -204,6 +204,16 @@ export default function WorkApp() {
         </div>
       </section>
 
+      <section id="work-narrative">
+        <div className="canvas">
+          <div className="sec-tag" data-idx="02 / "><Icon name="book" size={30} />{WORK_NARRATIVE.tag}</div>
+          <h2 className="wn-title display"><SplitText text={WORK_NARRATIVE.title} accentIndex={1} /></h2>
+          <div className="wn-body">
+            {WORK_NARRATIVE.paras.map((p, i) => <p className="wn-para" key={i}>{p}</p>)}
+          </div>
+        </div>
+      </section>
+
       <section id="work-samples">
         <div className="canvas">
           <div className="tabs" role="tablist">
@@ -235,7 +245,7 @@ export default function WorkApp() {
 
       <section id="casestudy">
         <div className="canvas">
-          <div className="sec-tag" data-idx="02 / "><Icon name="book" size={30} />Case Study · Baseline to Boardroom</div>
+          <div className="sec-tag" data-idx="03 / "><Icon name="book" size={30} />Case Study · Baseline to Boardroom</div>
           <h2 className="display" style={{ fontSize: 'clamp(1.8rem,5vw,3.5rem)', marginTop: '1.2rem', marginBottom: '1rem' }}>
             <SplitText text="Baseline to boardroom" accentIndex={2} />
           </h2>

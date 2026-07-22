@@ -382,21 +382,6 @@ section { position:relative; }
 .princ-body{ font-size:0.85rem; font-weight:400; color:#475569; line-height:1.75; }
 
 /* ============================================================================
-   TICKER
-   ============================================================================ */
-.ticker-band{ overflow:hidden; border-top:1px solid var(--rule-dk); border-bottom:1px solid var(--rule-dk); padding:0.8rem 0; background:var(--band); position:relative; }
-.ticker-track{ display:flex; white-space:nowrap; width:max-content; will-change:transform; animation:tick 48s linear infinite; }
-.ticker-track.paused{ animation-play-state:paused; }
-@keyframes tick{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
-.ticker-run{ font-family:var(--mono); font-size:10px; letter-spacing:0.13em; text-transform:uppercase; color:var(--mid); flex-shrink:0; display:flex; align-items:center; }
-.t-term{ cursor:pointer; padding:0 0.45em; border-radius:1px; transition:background 0.18s ease,color 0.18s ease; }
-.t-term:hover, .t-term.t-active{ background:var(--matcha); color:var(--forest); }
-.t-sep{ color:var(--mid); padding:0 0.2em; }
-.ticker-tip{ position:fixed; background:var(--slate); color:var(--bg); font-family:var(--mono); font-size:10px; letter-spacing:0.03em; padding:0.65rem 1.9rem 0.65rem 0.8rem; z-index:var(--z-tooltip); max-width:260px; line-height:1.6; border-left:2px solid var(--matcha); white-space:normal; }
-.ticker-tip-close{ position:absolute; top:0.25rem; right:0.4rem; font-family:var(--mono); font-size:0.85rem; line-height:1; color:rgba(248,250,252,0.55); background:none; border:none; cursor:pointer; padding:0.15rem 0.25rem; transition:color 0.2s; }
-.ticker-tip-close:hover{ color:var(--matcha); }
-
-/* ============================================================================
    SCENARIO MODEL
    ============================================================================ */
 /* Warm brand-tinted wash instead of a heavy cold grey — the results read as
