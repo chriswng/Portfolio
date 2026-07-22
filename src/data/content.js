@@ -5,11 +5,11 @@ export const NAV_LINKS = [
   { href: '#about', label: 'About' },
   { href: '#bio', label: 'Capabilities' },
   { href: '#principles', label: 'My Practice' },
+  { href: '#experience', label: 'Experience' },
   { href: '#scenario', label: 'Decarb Model' },
   { href: 'work/', label: 'Work Samples', external: true },
   { href: 'footprint/', label: 'Footprint', external: true },
   { href: 'fashion/', label: 'Cost Per Wear', external: true },
-  { href: '#experience', label: 'Experience' },
 ];
 
 export const HERO = {
@@ -28,9 +28,9 @@ export const HERO = {
 };
 
 export const BIO_PARAS = [
+  'Looking for sustainability leadership in fashion, consumer goods, or technology, where supply chain transparency and decarbonisation are primary workstreams, not obligations.',
   'I build the data infrastructure that makes sustainability commitments defensible: GHG inventories with documented methodology, Scope 1-3 baselines that survive external assurance, decarbonisation models with traceable lever assumptions, and reporting systems that internal teams can operate after I leave the engagement.',
   'Four years in sustainability advisory across WSP and Downer EDI: GHG accounting, regulatory disclosure, decarbonisation modelling, supply chain emissions. Six years prior in built environment and infrastructure, including project delivery at the Department of Defence.',
-  'Looking for sustainability leadership in fashion, consumer goods, or technology, where supply chain transparency and decarbonisation are primary workstreams, not obligations.',
 ];
 
 export const OUTCOMES = [
@@ -90,29 +90,12 @@ export const PRINCIPLES = [
   { num: '03', icon: 'target', title: 'Ambition grounded in evidence, with gaps named.', body: 'The science sets the pace. Pathway models need lever assumptions grounded in published data, with uncertainty disclosed alongside figures. Carbon credits belong on residual hard-to-abate emissions, not as a substitute for near-term reduction.' },
 ];
 
-export const TICKER_TERMS = [
-  { term: 'GHG Protocol', tip: 'Corporate value chain accounting standard: defines Scope 1, 2, and 3 emission boundaries and reporting methodology.' },
-  { term: 'NGER Act', tip: 'National Greenhouse and Energy Reporting Act: mandatory Australian corporate emissions reporting to DCCEEW.' },
-  { term: 'AASB S2 / ISSB', tip: 'Australian mandatory climate disclosure standard aligned to ISSB S2, effective for large entities from FY2025.' },
-  { term: 'CDP Supply Chain', tip: 'Annual supplier emissions disclosure programme managed on behalf of large buyer organisations via the CDP platform.' },
-  { term: 'GRESB Infrastructure', tip: 'Real assets ESG benchmark used by infrastructure fund managers and institutional investors for annual performance comparison.' },
-  { term: 'TCFD', tip: 'Task Force on Climate-related Financial Disclosures: scenario analysis framework for transition and physical risk disclosure.' },
-  { term: 'SBTi', tip: 'Science Based Targets initiative: validates near-term and long-term emission reduction targets against 1.5°C pathways.' },
-  { term: 'DCCEEW NGA Factors', tip: 'DCCEEW National Greenhouse Accounts emission factors, used for NGER fuel combustion and grid electricity calculations.' },
-  { term: 'Externally Assured', tip: 'External limited assurance over Group-level Scope 1 and 2 emissions for statutory and market reporting.' },
-  { term: 'Envizi', tip: 'IBM Envizi ESG Suite: platform for emissions data ingestion, normalisation, audit trail, and regulatory output.' },
-  { term: 'Workiva', tip: 'Cloud-based platform for connected ESG and financial reporting with linked data, narrative, and disclosure workflow.' },
-  { term: 'Net Zero FY2050', tip: 'Net-zero Scope 1 and 2 emissions target by FY2050, with interim milestones and lever-tracked abatement pathways.' },
-  { term: 'Revenue-Indexed Forecasting', tip: 'Gross emissions scaled proportionally to revenue growth, isolates abatement impact from business volume changes.' },
-  { term: 'Market-Based Scope 2', tip: 'Scope 2 accounting using supplier-specific emission rates or energy attribute certificates rather than grid averages.' },
-];
-
 export const EXPERIENCE = [
   {
     mark: 'DG', clr: 'downer',
     logo: 'Downer_Group_logo.svg.png', logoClass: 'logo-downer', logoAlt: 'Downer Group logo', logoW: 252, logoH: 90,
     org: 'Downer EDI', dept: 'Group Environment, Sustainability & Reporting',
-    roles: [{ title: 'Senior Sustainability Advisor', date: 'Mar 2026 - Mar 2027' }],
+    roles: [{ title: 'Senior Sustainability Advisor', date: 'Mar 2026 - Present' }],
     bullets: [
       { section: 'Facilitation & Stakeholder Influence' },
       { text: 'Facilitated a cross-BU ESG Impact Report content workshop with a General Manager, coordinating four business unit disclosure reviews through Workiva for the annual ESG Impact Report.' },

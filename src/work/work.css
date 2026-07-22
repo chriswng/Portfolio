@@ -11,8 +11,16 @@
 .wi-back:hover{ color:var(--matcha); }
 .wi-back span{ color:var(--matcha); }
 
+/* ---- Narrative lead-in — the through-line before the frameworks ---- */
+#work-narrative{ background:var(--bg); padding:clamp(3.5rem,8vw,5.5rem) 0 clamp(0.5rem,2vw,1.5rem); }
+.wn-title{ font-size:clamp(1.8rem,5vw,3.5rem); line-height:1.02; letter-spacing:-0.03em; margin:1.2rem 0 1.6rem; }
+.wn-title em{ color:var(--forest-ink); font-style:normal; }
+.wn-body{ max-width:680px; }
+.wn-para{ font-size:clamp(0.98rem,1.35vw,1.12rem); color:#3f5133; line-height:1.8; margin-bottom:1.2rem; }
+.wn-para:last-child{ margin-bottom:0; }
+
 /* ---- Tabs — segmented pill control (reference-inspired) ---- */
-#work-samples{ background:var(--bg); padding:clamp(3rem,7vw,5rem) 0; }
+#work-samples{ background:var(--bg); padding:clamp(2rem,5vw,3.5rem) 0 clamp(3rem,7vw,5rem); }
 .tabs{ display:inline-flex; flex-wrap:wrap; gap:0.4rem; margin-bottom:2.5rem; padding:0.4rem; background:var(--lime-wash); border:1px solid rgba(94,107,30,0.16); border-radius:var(--r-pill); max-width:100%; }
 .tab{ font-family:var(--mono); font-size:11px; letter-spacing:0.07em; text-transform:uppercase; border:none; background:transparent; color:var(--mid); cursor:pointer; white-space:nowrap; transition:color 0.3s var(--ease),background 0.3s var(--ease),box-shadow 0.3s var(--ease); font-weight:600; padding:0.6rem 1.15rem; border-radius:var(--r-pill); display:inline-flex; align-items:center; }
 .tab.on{ color:var(--lime-bright); background:var(--forest); box-shadow:0 6px 16px rgba(33,48,15,0.18); }
