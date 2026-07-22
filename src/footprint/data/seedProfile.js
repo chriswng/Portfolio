@@ -13,6 +13,7 @@ import { priceEntry } from '../lib/engine';
 
 export const SEED_SETTINGS = {
   name: 'Chris',
+  country: 'AU',
   state: 'NSW',
   householdSize: 2,
   dwelling: 'apartment',

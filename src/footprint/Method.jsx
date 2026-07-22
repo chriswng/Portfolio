@@ -5,10 +5,12 @@
 
 import SplitText from '../components/SplitText';
 import {
-  ELECTRICITY, ELECTRICITY_SOURCE, GAS, GAS_SOURCE,
-  ROAD_FUELS, ROAD_MODES, ROAD_SOURCE, FLIGHT_FACTORS, FLIGHT_SOURCE, FLIGHT_RF_MULTIPLIER,
+  ELECTRICITY, ELECTRICITY_SOURCE, ELECTRICITY_SOURCE_NZ, ELECTRICITY_SOURCE_US,
+  GAS, GAS_SOURCE, GAS_INTL, GAS_SOURCE_US, GAS_SOURCE_NZ,
+  ROAD_FUELS, ROAD_FUELS_INTL, ROAD_SOURCE_US, ROAD_SOURCE_NZ,
+  ROAD_MODES, ROAD_SOURCE, FLIGHT_FACTORS, FLIGHT_SOURCE, FLIGHT_RF_MULTIPLIER,
   FREIGHT_MODES, FREIGHT_SOURCE, DIET_TYPES, DIET_SOURCE, FOOD_PER_KG, GRID_DECLINE,
-  GOODS, GOODS_SOURCE, GOODS_FX, goodsPerAud,
+  GOODS, GOODS_SOURCE, GOODS_FX, GOODS_FX_BY_COUNTRY, goodsPerDollar,
   CLOTHING_ITEMS, CLOTHING_ITEMS_SOURCE,
   HOTEL, HOTEL_SOURCE,
   HOME, HOME_SOURCE,
@@ -86,13 +88,26 @@ export default function Method() {
           <p>{METHOD.factorsSub}</p>
 
           <FTable
-            caption="Electricity, by state and grid region · kg CO₂-e per kWh"
+            caption="Electricity, Australia, by state and grid region · kg CO₂-e per kWh"
             head={['State / region', 'Scope 2', 'Scope 3']}
-            rows={Object.values(ELECTRICITY).map((r) => [r.label + (r.grid ? ' · ' + r.grid : ''), r.s2.toFixed(2), r.s3.toFixed(2)])}
+            rows={Object.values(ELECTRICITY).filter((r) => r.country === 'AU')
+              .map((r) => [r.label + (r.grid ? ' · ' + r.grid : ''), r.s2.toFixed(2), r.s3.toFixed(2)])}
             source={ELECTRICITY_SOURCE}
           />
           <FTable
-            caption="Natural gas (metro residential) · kg CO₂-e per MJ"
+            caption="Electricity, New Zealand · kg CO₂-e per kWh (national grid)"
+            head={['Region', 'Scope 2', 'Scope 3']}
+            rows={[[ELECTRICITY.NZ.label + ' · ' + ELECTRICITY.NZ.grid, ELECTRICITY.NZ.s2.toFixed(3), 'not counted (loss factor queued)']]}
+            source={ELECTRICITY_SOURCE_NZ}
+          />
+          <FTable
+            caption="Electricity, United States · kg CO₂-e per kWh (national average; state factors queued)"
+            head={['Region', 'Scope 2', 'Scope 3']}
+            rows={[[ELECTRICITY.US.label + ' · ' + ELECTRICITY.US.grid, ELECTRICITY.US.s2.toFixed(2), ELECTRICITY.US.s3.toFixed(2) + ' (T&D losses ~5%)']]}
+            source={ELECTRICITY_SOURCE_US}
+          />
+          <FTable
+            caption="Natural gas, Australia (metro residential) · kg CO₂-e per MJ"
             head={['Component', 'Factor']}
             rows={[
               ['Scope 1 combustion', GAS.s1_per_MJ.toFixed(5)],
@@ -101,18 +116,51 @@ export default function Method() {
             source={GAS_SOURCE}
           />
           <FTable
-            caption="Road · fuels per litre, modes per passenger-km"
+            caption="Natural gas, United States · kg CO₂-e per MJ (bills in therms convert at 105.505 MJ per therm)"
+            head={['Component', 'Factor']}
+            rows={[
+              ['Scope 1 combustion', GAS_INTL.US.s1_per_MJ.toFixed(5)],
+              ['Scope 3 fuel-cycle', 'not counted (queued); understates slightly'],
+            ]}
+            source={GAS_SOURCE_US}
+          />
+          <FTable
+            caption="Natural gas, New Zealand · kg CO₂-e per MJ (bills in kWh convert at 3.6 MJ per kWh)"
+            head={['Component', 'Factor']}
+            rows={[
+              ['Scope 1 combustion (stated proxy)', GAS_INTL.NZ.s1_per_MJ.toFixed(5)],
+              ['Scope 3 fuel-cycle', 'not counted (queued); understates slightly'],
+            ]}
+            source={GAS_SOURCE_NZ}
+          />
+          <FTable
+            caption="Road, Australia and New Zealand · fuels per litre, modes per passenger-km (NZ uses these factors as a stated proxy)"
             head={['Item', 'Scope 1', 'Scope 3', 'Basis']}
             rows={[
               ['Petrol (per L)', ROAD_FUELS.petrol.s1_per_L.toFixed(2), ROAD_FUELS.petrol.s3_per_L.toFixed(2), 'NGA 2025 Table 9'],
               ['Hybrid (per L)', ROAD_FUELS.hybrid.s1_per_L.toFixed(2), ROAD_FUELS.hybrid.s3_per_L.toFixed(2), 'Petrol factors at ' + ROAD_FUELS.hybrid.defaultL100km + ' L/100km default consumption'],
               ['Diesel (per L)', ROAD_FUELS.diesel.s1_per_L.toFixed(2), ROAD_FUELS.diesel.s3_per_L.toFixed(2), 'NGA 2025 Table 9'],
-              ['EV (per km)', '0', 'grid factors', ROAD_FUELS.ev.kWhPerKm + ' kWh/km at the state electricity factors'],
+              ['EV (per km)', '0', 'grid factors', ROAD_FUELS.ev.kWhPerKm + ' kWh/km at the home grid electricity factors'],
               ['Rideshare / taxi (per km)', 'n/a', ROAD_MODES.rideshare.perKm.toFixed(3), ROAD_MODES.rideshare.source],
               ['Public transport (per km)', 'n/a', ROAD_MODES.pt.perKm.toFixed(3), ROAD_MODES.pt.source],
             ]}
             source={ROAD_SOURCE}
           />
+          <FTable
+            caption="Road, United States · fuels per litre"
+            head={['Item', 'Scope 1', 'Scope 3', 'Basis']}
+            rows={[
+              ['Gasoline (per L)', ROAD_FUELS_INTL.US.petrol.s1_per_L.toFixed(2), ROAD_FUELS_INTL.US.petrol.s3_per_L.toFixed(2), 'EPA Hub 8.78 kg CO2/gal; scope 3 is the NGA fuel-cycle proxy'],
+              ['Hybrid (per L)', ROAD_FUELS_INTL.US.hybrid.s1_per_L.toFixed(2), ROAD_FUELS_INTL.US.hybrid.s3_per_L.toFixed(2), 'Gasoline factors at ' + ROAD_FUELS_INTL.US.hybrid.defaultL100km + ' L/100km default consumption'],
+              ['Diesel (per L)', ROAD_FUELS_INTL.US.diesel.s1_per_L.toFixed(2), ROAD_FUELS_INTL.US.diesel.s3_per_L.toFixed(2), 'EPA Hub 10.21 kg CO2/gal; scope 3 is the NGA fuel-cycle proxy'],
+              ['EV (per km)', '0', 'grid factors', ROAD_FUELS_INTL.US.ev.kWhPerKm + ' kWh/km at the US grid average'],
+            ]}
+            source={ROAD_SOURCE_US}
+          />
+          <p className="fp-note">
+            New Zealand road fuels: {ROAD_SOURCE_NZ.name}. {ROAD_SOURCE_NZ.detail}{' '}
+            <a href={ROAD_SOURCE_NZ.url} target="_blank" rel="noopener noreferrer">Source ↗</a>
+          </p>
           <FTable
             caption={'Flights · kg CO₂-e per passenger-km, radiative forcing included (×' + FLIGHT_RF_MULTIPLIER + '); divide by ' + FLIGHT_RF_MULTIPLIER + ' for the without-RF view'}
             head={['Band', 'Economy', 'Premium', 'Business', 'First']}
@@ -152,13 +200,17 @@ export default function Method() {
             source={EQUIV_SOURCE}
           />
           <FTable
-            caption="Goods & services (optional detail) · spend-based screening estimate"
-            head={['Category', 'kg CO₂-e / 2022 USD', 'kg CO₂-e / A$ spent', 'Representative EPA commodities (with margins)']}
-            rows={Object.entries(GOODS).map(([k, g]) => [g.label, g.usPerUsd.toFixed(3), goodsPerAud(k).toFixed(4), g.basis])}
+            caption="Goods & services (optional detail) · spend-based screening estimate, per dollar spent in the home currency"
+            head={['Category', 'kg CO₂-e / 2022 USD', 'kg / A$', 'kg / NZ$', 'kg / US$', 'Representative EPA commodities (with margins)']}
+            rows={Object.entries(GOODS).map(([k, g]) => [
+              g.label, g.usPerUsd.toFixed(3),
+              goodsPerDollar(k, 'AU').toFixed(4), goodsPerDollar(k, 'NZ').toFixed(4), goodsPerDollar(k, 'US').toFixed(4),
+              g.basis,
+            ])}
             source={GOODS_SOURCE}
           />
           <p className="fp-note">
-            Currency and inflation bridge: each per-2022-USD factor is multiplied by {GOODS_FX.audUsd} (USD per A$) and divided by {GOODS_FX.inflation} (US CPI-U, 2022 to reporting year) to price spend in current Australian dollars. {GOODS_FX.audUsdNote} {GOODS_FX.inflationNote} This block is a screening estimate for a US consumption basket applied to Australian spend; treat it as coarse and lower-confidence than the metered lines above.
+            Currency and inflation bridge: each per-2022-USD factor is multiplied by the home currency’s USD rate (A$ {GOODS_FX_BY_COUNTRY.AU.rate}, NZ$ {GOODS_FX_BY_COUNTRY.NZ.rate}, US$ {GOODS_FX_BY_COUNTRY.US.rate}) and divided by {GOODS_FX.inflation} (US CPI-U, 2022 to reporting year) to price spend in current local dollars. {GOODS_FX_BY_COUNTRY.AU.rateNote} {GOODS_FX_BY_COUNTRY.NZ.rateNote} {GOODS_FX.inflationNote} This block is a screening estimate for a US consumption basket applied to the home country’s spend; treat it as coarse and lower-confidence than the metered lines above.
           </p>
           <FTable
             caption="Clothing by item (optional detail) · kg CO₂-e per item, cradle-to-grave"
