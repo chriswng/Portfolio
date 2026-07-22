@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
-  ELECTRICITY, ROAD_FUELS, DIET_TYPES, GOODS, CLOTHING_ITEMS,
+  COUNTRIES, regionsForCountry, roadFuelSetFor, DIET_TYPES, GOODS, CLOTHING_ITEMS,
   AIRPORTS, airportByCode, greatCircleKm, flightBandForKm, HOME_AIRPORT, PT_FARE_CAPS, PT_FARE_CAPS_ASOF,
 } from './data/factors';
 import { CONVERSIONS } from './data/vendorMap';
@@ -30,8 +30,10 @@ const shiftMonths = (isoDate, delta, day) => {
   return localIso(new Date(d.getFullYear(), d.getMonth() + delta, day));
 };
 
-// The home airport a fresh flight card opens from, given the visitor's state.
-const homeAirportFor = (state) => HOME_AIRPORT[state] || 'SYD';
+// The home airport a fresh flight card opens from, given the visitor's
+// region; the national NZ and US rows fall through to the country default.
+const homeAirportFor = (state, country) =>
+  HOME_AIRPORT[state] || (COUNTRIES[country] || COUNTRIES.AU).homeAirport;
 
 // Public-transport spend actually counted: capped at the state's weekly fare
 // cap unless the visitor overrides it, because spend past the cap buys no
@@ -49,7 +51,10 @@ export function flightMeta(fl) {
   const to = airportByCode(fl.to);
   if (!from || !to || from.code === to.code) return null;
   const km = greatCircleKm(from, to);
-  const international = !(from.country === 'AU' && to.country === 'AU');
+  // A sector inside one country is domestic wherever that country is; the
+  // band logic prices long domestic sectors (a US transcontinental) at the
+  // long-haul factor rather than stretching the short-sector domestic proxy.
+  const international = from.country !== to.country;
   return {
     km,
     band: flightBandForKm(km, international),
@@ -72,10 +77,11 @@ const flightLabel = (fl) => {
 export function buildProfileFromOnboarding(a) {
   const period = lastTwelveMonths();
   const settings = {
-    name: '', state: a.state, householdSize: a.householdSize, dwelling: a.dwelling,
+    name: '', country: a.country, state: a.state, householdSize: a.householdSize, dwelling: a.dwelling,
     dietType: a.dietType, fuelType: a.fuelType, greenpowerPct: a.greenpowerPct,
     carOccupancy: a.carOccupancy,
   };
+  const home = COUNTRIES[a.country] || COUNTRIES.AU;
   // Guided-audit answers are survey answers, so every entry lands in the
   // 'estimated' quality tier until a real bill or itinerary replaces it.
   // meta.synthetic marks an invented-or-absent date; a draft that carries a
@@ -91,11 +97,17 @@ export function buildProfileFromOnboarding(a) {
       notes: 'From the guided audit: a typical quarterly household bill, counted as your share. Replace with real bills as they arrive.',
     })));
   }
-  if (a.mjQuarter > 0) {
+  if (a.gasQuarter > 0) {
+    // Bills read in the local unit (MJ, kWh or therms); the engine prices a
+    // single unit, so the quantity converts to MJ here and the note keeps
+    // the figure as it was typed.
+    const mj = Math.round(a.gasQuarter * home.mjPerGasUnit);
     qEnds.forEach((date, i) => entries.push(E({
       category: 'gas', date, period_months: 3, label: 'Gas, quarter ' + (i + 1) + ' (onboarding)',
-      meta: { mj: a.mjQuarter, wholeHousehold: true },
-      notes: 'From the guided audit: a typical quarterly household bill, counted as your share.',
+      meta: { mj, gasAmount: a.gasQuarter, gasUnit: home.gasUnit, wholeHousehold: true },
+      notes: 'From the guided audit: a typical quarterly household bill'
+        + (home.gasUnit === 'MJ' ? '' : ' (' + a.gasQuarter + ' ' + home.gasUnit + ', converted to MJ)')
+        + ', counted as your share.',
     })));
   }
   if (a.carKmWeek > 0) {
@@ -160,8 +172,8 @@ export function buildProfileFromOnboarding(a) {
   if (a.hotelNightsOther > 0) {
     entries.push(E({
       category: 'hotel', date: period.end, period_months: 12, label: 'Hotel nights, no flight (onboarding)',
-      meta: { nights: Math.round(a.hotelNightsOther), country: 'AU' },
-      notes: 'From the guided audit: nights with no flight attached, priced at the Australian per-room-night factor.',
+      meta: { nights: Math.round(a.hotelNightsOther), country: a.country },
+      notes: 'From the guided audit: nights with no flight attached, priced at the home-country per-room-night factor.',
     }));
   }
   if (a.parcelsMonth > 0) {
@@ -246,11 +258,15 @@ const ADVANCED_DEFAULTS = {
   homeNewBuild: false, homeAreaM2: 0,
 };
 
+// Typical starting gas figure per country, in the local unit (roughly the
+// same energy either way; a coarse starting point like the presets).
+const GAS_DEFAULTS = { AU: 3000, NZ: 850, US: 30 };
+
 const DEFAULTS = {
-  state: 'NSW', householdSize: 2, dwelling: 'apartment', dietType: 'medMeat', fuelType: 'petrol',
+  country: 'AU', state: 'NSW', householdSize: 2, dwelling: 'apartment', dietType: 'medMeat', fuelType: 'petrol',
   // gpChoice is the picked chip; greenpowerPct is what the engine prices from.
   // 'no' and 'unsure' are distinct choices that both price at 0% renewable.
-  gpChoice: 'no', greenpowerPct: 0, energyPreset: null, kwhQuarter: 1000, mjQuarter: 3000, carKmWeek: 0, carOccupancy: 1,
+  gpChoice: 'no', greenpowerPct: 0, energyPreset: null, kwhQuarter: 1000, gasQuarter: GAS_DEFAULTS.AU, carKmWeek: 0, carOccupancy: 1,
   rideshareWeek: 0, ptWeek: 0, ptCapOverride: false,
   parcelsMonth: 2, intlOrdersMonth: 0, flights: [], hotelNightsOther: 0,
   ...ADVANCED_DEFAULTS,
@@ -429,7 +445,7 @@ function FlightCard({ fl, index, monthOptions, onChange, onRemove }) {
 function SwarmMeter({ answers: a, step }) {
   const signals =
     2 + step * 2
-    + (a.kwhQuarter > 0 ? 2 : 0) + (a.mjQuarter > 0 ? 2 : 0)
+    + (a.kwhQuarter > 0 ? 2 : 0) + (a.gasQuarter > 0 ? 2 : 0)
     + (a.carKmWeek > 0 ? 2 : 0) + (a.rideshareWeek > 0 ? 1 : 0) + (a.ptWeek > 0 ? 1 : 0)
     + a.flights.filter((f) => flightMeta(f)).length * 4
     + (a.hotelNightsOther > 0 ? 1 : 0)
@@ -487,8 +503,29 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
   // ever thinner. A hand-typed bill (no preset selected) is left untouched.
   const setHousehold = (v) => setA((s) => {
     const next = { ...s, householdSize: v };
-    const pr = s.energyPreset && ENERGY_PRESETS.find((x) => x.id === s.energyPreset);
-    if (pr) { next.kwhQuarter = pr.kwhPerAdult * v; next.mjQuarter = pr.mjPerAdult * v; }
+    const pr = s.energyPreset && ENERGY_PRESETS[s.country].find((x) => x.id === s.energyPreset);
+    if (pr) { next.kwhQuarter = pr.kwhPerAdult * v; next.gasQuarter = pr.gasPerAdult * v; }
+    return next;
+  });
+
+  // Switching country swaps the factor set and the units a bill reads in, so
+  // the place resets to the country's default region, the gas figure resets
+  // to a local-unit starting point, and any chosen preset is re-applied from
+  // the country's own preset table.
+  const setCountry = (country) => setA((s) => {
+    if (s.country === country) return s;
+    const next = {
+      ...s, country,
+      state: COUNTRIES[country].defaultRegion,
+      gasQuarter: GAS_DEFAULTS[country],
+      energyPreset: null,
+    };
+    const pr = s.energyPreset && ENERGY_PRESETS[country].find((x) => x.id === s.energyPreset);
+    if (pr) {
+      next.energyPreset = s.energyPreset;
+      next.kwhQuarter = pr.kwhPerAdult * s.householdSize;
+      next.gasQuarter = pr.gasPerAdult * s.householdSize;
+    }
     return next;
   });
 
@@ -529,7 +566,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
   const addFlight = () => {
     setA((s) => ({
       ...s,
-      flights: [...s.flights, { from: homeAirportFor(s.state), to: '', ret: true, cabin: 'economy', month: '', pax: 1, nights: 0 }],
+      flights: [...s.flights, { from: homeAirportFor(s.state, s.country), to: '', ret: true, cabin: 'economy', month: '', pax: 1, nights: 0 }],
     }));
   };
   const updateFlight = (i, next) => setA((s) => ({ ...s, flights: s.flights.map((f, j) => (j === i ? next : f)) }));
@@ -558,11 +595,20 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
       </div>
       <p>{ONBOARD.you.sub}</p>
       <Chips
-        icon="pin"
-        label={ONBOARD.you.state}
-        options={Object.entries(ELECTRICITY).map(([k, v]) => ({ value: k, label: v.label }))}
-        value={a.state} onChange={(v) => set('state', v)}
+        icon="globe"
+        label={ONBOARD.you.country}
+        options={Object.entries(COUNTRIES).map(([k, c]) => ({ value: k, label: c.label }))}
+        value={a.country} onChange={setCountry}
+        note={a.country === 'US' ? ONBOARD.you.usGridNote : undefined}
       />
+      {regionsForCountry(a.country).length > 1 && (
+        <Chips
+          icon="pin"
+          label={COUNTRIES[a.country].regionQuestion || ONBOARD.you.state}
+          options={regionsForCountry(a.country).map(([k, v]) => ({ value: k, label: v.label }))}
+          value={a.state} onChange={(v) => set('state', v)}
+        />
+      )}
       <Stepper icon="people" label={ONBOARD.you.household} value={a.householdSize} min={1} max={10} onChange={setHousehold} />
       <p className="ob-note">{ONBOARD.you.householdNote}</p>
       <Chips
@@ -584,25 +630,27 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
       <Chips
         icon="house"
         label={ONBOARD.energy.presetLabel}
-        options={ENERGY_PRESETS.map((pr) => ({ value: pr.id, label: pr.label }))}
+        options={ENERGY_PRESETS[a.country].map((pr) => ({ value: pr.id, label: pr.label }))}
         value={a.energyPreset}
         onChange={(id) => {
-          const pr = ENERGY_PRESETS.find((x) => x.id === id);
-          if (pr) setA((s) => ({ ...s, energyPreset: id, kwhQuarter: pr.kwhPerAdult * s.householdSize, mjQuarter: pr.mjPerAdult * s.householdSize }));
+          const pr = ENERGY_PRESETS[a.country].find((x) => x.id === id);
+          if (pr) setA((s) => ({ ...s, energyPreset: id, kwhQuarter: pr.kwhPerAdult * s.householdSize, gasQuarter: pr.gasPerAdult * s.householdSize }));
         }}
         note={ONBOARD.energy.presetNote}
       />
       {/* Dragging or typing a real bill is whole-home too, so it clears the
           preset (household size no longer rescales it) and the engine still
-          splits it per adult. */}
+          splits it per adult. Gas reads in the unit a local bill shows (MJ,
+          kWh or therms) and converts to MJ when the profile builds. */}
       <SliderField icon="bolt" label={ONBOARD.energy.kwh} value={a.kwhQuarter} min={0} max={8000} step={10} unit="kWh"
         onChange={(v) => setA((s) => ({ ...s, kwhQuarter: v, energyPreset: null }))} />
-      <SliderField icon="flame" label={ONBOARD.energy.mj} value={a.mjQuarter} min={0} max={40000} step={50} unit="MJ"
-        onChange={(v) => setA((s) => ({ ...s, mjQuarter: v, energyPreset: null }))} />
+      <SliderField icon="flame" label={fill(ONBOARD.energy.gas, { unit: COUNTRIES[a.country].gasUnit })}
+        value={a.gasQuarter} min={0} max={COUNTRIES[a.country].gasMax} step={COUNTRIES[a.country].gasStep} unit={COUNTRIES[a.country].gasUnit}
+        onChange={(v) => setA((s) => ({ ...s, gasQuarter: v, energyPreset: null }))} />
       <p className="ob-splitnote"><Icon name="people" size={28} className="ob-label-i" />{splitNote}</p>
       <Chips
         icon="leaf"
-        label={ONBOARD.energy.greenpower}
+        label={COUNTRIES[a.country].renewableQuestion}
         options={[
           { value: 'no', label: ONBOARD.energy.gpNo },
           { value: 'unsure', label: ONBOARD.energy.gpUnsure },
@@ -611,7 +659,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         ]}
         value={a.gpChoice}
         onChange={(v) => setA((s) => ({ ...s, gpChoice: v, greenpowerPct: v === 'half' ? 50 : v === 'full' ? 100 : 0 }))}
-        note={ONBOARD.energy.greenpowerNote}
+        note={COUNTRIES[a.country].renewableNote}
       />
     </div>,
     <div key="travel">
@@ -627,7 +675,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
           <Chips
             icon="fuel"
             label={ONBOARD.travel.fuelType}
-            options={Object.entries(ROAD_FUELS).map(([k, v]) => ({ value: k, label: v.label }))}
+            options={Object.entries(roadFuelSetFor(a.country)).map(([k, v]) => ({ value: k, label: v.label }))}
             value={a.fuelType} onChange={(v) => set('fuelType', v)}
           />
           <Stepper icon="people" label={ONBOARD.travel.occupancy} value={a.carOccupancy} min={1} max={7}
@@ -836,12 +884,13 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
           <motion.div key={step} {...stepMotion} className="ob-pane">
             {steps[step]}
             {/* One sourced fact per step: about the world, never about the
-                visitor's own numbers, so the reveal keeps its punch. */}
-            {step < 6 && OB.facts[step] && (
+                visitor's own numbers, so the reveal keeps its punch. The
+                first steps carry the home country's own fact. */}
+            {step < 6 && OB.factsByCountry[a.country][step] && (
               <aside className="ob-fact">
                 <span className="ob-fact-k"><Icon name="spark" size={26} className="ob-label-i" />{OB.factKicker}</span>
-                <p>{OB.facts[step].text}</p>
-                <span className="ob-fact-src">{OB.facts[step].src}</span>
+                <p>{OB.factsByCountry[a.country][step].text}</p>
+                <span className="ob-fact-src">{OB.factsByCountry[a.country][step].src}</span>
               </aside>
             )}
           </motion.div>

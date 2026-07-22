@@ -44,11 +44,11 @@ export const YEARS = {
 export const DASH = {
   tag: '01 / The detail',
   title: ['The working', 'numbers'],
-  sub: 'The reveal above is the short version. This is the detail behind it: the exact totals, the year month by month, and the split by category. The reporting period is the Australian financial year (July to June).',
+  sub: 'The reveal above is the short version. This is the detail behind it: the exact totals, the year month by month, and the split by category. The worked example runs on the Australian financial year (July to June); your own audit runs on your last twelve complete months.',
   kpis: {
     total: 'total',
     range: '{low} to {high} t, allowing for estimates',
-    aus: 'of the Australian average',
+    aus: 'of the home-country average',
     budget: 'of the 1.5°C lifestyle benchmark',
     largest: 'biggest single item',
   },
@@ -109,6 +109,8 @@ export const ONBOARD = {
   you: {
     title: 'About you',
     sub: 'Where you live sets your power mix, and we split shared home energy across the people who live there.',
+    country: 'Where is home?',
+    usGridNote: 'US electricity is priced at the national grid average for now. Your state\'s grid may run well above or below it; state-level factors are on the list, and the how-it-works page says so.',
     state: 'Where do you live?',
     household: 'How many adults share your home? (counting you)',
     householdNote: 'We split shared home energy across the adults at home, so you are only counted for your share. Two adults means half of each bill is yours.',
@@ -118,16 +120,16 @@ export const ONBOARD = {
   },
   energy: {
     title: 'Home energy',
-    sub: 'Best case: read the kWh and MJ straight off a power and gas bill. No bills nearby? Start with a typical home and nudge it.',
+    sub: 'Best case: read the figures straight off a power and gas bill. No bills nearby? Start with a typical home and nudge it.',
     presetLabel: 'No bills nearby? Start with a typical home',
-    presetNote: 'Rough starting points, sized to your household: each adult adds their share, so a busier home reads higher. The figures below are the whole-home total per quarter for the number of adults you set. Gas-heated homes down south often run well above these. Swap in your real bills whenever you find them.',
+    presetNote: 'Rough starting points, sized to your household: each adult adds their share, so a busier home reads higher. The figures below are the whole-home total per quarter for the number of adults you set. Gas-heated homes in cold climates often run well above these. Swap in your real bills whenever you find them.',
     kwh: 'Electricity, kWh per quarter (whole home)',
-    mj: 'Gas, MJ per quarter (0 if no gas)',
+    gas: 'Gas, {unit} per quarter (0 if no gas)',
     // {n}/{s} filled with the household size in the component.
     splitNote: 'These are whole-home figures. We count your share: split evenly across the {n} adult{s} at home. Change the number of adults back on the first step.',
     splitNoteSolo: 'These are whole-home figures. With one adult at home, the whole bill is yours.',
-    greenpower: 'Is your electricity on GreenPower?',
-    greenpowerNote: 'GreenPower is an optional 100% renewable add-on some electricity plans include. If you have never heard of it, you are almost certainly not on it, so choose No or Not sure.',
+    // The renewable-plan question and note come from COUNTRIES in factors.js
+    // (GreenPower is an Australian product name); only the chips live here.
     gpNo: 'No',
     gpUnsure: 'Not sure',
     gpHalf: 'Partly (50%)',
@@ -183,7 +185,7 @@ export const ONBOARD = {
     // priced at the factor for the country you actually slept in.
     nights: 'Hotel nights there',
     otherNights: 'Hotel nights with no flight attached',
-    otherNightsNote: 'Road trips, work stays, weekends away. Counted at the Australian per-room-night factor. Nights on the trips above are priced at the destination country instead.',
+    otherNightsNote: 'Road trips, work stays, weekends away. Counted at your home country\'s per-room-night factor. Nights on the trips above are priced at the destination country instead.',
     sourceSummary: 'How this is estimated',
     sourceBody: 'Flight emissions are estimated from the route distance and published UK Government (DESNZ) emissions factors, with an uplift for the extra warming of burning fuel at altitude. It is an estimate, not an airline-specific figure. Hotel nights are priced per occupied room-night at the destination country\'s published factor (UK Government DEFRA hotel-stay table), and land in the trip\'s month when you give one.',
   },
@@ -238,7 +240,7 @@ export const ONBOARD = {
     homeAreaNote: 'The upfront carbon locked in when it was built (materials, transport, construction) spread over a 50-year life and split per adult, so it lands as a small yearly share. Indicative only: real homes vary widely, so treat it as a rough screening figure.',
     skip: 'Skip this step',
     sourceSummary: 'How this is estimated',
-    sourceBody: 'Clothing counted by item uses published per-garment life-cycle factors (ADEME\'s consumer-products LCA study, the basis of the French national per-item factors), so the physical count carries the number, not the price tag. The spend fields come from how much you spend: dollars times a published spend-based factor (US EPA supply-chain factors, converted to Australian dollars). The home line, when you turn it on, prices the floor area at an indicative per-square-metre upfront (A1-A5) embodied-carbon figure from Australian residential studies, amortised over a 50-year life and split per adult. All of it is a screening estimate for the wider basket the simple survey leaves out, deliberately rough, so treat these as coarse additions rather than precise numbers. A skipped field adds exactly nothing.',
+    sourceBody: 'Clothing counted by item uses published per-garment life-cycle factors (ADEME\'s consumer-products LCA study, the basis of the French national per-item factors), so the physical count carries the number, not the price tag. The spend fields come from how much you spend: dollars times a published spend-based factor (US EPA supply-chain factors, bridged into your home country\'s dollars). The home line, when you turn it on, prices the floor area at an indicative per-square-metre upfront (A1-A5) embodied-carbon figure from Australian residential studies, amortised over a 50-year life and split per adult. All of it is a screening estimate for the wider basket the simple survey leaves out, deliberately rough, so treat these as coarse additions rather than precise numbers. A skipped field adds exactly nothing.',
   },
   finish: 'See your footprint',
   back: 'Back',
@@ -246,20 +248,38 @@ export const ONBOARD = {
   cancel: 'Cancel',
 };
 
-// Typical-home starting points for the energy step, expressed PER ADULT per
-// quarter. The whole-home figure the engine prices from is kwhPerAdult times
-// the number of adults at home, so a busier home reads higher rather than
-// splitting one fixed number ever thinner. At the default two adults these
-// reproduce the long-standing whole-home defaults (e.g. an apartment at 1,100
-// kWh); the per-capita share stays realistic as the household grows.
-// Deliberately coarse: they exist so someone without a bill in reach can still
-// finish, and the note tells them to swap in real numbers later.
-export const ENERGY_PRESETS = [
-  { id: 'aptSmall', label: 'Small apartment', kwhPerAdult: 350, mjPerAdult: 0 },
-  { id: 'apt', label: 'Apartment', kwhPerAdult: 550, mjPerAdult: 1250 },
-  { id: 'house', label: 'House', kwhPerAdult: 800, mjPerAdult: 2750 },
-  { id: 'houseLarge', label: 'Large house', kwhPerAdult: 1150, mjPerAdult: 4500 },
-];
+// Typical-home starting points for the energy step, per country, expressed
+// PER ADULT per quarter. The whole-home figure the engine prices from is
+// kwhPerAdult times the number of adults at home, so a busier home reads
+// higher rather than splitting one fixed number ever thinner. gasPerAdult is
+// in the country's own bill unit (MJ, kWh or therms; see COUNTRIES), and the
+// audit converts to MJ when it builds. At the default two adults the
+// Australian ladder reproduces the long-standing whole-home defaults (e.g.
+// an apartment at 1,100 kWh); the US ladder is anchored on the EIA average
+// household near 10,800 kWh a year, and the NZ ladder on the commonly cited
+// 7,000 to 8,500 kWh a year. Deliberately coarse: they exist so someone
+// without a bill in reach can still finish, and the note tells them to swap
+// in real numbers later.
+export const ENERGY_PRESETS = {
+  AU: [
+    { id: 'aptSmall', label: 'Small apartment', kwhPerAdult: 350, gasPerAdult: 0 },
+    { id: 'apt', label: 'Apartment', kwhPerAdult: 550, gasPerAdult: 1250 },
+    { id: 'house', label: 'House', kwhPerAdult: 800, gasPerAdult: 2750 },
+    { id: 'houseLarge', label: 'Large house', kwhPerAdult: 1150, gasPerAdult: 4500 },
+  ],
+  NZ: [
+    { id: 'aptSmall', label: 'Small apartment', kwhPerAdult: 400, gasPerAdult: 0 },
+    { id: 'apt', label: 'Apartment', kwhPerAdult: 650, gasPerAdult: 350 },
+    { id: 'house', label: 'House', kwhPerAdult: 1000, gasPerAdult: 750 },
+    { id: 'houseLarge', label: 'Large house', kwhPerAdult: 1400, gasPerAdult: 1250 },
+  ],
+  US: [
+    { id: 'aptSmall', label: 'Small apartment', kwhPerAdult: 500, gasPerAdult: 0 },
+    { id: 'apt', label: 'Apartment', kwhPerAdult: 800, gasPerAdult: 35 },
+    { id: 'house', label: 'House', kwhPerAdult: 1350, gasPerAdult: 70 },
+    { id: 'houseLarge', label: 'Large house', kwhPerAdult: 2000, gasPerAdult: 110 },
+  ],
+};
 
 export const METHOD = {
   tag: 'Your Carbon Footprint / How it works',
@@ -270,14 +290,14 @@ export const METHOD = {
     title: 'What it includes',
     paras: [
       'The calculator covers the things a person controls or pays for directly: home electricity and gas, personal travel on the ground, flights, parcel deliveries, and diet. It groups them the way companies do, translated to a person: Scope 1 is fuel you burn yourself (home gas, and petrol if you drive), Scope 2 is the electricity you buy, and Scope 3 is everything else your choices cause but that happens elsewhere.',
-      'An optional detail step adds part of the wider basket the quick survey skips. Clothing is counted by items bought by default, priced on published per-garment life-cycle factors, because spend-based factors weight dollars rather than garments and misread fast fashion; a spend option remains for someone who only knows their budget. Electronics, entertainment, health, and other goods and services are estimated from how much you spend, so they are labelled screening estimates and carry more uncertainty than a metered bill. The same step carries one home line: if you built or bought your home new, its upfront (A1-A5) embodied carbon is counted at an indicative per-square-metre figure, amortised over a 50-year life and split per adult. It is demand-side and new-build only, so a second-hand home adds nothing and buying existing reads as the lower-carbon choice; a rented home is out too. They are all off unless you fill them in, and count as Scope 3. Skipping the step adds nothing: no average-person spending is ever substituted in, so a skipped basket simply stays out of the total. Hotel nights are gathered in the flights step instead: each trip carries its own nights, priced per occupied room-night at the destination country\'s published factor, and nights with no flight attached use the Australian figure.',
+      'An optional detail step adds part of the wider basket the quick survey skips. Clothing is counted by items bought by default, priced on published per-garment life-cycle factors, because spend-based factors weight dollars rather than garments and misread fast fashion; a spend option remains for someone who only knows their budget. Electronics, entertainment, health, and other goods and services are estimated from how much you spend, so they are labelled screening estimates and carry more uncertainty than a metered bill. The same step carries one home line: if you built or bought your home new, its upfront (A1-A5) embodied carbon is counted at an indicative per-square-metre figure, amortised over a 50-year life and split per adult. It is demand-side and new-build only, so a second-hand home adds nothing and buying existing reads as the lower-carbon choice; a rented home is out too. They are all off unless you fill them in, and count as Scope 3. Skipping the step adds nothing: no average-person spending is ever substituted in, so a skipped basket simply stays out of the total. Hotel nights are gathered in the flights step instead: each trip carries its own nights, priced per occupied room-night at the destination country\'s published factor, and nights with no flight attached use the home country\'s figure.',
       'Shared home energy is split evenly between the adults in the home: two adults means half of each bill counts as yours. Shared car trips are split the same way, by the average number of people in the car. Rideshare and public-transport factors are already per passenger, so they need no split.',
     ],
   },
   period: {
     title: 'The reporting period',
     paras: [
-      'The reporting period is the Australian financial year, July to June. The worked example is FY2026 (July 2025 to June 2026).',
+      'The worked example runs on the Australian financial year, July to June: it is FY2026 (July 2025 to June 2026). Your own audit runs on your last twelve complete months, whichever country is home, and rolls over a year at a time from there.',
       'Timing is honest about what is known. Dated trips land in the month they happened, bills spread across the months they cover, and rough typical-year estimates spread evenly rather than being given made-up dates. The month-by-month chart and the worst-month reveal only appear once real dates give them something to show.',
     ],
   },
@@ -285,6 +305,7 @@ export const METHOD = {
     title: 'Where the numbers come from',
     paras: [
       'Australian electricity, gas and road-fuel factors are from the Australian Government (DCCEEW) National Greenhouse Accounts Factors. Flights and freight use the UK Government conversion factors 2025 edition, published by DESNZ and still widely known as the DEFRA factors, because they are the most complete public source for aviation by distance and cabin. The flight numbers here match that workbook cell for cell; the June 2026 edition could not be reached to check, so the page cites the edition it can stand behind.',
+      'The calculator also runs a United States or New Zealand audit, with the home country picked in the first step. US electricity is priced at the national grid average (about 0.37 kg CO₂-e per kWh, from the EIA 2023 average with eGRID corroboration) because the state-level eGRID workbook could not be verified cell for cell in this edition; the grid varies widely by state, so state factors are queued and the audit says so. US gas and road fuels use the EPA GHG Emission Factors Hub defaults. New Zealand electricity uses the single national grid factor from the MfE Measuring Emissions Catalogue (about 0.073 kg CO₂-e per kWh, carried from the catalogue as republished because the primary workbook was unreachable this edition, and queued for cell-level verification). NZ gas and road fuels use the Australian combustion factors as stated proxies: the fuels are chemically near-identical and published NZ figures sit within a few per cent. Liquid-fuel fuel-cycle (scope 3) keeps the Australian factors as a stated proxy in all three countries so the well-to-tank boundary matches; gas fuel-cycle and grid-loss factors outside Australia are not counted where no national figure could be verified, so those lines understate slightly, and each table below says which treatment applies.',
       'Diet is an estimate, not a precise figure: it uses published UK per-day values by diet type, chosen because they separate the six diet patterns cleanly. Australian studies find the same direction (CSIRO and Ridoutt), but on different accounting boundaries, so they anchor the size rather than replace the numbers. Public transport uses a UK rail factor as a stand-in until a published Australian per-passenger figure is available. On the physical NSW grid the real rail figure is higher than this proxy, because the grid is coal-heavy; measured against Sydney Trains renewable electricity contracts it is close to zero. Public transport is a small line, so the choice barely moves a total. The optional detail is the coarsest part: clothing counted by item uses the ADEME consumer-products LCA study (2018, the basis of the French Base Empreinte per-item textile factors), cross-checked against the Mistra Future Fashion per-garment assessments and the WRAP UK aggregate; the remaining goods and services are a spend-based screening estimate from the US EPA Supply Chain factors converted to Australian dollars; and hotel nights use the UK Government (DEFRA) per-room-night factors by country, priced at the destination country of the trip they belong to. The optional home line uses indicative per-square-metre upfront embodied-carbon figures for Australian dwellings (detached houses from Illankoon et al. 2023; apartments anchored on the GBCA and thinkstep-anz 2021 report), amortised over 50 years; residential figures span a wide range, so it is a screening estimate, not a measured one. All are labelled that way. Every factor and its source is in the tables below.',
     ],
   },
@@ -292,13 +313,13 @@ export const METHOD = {
     title: 'How results are calculated',
     paras: [
       'Each item is activity times a factor: kilowatt-hours times the grid factor, litres times the fuel factor, passenger-kilometres times the flight factor, and so on. Flights include the extra warming effect of burning fuel at altitude, which reasonable calculators treat differently, so this one reads a little higher than a CO₂-only figure.',
-      'Where a real bill or itinerary is not to hand, the calculator estimates: it turns spend into litres, kilometres or parcels at stated rates, or extends a metered daily average over an unbilled period. Public-transport spend is capped at the state weekly fare cap first (in NSW, the $50 Opal cap), because spending past the cap buys no extra travel. Estimates are labelled, and replacing one with a real number tightens the range shown next to the total. Green power, where you have it, lowers your purchased-electricity figure; no offsets are subtracted anywhere.',
+      'Where a real bill or itinerary is not to hand, the calculator estimates: it turns spend into litres, kilometres or parcels at stated rates, or extends a metered daily average over an unbilled period. In Australia, public-transport spend is capped at the state weekly fare cap first (in NSW, the $50 Opal cap), because spending past the cap buys no extra travel; US and NZ networks cap too differently to carry one honest ceiling, so spend there is counted as given. Gas bills read in the local unit (megajoules in Australia, kilowatt-hours in New Zealand, therms in the United States) and convert to megajoules before pricing. Estimates are labelled, and replacing one with a real number tightens the range shown next to the total. A certified renewable purchase (GreenPower in Australia, a certified green-power plan elsewhere), where you have it, lowers your purchased-electricity figure; no offsets are subtracted anywhere.',
     ],
   },
   interpret: {
     title: 'How to read the result',
     paras: [
-      'The total is compared against three published benchmarks: the Australian and world per-person averages, and a 1.5°C-aligned lifestyle benchmark of 2.5 t a person by 2030. The two averages are national figures that count whole economies, so they are broader than a personal footprint. The 2.5 t figure is a lifestyle benchmark of the same kind this calculator estimates.',
+      'The total is compared against three published benchmarks: your home country\'s per-person average (Australian, American or New Zealand), the world average, and a 1.5°C-aligned lifestyle benchmark of 2.5 t a person by 2030. The two averages are national figures that count whole economies, so they are broader than a personal footprint. The 2.5 t figure is a lifestyle benchmark of the same kind this calculator estimates.',
       'By default this calculator leaves out the wider basket of goods and services, so a core total understates a full consumption footprint. The optional detail step adds a screening estimate of that basket (clothing, electronics, entertainment, health, other); even with it switched on a few things stay out, so the gap to the benchmark is if anything larger than it looks, not smaller.',
     ],
   },
@@ -348,6 +369,7 @@ export const METHOD = {
           'Accommodation other than hotels (short-stay rentals, hostels, staying with friends). Hotel nights are counted, but at a country-average factor, not the specific place.',
           'Financial and professional services, and any spending the screening factors above do not cover. The goods estimate is a screening tool, so it catches the shape of the basket, not every dollar.',
           'Still queued, because the numbers could not be verified to this page’s standard in this edition: household waste to landfill, pets (dog and cat food), the embodied emissions of building or buying a car, mains water supply, an Australian spend-based factor set to replace the US one, and a published Australian rail figure to replace the UK proxy. Each stays out rather than ship an unchecked number, and is recorded in the research trail for the next refresh. (Two items queued here previously shipped once their sources were obtained and read: the garment-count clothing option, and the home-embodied line for a new build; both are optional and their factors are in the tables below.)',
+          'Queued for the US and NZ audits specifically: state-level US electricity factors from the eGRID workbook (the audit prices at the national average until each state cell can be read from the primary file); cell-level verification of the NZ grid factor and its separate transmission-loss factor against the MfE catalogue; gas fuel-cycle factors for both countries; a published NZ per-room-night hotel figure (the Australian figure stands in, stated); and US-specific rideshare and public-transport per-kilometre figures (the existing stated proxies apply meanwhile). The environment this edition was built in could not reach the primary workbooks, so each of these ships as a stated proxy or stays out rather than carry an unchecked number.',
         ],
       },
     ],
@@ -360,7 +382,7 @@ export const METHOD_LINK = {
   title: ['How the', 'calculator works'],
   body: 'A plain explanation of what this calculator counts, where the numbers come from, and how to read the result. It lives on its own page, with the exact factor tables it prices from.',
   cta: 'See how it works',
-  factorLine: 'Australian factors (DCCEEW) for energy and fuel; UK Government (DESNZ / DEFRA) factors for flights and freight.',
+  factorLine: 'Australian factors (DCCEEW) for energy and fuel, with US (EPA / EIA) and NZ (MfE) sets for audits based there; UK Government (DESNZ / DEFRA) factors for flights and freight.',
 };
 
 // Transient UI feedback, previously inline in components.
