@@ -88,8 +88,11 @@ export const GUESS = {
     example: 'Before you see my total, here is what a year of carbon looks like for other people. Keep these in mind.',
     own: 'Before your total, here is what a year of carbon looks like for other people. Keep these in mind.',
   },
+  // The home row carries no label here: it reads the home country's own
+  // benchmark label off the bench data, so an American or New Zealand audit
+  // sees its own average, never Australia's.
   refs: [
-    { id: 'aus', label: 'Australian average', unit: 't a person', note: 'per person, all greenhouse gases' },
+    { id: 'home', unit: 't a person', note: 'per person, all greenhouse gases' },
     { id: 'global', label: 'World average', unit: 't a person', note: 'per person, all greenhouse gases' },
     { id: 'budget', label: '1.5°C lifestyle benchmark', unit: 't a person', note: 'where a fair share needs to be by 2030' },
   ],
@@ -240,12 +243,15 @@ export const BENCH_ST = {
   headline: { example: 'How my year compares', own: 'How your year compares' },
   rows: {
     you: { example: 'My emissions', own: 'Your emissions' },
-    aus: 'Australian average',
+    // The home-country row's label comes from the benchmark data itself
+    // (Australian, American or New Zealand average), set where the bench
+    // rows are built in Story.jsx.
     global: 'World average',
     budget: '1.5°C lifestyle benchmark',
   },
   tiles: {
-    aus: 'of the Australian average',
+    // {name} is the home benchmark's short label, e.g. "Australian average".
+    home: 'of the {name}',
     global: 'of the world average',
     budget: 'of the 1.5°C lifestyle benchmark',
   },
@@ -424,34 +430,43 @@ export const OB = {
   stepLabels: ['You', 'Home energy', 'Getting around', 'Flights', 'Food & parcels', 'More detail'],
   // One playful, sourced fact per step: about the world, never about the
   // visitor's own numbers, so the reveal keeps its punch. Figures match the
-  // factor set this calculator prices from.
+  // factor set this calculator prices from. The first two steps carry a
+  // home-country fact (the place and energy steps are where country lands),
+  // the rest are shared.
   factKicker: 'While you are here',
-  facts: [
-    {
-      text: 'The average Australian sits near 22 tonnes of CO₂-e a year, more than three times the world average.',
-      src: 'EDGAR / JRC 2024',
-    },
-    {
-      text: 'The same home reads very differently by state: Tasmania\'s grid factor is about a quarter of Victoria\'s.',
-      src: 'DCCEEW NGA Factors 2025',
-    },
-    {
+  factsByCountry: (() => {
+    const rideshare = {
       text: 'Per kilometre, rideshare carries about six and a half times the carbon of the train.',
       src: 'NGA 2025 and DESNZ / DEFRA 2025 factors',
-    },
-    {
-      text: 'One Sydney to London economy return is about 4 tonnes with the high-altitude effect counted: more than a year of electricity for most whole households.',
-      src: 'DESNZ / DEFRA 2025 factors',
-    },
-    {
+    };
+    const diet = {
       text: 'The gap between a high-meat year and a vegan year is about 1.6 tonnes, roughly 8,000 km of petrol driving.',
       src: 'Scarborough et al. 2014',
-    },
-    {
+    };
+    const spend = {
       text: 'Every $100 a month of general spending adds roughly 0.12 tonnes a year, which is why this step is worth the extra minute.',
       src: 'US EPA supply-chain factors',
-    },
-  ],
+    };
+    // Step order: you, energy, travel, flights, food, detail.
+    const build = (you, energy, flight) => [you, energy, rideshare, flight, diet, spend];
+    return {
+      AU: build(
+        { text: 'The average Australian sits near 22 tonnes of CO₂-e a year, more than three times the world average.', src: 'EDGAR / JRC 2024' },
+        { text: 'The same home reads very differently by state: Tasmania\'s grid factor is about a quarter of Victoria\'s.', src: 'DCCEEW NGA Factors 2025' },
+        { text: 'One Sydney to London economy return is about 4 tonnes with the high-altitude effect counted: more than a year of electricity for most whole households.', src: 'DESNZ / DEFRA 2025 factors' },
+      ),
+      NZ: build(
+        { text: 'The average New Zealander sits near 15 tonnes of CO₂-e a year, more than twice the world average, and much of it is agricultural methane.', src: 'NZ GHG Inventory 1990-2023' },
+        { text: 'New Zealand\'s grid is about 85% renewable: a kilowatt-hour there carries about a tenth of the carbon of the same kilowatt-hour in Sydney.', src: 'MfE Measuring Emissions Catalogue' },
+        { text: 'One Auckland to London economy return is about 4.6 tonnes with the high-altitude effect counted: several years of electricity for a typical New Zealand home.', src: 'DESNZ / DEFRA 2025 factors' },
+      ),
+      US: build(
+        { text: 'The average American sits near 17 tonnes of CO₂-e a year, more than two and a half times the world average.', src: 'EDGAR / JRC 2025' },
+        { text: 'The US grid averages about 0.37 kg of CO₂-e per kilowatt-hour, but state grids run from a small fraction of that to well over double.', src: 'US EIA and EPA eGRID' },
+        { text: 'One New York to London economy return is about 1.4 tonnes with the high-altitude effect counted: a few months of driving in a typical American car.', src: 'DESNZ / DEFRA 2025 factors' },
+      ),
+    };
+  })(),
   // The corner swarm that thickens as answers land: felt mass, never a number.
   swarmLabel: 'Your year, gathering',
   done: {

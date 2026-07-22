@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { prefersReducedMotion } from '../../utils/media';
 import { CATEGORIES, categoryById } from '../data/factors';
-import { BENCHMARKS } from '../data/benchmarks';
+import { BENCHMARKS, homeAverageFor } from '../data/benchmarks';
+import { countryOf } from '../data/factors';
 import {
   CHROME, CHAPTERS, CATEGORY_QUIPS, BENCH_ST,
   YEAR, GUESS, LOCKIN, EQUIV_ST, SCOPES, MONTHS_ST, CHARACTER_ST, NEEDLE, OUTRO,
@@ -78,9 +79,13 @@ function buildStoryData(profile, agg, macc, voice) {
     }
     : null;
 
+  // The national row is the home country's own average (Australian, American
+  // or New Zealand), so the comparison never reads someone else's country
+  // back at them; its label rides the benchmark data.
+  const homeAvg = homeAverageFor(countryOf(profile.settings));
   const bench = [
     { id: 'you', label: BENCH_ST.rows.you[voice], t: agg.total, you: true },
-    { id: 'aus', label: BENCH_ST.rows.aus, t: BENCHMARKS.find((b) => b.id === 'aus').tco2e },
+    { id: 'home', label: homeAvg.short, t: homeAvg.tco2e },
     { id: 'global', label: BENCH_ST.rows.global, t: BENCHMARKS.find((b) => b.id === 'global').tco2e },
     { id: 'budget', label: BENCH_ST.rows.budget, t: BENCHMARKS.find((b) => b.id === 'budget2030').tco2e },
   ];
