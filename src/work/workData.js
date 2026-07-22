@@ -8,6 +8,18 @@ export const TABS = [
   { id: 'lca', letter: 'D', label: 'Lifecycle Carbon', icon: 'leaf' },
 ];
 
+// Narrative lead-in that frames the four frameworks below as the machinery of a
+// single engagement, so a reader meets the story before the methodology.
+export const WORK_NARRATIVE = {
+  tag: 'The through-line',
+  title: 'One engagement, start to finish',
+  paras: [
+    'Every engagement starts in the same place. Confirm the boundary, grade the data, and name the gaps instead of hiding them. The first finding is almost always identical: the overwhelming majority of emissions sit in the value chain, outside direct operational control. That single number sets the whole playbook.',
+    'From there the work is a sequence. Turn a long-list of initiatives into quantified options, screen them with stakeholders, and sequence them into a roadmap with CAPEX by year. Model the pathway so every lever traces to a published source and a non-specialist can interrogate it. Then hand it over, documented, so the internal team runs the next cycle without calling the consultant back in.',
+    'The four frameworks below are the machinery behind that arc, each shown as a live working example. The case study at the end walks one engagement through all of them, baseline to boardroom.',
+  ],
+};
+
 export const BASELINE_SECTORS = {
   property: {
     label: 'Commercial Property',
