@@ -71,9 +71,9 @@ export default function Hero() {
       </div>
       <Aurora
         colorStops={['#635BFF', '#B5C42B', '#FF9500', '#FF3B60']}
-        amplitude={0.8}
-        blend={0.55}
-        opacity={0.38}
+        amplitude={0.6}
+        blend={0.5}
+        opacity={0.2}
       />
       <ContourField />
 
