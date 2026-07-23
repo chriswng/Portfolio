@@ -38,7 +38,8 @@ built as a React + Vite multi-page app and deployed to GitHub Pages.
 | `src/hooks/` | `useMagnetic` — cursor-follow interaction. |
 | `src/utils/` | `media.js` — `prefersReducedMotion()` / `canHover()` guards. |
 | `src/styles/global.css` | Design tokens + all main-page styles. |
-| `public/` | Shared static assets (logos, favicon, og-image, robots.txt, sitemap.xml). |
+| `public/` | Shared static assets (logos, favicon, `robots.txt`, `sitemap.xml`, and the Open Graph share cards: the profile card `og-image.png` plus one generated per-page card, `og-<page>.png`). |
+| `scripts/og/` | Share-thumbnail generator. `cards.mjs` (per-page copy and motifs), `draw.js` (the shared canvas renderer), `generate.mjs` (headless-Chromium harness). `npm run og:cards` writes the `og-*.png` cards into `public/`. Not part of the site build. |
 | `docs/` | Non-app material: `skill-reference/` and `career-record/`. Not built or deployed. |
 
 ## Conventions
@@ -80,6 +81,20 @@ built as a React + Vite multi-page app and deployed to GitHub Pages.
   or logic updates its methodology in the same change. On `/super/` every
   fund shows its "last verified" date; on `/progress/` the last-updated date
   renders from a single field in `data.js`.
+- **Share thumbnails are generated, and kept current.** Every page's Open
+  Graph card (`public/og-<page>.png`) is rendered by `scripts/og`
+  (`npm run og:cards`) as one dark card in a shared visual family: the site
+  mark and a mono eyebrow, a headline whose lime second line names the page, a
+  short support line, a colour-chip row of what the tool covers, a big faint
+  monogram behind a dotted mesh network, and the page URL. **Whenever a page
+  gets a major function or UI pass, regenerate its card in the same change** so
+  the link preview reflects the page, then commit the updated PNG and keep the
+  page's `og:image:alt` in sync. Card copy and motifs live in
+  `scripts/og/cards.mjs`; the shared renderer is `scripts/og/draw.js`. The
+  headline must say what the page is (the card markets the page), all copy
+  follows the writing rules below, and a card never shows personal numbers.
+  Home (`/`) and Work (`/work/`) intentionally keep the profile card
+  `og-image.png`; method pages reuse their parent page's card.
 - **Motion respects preferences.** Gate every animation/loop on
   `prefersReducedMotion()` and cursor-only interactions on `canHover()` (both
   from `src/utils/media.js`). Canvas/WebGL loops must pause off-screen via
