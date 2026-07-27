@@ -96,4 +96,18 @@ export const CARDS = [
     footer: 'Reviewed quarterly · sources dated in the method',
     meshSeed: 3030,
   },
+  {
+    out: 'og-targets.png',
+    eyebrow: ['TARGET TRACKER', '  ·  ASX50 NET ZERO'],
+    headline: ['Fifty promises,', 'one ledger'],
+    support: [
+      "Each ASX50 company's claimed path to net zero,",
+      'plotted against what it actually reported.',
+    ],
+    chips: ['Net zero', 'Interim targets', 'Reported', 'The gap'],
+    ghost: { text: '2050', size: 300, baseline: 392, endX: 1178 },
+    url: 'itschriswang.com/targets',
+    footer: 'Company disclosures · flagged where unverified',
+    meshSeed: 2050,
+  },
 ];

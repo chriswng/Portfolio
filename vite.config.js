@@ -7,7 +7,8 @@ import { resolve } from 'path';
 // Multi-page: the main profile at /, work samples at /work/, the
 // life-footprint dashboard at /footprint/ (basis of preparation at
 // /footprint/method/), Cost Per Wear at /fashion/, and the four tools:
-// /grid/, /daily/, /super/ (methodology at /super/method/) and /progress/.
+// /grid/, /daily/, /super/ (methodology at /super/method/), /progress/ and
+// /targets/.
 export default defineConfig({
   base: './',
   plugins: [react()],
@@ -26,6 +27,7 @@ export default defineConfig({
         superHoldings: resolve(__dirname, 'super/index.html'),
         superMethod: resolve(__dirname, 'super/method/index.html'),
         progress: resolve(__dirname, 'progress/index.html'),
+        targets: resolve(__dirname, 'targets/index.html'),
       },
       output: {
         // Stable vendor chunks: both pages share react/framer-motion, and the

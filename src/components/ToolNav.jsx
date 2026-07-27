@@ -1,5 +1,5 @@
 // Shared chrome for the standalone tool pages (/grid/, /daily/, /super/,
-// /progress/). Same pattern as the footprint pages' Nav: the site-wide
+// /progress/, /targets/). Same pattern as the footprint pages' Nav: the site-wide
 // NAV_LINKS with hrefs prefixed back to the site root, plus the compact
 // tool footer. `home` is the relative path back to the root from wherever
 // the page sits ('../' for a top-level tool, '../../' for a sub-page).
