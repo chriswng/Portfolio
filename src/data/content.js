@@ -197,6 +197,7 @@ export const FOOTER = {
         { label: 'Sustainability Daily', href: 'daily/' },
         { label: 'Super Fund Holdings', href: 'super/' },
         { label: 'Climate Progress', href: 'progress/' },
+        { label: 'Target Tracker', href: 'targets/' },
       ],
     },
   ],
