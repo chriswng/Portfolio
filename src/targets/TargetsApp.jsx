@@ -171,7 +171,7 @@ function Chart({ company }) {
           className="tt-c-dot"
           cx={px(p.y)}
           cy={py(p.mt)}
-          r="2.2"
+          r={reported.length <= 2 ? 3.2 : 2.2}
           style={{
             opacity: drawn ? 1 : 0,
             transition: reduced ? 'none' : 'opacity 400ms var(--ease) 700ms',
@@ -384,8 +384,8 @@ export default function TargetsApp() {
   const scoreValues = {
     netZero: agg.withNetZero,
     interim: agg.with2030Interim,
-    atOrAhead: agg.atOrAhead,
-    behindNa: agg.behindOrNa,
+    assessable: agg.assessable,
+    behind: agg.byTrack.behind,
   };
 
   const spotCompanies = SPOTLIGHTS.items

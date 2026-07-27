@@ -32,14 +32,15 @@ export function yearLabel(company, y) {
 // about a tonnage) and when it is cut from the same base year as the baseline
 // we hold, because a cut against a different base year cannot be priced
 // without that other year's level. Anything else is skipped rather than
-// guessed. Returns null when there is no baseline or no net zero year, and the
-// page then draws no claimed line at all.
+// guessed. A company with absolute interims but no net zero year gets a line
+// that ends at its last interim and never reaches zero, which is exactly what
+// it has committed to. Returns null when no line can be priced at all, and
+// the page then draws no claimed line.
 export function claimedPath(company) {
   if (!company) return null;
   const c = company.commitment;
   const b = company.baseline;
   if (!c || !b || typeof b.mt !== 'number') return null;
-  if (!c.netZeroYear) return null;
 
   const baseYear = (c.baseYear === null || c.baseYear === undefined) ? b.year : c.baseYear;
   if (baseYear === null || baseYear === undefined) return null;
@@ -54,7 +55,7 @@ export function claimedPath(company) {
     pts.push({ y: i.year, mt: b.mt * (1 - i.cutPct / 100) });
   });
 
-  pts.push({ y: c.netZeroYear, mt: 0 });
+  if (c.netZeroYear) pts.push({ y: c.netZeroYear, mt: 0 });
 
   // Ascending by year, one anchor per year (a later anchor wins, so the net
   // zero point always survives a stray interim on the same year).
@@ -110,6 +111,11 @@ export function assess(company) {
   if (claimed === null) {
     return { track: 'na', latest, claimed: null, deltaPct: null };
   }
+  if (latest.y <= path[0].y) {
+    // The only reported year is the base year itself (or earlier). Reading a
+    // company against its own anchor point proves nothing either way.
+    return { track: 'na', latest, claimed: null, deltaPct: null };
+  }
   if (claimed <= 0) {
     // The line has reached zero. Anything still emitting is behind it, and no
     // percentage gap is meaningful against a zero denominator.
@@ -152,6 +158,7 @@ export function aggregate(companies) {
     withNetZero,
     with2030Interim,
     byTrack,
+    assessable: byTrack.ahead + byTrack.on + byTrack.behind,
     atOrAhead: byTrack.ahead + byTrack.on,
     behindOrNa: byTrack.behind + byTrack.na,
     unverified,
