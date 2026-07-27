@@ -264,7 +264,7 @@ export function ReferencePoints({ d, voice, tags, goTo }) {
             return (
               <motion.div className="st-ref-card" key={r.id} variants={rise} custom={3 + i}>
                 <div className="st-ref-v display">
-                  <CountUp value={b ? b.t : 0} decimals={1} delay={0.2 + i * 0.15} /><span> {r.unit}</span>
+                  <CountUp value={b ? b.t : 0} decimals={1} delay={0.2 + i * 0.15} /><span className="st-ref-unit"> {r.unit}</span>
                 </div>
                 <div className="st-ref-label">{r.label || (b ? b.label : '')}</div>
                 <div className="st-ref-note">{r.note}</div>
