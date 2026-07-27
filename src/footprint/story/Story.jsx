@@ -304,11 +304,11 @@ export default function Story({ profile, agg, macc, voice, onStart, onSkip, onEn
         />
       )}
       <TotalReveal d={d} voice={voice} guess={guessLocked ? guess : null} onCopyLink={onCopyLink} reduced={reduced} />
+      <Bench d={d} voice={voice} tags={tags} />
       {d.total > 0.005 && <Equivalences d={d} voice={voice} tags={tags} />}
       <Scopes d={d} voice={voice} tags={tags} />
       <Hotspots d={d} voice={voice} tags={tags} reduced={reduced} />
       <WorstMonth d={d} voice={voice} tags={tags} />
-      <Bench d={d} voice={voice} tags={tags} />
       <CharacterMoment d={d} voice={voice} tags={tags} character={character} />
       <Needle d={d} profile={profile} agg={agg} voice={voice} tags={tags} onPlan={onPlan} />
       <Outro d={d} voice={voice} character={character} tags={tags} onStart={onStart} onExplore={onExplore} onReplay={onReplay} onCopyLink={onCopyLink} endRef={endRef} />
