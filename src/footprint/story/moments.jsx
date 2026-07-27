@@ -247,13 +247,13 @@ export function YearTicker({ d, voice, tags, reduced }) {
 }
 
 // ---------------------------------------------------------------------------
-// 2 · Reference points: three published benchmarks, so the total lands with
+// 2 · Your benchmarks: three published benchmarks, so the total lands with
 // context instead of arriving cold. Replaces the old "guess my number", which
 // asked people to guess against nothing.
 // ---------------------------------------------------------------------------
 export function ReferencePoints({ d, voice, tags, goTo }) {
   return (
-    <section className="st-moment st-guess" id="st-guess" aria-label="Reference points">
+    <section className="st-moment st-guess" id="st-guess" aria-label="Your benchmarks">
       <motion.div className="st-center st-wide" initial="hidden" whileInView="visible" viewport={inView}>
         <motion.div className="sec-tag" data-idx="" variants={rise}>{tags['st-guess']}</motion.div>
         <motion.h2 className="st-h2 display" variants={rise} custom={1}>{GUESS.headline[voice]}</motion.h2>
@@ -670,13 +670,14 @@ export function Bench({ d, voice, tags }) {
                   return d.total / t.base.t < 1 ? label : label.replace(/^of /, '');
                 })()}
               </span>
+              {t.key === 'budget' && <span className="st-bench-tile-aim">{BENCH_ST.benchNoteLabel}</span>}
             </motion.div>
           ))}
         </div>
         <div className="st-bench-rows">
           {d.bench.map((b, i) => (
             <motion.div className="st-bench-row" key={b.label} variants={rise} custom={2 + i}>
-              <span className="st-bench-name">{b.label}</span>
+              <span className="st-bench-name" title={b.id === 'budget' ? BENCH_ST.benchNoteTooltip : undefined}>{b.label}</span>
               <span className="st-bench-track" aria-hidden="true">
                 <motion.span
                   className={'st-bench-fill' + (b.you ? ' you' : '')}

@@ -773,7 +773,7 @@ export const hotelPerNight = (country) => {
 // home when it is built: manufacture and transport of materials plus
 // construction. Counted only for a home you built or bought new, on the
 // demand-side view that a new purchase is what pulled that construction into
-// existence. A second-hand purchase caused no new build and carries nothing
+// existence. Buying an existing home caused no new build and carries nothing
 // here, so buying existing reads as the lower-carbon choice it is.
 //
 // The one-off pulse is turned into an annual line by straight-line
