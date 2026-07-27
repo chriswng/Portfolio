@@ -190,7 +190,7 @@ export function priceEntry(draft, settings) {
       // into an annual line by straight-line amortisation over the building
       // life, then split per adult like the energy bills. activity is the
       // floor area; the effective factor snapshotted is the annual per-m2
-      // share. A home logged as second-hand never reaches here.
+      // share. A home logged as an existing (not new) build never reaches here.
       const t = HOME.types[meta.dwelling] || HOME.types.house;
       const area = meta.areaM2 || 0;
       const annualKg = (area * t.perM2) / HOME.amortiseYears;
