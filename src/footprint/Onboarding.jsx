@@ -253,8 +253,8 @@ const ADVANCED_DEFAULTS = {
   clothingMode: 'items',
   clothingItems: { tops: 0, jumpers: 0, trousers: 0, dresses: 0, coats: 0, shoes: 0 },
   clothingMonth: 0, electronicsMonth: 0, entertainmentMonth: 0, healthMonth: 0, otherGoodsMonth: 0,
-  // Home embodied carbon is opt-in and new-build only: off by default, and a
-  // second-hand home stays off, so skipping adds nothing.
+  // Home embodied carbon is opt-in and new-build only: off by default, and an
+  // existing (already-built) home stays off, so skipping adds nothing.
   homeNewBuild: false, homeAreaM2: 0,
 };
 

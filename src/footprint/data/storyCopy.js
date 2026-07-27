@@ -17,17 +17,22 @@ export const CHROME = {
 // are numbered live from this list as it renders for the audit on screen, so
 // a skipped moment (no worst month, no guess on the example) never leaves a
 // hole in the numbering.
+// "In context" (st-bench) sits right after the total lands, not several
+// chapters later: the personal overshoot line is the single most persuasive
+// sentence in the reveal, and it hits hardest while the number is still
+// fresh, before the detail chapters (equivalences, scopes, hotspots) that
+// explain where it came from.
 export const CHAPTERS = [
   { id: 'st-cover', label: 'Open' },
   { id: 'st-year', label: 'The year' },
-  { id: 'st-guess', label: 'Reference points' },
+  { id: 'st-guess', label: 'Your benchmarks' },
   { id: 'st-lockin', label: 'Your guess' },
   { id: 'st-total', label: 'The number' },
+  { id: 'st-bench', label: 'In context' },
   { id: 'st-equiv', label: 'In real things' },
   { id: 'st-scopes', label: 'Where it comes from' },
   { id: 'st-hotspots', label: 'Hotspots' },
   { id: 'st-months', label: 'Worst month' },
-  { id: 'st-bench', label: 'In context' },
   { id: 'st-character', label: 'Your result' },
   { id: 'st-needle', label: 'Cut it down' },
   { id: 'st-outro', label: 'Share' },
@@ -79,10 +84,10 @@ export const YEAR = {
   tickerAria: 'A stream of the individual items behind this footprint.',
 };
 
-// Reference points shown before the total, so the number lands with context
-// instead of arriving cold. Three published benchmarks, most-to-least.
+// Three published benchmarks shown before the total, so the number lands
+// with context instead of arriving cold, most-to-least.
 export const GUESS = {
-  tag: 'Reference points',
+  tag: 'Your benchmarks',
   headline: { example: 'Three numbers to hold on to', own: 'Three numbers to hold on to' },
   sub: {
     example: 'Before you see my total, here is what a year of carbon looks like for other people. Keep these in mind.',
@@ -94,19 +99,19 @@ export const GUESS = {
   refs: [
     { id: 'home', unit: 't a person', note: 'per person, all greenhouse gases' },
     { id: 'global', label: 'World average', unit: 't a person', note: 'per person, all greenhouse gases' },
-    { id: 'budget', label: '1.5°C lifestyle benchmark', unit: 't a person', note: 'where a fair share needs to be by 2030' },
+    { id: 'budget', label: '1.5°C lifestyle benchmark', unit: 't a person', note: 'a sustainable level to aim under, not a future target' },
   ],
   cont: 'See where I land',
   contOwn: 'Take a guess',
 };
 
-// The lock-in: own voice only, between the reference points and the number.
+// The lock-in: own voice only, between the benchmarks and the number.
 // Prediction error is the single most memorable stat a reveal can produce,
 // so the visitor calls their year before it lands. Locked means locked.
 export const LOCKIN = {
   tag: 'Your guess',
   headline: 'Before it lands, call it',
-  sub: 'Slide to what you reckon your year adds up to, then lock it in. The three reference points are your bearings.',
+  sub: 'Slide to what you reckon your year adds up to, then lock it in. The three benchmarks above are your bearings.',
   sliderLabel: 'Your guess, tonnes of CO₂-e',
   unit: 't CO₂-e',
   lock: 'Lock it in',
@@ -117,8 +122,8 @@ export const LOCKIN = {
 
 export const TOTAL = {
   tag: 'The number',
-  chipsLabel: 'Tap a category to see its share of the dots gather into its shape',
-  chipsHint: 'Tap a category: its share of the dots gathers into its shape.',
+  chipsLabel: 'Tap a category to watch it take shape',
+  chipsHint: 'Tap a category to watch it take shape.',
   kicker: { example: 'My FY2026 carbon emissions', own: 'Your year in carbon' },
   unit: 'tonnes CO₂-e',
   // Cute, accurate aside explaining the "-e" the first time it appears.
@@ -259,8 +264,14 @@ export const BENCH_ST = {
     example: 'Under the Australian average, but still well over the 1.5°C lifestyle benchmark of 2.5 tonnes a person. Cutting the flights is how I close that gap.',
     own: 'The 1.5°C lifestyle benchmark of 2.5 tonnes a person is the line that matters. The next section is how you move toward it.',
   },
-  // Explains what the benchmark is and why 1.5°C matters, briefly.
-  benchNote: 'The 2.5 t line is a 1.5°C-aligned lifestyle benchmark: where an average person\'s footprint needs to be by 2030 to help hold warming near 1.5°C. Passing 1.5°C means more extreme heat, heavier rain, deeper drought and more damage to ecosystems, so the line is a target to aim under, not a goal to reach later.',
+  // What the 2.5 t line means, in plain English: a sustainable level to sit
+  // under right now, not a future deadline. Kept short on purpose; the
+  // tooltip and label variants below say the same thing in fewer words for
+  // the row name and the tile.
+  benchNote: 'The 2.5 t line marks a sustainable, fair share of carbon for one person, worked out from what it takes to keep warming near 1.5°C. It is not a future deadline: the goal is to already be under it, today. The further above the line a year sits, the more it adds to a hotter, harsher climate.',
+  benchNoteShort: '2.5 t is a sustainable level for one person, today, not a future target.',
+  benchNoteTooltip: 'The level a year should already sit under, not something to reach later.',
+  benchNoteLabel: 'Aim to stay under this line',
   // Personal overshoot day: the date the 2.5 t budget ran out at this pace.
   overshoot: {
     kicker: 'Budget day',
