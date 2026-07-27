@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { animate, motion, useMotionValue, useScroll, useSpring, useTransform } from 'framer-motion';
 import { canHover, prefersReducedMotion } from '../../utils/media';
 import SplitText from '../../components/SplitText';
+import CopyButton from '../../components/CopyButton';
+import Range from '../../components/Range';
 import CarbonField from './CarbonField';
 import { CountUp, ScrubNumber } from './CountUp';
 import { fmtT } from '../data/copy';
@@ -297,8 +299,8 @@ export function LockIn({ tags, goTo, guess, setGuess, locked, onLock, onSkip }) 
         <motion.p className="st-line" variants={rise} custom={2}>{LOCKIN.sub}</motion.p>
         <motion.div className="st-guess-box" variants={rise} custom={3}>
           <div className="st-guess-num display" aria-hidden="true">{fmtT(guess)}<span> {LOCKIN.unit}</span></div>
-          <input
-            type="range" className="st-slider"
+          <Range
+            className="st-slider"
             min={0.5} max={40} step={0.5} value={guess}
             aria-label={LOCKIN.sliderLabel}
             aria-valuetext={fmtT(guess) + ' tonnes'}
@@ -386,7 +388,7 @@ export function TotalReveal({ d, voice, guess, onCopyLink, reduced }) {
               <p className="st-enote">{TOTAL.eNote}</p>
               {onCopyLink && (
                 <div className="st-share-row">
-                  <button type="button" className="st-quiet" onClick={onCopyLink}>{SHARE_ST.copyLink}</button>
+                  <CopyButton className="st-quiet" onCopy={onCopyLink} label={SHARE_ST.copyLink} doneLabel={SHARE_ST.copyLinkDone} iconSize={16} />
                 </div>
               )}
             </motion.div>
@@ -858,7 +860,7 @@ export function Outro({ d, voice, character, tags, onStart, onExplore, onReplay,
         </motion.div>
 
         <motion.div className="st-share-row" variants={rise} custom={4}>
-          {onCopyLink && <button type="button" className="btn btn-secondary" onClick={onCopyLink}>{SHARE_ST.copyLink}</button>}
+          {onCopyLink && <CopyButton className="btn btn-secondary" onCopy={onCopyLink} label={SHARE_ST.copyLink} doneLabel={SHARE_ST.copyLinkDone} iconSize={16} />}
           <button type="button" className="fp-linkbtn" onClick={onExplore}>{OUTRO.explore} ↓</button>
           {voice === 'example' && (
             <button type="button" className="fp-linkbtn" onClick={onStart}>{OUTRO.start}</button>

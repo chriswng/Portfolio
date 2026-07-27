@@ -149,13 +149,10 @@
 .gi-lgc { align-self: flex-start; }
 
 /* Range slider, styled to match the footprint ob-range pattern. */
-.gi-range { -webkit-appearance: none; appearance: none; width: 100%; height: 36px; background: transparent; cursor: pointer; }
-.gi-range::-webkit-slider-runnable-track { height: 4px; background: var(--rule-dk); border-radius: 2px; }
-.gi-range::-moz-range-track { height: 4px; background: var(--rule-dk); border-radius: 2px; }
-.gi-range::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; border-radius: 50%; background: var(--matcha); border: 3px solid var(--forest); margin-top: -10px; transition: transform 0.2s var(--ease); }
-.gi-range::-moz-range-thumb { width: 24px; height: 24px; border-radius: 50%; background: var(--matcha); border: 3px solid var(--forest); }
-.gi-range:active::-webkit-slider-thumb { transform: scale(1.18); }
-.gi-range:focus-visible { outline: 2px solid var(--matcha); outline-offset: 3px; }
+/* The coverage lever uses the shared .rng control (see global.css). Only the
+   thumb ink is page-specific: matcha on forest, matching the lever labels. */
+.gi-range .rng-input::-webkit-slider-thumb { background: var(--matcha); border-color: var(--forest); }
+.gi-range .rng-input::-moz-range-thumb { background: var(--matcha); border-color: var(--forest); }
 
 /* ---- Explorer: teaching paragraph + the sum ---- */
 .gi-explain { font-size: clamp(0.95rem,1.5vw,1.08rem); color: var(--slate); line-height: 1.75; max-width: 66ch; padding: 1.1rem 1.3rem; background: var(--white); border: 1px solid var(--rule-dk); border-left: 3px solid var(--matcha); border-radius: var(--r-md); margin-bottom: 1.5rem; }
@@ -187,6 +184,6 @@
 
 /* ---- Motion preferences ---- */
 @media (prefers-reduced-motion: reduce) {
-  .gi-range::-webkit-slider-thumb, .gi-disclose summary::before, .gi-pairnum-mkt .gi-pair-v { transition: none; }
+  .gi-range .rng-input::-webkit-slider-thumb, .gi-disclose summary::before, .gi-pairnum-mkt .gi-pair-v { transition: none; }
   .gi-dot { animation: none; }
 }

@@ -5,6 +5,9 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Icon from '../components/Icons';
+import Range from '../components/Range';
+import CopyButton from '../components/CopyButton';
+import PlayGrid from './PlayGrid';
 import { prefersReducedMotion } from '../utils/media';
 import { GUESS, STATS } from './data';
 import {
@@ -81,10 +84,13 @@ export default function GuessGame({ dayIndex, showToast }) {
     setState(next);
   };
 
+  // The button confirms on itself; the toast is kept for the one case it can't
+  // show, a clipboard the browser refused.
   const share = async () => {
     const r = state.result;
     const ok = await copyText(guessShare(dayIndex, r.score, r.ratio, state.streak));
-    showToast(ok ? GUESS.shareDone : 'Could not copy');
+    if (!ok) showToast('Could not copy');
+    return ok;
   };
 
   const disp = formatMass(guessKg);
@@ -104,6 +110,8 @@ export default function GuessGame({ dayIndex, showToast }) {
         <div className="dy-stat"><div className="dy-stat-l">{STATS.plays}</div><div className="dy-stat-v">{state.plays}</div></div>
       </div>
 
+      <PlayGrid state={state} dayIndex={dayIndex} />
+
       <div className="dy-item">
         <div className="dy-item-k">{GUESS.cardKicker} · {STATS.dayLabel} {dayIndex + 1}</div>
         <div className="dy-item-name">{item.item}</div>
@@ -117,8 +125,9 @@ export default function GuessGame({ dayIndex, showToast }) {
               <span className="dy-guess-lbl">{GUESS.sliderLabel}</span>
               <span className="dy-guess-val">{disp.value}<em>{disp.unit} CO₂e</em></span>
             </div>
-            <input
-              className="dy-range" type="range" min={LOG_MIN} max={LOG_MAX} step="0.01"
+            <Range
+              className="dy-range" min={LOG_MIN} max={LOG_MAX} step={0.01}
+              ticks={LOG_MAX - LOG_MIN}
               value={kgToLog(guessKg)} onChange={onSlider}
               aria-label={GUESS.sliderLabel + ', in carbon dioxide equivalent, log scale from one gram to ten tonnes'}
             />
@@ -165,7 +174,7 @@ export default function GuessGame({ dayIndex, showToast }) {
             </div>
 
             <div className="dy-share-row">
-              <button className="dy-btn dy-btn-ghost" onClick={share}><Icon name="spark" size={18} />{GUESS.shareCta}</button>
+              <CopyButton className="dy-btn dy-btn-ghost" onCopy={share} label={GUESS.shareCta} doneLabel={GUESS.shareDone} />
             </div>
             <p className="dy-played-note">{GUESS.playedNote}</p>
           </div>

@@ -686,6 +686,103 @@ section { position:relative; }
 .fp-footer-back:hover{ color:var(--matcha); }
 
 /* ============================================================================
+   RANGE — the shared slider (src/components/Range.jsx)
+   The native input keeps all of its keyboard and assistive-tech behaviour and
+   is laid transparent over a painted track, so the control shows how far along
+   a value sits instead of only where the thumb landed. Track, fill and notches
+   are inset by half a thumb so 0% and 100% meet the thumb's centre.
+   Per-use tuning: --rng-thumb, --rng-track, --rng-fill on the wrapper.
+   ============================================================================ */
+.rng{
+  --rng-thumb:24px;
+  --rng-track:5px;
+  --rng-fill:linear-gradient(90deg,var(--forest-ink),var(--matcha));
+  --rng-trackbg:var(--rule-dk);
+  --rng-tick:rgba(255,255,255,0.7);
+  position:relative; display:block; width:100%;
+  height:calc(var(--rng-thumb) + 12px);
+}
+.rng-track{
+  position:absolute; top:50%; transform:translateY(-50%);
+  left:calc(var(--rng-thumb) / 2); right:calc(var(--rng-thumb) / 2);
+  height:var(--rng-track); border-radius:var(--r-pill);
+  background:var(--rng-trackbg); overflow:hidden;
+}
+.rng-fill{
+  position:absolute; top:0; bottom:0; left:0; width:var(--rng-pct,0%);
+  background:var(--rng-fill); border-radius:var(--r-pill);
+  transition:width 0.12s linear;
+}
+/* Step notches, cut through fill and empty track alike so the scale stays
+   legible either side of the thumb. */
+.rng-ticks{
+  position:absolute; inset:0; pointer-events:none;
+  background-image:repeating-linear-gradient(90deg,
+    transparent 0, transparent calc(var(--rng-gap) - 1px),
+    var(--rng-tick) calc(var(--rng-gap) - 1px), var(--rng-tick) var(--rng-gap));
+}
+.rng-input{
+  position:relative; z-index:1; display:block; width:100%; height:100%;
+  margin:0; padding:0; background:transparent; cursor:pointer;
+  -webkit-appearance:none; appearance:none;
+}
+.rng-input::-webkit-slider-runnable-track{ height:100%; background:transparent; border:none; }
+.rng-input::-moz-range-track{ height:100%; background:transparent; border:none; }
+.rng-input::-webkit-slider-thumb{
+  -webkit-appearance:none; width:var(--rng-thumb); height:var(--rng-thumb);
+  border-radius:50%; background:var(--lime-bright); border:3px solid var(--forest);
+  box-shadow:var(--shadow-soft);
+  transition:transform 0.18s var(--ease), box-shadow 0.18s var(--ease);
+}
+.rng-input::-moz-range-thumb{
+  width:var(--rng-thumb); height:var(--rng-thumb); box-sizing:border-box;
+  border-radius:50%; background:var(--lime-bright); border:3px solid var(--forest);
+  box-shadow:var(--shadow-soft);
+  transition:transform 0.18s var(--ease), box-shadow 0.18s var(--ease);
+}
+.rng-input:hover::-webkit-slider-thumb{ transform:scale(1.06); }
+.rng-input:hover::-moz-range-thumb{ transform:scale(1.06); }
+.rng-input:active::-webkit-slider-thumb{ transform:scale(1.16); box-shadow:0 0 0 7px rgba(181,196,43,0.22); }
+.rng-input:active::-moz-range-thumb{ transform:scale(1.16); box-shadow:0 0 0 7px rgba(181,196,43,0.22); }
+.rng-input:focus-visible{ outline:2px solid var(--matcha); outline-offset:2px; border-radius:var(--r-pill); }
+.rng-input:focus-visible::-webkit-slider-thumb{ box-shadow:0 0 0 5px rgba(181,196,43,0.3); }
+.rng-input:focus-visible::-moz-range-thumb{ box-shadow:0 0 0 5px rgba(181,196,43,0.3); }
+/* A locked slider stays readable: it still shows where the value landed, it
+   just stops responding. */
+.rng.is-disabled{ opacity:0.45; }
+.rng-input:disabled{ cursor:default; }
+.rng-input:disabled::-webkit-slider-thumb{ transform:none; }
+.rng-input:disabled::-moz-range-thumb{ transform:none; }
+
+/* ============================================================================
+   COPY BUTTON — the shared copy confirmation (src/components/CopyButton.jsx)
+   Layout only. Every page that uses it already has a button skin of its own
+   (.dy-btn, .ow-btn, .st-quiet, .btn), and the copy control should look like
+   the buttons beside it rather than like an import, so the base sets no type,
+   colour or border. `.copybtn-skin` is the fallback skin for a bare use.
+   ============================================================================ */
+.copybtn{
+  display:inline-flex; align-items:center; justify-content:center; gap:0.45rem;
+  cursor:pointer;
+}
+.copybtn .fpi{ color:currentColor; }
+/* Both slots hold their width while the mark and the label swap, so nothing
+   beside the button shifts as the confirmation lands. */
+.copybtn-mark{ display:inline-flex; align-items:center; justify-content:center; width:1.15em; }
+.copybtn-label{ display:inline-flex; align-items:center; }
+
+.copybtn-skin{
+  font-family:var(--mono); font-size:11px; font-weight:600;
+  letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--slate); background:var(--white);
+  border:1px solid var(--rule-dk); border-radius:var(--r-pill);
+  padding:0.6rem 1.05rem;
+  transition:border-color 0.25s var(--ease), background 0.25s var(--ease), color 0.25s var(--ease);
+}
+.copybtn-skin:hover{ border-color:var(--forest-ink); background:var(--lime-wash); }
+.copybtn-skin.is-done{ border-color:var(--forest-ink); background:var(--lime-soft); color:var(--forest); }
+
+/* ============================================================================
    MOTION PREFERENCES
    ============================================================================ */
 @media(prefers-reduced-motion:reduce){

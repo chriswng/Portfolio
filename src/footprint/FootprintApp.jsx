@@ -18,6 +18,7 @@ import {
   encodeSnapshot, decodeSnapshot, storySeen, markStorySeen,
 } from './lib/store';
 import { prefersReducedMotion } from '../utils/media';
+import { copyText } from '../utils/clipboard';
 import Story from './story/Story';
 import Dashboard from './Dashboard';
 import Plan from './Plan';
@@ -180,12 +181,13 @@ export default function FootprintApp() {
       plan: pathway.enabled.length,
       at2030: Math.round((pathway.plan[Math.max(0, pathway.years.indexOf(2030))] || 0) * 100) / 100,
     });
-    try {
-      await navigator.clipboard.writeText(url);
-      flash(TOASTS.shareCopied);
-    } catch {
-      window.prompt(TOASTS.sharePrompt, url);
-    }
+    // The button that called this confirms on itself. The toast is not a
+    // second "copied" — it is the one thing the button cannot say, which is
+    // what the link does and does not carry.
+    const ok = await copyText(url);
+    if (ok) flash(TOASTS.shareCopied);
+    else window.prompt(TOASTS.sharePrompt, url);
+    return ok;
   };
   const onReset = () => {
     if (!window.confirm(DATA_CTRL.resetConfirm)) return;

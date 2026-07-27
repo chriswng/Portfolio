@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Grain, ScrollProgress, SkipLink } from '../components/Chrome';
 import { ToolNav, ToolFooter } from '../components/ToolNav';
 import Icon from '../components/Icons';
+import Range from '../components/Range';
 import { fetchLiveIntensity, OPENNEM_SOURCE } from '../lib/opennem';
 import {
   INTRO, TABS, REGIONS, NON_NEM_NOTE,
@@ -306,10 +307,10 @@ function ExplorerView() {
               <span className="gi-lever-name">{EXPLORER_COPY.coverLabel}</span>
               <span className="gi-lever-val">{cover}%</span>
             </div>
-            <input
+            <Range
               className="gi-range"
-              type="range"
-              min="0" max="100" step="5"
+              min={0} max={100} step={5}
+              ticks={20}
               value={cover}
               onChange={(e) => setCover(Number(e.target.value))}
               aria-label={EXPLORER_COPY.coverLabel}
