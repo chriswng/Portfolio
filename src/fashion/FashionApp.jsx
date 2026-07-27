@@ -30,6 +30,8 @@ import { NAV_LINKS } from '../data/content';
 import { Grain } from '../components/Chrome';
 import Mark from '../components/Mark';
 import Icon from '../components/Icons';
+import CopyButton from '../components/CopyButton';
+import { copyText } from '../utils/clipboard';
 import Aurora from '../components/Aurora';
 import ContourField from '../components/ContourField';
 import Studio from './Studio';
@@ -505,16 +507,7 @@ function TransparencyRow({ brand }) {
 
 function BrandCard({ brand, inCompare, onToggleCompare, onSelect, onOpenGroup }) {
   const family = groupFamily(brand.parent).filter((b) => b.id !== brand.id);
-  const [copied, setCopied] = useState(false);
-
-  const copyLink = async () => {
-    const url = `${window.location.origin}${window.location.pathname}#brand=${brand.id}`;
-    try {
-      if (navigator.clipboard) await navigator.clipboard.writeText(url);
-      else { const t = document.createElement('textarea'); t.value = url; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); }
-      setCopied(true); setTimeout(() => setCopied(false), 1800);
-    } catch { /* clipboard blocked; no-op */ }
-  };
+  const brandLink = () => `${window.location.origin}${window.location.pathname}#brand=${brand.id}`;
 
   return (
     <article className="ow-card">
@@ -631,7 +624,13 @@ function BrandCard({ brand, inCompare, onToggleCompare, onSelect, onOpenGroup })
         <button className={`ow-btn ${inCompare ? 'on' : ''}`} onClick={() => onToggleCompare(brand.id)}>
           {inCompare ? `✓ ${COPY.lookup.compareRemove}` : COPY.lookup.compareAdd}
         </button>
-        <button className="ow-btn" onClick={copyLink}>{copied ? `✓ ${COPY.lookup.shareDone}` : COPY.lookup.shareLabel}</button>
+        <CopyButton
+          className="ow-btn"
+          onCopy={() => copyText(brandLink())}
+          label={COPY.lookup.shareLabel}
+          doneLabel={COPY.lookup.shareDone}
+          iconSize={16}
+        />
       </div>
 
       <div className="ow-stamp">{COPY.lookup.freshnessTemplate.replace('{d}', VERIFIED_AS_OF)}</div>

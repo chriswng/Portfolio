@@ -263,13 +263,16 @@
 .st-guess-box { margin-top: 2.2rem; }
 .st-guess-num { font-family: var(--disp); font-weight: 700; font-size: clamp(4rem, 15vw, 8.5rem); line-height: 1; color: var(--slate); letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
 .st-guess-num span { font-size: 0.22em; color: var(--mid); font-weight: 600; letter-spacing: 0; }
-.st-slider { -webkit-appearance: none; appearance: none; width: min(520px, 86vw); height: 44px; background: transparent; cursor: pointer; margin: 1.2rem 0 1.6rem; }
-.st-slider::-webkit-slider-runnable-track { height: 4px; background: linear-gradient(90deg, var(--matcha), var(--rule-dk)); border-radius: 2px; }
-.st-slider::-moz-range-track { height: 4px; background: linear-gradient(90deg, var(--matcha), var(--rule-dk)); border-radius: 2px; }
-.st-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 28px; height: 28px; border-radius: 50%; background: var(--matcha); border: 3px solid var(--slate); margin-top: -12px; transition: transform 0.2s var(--ease); }
-.st-slider::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: var(--matcha); border: 3px solid var(--slate); }
-.st-slider:active::-webkit-slider-thumb { transform: scale(1.25); }
-.st-slider:focus-visible { outline: 2px solid var(--matcha); outline-offset: 4px; }
+/* The lock-in guess uses the shared .rng control (global.css), sized to the
+   centred guess box and re-inked for the dark stage it sits on. */
+.st-slider {
+  width: min(520px, 86vw); margin: 1.2rem auto 1.6rem;
+  --rng-thumb: 28px; --rng-track: 4px;
+  --rng-trackbg: var(--st-dark-rule);
+  --rng-fill: linear-gradient(90deg, var(--matcha), var(--lime-bright));
+}
+.st-slider .rng-input::-webkit-slider-thumb { background: var(--matcha); border-color: var(--st-dark); }
+.st-slider .rng-input::-moz-range-thumb { background: var(--matcha); border-color: var(--st-dark); }
 .st-guess-ctas { display: flex; gap: 1rem; justify-content: center; align-items: center; flex-wrap: wrap; }
 
 .st-quiet {
@@ -723,7 +726,7 @@
 .st-lockin { background: var(--bg); border-bottom: 1px solid var(--rule-lt); }
 .st-lockin .st-center { text-align: center; }
 .st-lockin .st-line, .st-lockin .st-h2 { margin-left: auto; margin-right: auto; }
-.st-slider:disabled { opacity: 0.45; cursor: default; }
+/* The disabled treatment now comes from the shared control (see .rng in global.css). */
 .st-locked {
   font-size: 0.95rem; font-weight: 600; color: var(--slate); line-height: 1.6;
   border-left: 3px solid var(--matcha); padding-left: 0.8rem; text-align: left;

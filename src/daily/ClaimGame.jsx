@@ -5,6 +5,8 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Icon from '../components/Icons';
+import CopyButton from '../components/CopyButton';
+import PlayGrid from './PlayGrid';
 import { prefersReducedMotion } from '../utils/media';
 import { CLAIM, STATS } from './data';
 import {
@@ -38,9 +40,12 @@ export default function ClaimGame({ dayIndex, showToast }) {
     setState(next);
   };
 
+  // The button confirms on itself; the toast is kept for the one case it can't
+  // show, a clipboard the browser refused.
   const share = async () => {
     const ok = await copyText(claimShare(dayIndex, state.result.correct, state.streak));
-    showToast(ok ? CLAIM.shareDone : 'Could not copy');
+    if (!ok) showToast('Could not copy');
+    return ok;
   };
 
   return (
@@ -57,6 +62,8 @@ export default function ClaimGame({ dayIndex, showToast }) {
         <div className="dy-stat"><div className="dy-stat-l">{STATS.best}</div><div className="dy-stat-v">{state.best}</div></div>
         <div className="dy-stat"><div className="dy-stat-l">{STATS.plays}</div><div className="dy-stat-v">{state.plays}</div></div>
       </div>
+
+      <PlayGrid state={state} dayIndex={dayIndex} />
 
       <div className="dy-claim">
         <div className="dy-claim-speaker">{CLAIM.cardKicker} · {STATS.dayLabel} {dayIndex + 1} · {claim.speaker}</div>
@@ -94,7 +101,7 @@ export default function ClaimGame({ dayIndex, showToast }) {
             </div>
 
             <div className="dy-share-row">
-              <button className="dy-btn dy-btn-ghost" onClick={share}><Icon name="spark" size={18} />{CLAIM.shareCta}</button>
+              <CopyButton className="dy-btn dy-btn-ghost" onCopy={share} label={CLAIM.shareCta} doneLabel={CLAIM.shareDone} />
             </div>
             <p className="dy-played-note">{CLAIM.playedNote}</p>
           </div>

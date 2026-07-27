@@ -103,11 +103,34 @@ export const RULER_TICKS = [
 // ---------------------------------------------------------------------------
 // Local storage. One versioned key per game. Never sent anywhere. Shape:
 //   { last: dayIndex|null, streak, best, plays, dist:[c0,c1,c2,c3],
-//     result: { day, ...perGameFields } }
+//     days: [{ d: dayIndex, b: bucket }], result: { day, ...perGameFields } }
+// `days` is the play history the grid on each card reads: one entry per day
+// played, with the bucket scored, kept for the last HISTORY_KEEP days only.
 // ---------------------------------------------------------------------------
 const KEYS = { guess: 'dy-guess-v1', claim: 'dy-claim-v1' };
 
-const EMPTY = () => ({ last: null, streak: 0, best: 0, plays: 0, dist: [0, 0, 0, 0], result: null });
+// Long enough to fill the grid several times over, short enough that the
+// stored blob stays trivial. Older days fall off the end.
+export const HISTORY_KEEP = 120;
+
+const EMPTY = () => ({ last: null, streak: 0, best: 0, plays: 0, dist: [0, 0, 0, 0], days: [], result: null });
+
+// Play history, sanitised. Anyone who played before the grid existed has no
+// `days` array, so their last locked result seeds one entry rather than the
+// grid claiming they have never played.
+function readDays(s) {
+  if (Array.isArray(s.days)) {
+    return s.days
+      .filter((e) => e && typeof e.d === 'number' && typeof e.b === 'number')
+      .map((e) => ({ d: e.d, b: Math.max(0, Math.min(3, Math.round(e.b))) }))
+      .slice(-HISTORY_KEEP);
+  }
+  if (typeof s.last === 'number' && s.result) {
+    const b = typeof s.result.score === 'number' ? s.result.score : (s.result.correct ? 3 : 0);
+    return [{ d: s.last, b }];
+  }
+  return [];
+}
 
 export function loadState(game) {
   if (typeof localStorage === 'undefined') return EMPTY();
@@ -121,11 +144,19 @@ export function loadState(game) {
       best: s.best || 0,
       plays: s.plays || 0,
       dist: Array.isArray(s.dist) && s.dist.length === 4 ? s.dist : [0, 0, 0, 0],
+      days: readDays(s),
       result: s.result || null,
     };
   } catch (e) {
     return EMPTY();
   }
+}
+
+// The play history as a lookup from day index to bucket, for the grid.
+export function historyMap(state) {
+  const map = new Map();
+  for (const e of state.days || []) map.set(e.d, e.b);
+  return map;
 }
 
 function save(game, state) {
@@ -153,12 +184,15 @@ export function recordPlay(game, dayIndex, bucket, result) {
   const streak = continues ? state.streak + 1 : 1;
   const dist = state.dist.slice();
   dist[bucket] = (dist[bucket] || 0) + 1;
+  const days = state.days.filter((e) => e.d !== dayIndex).concat({ d: dayIndex, b: bucket });
+  days.sort((a, b) => a.d - b.d);
   const next = {
     last: dayIndex,
     streak,
     best: Math.max(state.best, streak),
     plays: state.plays + 1,
     dist,
+    days: days.slice(-HISTORY_KEEP),
     result: { day: dayIndex, ...result },
   };
   save(game, next);
@@ -192,27 +226,6 @@ export function claimShare(dayIndex, correct, streak) {
   ].join('\n');
 }
 
-// Copy to clipboard, resolving true on success. Falls back to a hidden
-// textarea + execCommand where the async clipboard API is unavailable.
-export async function copyText(text) {
-  try {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      await navigator.clipboard.writeText(text);
-      return true;
-    }
-  } catch (e) { /* fall through */ }
-  try {
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    ta.setAttribute('readonly', '');
-    ta.style.position = 'fixed';
-    ta.style.opacity = '0';
-    document.body.appendChild(ta);
-    ta.select();
-    const ok = document.execCommand('copy');
-    document.body.removeChild(ta);
-    return ok;
-  } catch (e) {
-    return false;
-  }
-}
+// Copying is the same everywhere on the site, so it lives in one place. Games
+// keep importing it from here; the implementation is shared.
+export { copyText } from '../utils/clipboard';
