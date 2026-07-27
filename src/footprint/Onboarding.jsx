@@ -9,6 +9,7 @@ import { ONBOARD, ENERGY_PRESETS } from './data/copy';
 import { OB, fill } from './data/storyCopy';
 import { priceEntry } from './lib/engine';
 import Icon from '../components/Icons';
+import Range from '../components/Range';
 import { prefersReducedMotion } from '../utils/media';
 
 // Local-date formatter. toISOString converts to UTC, which in Australian
@@ -360,9 +361,10 @@ function SliderField({ label, value, onChange, min, max, step, unit, icon, note 
           <em> {unit}</em>
         </span>
       </div>
-      <input
-        type="range" className="ob-range"
+      <Range
+        className="ob-range"
         min={min} max={max} step={step} value={value}
+        ticks={(max - min) / step}
         aria-label={label}
         aria-valuetext={value.toLocaleString() + ' ' + unit}
         onChange={(e) => onChange(Number(e.target.value))}

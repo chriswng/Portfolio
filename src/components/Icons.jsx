@@ -344,12 +344,30 @@ const loop = (
   </>
 );
 
+// Two stacked sheets, the front one with a matcha dog-ear.
+const copy = (
+  <>
+    <path d="M11.5 11.5 Q11.5 9.5 13.5 9.5 L23 9.5 Q25 9.5 25 11.5 L25 23 Q25 25 23 25 L13.5 25 Q11.5 25 11.5 23 Z" />
+    <path d="M8.5 20.5 Q7 20.2 7 18.5 L7 9 Q7 7 9 7 L18.5 7 Q20.2 7 20.5 8.5" />
+    <path className="fpi-fill" d="M21.4 9.6 L25 13.2 L25 11.5 Q25 9.6 23.1 9.5 Z" stroke="none" />
+  </>
+);
+
+// A tick with a matcha dot tucked under the heel of the stroke.
+const check = (
+  <>
+    <path d="M7.5 16.6 Q11.4 19.4 13.6 23.4 Q17.6 13.4 25 8.6" />
+    <circle className="fpi-fill" cx="7.2" cy="22.6" r="2" stroke="none" />
+  </>
+);
+
 const GLYPHS = {
   house, bolt, car, plane, bowl, spark,
   pin, people, building, flame, leaf, fuel, phone, bus, fork, box, globe, clock,
   bag, bed, coins, bin,
   chart, target, list, book,
   tag, shirt, scissors, drop, loop,
+  copy, check,
 };
 
 // Public component: <Icon name="bolt" size={28} />. Unknown names render

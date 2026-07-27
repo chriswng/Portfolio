@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page not found | Chris Wang</title>
+  <meta name="description" content="That address is not part of this site. Here is everything that is.">
+  <meta name="robots" content="noindex, follow">
+  <link rel="icon" type="image/svg+xml" href="/mark.svg">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <meta name="theme-color" content="#FAFAF7">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <!--
+    GitHub Pages serves this file for any unresolved path, at any depth, so it
+    cannot rely on the relative asset paths the built pages use. It is
+    hand-written and self-contained: no bundle, no fetch, one stylesheet inline.
+    That also means it renders instantly, which is the least a wrong turn
+    deserves.
+
+    The tokens below are copied from the :root block in src/styles/global.css.
+    They are duplicated on purpose. This page is outside the build, so it cannot
+    import them, and a hardcoded copy that drifts is better than a 404 that
+    fails to load its own styles.
+  -->
+  <style>
+    :root{
+      --matcha:#B5C42B;
+      --lime-soft:#E9F2C2;
+      --lime-wash:#F1F7D8;
+      --forest:#21300F;
+      --forest-ink:#5E6B1E;
+      --accent-ink:#6A7614;
+      --slate:oklch(0.207 0.022 118);
+      --bg:oklch(0.984 0.006 118);
+      --mid:oklch(0.553 0.022 118);
+      --subtle:oklch(0.682 0.018 118);
+      --rule-dk:oklch(0.853 0.013 118);
+      --rule-lt:oklch(0.917 0.008 118);
+      --sans:'Inter',system-ui,sans-serif;
+      --mono:'JetBrains Mono','Courier New',monospace;
+      --disp:'Space Grotesk',sans-serif;
+      --ease:cubic-bezier(0.25,1,0.5,1);
+      --gut:6vw;
+    }
+    *,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+    body{
+      font-family:var(--sans); font-weight:300; font-size:0.92rem; line-height:1.7;
+      color:var(--slate); -webkit-font-smoothing:antialiased;
+      background:
+        radial-gradient(120% 90% at 85% 0%, var(--lime-soft) 0%, transparent 55%),
+        linear-gradient(180deg, var(--lime-wash) 0%, var(--bg) 42%);
+      min-height:100vh; display:flex; flex-direction:column;
+    }
+    a{ color:inherit; }
+    .canvas{ width:100%; max-width:1180px; margin:0 auto; padding-left:var(--gut); padding-right:var(--gut); }
+
+    /* Film grain, matched to the site's overlay so the page belongs to it. */
+    .grain{
+      position:fixed; inset:0; pointer-events:none; z-index:5; mix-blend-mode:multiply;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)' opacity='0.042'/%3E%3C/svg%3E");
+    }
+
+    header{ border-bottom:1px solid var(--rule-dk); background:rgba(248,250,252,0.72); backdrop-filter:blur(10px); }
+    .head-inner{ display:flex; align-items:center; min-height:52px; }
+    .logo{ color:var(--accent-ink); display:inline-flex; align-items:center; text-decoration:none; transition:opacity 0.25s var(--ease); }
+    .logo:hover{ opacity:0.55; }
+    .logo svg{ width:1.3rem; height:1.3rem; display:block; }
+
+    main{ flex:1; padding:clamp(3rem,9vw,6.5rem) 0 clamp(2.5rem,6vw,4rem); position:relative; }
+
+    .tag{
+      font-family:var(--mono); font-size:10px; letter-spacing:0.25em; text-transform:uppercase;
+      color:var(--mid); font-weight:500; display:flex; align-items:center; gap:0.6rem;
+    }
+    .tag b{ color:var(--accent-ink); font-weight:500; }
+    .rule{ height:1px; background:var(--rule-dk); flex:1; max-width:340px; }
+
+    h1{
+      font-family:var(--disp); font-weight:700; line-height:0.86; letter-spacing:-0.045em;
+      font-size:clamp(2.3rem,7.5vw,4.6rem); margin:1.4rem 0 1.2rem; max-width:12ch;
+    }
+    h1 em{ font-style:normal; color:var(--forest-ink); }
+    .lede{ font-size:clamp(0.92rem,1.3vw,1.04rem); font-weight:400; color:#475569; max-width:58ch; line-height:1.8; }
+    .lede + .lede{ margin-top:0.9rem; }
+    .lede:first-of-type{ padding-left:1.1rem; border-left:3px solid var(--forest-ink); }
+
+    /* The number, set as an outline so it reads as a mark on the page rather
+       than as a headline competing with the sentence that explains it. */
+    .code{
+      position:absolute; top:clamp(3rem,10vw,7rem); right:var(--gut);
+      font-family:var(--disp); font-weight:700; font-size:clamp(6rem,18vw,14rem);
+      line-height:0.8; letter-spacing:-0.06em; color:transparent;
+      -webkit-text-stroke:1.5px var(--matcha); opacity:0.5;
+      pointer-events:none; user-select:none;
+    }
+    @media (max-width:900px){ .code{ opacity:0.28; } }
+
+    .cols{
+      display:grid; grid-template-columns:1fr; gap:1.6rem 2.4rem;
+      margin-top:clamp(2.5rem,6vw,3.8rem);
+      border-top:1px solid var(--rule-dk); padding-top:1.8rem;
+    }
+    @media (min-width:720px){ .cols{ grid-template-columns:repeat(3,1fr); } }
+    .col-head{
+      font-family:var(--mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase;
+      color:var(--mid); font-weight:600; margin-bottom:0.9rem;
+    }
+    .col ul{ list-style:none; display:flex; flex-direction:column; gap:0.55rem; }
+    .col a{
+      text-decoration:none; display:block; font-size:0.9rem; font-weight:400;
+      transition:color 0.25s var(--ease), transform 0.25s var(--ease);
+    }
+    .col a span{ display:block; font-size:0.78rem; color:var(--mid); font-weight:300; line-height:1.5; }
+    .col a:hover{ color:var(--forest-ink); transform:translateX(3px); }
+    .col a:hover span{ color:var(--forest-ink); }
+    .col a:focus-visible{ outline:2px solid var(--matcha); outline-offset:3px; border-radius:2px; }
+
+    footer{ border-top:1px solid var(--rule-dk); padding:1.6rem 0; }
+    .foot-inner{ display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
+    .foot-name{ font-family:var(--mono); font-size:10px; letter-spacing:0.06em; color:var(--mid); }
+    .foot-back{
+      font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase;
+      color:var(--mid); text-decoration:none; font-weight:600;
+    }
+    .foot-back:hover{ color:var(--accent-ink); }
+
+    @media (prefers-reduced-motion:reduce){
+      *,*::before,*::after{ transition-duration:0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header>
+    <div class="canvas head-inner">
+      <a class="logo" href="/" data-path="" aria-label="Chris Wang, home">
+        <!-- "The Segmented Split", the same mark src/components/Mark.jsx draws:
+             a ring cut clean through by a horizontal slot. -->
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+          <mask id="cut" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+            <rect width="24" height="24" fill="#fff" />
+            <rect y="10.2" width="24" height="3.6" fill="#000" />
+          </mask>
+          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.4" mask="url(#cut)" />
+        </svg>
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <div class="code" aria-hidden="true">404</div>
+    <div class="canvas">
+      <div class="tag"><b>404</b> Page not found<span class="rule"></span></div>
+
+      <h1>That address is not <em>part of the record</em></h1>
+
+      <p class="lede">
+        The link you followed points at something that moved, or at something
+        that never existed here. Nothing on this site is guessed at, so rather
+        than send you somewhere approximate, here is the whole of it.
+      </p>
+      <p class="lede">
+        If you arrived from a link of mine that is now wrong, that is worth
+        knowing. The LinkedIn address at the foot of every page reaches me.
+      </p>
+
+      <nav class="cols" aria-label="Everything on this site">
+        <div class="col">
+          <div class="col-head">Profile</div>
+          <ul>
+            <li><a href="/" data-path="">Home<span>Practice, capabilities and experience</span></a></li>
+            <li><a href="/work/" data-path="work/">Work samples<span>Baseline, roadmap, options appraisal, life cycle</span></a></li>
+          </ul>
+        </div>
+        <div class="col">
+          <div class="col-head">Working models</div>
+          <ul>
+            <li><a href="/footprint/" data-path="footprint/">Life Footprint<span>Your year in carbon, with its basis of preparation</span></a></li>
+            <li><a href="/fashion/" data-path="fashion/">Cost Per Wear<span>What a fashion brand does and does not disclose</span></a></li>
+          </ul>
+        </div>
+        <div class="col">
+          <div class="col-head">Tools</div>
+          <ul>
+            <li><a href="/grid/" data-path="grid/">Grid Intensity<span>Run it now or wait, plus the Scope 2 explorer</span></a></li>
+            <li><a href="/daily/" data-path="daily/">Sustainability Daily<span>Two carbon puzzles, a new one every day</span></a></li>
+            <li><a href="/super/" data-path="super/">Super Fund Holdings<span>What the default option actually holds</span></a></li>
+            <li><a href="/progress/" data-path="progress/">Climate Progress<span>Australia's numbers against its targets</span></a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+  </main>
+
+  <footer>
+    <div class="canvas foot-inner">
+      <span class="foot-name">Chris Wang · 2026</span>
+      <a class="foot-back" href="/" data-path="">← Back to profile</a>
+    </div>
+  </footer>
+
+  <script>
+    // The links above are absolute so they work from any depth GitHub Pages
+    // serves this file at. On a project sub-path (…github.io/Portfolio/…) the
+    // site root is the first path segment rather than "/", so rewrite against
+    // it there. The absolute hrefs in the markup are the no-JS fallback, and
+    // are already correct on the custom domain.
+    (function () {
+      if (!location.hostname.endsWith('github.io')) return;
+      var root = '/' + location.pathname.split('/')[1] + '/';
+      var links = document.querySelectorAll('[data-path]');
+      for (var i = 0; i < links.length; i += 1) {
+        links[i].setAttribute('href', root + links[i].getAttribute('data-path'));
+      }
+    }());
+  </script>
+</body>
+</html>

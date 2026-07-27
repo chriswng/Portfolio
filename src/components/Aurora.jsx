@@ -111,11 +111,24 @@ export default function Aurora(props) {
     const ctn = ctnDom.current;
     if (!ctn) return;
 
-    const renderer = new Renderer({
-      alpha: true,
-      premultipliedAlpha: true,
-      antialias: true
-    });
+    // WebGL is not a given. A browser with it disabled by policy or by an
+    // extension, or one falling back to software rendering it refuses to
+    // expose, hands back a null context and ogl's Renderer throws on it.
+    // That throw happens inside an effect, so React tears down the whole tree
+    // above it and the page renders blank rather than merely un-decorated.
+    // The aurora is an aria-hidden backdrop over a CSS gradient that already
+    // stands on its own, so the honest failure is to draw nothing.
+    let renderer;
+    try {
+      renderer = new Renderer({
+        alpha: true,
+        premultipliedAlpha: true,
+        antialias: true
+      });
+      if (!renderer.gl) throw new Error('no webgl context');
+    } catch (e) {
+      return undefined;
+    }
     const gl = renderer.gl;
     gl.clearColor(0, 0, 0, 0);
     gl.enable(gl.BLEND);
