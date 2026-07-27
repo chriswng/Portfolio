@@ -442,7 +442,7 @@ section { position:relative; }
    neighbouring cards land at different heights instead of sharing a row. */
 .lever-card .seg-row{ border-color:var(--rule-lt); background:var(--rule-lt); margin-top:auto; }
 
-.takeaway{ position:relative; background:linear-gradient(150deg,var(--lime-wash),var(--white) 70%); padding:1.15rem 1.5rem 1.15rem 1.75rem; margin-bottom:1.5rem; font-family:var(--disp); font-size:clamp(1.05rem,2.6vw,1.4rem); font-weight:600; line-height:1.45; color:var(--slate); letter-spacing:-0.01em; border-radius:var(--r-md); box-shadow:0 6px 20px rgba(33,48,15,0.10),0 1px 2px rgba(15,23,42,0.04); }
+.takeaway{ position:relative; background:linear-gradient(150deg,var(--lime-wash),var(--white) 70%); padding:1.15rem 1.5rem 1.15rem 1.75rem; margin-top:1.25rem; margin-bottom:1.5rem; font-family:var(--disp); font-size:clamp(1.05rem,2.6vw,1.4rem); font-weight:600; line-height:1.45; color:var(--slate); letter-spacing:-0.01em; border-radius:var(--r-md); box-shadow:0 6px 20px rgba(33,48,15,0.10),0 1px 2px rgba(15,23,42,0.04); }
 /* Inset rounded gradient bar — sits inside the rounded box, never meeting the curve. */
 .takeaway::before{ content:''; position:absolute; left:0.8rem; top:1.05rem; bottom:1.05rem; width:4px; border-radius:var(--r-pill); background:linear-gradient(180deg,var(--forest-ink),var(--matcha)); }
 .takeaway em{ font-style:normal; color:#75821D; }
@@ -497,15 +497,19 @@ section { position:relative; }
   .scn-controls .lever-card{ padding:0.85rem 1rem; }
   .scn-controls .lever-src{ margin-bottom:0.6rem; }
   .scn-controls .seg-row{ margin-top:auto; }
-  /* Tighten the result stack and let the chart flex to the viewport height. */
+  /* Tighten the result stack. Chart height is fixed rather than viewport-height-based:
+     the controls rail's height comes from its own content reflowing with width, not
+     from window height, so a vh-based chart size drifted out of sync with it on
+     first load. A flat height (taller just under 1024-1280px, where the narrower
+     rail squeezes the lever cards into an extra wrapped line) keeps the chart's
+     bottom edge close to the controls rail's bottom edge on landing. */
   .scn-results .takeaway{ margin-bottom:1rem; }
   .scn-results .kpi-strip{ margin-bottom:1rem; }
   .scn-results .chart-card{ margin-bottom:1rem; padding:1.2rem 1.4rem 1rem; }
-  .scn-results .chart-wrap{ height:clamp(240px,34vh,340px); }
+  .scn-results .chart-wrap{ height:432px; }
 }
-/* Tall desktop screens: give the chart a little more room. */
-@media(min-width:1024px) and (min-height:920px){
-  .scn-results .chart-wrap{ height:clamp(300px,40vh,400px); }
+@media(min-width:1024px) and (max-width:1299px){
+  .scn-results .chart-wrap{ height:480px; }
 }
 
 .scn-foot{ margin-top:2.5rem; padding-top:1.5rem; border-top:1px solid var(--rule-dk); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; }

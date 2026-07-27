@@ -6,10 +6,16 @@ import ContourField from './ContourField';
 import Aurora from './Aurora';
 import Icon, { LinkedInIcon } from './Icons';
 
-// Live "years" from a start date, matching the original calc.
+// Live "years" from a start date, rounded to the nearest half year.
 function yearsSince(startISO) {
   const start = new Date(startISO);
-  return Math.floor((Date.now() - start) / (1000 * 60 * 60 * 24 * 365.25));
+  const years = (Date.now() - start) / (1000 * 60 * 60 * 24 * 365.25);
+  return Math.round(years * 2) / 2;
+}
+
+function formatYears(v) {
+  const rounded = Math.round(v * 2) / 2;
+  return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1);
 }
 
 function Counter({ target, suffix }) {
@@ -18,7 +24,7 @@ function Counter({ target, suffix }) {
   useEffect(() => {
     const controls = animate(mv, target, {
       duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.4,
-      onUpdate: (v) => { if (ref.current) ref.current.textContent = Math.round(v) + suffix; },
+      onUpdate: (v) => { if (ref.current) ref.current.textContent = formatYears(v) + suffix; },
     });
     return controls.stop;
   }, [target, suffix, mv]);
