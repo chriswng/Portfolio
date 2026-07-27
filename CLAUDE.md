@@ -24,7 +24,7 @@ built as a React + Vite multi-page app and deployed to GitHub Pages.
 
 | Path | What lives here |
 |---|---|
-| `src/components/` | Main-page sections (Hero, Bio, Principles, Ticker, Scenario, Experience, Contact) plus the shared SiteFooter (big lime card with signup + link columns, used by the home and work pages), shared Chrome (nav, grain, scroll progress, skip link), the shared hand-drawn `Icons` set (round line art, one matcha accent shape per glyph, used beside sec-tags on every page), and the `Aurora` (WebGL) + `ContourField` (canvas) hero backdrops, mounted on the home, work, footprint and fashion intros. `ToolNav.jsx` carries the shared nav + compact footer for the standalone tool pages (`/grid/`, `/daily/`, `/super/`, `/progress/`). |
+| `src/components/` | Main-page sections (Hero, Bio, Principles, Ticker, Scenario, Experience, Contact) plus the shared SiteFooter (big lime card with signup + link columns, used by the home and work pages), shared Chrome (nav, grain, scroll progress, skip link), the shared hand-drawn `Icons` set (round line art, one matcha accent shape per glyph, used beside sec-tags on every page), and the `Aurora` (WebGL) + `ContourField` (canvas) hero backdrops, mounted on the home, work, footprint and fashion intros. `ToolNav.jsx` carries the shared nav + compact footer for the standalone tool pages (`/grid/`, `/daily/`, `/super/`, `/progress/`). Two shared controls sit alongside them: `Range.jsx` (every slider on the site, see the convention below) and `CopyButton.jsx` (every copy-to-clipboard action). |
 | `src/work/` | Work-samples page: `WorkApp`, `Baseline`, `CaseStudy`, data in `workData.js`, styles in `work.css`. |
 | `src/footprint/` | Life Footprint page: calculation engine and factor data in `lib/` and `data/` (keep rigorous; every factor cites its source), the Wrapped-style reveal in `story/` (WebGL carbon field, carbon characters, share cards), guided audit in `Onboarding.jsx`, dashboard sections alongside. Copy lives in `data/copy.js` and `data/storyCopy.js`. |
 | `src/footprint/method/` | The basis of preparation page (`/footprint/method/`): the written method plus the live factor tables, rendered from the same factor set the engine prices from. |
@@ -36,9 +36,9 @@ built as a React + Vite multi-page app and deployed to GitHub Pages.
 | `src/lib/` | `opennem.js` — the one shared OpenNEM/AEMO client both `/grid/` and `/progress/` read (live NEM data with honest `{ live: false }` failure; callers must label fallbacks as estimates). |
 | `src/data/` | Content and model inputs: `content.js` (all editorial copy, including footer links), `scenario.js` (decarbonisation model). |
 | `src/hooks/` | `useMagnetic` — cursor-follow interaction. |
-| `src/utils/` | `media.js` — `prefersReducedMotion()` / `canHover()` guards. |
+| `src/utils/` | `media.js` — `prefersReducedMotion()` / `canHover()` guards. `clipboard.js` — the one `copyText()` helper, with the hidden-textarea fallback. |
 | `src/styles/global.css` | Design tokens + all main-page styles. |
-| `public/` | Shared static assets (logos, favicon, `robots.txt`, `sitemap.xml`, and the Open Graph share cards: the profile card `og-image.png` plus one generated per-page card, `og-<page>.png`). |
+| `public/` | Shared static assets (logos, favicon, `robots.txt`, `sitemap.xml`, and the Open Graph share cards: the profile card `og-image.png` plus one generated per-page card, `og-<page>.png`), plus `404.html` — hand-written, self-contained and outside the build, because GitHub Pages serves it for any unresolved path at any depth so it cannot use the relative asset paths the built pages rely on. Its tokens are a deliberate copy of the `:root` block in `global.css`. |
 | `scripts/og/` | Share-thumbnail generator. `cards.mjs` (per-page copy and motifs), `draw.js` (the shared canvas renderer), `generate.mjs` (headless-Chromium harness). `npm run og:cards` writes the `og-*.png` cards into `public/`. Not part of the site build. |
 | `docs/` | Non-app material: `skill-reference/` and `career-record/`. Not built or deployed. |
 
@@ -95,6 +95,15 @@ built as a React + Vite multi-page app and deployed to GitHub Pages.
   follows the writing rules below, and a card never shows personal numbers.
   Home (`/`) and Work (`/work/`) intentionally keep the profile card
   `og-image.png`; method pages reuse their parent page's card.
+- **One slider, one copy button.** Every `<input type="range">` on the site
+  goes through `src/components/Range.jsx`, and every copy-to-clipboard action
+  through `src/components/CopyButton.jsx`. Both stay native controls underneath
+  (full keyboard and assistive-tech behaviour); the shared part is a track that
+  fills to the value with optional step notches, and a confirmation that lands
+  on the control that was pressed. Pages tune the slider through
+  `--rng-thumb` / `--rng-track` / `--rng-fill` on the wrapper and pass their own
+  button class to `CopyButton`, so a control looks like its neighbours rather
+  than like an import. Do not hand-roll a fifth range or a fifth copy state.
 - **Motion respects preferences.** Gate every animation/loop on
   `prefersReducedMotion()` and cursor-only interactions on `canHover()` (both
   from `src/utils/media.js`). Canvas/WebGL loops must pause off-screen via

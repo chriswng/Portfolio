@@ -363,13 +363,11 @@
 .ob-value-input:focus{ outline:none; border-bottom-color:var(--matcha); border-bottom-style:solid; }
 /* Keep the native spinners; they are a handy nudge on desktop. */
 .ob-value-input::-webkit-inner-spin-button{ opacity:0.5; }
-.ob-range{ -webkit-appearance:none; appearance:none; width:100%; height:36px; background:transparent; cursor:pointer; }
-.ob-range::-webkit-slider-runnable-track{ height:4px; background:var(--rule-dk); border-radius:2px; }
-.ob-range::-moz-range-track{ height:4px; background:var(--rule-dk); border-radius:2px; }
-.ob-range::-webkit-slider-thumb{ -webkit-appearance:none; width:24px; height:24px; border-radius:50%; background:var(--matcha); border:3px solid var(--slate); margin-top:-10px; transition:transform 0.2s var(--ease); }
-.ob-range::-moz-range-thumb{ width:24px; height:24px; border-radius:50%; background:var(--matcha); border:3px solid var(--slate); }
-.ob-range:active::-webkit-slider-thumb{ transform:scale(1.2); }
-.ob-range:focus-visible{ outline:2px solid var(--matcha); outline-offset:2px; }
+/* The survey sliders use the shared .rng control (see global.css); the survey
+   only sets the thumb ink, which stays the darker slate-on-matcha pairing the
+   rest of the audit uses rather than the lime the tool pages carry. */
+.ob-range .rng-input::-webkit-slider-thumb{ background:var(--matcha); border-color:var(--slate); }
+.ob-range .rng-input::-moz-range-thumb{ background:var(--matcha); border-color:var(--slate); }
 .ob-live{ display:inline-block; font-family:var(--mono); font-size:10.5px; font-weight:700; color:#75821D; background:rgba(181,196,43,0.14); border:1px solid rgba(181,196,43,0.4); padding:0.25rem 0.6rem; border-radius:999px; margin-top:0.4rem; font-variant-numeric:tabular-nums; }
 
 .ob-none{ color:var(--mid); font-family:var(--mono); font-size:11px; margin:0.6rem 0; }

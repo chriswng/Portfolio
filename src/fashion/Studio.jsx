@@ -20,6 +20,7 @@ import {
 } from './data';
 import { prefersReducedMotion } from '../utils/media';
 import Icon from '../components/Icons';
+import Range from '../components/Range';
 
 const C = COPY.studio;
 
@@ -366,8 +367,9 @@ function EstimatorSection({ g, spec, set }) {
               </div>
               {spec.blend.b && (
                 <div className="ow-slider">
-                  <input
-                    type="range" min="50" max="95" step="5"
+                  <Range
+                    min={50} max={95} step={5}
+                    ticks={9}
                     value={spec.blend.pctA}
                     aria-label="Blend share of main fibre"
                     onChange={(e) => set({ blend: { ...spec.blend, pctA: Number(e.target.value) } })}
@@ -384,8 +386,9 @@ function EstimatorSection({ g, spec, set }) {
             <div className="ow-ctl">
               <span className="ow-ctl-l">{c.gsmLabel}</span>
               <div className="ow-slider">
-                <input
-                  type="range" min={type.gsmMin} max={type.gsmMax} step="10"
+                <Range
+                  min={type.gsmMin} max={type.gsmMax} step={10}
+                  ticks={(type.gsmMax - type.gsmMin) / 10}
                   value={spec.gsm}
                   aria-label={c.gsmLabel}
                   onChange={(e) => set({ gsm: Number(e.target.value) })}

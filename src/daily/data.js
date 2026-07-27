@@ -597,7 +597,7 @@ export const GUESS = {
   estimateFlag: 'Estimate, not a metered figure. Reasoning and assumption stated above.',
   sitFlag: 'Priced from this site\'s own Life Footprint factor tables.',
   shareCta: 'Copy result',
-  shareDone: 'Copied to clipboard',
+  shareDone: 'Copied',
   playedNote: "You have played today. The next item unlocks at midnight, Melbourne time.",
   scoreLines: {
     3: 'Bang on. Within one and a half times the real number.',
@@ -621,8 +621,18 @@ export const CLAIM = {
   principleLabel: 'Principle in play',
   ruleLabel: 'The rule',
   shareCta: 'Copy result',
-  shareDone: 'Copied to clipboard',
+  shareDone: 'Copied',
   playedNote: "You have played today. The next claim unlocks at midnight, Melbourne time.",
+};
+
+// The play grid under each card's stats strip (src/daily/PlayGrid.jsx).
+export const HISTORY = {
+  label: 'Last 28 days',
+  none: 'Nothing played yet',
+  count: (n, of) => `${n} of ${of} played`,
+  aria: (n, of) => `Play history: ${n} of the last ${of} days played, most recent on the right.`,
+  oldest: '28 days ago',
+  today: 'Today, still open',
 };
 
 export const STATS = {
@@ -672,7 +682,7 @@ export const METHOD = {
       title: 'The daily rotation',
       paras: [
         'One puzzle per calendar day, in Australia/Melbourne time, the same for everyone. The day index counts days from a fixed launch date, and the day\'s puzzle is item number (day index modulo pool size) in each frozen pool. Once you play, the result locks for the day: no do-overs, and the next puzzle unlocks at midnight Melbourne time.',
-        'Streaks count consecutive days played and scored; miss a day and the streak resets to zero. Your streaks, your best runs and your play counts are stored in this browser\'s local storage under versioned keys, and never sent anywhere. Clear your browser data and they are gone, which is the honest trade for keeping everything private to your device.',
+        'Streaks count consecutive days played and scored; miss a day and the streak resets to zero. Each card also shows the last 28 days as a grid, filled by how each day scored, so the streak number has the run behind it in view. Your streaks, your best runs, your play counts and that history (the last 120 days, as a day number and a score, nothing else) are stored in this browser\'s local storage under versioned keys, and never sent anywhere. Clear your browser data and they are gone, which is the honest trade for keeping everything private to your device.',
       ],
     },
   ],

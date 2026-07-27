@@ -64,6 +64,25 @@
 .dy-stat-v { font-family: var(--disp); font-size: 1.35rem; font-weight: 700; color: var(--slate); line-height: 1; font-variant-numeric: tabular-nums; }
 .dy-stat-v .dy-flame { font-size: 0.8em; }
 
+/* Play history: the run behind the streak number. One cell a day for the last
+   four weeks, most recent on the right. Filled by how the day scored, hollow
+   for a day missed, hairline for a day before launch. Deliberately not a month
+   calendar with arrows: there is nothing here to navigate to. */
+.dy-grid-wrap { margin-bottom: 1.2rem; }
+.dy-grid-head, .dy-grid-foot { display: flex; justify-content: space-between; align-items: baseline; gap: 0.6rem; }
+.dy-grid-l { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); font-weight: 600; }
+.dy-grid-n { font-family: var(--mono); font-size: 9px; letter-spacing: 0.04em; color: var(--subtle); font-variant-numeric: tabular-nums; }
+.dy-grid { display: grid; grid-template-columns: repeat(28, minmax(0, 1fr)); gap: 2px; margin: 0.4rem 0 0.3rem; }
+.dy-cell { aspect-ratio: 1; border-radius: 2px; background: var(--rule-lt); }
+/* Before launch day: nothing could have been played, so nothing is claimed. */
+.dy-cell-void { background: transparent; box-shadow: inset 0 0 0 1px var(--rule-lt); }
+.dy-cell-miss { background: var(--dy-bad-bg); box-shadow: inset 0 0 0 1px rgba(168, 31, 61, 0.32); }
+.dy-cell-low { background: rgba(181, 196, 43, 0.34); }
+.dy-cell-mid { background: rgba(181, 196, 43, 0.7); }
+.dy-cell-high { background: var(--forest-ink); }
+.dy-cell.is-today { box-shadow: 0 0 0 1.5px var(--forest); }
+.dy-grid-foot span { font-family: var(--mono); font-size: 9px; letter-spacing: 0.04em; color: var(--subtle); }
+
 /* ---- Guess: the play surface ---- */
 .dy-item {
   background: var(--forest); color: var(--lime-bright); border-radius: var(--r-lg);
@@ -80,13 +99,10 @@
 .dy-guess-val em { font-style: normal; font-family: var(--mono); font-size: 0.55em; color: var(--mid); font-weight: 500; margin-left: 0.15rem; }
 
 /* Log slider, adapted from the footprint ob-range so it feels of a piece. */
-.dy-range { -webkit-appearance: none; appearance: none; width: 100%; height: 40px; background: transparent; cursor: pointer; margin: 0; }
-.dy-range::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: linear-gradient(90deg, var(--sage-2), var(--matcha)); }
-.dy-range::-moz-range-track { height: 6px; border-radius: 3px; background: linear-gradient(90deg, var(--sage-2), var(--matcha)); }
-.dy-range::-webkit-slider-thumb { -webkit-appearance: none; width: 28px; height: 28px; border-radius: 50%; background: var(--lime-bright); border: 3px solid var(--forest); margin-top: -11px; box-shadow: var(--shadow-soft); transition: transform 0.15s var(--ease); }
-.dy-range::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: var(--lime-bright); border: 3px solid var(--forest); box-shadow: var(--shadow-soft); }
-.dy-range:active::-webkit-slider-thumb { transform: scale(1.15); }
-.dy-range:focus-visible { outline: 2px solid var(--matcha); outline-offset: 4px; border-radius: 3px; }
+/* The guess slider is the shared .rng control (global.css) with a fatter thumb
+   and seven notches, one per decade of the log scale, so the ruler that shows
+   up in the reveal is already visible while you are choosing. */
+.dy-range { --rng-thumb: 28px; --rng-track: 6px; --rng-fill: linear-gradient(90deg, var(--sage-2), var(--matcha)); }
 .dy-range-scale { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 9px; letter-spacing: 0.06em; color: var(--subtle); margin-top: 0.1rem; }
 .dy-hint { font-family: var(--mono); font-size: 10px; color: var(--mid); line-height: 1.6; margin-top: 0.5rem; }
 
@@ -204,7 +220,7 @@
 
 /* ---- Motion preferences ---- */
 @media (prefers-reduced-motion: reduce) {
-  .dy-btn, .dy-call, .dy-range::-webkit-slider-thumb, .dy-unit button { transition: none; }
+  .dy-btn, .dy-call, .dy-range .rng-input::-webkit-slider-thumb, .dy-unit button { transition: none; }
   .dy-btn:hover, .dy-call:hover { transform: none; }
 }
 

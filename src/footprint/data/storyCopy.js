@@ -316,6 +316,7 @@ export const SHARE_ST = {
   button: 'Share this card',
   copied: 'Card saved.',
   copyLink: 'Copy link',
+  copyLinkDone: 'Link copied',
   linkCopied: 'Link copied.',
   shareAria: 'Share this moment',
   linkedin: 'LinkedIn banner (PNG)',

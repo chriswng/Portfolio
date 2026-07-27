@@ -387,7 +387,7 @@ export const METHOD_LINK = {
 
 // Transient UI feedback, previously inline in components.
 export const TOASTS = {
-  shareCopied: 'Link copied. It carries a summary only; your details stay here.',
+  shareCopied: 'That link carries a summary only; your details stay in this browser.',
   sharePrompt: 'Copy your share link:',
   auditDeleted: 'Deleted from this browser.',
   auditLive: 'Your footprint is ready. It saves to this browser as you edit.',
