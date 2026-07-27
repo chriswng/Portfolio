@@ -291,9 +291,16 @@ section { position:relative; }
    BIO + PIPELINE
    ============================================================================ */
 #bio{ background:var(--bg); padding:clamp(4rem,10vw,7.5rem) 0; }
-.bio-head{ grid-column:1 / 6; }
-@media(max-width:680px){ .bio-head{ grid-column:1 / 5; } }
-.bio-body{ grid-column:6 / 13; }
+/* The profile's section label sits in its own rail rather than above its text,
+   the one place on the page that does. At five columns wide it read as an
+   empty cell with a label stranded at the top of it: the eye looked for the
+   missing element. Narrowed to a three-column margin rail and made to travel
+   with the paragraphs it names, so the column is visibly doing a job. Sticky
+   needs align-self:start, or the grid stretches the item and it cannot stick;
+   the offset clears the sticky nav. */
+.bio-head{ grid-column:1 / 4; position:sticky; top:80px; align-self:start; }
+@media(max-width:680px){ .bio-head{ grid-column:1 / 5; position:static; } }
+.bio-body{ grid-column:4 / 13; }
 @media(max-width:680px){ .bio-body{ grid-column:1 / 5; margin-top:1.5rem; } }
 .bio-text{ font-size:0.95rem; font-weight:400; color:#475569; line-height:1.8; max-width:62ch; }
 .bio-text + .bio-text{ margin-top:1rem; }
