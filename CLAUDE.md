@@ -25,7 +25,7 @@ built as a React + Vite multi-page app and deployed to GitHub Pages.
 
 | Path | What lives here |
 |---|---|
-| `src/components/` | Main-page sections (Hero, Bio, Principles, Ticker, Scenario, Experience, Contact) plus the shared SiteFooter (big lime card with signup + link columns, used by the home and work pages), shared Chrome (nav, grain, scroll progress, skip link), the shared hand-drawn `Icons` set (round line art, one matcha accent shape per glyph, used beside sec-tags on every page), and the `Aurora` (WebGL) + `ContourField` (canvas) hero backdrops, mounted on the home, work, footprint and fashion intros. `ToolNav.jsx` carries the shared nav + compact footer for the standalone tool pages (`/grid/`, `/daily/`, `/super/`, `/progress/`, `/targets/`). Two shared controls sit alongside them: `Range.jsx` (every slider on the site, see the convention below) and `CopyButton.jsx` (every copy-to-clipboard action). |
+| `src/components/` | Main-page sections (Hero, Bio, Principles, Ticker, Scenario, Tools, Experience, Contact) plus the shared SiteFooter (big lime card with signup + link columns, used by the home and work pages), shared Chrome (nav, grain, scroll progress, skip link), the shared hand-drawn `Icons` set (round line art, one matcha accent shape per glyph, used beside sec-tags on every page), and the `Aurora` (WebGL) + `ContourField` (canvas) hero backdrops, mounted on the home, work, footprint and fashion intros. `ToolNav.jsx` carries the shared nav + compact footer for the standalone tool pages (`/grid/`, `/daily/`, `/super/`, `/progress/`, `/targets/`). Two shared controls sit alongside them: `Range.jsx` (every slider on the site, see the convention below) and `CopyButton.jsx` (every copy-to-clipboard action). |
 | `src/work/` | Work-samples page: `WorkApp`, `Baseline`, `CaseStudy`, data in `workData.js`, styles in `work.css`. |
 | `src/footprint/` | Life Footprint page: calculation engine and factor data in `lib/` and `data/` (keep rigorous; every factor cites its source), the Wrapped-style reveal in `story/` (WebGL carbon field, carbon characters, share cards), guided audit in `Onboarding.jsx`, dashboard sections alongside. Copy lives in `data/copy.js` and `data/storyCopy.js`. |
 | `src/footprint/method/` | The basis of preparation page (`/footprint/method/`): the written method plus the live factor tables, rendered from the same factor set the engine prices from. |
@@ -83,6 +83,15 @@ built as a React + Vite multi-page app and deployed to GitHub Pages.
   or logic updates its methodology in the same change. On `/super/` every
   fund shows its "last verified" date; on `/progress/` the last-updated date
   renders from a single field in `data.js`.
+- **The home page's Tools section indexes every subpage.** `TOOLS` in
+  `src/data/content.js` (rendered by `src/components/Tools.jsx` into the `#tools`
+  band) carries one card per standalone page, each with what the tool does, the
+  capability it demonstrates, and a `scope` line. Those scope figures are hand-
+  typed counts of the real data (50 ASX50 companies, 258 fashion brands, 10 super
+  funds, and so on), so adding a subpage means adding a card, and growing a
+  tool's data set means updating its count in the same change. The accent colours
+  are chosen to clear contrast on the forest band, which is why `--indigo` is
+  absent there.
 - **Share thumbnails are generated, and kept current.** Every page's Open
   Graph card (`public/og-<page>.png`) is rendered by `scripts/og`
   (`npm run og:cards`) as one dark card in a shared visual family: the site

@@ -65,7 +65,7 @@ export default function Experience() {
   return (
     <section id="experience">
       <div className="canvas">
-        <div className="sec-tag" data-idx="03 / "><Icon name="building" size={30} />Experience</div>
+        <div className="sec-tag" data-idx="04 / "><Icon name="building" size={30} />Experience</div>
         <h2 className="display" style={{ fontSize: 'clamp(2rem,6vw,4.5rem)', marginTop: '1.2rem' }}>
           <SplitText text="Track record" accentIndex={1} />
         </h2>
