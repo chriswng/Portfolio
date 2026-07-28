@@ -100,6 +100,15 @@ body {
 a { color:inherit; }
 img { max-width:100%; }
 
+/* External-link marker — any link opening in a new tab gets this arrow from
+   CSS, so link labels don't hand-type "↗" per instance. .footer-cta-btn and
+   .ow-diglink carry their own arrow already positioned mid-content and opt
+   out below. */
+a[target="_blank"]::after{
+  content:'↗'; display:inline-block; margin-left:0.22em;
+  font-size:0.85em; line-height:1; vertical-align:-0.05em;
+}
+
 /* Visually hidden but available to assistive tech. */
 .sr-only{
   position:absolute; width:1px; height:1px; padding:0; margin:-1px;
@@ -849,6 +858,7 @@ section { position:relative; }
   transition:background 0.25s var(--ease),transform 0.2s var(--ease);
 }
 .footer-cta-btn:hover{ background:var(--forest-2); transform:translateY(-1px); }
+a.footer-cta-btn[target="_blank"]::after{ content:none; }
 .footer-cta-btn .li-icon{ width:18px; height:18px; }
 .li-icon{ display:block; flex-shrink:0; }
 
