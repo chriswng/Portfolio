@@ -30,7 +30,7 @@ function FTable({ caption, head, rows, source }) {
         </table>
       </div>
       {source && <div className="fp-ftable-src">{source.name}. {source.detail}{' '}
-        {source.url && <a href={source.url} target="_blank" rel="noopener noreferrer">Source ↗</a>}
+        {source.url && <a href={source.url} target="_blank" rel="noopener noreferrer">Source</a>}
       </div>}
     </div>
   );
@@ -159,7 +159,7 @@ export default function Method() {
           />
           <p className="fp-note">
             New Zealand road fuels: {ROAD_SOURCE_NZ.name}. {ROAD_SOURCE_NZ.detail}{' '}
-            <a href={ROAD_SOURCE_NZ.url} target="_blank" rel="noopener noreferrer">Source ↗</a>
+            <a href={ROAD_SOURCE_NZ.url} target="_blank" rel="noopener noreferrer">Source</a>
           </p>
           <FTable
             caption={'Flights · kg CO₂-e per passenger-km, radiative forcing included (×' + FLIGHT_RF_MULTIPLIER + '); divide by ' + FLIGHT_RF_MULTIPLIER + ' for the without-RF view'}

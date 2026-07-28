@@ -48,7 +48,7 @@ function SourceLine({ id }) {
       <span className="pr-src-detail">{s.detail}</span>
       <span className="pr-src-meta">
         Accessed {s.accessed}
-        {s.url && <> · <a href={s.url} target="_blank" rel="noopener noreferrer">Source ↗</a></>}
+        {s.url && <> · <a href={s.url} target="_blank" rel="noopener noreferrer">Source</a></>}
       </span>
     </li>
   );
