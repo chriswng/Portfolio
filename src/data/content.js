@@ -7,6 +7,7 @@ export const NAV_LINKS = [
   { href: '#principles', label: 'My Practice' },
   { href: '#experience', label: 'Experience' },
   { href: '#scenario', label: 'Decarb Model' },
+  { href: '#tools', label: 'Tools' },
   { href: 'work/', label: 'Work Samples', external: true },
   { href: 'footprint/', label: 'Footprint', external: true },
   { href: 'fashion/', label: 'Cost Per Wear', external: true },
@@ -88,6 +89,112 @@ export const PRINCIPLES = [
   { num: '01', icon: 'list', title: 'Data integrity precedes narrative.', body: 'Every net zero commitment is a claim. Its credibility depends on what sits behind it: a defensible, independently verifiable inventory documented before the narrative, not after.' },
   { num: '02', icon: 'spark', title: 'Reusable infrastructure compounds value.', body: "Advisory that lives in a consultant's head has a short shelf life. I build models and processes designed to be owned internally, so the team can run the next reporting cycle without calling back in." },
   { num: '03', icon: 'target', title: 'Ambition grounded in evidence, with gaps named.', body: 'The science sets the pace. Pathway models need lever assumptions grounded in published data, with uncertainty disclosed alongside figures. Carbon credits belong on residual hard-to-abate emissions, not as a substitute for near-term reduction.' },
+];
+
+// ---------------------------------------------------------------------------
+// TOOLS — the standalone subpages, gathered on the home page as evidence.
+//
+// Framing note (deliberate, do not soften): this section exists to answer a
+// hiring manager's question, "can this person actually do the work". So every
+// card carries two lines, not one. `what` says what the tool does; `proves`
+// names the capability a role would be buying. `scope` is a plain fact about
+// the page's coverage, never a vanity metric, and each figure below is the
+// real count in that tool's data file. Refresh it when the data grows.
+//
+// Order is by relevance to a senior sustainability role, not by build date.
+// Accent colours are picked to clear contrast on the forest band the section
+// sits on, which is why the indigo used elsewhere on the page is absent here.
+// ---------------------------------------------------------------------------
+export const TOOLS_INTRO = {
+  tag: 'Tools',
+  idx: '03 / ',
+  title: ['Built,', 'not claimed'],
+  paras: [
+    'Eight tools, built in my own time and maintained since. Each one takes a question a sustainability team actually has to answer and answers it in public, with sourced numbers, a stated method, and the gaps named rather than smoothed over.',
+    'They run on the same discipline I bring to a reporting cycle. If a figure cannot be traced to a citation and an access date, it does not go on the page. Where a number is an estimate, the page says so beside the number, not in a footnote at the bottom.',
+  ],
+  rules: [
+    {
+      icon: 'list', head: 'Sourced or it does not ship',
+      body: 'Every figure carries its source and the date it was read. Estimates are labelled as estimates, at the number.',
+    },
+    {
+      icon: 'book', head: 'Each tool states its basis',
+      body: 'Method, boundary, exclusions and update cadence sit on the page, the way an assurance-ready inventory carries its basis of preparation.',
+    },
+    {
+      icon: 'loop', head: 'Built to be handed over',
+      body: 'Data, copy and methodology live in one place per tool, so refreshing a factor moves the whole page instead of one hard-coded number.',
+    },
+  ],
+  note: 'The decarbonisation model above is the ninth, built the same way.',
+};
+
+export const TOOLS = [
+  {
+    n: '01', icon: 'target', color: 'var(--berry)',
+    name: 'Target Tracker', href: 'targets/',
+    what: 'Every ASX50 net zero claim drawn as the trajectory the company itself stated, from base year through interim targets, with its reported Scope 1 and 2 emissions plotted on top.',
+    proves: 'Reading corporate disclosure at scale, then holding a claimed pathway against reported data with no adjective attached.',
+    tags: ['Corporate disclosure', 'Trajectory maths', 'Verification status'],
+    scope: '50 companies · each flagged sourced, partial or unverified',
+  },
+  {
+    n: '02', icon: 'chart', color: 'var(--lime)',
+    name: 'Work Samples', href: 'work/',
+    what: 'Four client-side frameworks as live working examples: emissions baseline, decarbonisation roadmap, multi-criteria prioritisation, and lifecycle carbon. One case study runs through all four.',
+    proves: 'The engagement arc I run end to end: boundary and data grading, quantified options, stakeholder-weighted screening, then a sequenced roadmap with CAPEX by year.',
+    tags: ['Scope 1-3 baseline', 'MCA framework', 'A1-A5 lifecycle'],
+    scope: '4 frameworks · one engagement, start to finish',
+  },
+  {
+    n: '03', icon: 'shirt', color: 'var(--amber)',
+    name: 'Cost Per Wear', href: 'fashion/',
+    what: 'A transparency lookup across 258 fashion brands: who owns them, what they disclose, and what you still cannot find out. A garment studio sits alongside it for footprint, fabric and supply chain.',
+    proves: 'Supply chain transparency work in the sector I am aiming at, built on a disclosure vocabulary that reports status and never grades a brand good or bad.',
+    tags: ['Supply chain', 'Fashion Transparency Index', 'Ownership mapping'],
+    scope: '258 brands · disclosure status, never a ranking',
+  },
+  {
+    n: '04', icon: 'coins', color: 'var(--sage-2)',
+    name: 'Super Fund Holdings', href: 'super/',
+    what: 'What the big default super options actually hold and where the sector exposure sits, put next to what each fund says about sustainability in its own marketing.',
+    proves: 'Turning a statutory disclosure obligation into something a member can read, with a confidence flag on every field and a last-verified date per fund.',
+    tags: ['s1017BB holdings', 'Sector exposure', 'Confidence flags'],
+    scope: '10 funds · MySuper default options · methodology on its own route',
+  },
+  {
+    n: '05', icon: 'bolt', color: 'var(--lime-bright)',
+    name: 'Grid Intensity', href: 'grid/',
+    what: 'Reads the live National Electricity Market fuel mix and answers one question: run it now, or wait. Then explains the factor a business would actually report against.',
+    proves: 'Scope 2 accounting taught properly, location-based against market-based, with GreenPower, PPAs and LGC surrender all in the toggle.',
+    tags: ['Live AEMO data', 'Scope 2', 'Market vs location'],
+    scope: '5 NEM regions live · WA and NT named as out of scope, not invented',
+  },
+  {
+    n: '06', icon: 'house', color: 'var(--matcha)',
+    name: 'Life Footprint', href: 'footprint/',
+    what: 'A full personal emissions model across ten categories, with a guided audit, an abatement planner, a forecast pathway and a reveal at the end that makes the year legible.',
+    proves: 'The whole inventory arc in miniature: boundary, cited factor set, calculation, abatement pathway, and a basis of preparation kept in sync with the engine.',
+    tags: ['Cited factor set', 'Abatement planner', 'Basis of preparation'],
+    scope: '10 categories · every factor cites its source',
+  },
+  {
+    n: '07', icon: 'globe', color: 'var(--lime)',
+    name: "Australia's Climate Progress", href: 'progress/',
+    what: 'Six national numbers on the energy transition, each shown against where it was and where the target needs it to be. The gap gets stated plainly, in both directions.',
+    proves: 'Keeping sourced, derived and estimated figures apart, and refusing to blend a live grid snapshot into an annual inventory because the two are different quantities.',
+    tags: ['NGER and AEMO data', 'Live NEM feed', 'Target gap'],
+    scope: '6 indicators · reviewed quarterly, date on the page',
+  },
+  {
+    n: '08', icon: 'spark', color: 'var(--amber)',
+    name: 'Sustainability Daily', href: 'daily/',
+    what: 'Two daily puzzles: guess the footprint, and call the greenwash. Both rotate deterministically by date, and streaks stay in your browser.',
+    proves: 'Making a factor set legible to a non-specialist, and applying the ACCC greenwashing principles consistently enough to survive being graded every day.',
+    tags: ['ACCC principles', 'Shared factor set', 'No server'],
+    scope: '33 footprint items · 30 claims · figures derived from the footprint model',
+  },
 ];
 
 export const EXPERIENCE = [
