@@ -204,6 +204,18 @@ section { position:relative; }
 .nav-links a::after{ content:''; position:absolute; left:0.7rem; right:0.7rem; bottom:0.2rem; height:1px; background:var(--matcha); transform:scaleX(0); transform-origin:left; transition:transform 0.3s var(--ease); }
 .nav-links a:hover::after, .nav-links a.active::after{ transform:scaleX(1); }
 
+/* Nine links is one more than the row fits between the hamburger breakpoint
+   and about 1200px, so the padding and tracking tighten through that band
+   rather than letting the bar drop to two rows. */
+@media(min-width:681px) and (max-width:1200px){
+  .nav-links a{ padding-left:0.45rem; padding-right:0.45rem; letter-spacing:0.13em; }
+  .nav-links a::after{ left:0.45rem; right:0.45rem; }
+}
+@media(min-width:681px) and (max-width:1000px){
+  .nav-links a{ padding-left:0.3rem; padding-right:0.3rem; letter-spacing:0.09em; }
+  .nav-links a::after{ left:0.3rem; right:0.3rem; }
+}
+
 /* Hamburger — hidden on desktop */
 .nav-hamburger{ display:none; flex-direction:column; justify-content:center; gap:5px; background:none; border:none; cursor:pointer; padding:0.45rem; flex-shrink:0; order:3; }
 .nav-hamburger span{ display:block; width:20px; height:2px; background:var(--slate); border-radius:1px; transition:transform 0.25s var(--ease),opacity 0.2s; transform-origin:center; }
@@ -531,6 +543,184 @@ section { position:relative; }
 .btn-secondary{ background:transparent; color:var(--slate); border:1px solid #CBD5E1; }
 .btn-secondary:hover{ border-color:var(--matcha); color:var(--matcha); }
 .btn .li-icon{ width:16px; height:16px; }
+
+/* ============================================================================
+   TOOLS — the one dark band on the home page (src/components/Tools.jsx).
+   The subpages gathered as evidence, sat between the live model and the CV.
+   Dark on purpose: it breaks the run of light sections at the point a reader
+   is being asked to look at built work, and it puts the tool cards in the same
+   visual family as the site's Open Graph share cards.
+   Every colour below is checked against the forest band, which is why the
+   indigo used elsewhere on this page never appears here: it fails on dark.
+   ============================================================================ */
+#tools{
+  background:
+    radial-gradient(ellipse 70% 55% at 12% 0%,rgba(193,224,67,0.10) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 50% at 92% 100%,rgba(181,196,43,0.08) 0%,transparent 62%),
+    linear-gradient(170deg,var(--forest) 0%,#1A2A0B 60%,var(--forest) 100%);
+  padding:clamp(4.5rem,10vw,7.5rem) 0 clamp(5rem,11vw,8rem);
+  overflow:hidden;
+}
+/* The section label and index sit on dark here, so they take the lime pair
+   rather than the page-wide ink (see PAGE-SCOPED ELEVATION at the foot). */
+#tools .sec-tag{ color:var(--sage-2); }
+.page-home #tools .sec-tag::before{ color:var(--lime); }
+
+.tools-head{ display:grid; gap:clamp(1.4rem,3vw,2.5rem); margin-top:1.2rem; align-items:start; }
+@media(min-width:900px){ .tools-head{ grid-template-columns:minmax(0,5fr) minmax(0,6fr); gap:clamp(2rem,4vw,4rem); } }
+.tools-headline{
+  font-size:clamp(2.2rem,6.4vw,4.6rem); letter-spacing:-0.045em; max-width:12ch;
+  color:var(--lime-soft); --split-accent:var(--lime-bright);
+}
+.tools-lead{ display:flex; flex-direction:column; gap:0.9rem; }
+.tools-lead-p{ font-size:0.95rem; font-weight:400; line-height:1.8; color:var(--sage); max-width:62ch; }
+
+/* Three standing rules, stated once, above the cards. This is the part a
+   hiring manager is actually reading for. */
+.tools-rules{
+  list-style:none; display:grid; grid-template-columns:1fr; gap:1px;
+  margin-top:clamp(2.2rem,5vw,3.2rem);
+  background:rgba(210,223,206,0.16);
+  border:1px solid rgba(210,223,206,0.16); border-radius:var(--r-lg); overflow:hidden;
+}
+@media(min-width:820px){ .tools-rules{ grid-template-columns:repeat(3,1fr); } }
+.tools-rule{ background:rgba(255,255,255,0.03); padding:1.3rem 1.4rem 1.45rem; }
+.tools-rule-head{
+  display:flex; align-items:center; font-family:var(--mono); font-size:11px;
+  letter-spacing:0.1em; text-transform:uppercase; font-weight:700;
+  color:var(--lime); margin-bottom:0.6rem; line-height:1.4;
+}
+.tools-rule-head .fpi-fill{ fill:var(--lime-bright); }
+.tools-rule-body{ font-size:0.82rem; line-height:1.7; color:var(--sage-2); }
+
+/* Bento rather than a checkerboard. Spans come from `span` in the TOOLS data
+   so the rhythm is editorial (4-2, 2-4, 3-3, 4-2) and the reading order stays
+   in hiring-relevance order. Below the six-column grid the spans collapse:
+   the wide cards go full width and everything else pairs up. */
+.tools-grid{ display:grid; grid-template-columns:1fr; gap:1rem; margin-top:clamp(1.5rem,3.5vw,2rem); }
+@media(min-width:760px){
+  .tools-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:1.1rem; }
+  .tool-card[data-span="4"]{ grid-column:span 2; }
+  /* Seven cards pair off after the wide ones, which leaves one orphan holding
+     half a row. It takes the full width instead of sitting in a gap. */
+  .tool-card:last-child{ grid-column:span 2; }
+}
+@media(min-width:1100px){
+  .tools-grid{ grid-template-columns:repeat(6,minmax(0,1fr)); gap:1.15rem; }
+  .tool-card[data-span="2"]{ grid-column:span 2; }
+  .tool-card[data-span="3"]{ grid-column:span 3; }
+  .tool-card[data-span="4"]{ grid-column:span 4; }
+  .tool-card:last-child{ grid-column:span 2; }
+}
+
+/* One anchor per card, so the whole tile is a single tab stop. */
+.tool-card{
+  position:relative; display:flex; flex-direction:column; text-decoration:none;
+  background:rgba(255,255,255,0.045);
+  border:1px solid rgba(210,223,206,0.18); border-radius:var(--r-xl);
+  padding:1.5rem 1.5rem 1.35rem; overflow:hidden;
+  transition:background 0.35s var(--ease),border-color 0.35s var(--ease),transform 0.35s var(--ease),box-shadow 0.35s var(--ease);
+}
+.tool-card:hover{
+  background:rgba(255,255,255,0.075); border-color:color-mix(in srgb,var(--tc) 55%,transparent);
+  transform:translateY(-3px); box-shadow:0 18px 40px rgba(0,0,0,0.28);
+}
+.tool-card:focus-visible{ outline:2px solid var(--lime-bright); outline-offset:3px; box-shadow:none; }
+/* Colour spine: a stub at rest that runs the full card width on hover, so each
+   tool keeps its own identity without eight competing coloured surfaces. */
+.tool-rule{
+  position:absolute; top:0; left:0; right:0; height:2px; background:var(--tc);
+  transform:scaleX(0.13); transform-origin:left;
+  transition:transform 0.5s var(--ease);
+}
+.tool-card:hover .tool-rule, .tool-card:focus-visible .tool-rule{ transform:scaleX(1); }
+
+.tool-top{ display:flex; align-items:center; gap:0.8rem; margin-bottom:0.85rem; }
+.tool-n{
+  font-family:var(--disp); font-size:1.5rem; font-weight:700; line-height:1;
+  letter-spacing:-0.03em; color:var(--tc);
+}
+.tool-icon{ color:var(--sage); }
+.tool-icon .fpi-fill{ fill:var(--tc); }
+.tool-arrow{
+  margin-left:auto; font-size:1rem; color:var(--sage-2); line-height:1;
+  transition:transform 0.3s var(--ease),color 0.3s var(--ease);
+}
+.tool-card:hover .tool-arrow{ transform:translate(3px,-3px); color:var(--lime-bright); }
+
+.tool-name{
+  font-family:var(--disp); font-size:clamp(1.15rem,2.3vw,1.45rem); font-weight:700;
+  letter-spacing:-0.025em; line-height:1.15; color:var(--lime-soft); margin-bottom:0.55rem;
+}
+/* SPECIMEN — the small chart drawn from the tool's own data. It sits on a
+   slightly recessed plate so it reads as an instrument panel set into the
+   card rather than as an illustration floating on it. */
+.tool-spec{
+  margin:0.15rem 0 1rem; padding:0.85rem 0.9rem 0.7rem;
+  background:rgba(0,0,0,0.18); border:1px solid rgba(210,223,206,0.1);
+  border-radius:var(--r-md);
+  /* Deliberately does NOT stretch. When a bento row makes this card taller
+     than its content, the slack belongs in the open card above the bottom
+     rule, where it reads as whitespace. Inside a bordered plate the same gap
+     reads as a hole. */
+  flex:0 0 auto; display:flex; flex-direction:column;
+  transition:border-color 0.35s var(--ease), background 0.35s var(--ease);
+}
+.tool-card:hover .tool-spec{
+  background:rgba(0,0,0,0.24); border-color:color-mix(in srgb,var(--tc) 28%,transparent);
+}
+/* The plate is what gets measured (see useBox in ToolSpecimen.jsx). Its height
+   is fixed rather than fluid: every chart is tuned against it, and a stable
+   height means nothing reflows between first paint and the observer's first
+   read. Width is what varies, and the charts are drawn to take it. */
+.spec-plate{ flex:0 0 auto; height:148px; }
+/* The trajectory carries two series and a time axis, so it gets more room. */
+.spec-plate-tall{ height:196px; }
+@media(max-width:759px){
+  .spec-plate{ height:112px; }
+  .spec-plate-tall{ height:150px; }
+}
+.spec-svg{ display:block; }
+.tool-spec-cap{
+  display:block; margin-top:0.55rem; padding-top:0.5rem;
+  border-top:1px solid rgba(210,223,206,0.1);
+  font-size:0.76rem; line-height:1.5; color:var(--sage);
+}
+.tool-spec-basis{
+  display:block; margin-top:0.2rem;
+  font-family:var(--mono); font-size:10px; letter-spacing:0.06em;
+  text-transform:uppercase; color:var(--sage-2);
+}
+
+.tool-what{ font-size:0.85rem; font-weight:400; line-height:1.7; color:var(--sage); }
+.tool-proves{
+  font-size:0.82rem; font-weight:400; line-height:1.7; color:var(--sage-2);
+  margin-top:0.8rem; padding-top:0.8rem; border-top:1px solid rgba(210,223,206,0.14);
+}
+.tool-proves-lbl{
+  display:block; font-family:var(--mono); font-size:10px; letter-spacing:0.16em;
+  text-transform:uppercase; font-weight:700; color:var(--lime); margin-bottom:0.3rem;
+}
+.tool-tags{ list-style:none; display:flex; flex-wrap:wrap; gap:0.4rem; margin-top:0.95rem; }
+.tool-tags li{
+  font-family:var(--mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--sage-2); border:1px solid rgba(210,223,206,0.22); border-radius:var(--r-pill);
+  padding:0.28rem 0.7rem; white-space:nowrap;
+}
+/* Pinned to the bottom edge so the scope lines share a baseline across a row
+   whose cards carry different amounts of copy. */
+.tool-scope{
+  margin-top:auto; padding-top:1.1rem;
+  font-family:var(--mono); font-size:11px; letter-spacing:0.02em; line-height:1.6;
+  color:var(--sage-2);
+}
+
+.tools-note{
+  margin-top:clamp(1.6rem,3.5vw,2.4rem); padding-top:1.2rem;
+  border-top:1px solid rgba(210,223,206,0.16);
+  font-family:var(--mono); font-size:11px; letter-spacing:0.06em;
+  text-transform:uppercase; color:var(--sage-2);
+}
 
 /* ============================================================================
    EXPERIENCE + TIMELINE RAIL
