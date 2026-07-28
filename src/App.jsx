@@ -3,6 +3,7 @@ import Hero from './components/Hero';
 import Bio from './components/Bio';
 import Principles from './components/Principles';
 import Scenario from './components/Scenario';
+import Tools from './components/Tools';
 import Experience from './components/Experience';
 import SiteFooter from './components/SiteFooter';
 
@@ -18,6 +19,7 @@ export default function App() {
         <Bio />
         <Principles />
         <Scenario />
+        <Tools />
         <Experience />
       </main>
       <SiteFooter />
