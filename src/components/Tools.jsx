@@ -2,18 +2,25 @@ import { motion } from 'framer-motion';
 import { TOOLS, TOOLS_INTRO } from '../data/content';
 import Icon from './Icons';
 import SplitText from './SplitText';
+import ToolSpecimen from './ToolSpecimen';
 
 // The one dark band on the home page. It sits between the scenario model and
 // the track record on purpose: a hiring manager meets the evidence of built
 // work immediately after the live model and immediately before the CV.
-// Each card is a single anchor so the whole tile is one tab stop.
+//
+// Every card carries a live specimen (see ToolSpecimen.jsx) drawn from its
+// tool's real numbers, because a section arguing "sourced or it does not ship"
+// should not be eight paragraphs describing charts a reader cannot see. The
+// bento spans come from the data so the grid has a rhythm rather than a
+// checkerboard, and each card is a single anchor, so the whole tile is one
+// tab stop.
 const reveal = {
   hidden: { opacity: 0, y: 26 },
   visible: (i) => ({
     opacity: 1,
     y: 0,
-    // Stagger by column pair rather than by index, so a two-column row lands
-    // together instead of stepping across the page.
+    // Stagger by row rather than by index, so a row lands together instead of
+    // stepping across the page.
     transition: { delay: (i % 2) * 0.07 + Math.floor(i / 2) * 0.05, duration: 0.55, ease: [0.25, 1, 0.5, 1] },
   }),
 };
@@ -48,7 +55,7 @@ export default function Tools() {
         <div className="tools-grid">
           {TOOLS.map((t, i) => (
             <motion.a
-              className="tool-card" key={t.href} href={t.href}
+              className="tool-card" key={t.href} href={t.href} data-span={t.span}
               style={{ '--tc': t.color }}
               custom={i} variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-60px' }}
             >
@@ -59,6 +66,9 @@ export default function Tools() {
                 <span className="tool-arrow" aria-hidden="true">↗</span>
               </div>
               <h3 className="tool-name">{t.name}</h3>
+
+              <ToolSpecimen id={t.spec} />
+
               <p className="tool-what">{t.what}</p>
               <p className="tool-proves"><span className="tool-proves-lbl">Shows</span>{t.proves}</p>
               <ul className="tool-tags">

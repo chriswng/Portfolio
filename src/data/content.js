@@ -112,6 +112,7 @@ export const TOOLS_INTRO = {
   paras: [
     'Eight tools, built in my own time and maintained since. Each one takes a question a sustainability team actually has to answer and answers it in public, with sourced numbers, a stated method, and the gaps named rather than smoothed over.',
     'They run on the same discipline I bring to a reporting cycle. If a figure cannot be traced to a citation and an access date, it does not go on the page. Where a number is an estimate, the page says so beside the number, not in a footnote at the bottom.',
+    'The chart on each card is drawn from that tool\'s own data, and says underneath it what stands behind the numbers.',
   ],
   rules: [
     {
@@ -133,7 +134,7 @@ export const TOOLS_INTRO = {
 export const TOOLS = [
   {
     n: '01', icon: 'target', color: 'var(--berry)',
-    name: 'Target Tracker', href: 'targets/',
+    name: 'Target Tracker', spec: 'targets', span: 4, href: 'targets/',
     what: 'Every ASX50 net zero claim drawn as the trajectory the company itself stated, from base year through interim targets, with its reported Scope 1 and 2 emissions plotted on top.',
     proves: 'Reading corporate disclosure at scale, then holding a claimed pathway against reported data with no adjective attached.',
     tags: ['Corporate disclosure', 'Trajectory maths', 'Verification status'],
@@ -141,7 +142,7 @@ export const TOOLS = [
   },
   {
     n: '02', icon: 'chart', color: 'var(--lime)',
-    name: 'Work Samples', href: 'work/',
+    name: 'Work Samples', spec: 'work', span: 2, href: 'work/',
     what: 'Four client-side frameworks as live working examples: emissions baseline, decarbonisation roadmap, multi-criteria prioritisation, and lifecycle carbon. One case study runs through all four.',
     proves: 'The engagement arc I run end to end: boundary and data grading, quantified options, stakeholder-weighted screening, then a sequenced roadmap with CAPEX by year.',
     tags: ['Scope 1-3 baseline', 'MCA framework', 'A1-A5 lifecycle'],
@@ -149,7 +150,7 @@ export const TOOLS = [
   },
   {
     n: '03', icon: 'shirt', color: 'var(--amber)',
-    name: 'Cost Per Wear', href: 'fashion/',
+    name: 'Cost Per Wear', spec: 'fashion', span: 2, href: 'fashion/',
     what: 'A transparency lookup across 258 fashion brands: who owns them, what they disclose, and what you still cannot find out. A garment studio sits alongside it for footprint, fabric and supply chain.',
     proves: 'Supply chain transparency work in the sector I am aiming at, built on a disclosure vocabulary that reports status and never grades a brand good or bad.',
     tags: ['Supply chain', 'Fashion Transparency Index', 'Ownership mapping'],
@@ -157,7 +158,7 @@ export const TOOLS = [
   },
   {
     n: '04', icon: 'coins', color: 'var(--sage-2)',
-    name: 'Super Fund Holdings', href: 'super/',
+    name: 'Super Fund Holdings', spec: 'super', span: 4, href: 'super/',
     what: 'What the big default super options actually hold and where the sector exposure sits, put next to what each fund says about sustainability in its own marketing.',
     proves: 'Turning a statutory disclosure obligation into something a member can read, with a confidence flag on every field and a last-verified date per fund.',
     tags: ['s1017BB holdings', 'Sector exposure', 'Confidence flags'],
@@ -165,7 +166,7 @@ export const TOOLS = [
   },
   {
     n: '05', icon: 'bolt', color: 'var(--lime-bright)',
-    name: 'Grid Intensity', href: 'grid/',
+    name: 'Grid Intensity', spec: 'grid', span: 3, href: 'grid/',
     what: 'Reads the live National Electricity Market fuel mix and answers one question: run it now, or wait. Then explains the factor a business would actually report against.',
     proves: 'Scope 2 accounting taught properly, location-based against market-based, with GreenPower, PPAs and LGC surrender all in the toggle.',
     tags: ['Live AEMO data', 'Scope 2', 'Market vs location'],
@@ -173,7 +174,7 @@ export const TOOLS = [
   },
   {
     n: '06', icon: 'house', color: 'var(--matcha)',
-    name: 'Life Footprint', href: 'footprint/',
+    name: 'Life Footprint', spec: 'footprint', span: 3, href: 'footprint/',
     what: 'A full personal emissions model across ten categories, with a guided audit, an abatement planner, a forecast pathway and a reveal at the end that makes the year legible.',
     proves: 'The whole inventory arc in miniature: boundary, cited factor set, calculation, abatement pathway, and a basis of preparation kept in sync with the engine.',
     tags: ['Cited factor set', 'Abatement planner', 'Basis of preparation'],
@@ -181,7 +182,7 @@ export const TOOLS = [
   },
   {
     n: '07', icon: 'globe', color: 'var(--lime)',
-    name: "Australia's Climate Progress", href: 'progress/',
+    name: "Australia's Climate Progress", spec: 'progress', span: 4, href: 'progress/',
     what: 'Six national numbers on the energy transition, each shown against where it was and where the target needs it to be. The gap gets stated plainly, in both directions.',
     proves: 'Keeping sourced, derived and estimated figures apart, and refusing to blend a live grid snapshot into an annual inventory because the two are different quantities.',
     tags: ['NGER and AEMO data', 'Live NEM feed', 'Target gap'],
@@ -189,7 +190,7 @@ export const TOOLS = [
   },
   {
     n: '08', icon: 'spark', color: 'var(--amber)',
-    name: 'Sustainability Daily', href: 'daily/',
+    name: 'Sustainability Daily', spec: 'daily', span: 2, href: 'daily/',
     what: 'Two daily puzzles: guess the footprint, and call the greenwash. Both rotate deterministically by date, and streaks stay in your browser.',
     proves: 'Making a factor set legible to a non-specialist, and applying the ACCC greenwashing principles consistently enough to survive being graded every day.',
     tags: ['ACCC principles', 'Shared factor set', 'No server'],

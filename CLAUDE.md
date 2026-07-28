@@ -25,7 +25,7 @@ built as a React + Vite multi-page app and deployed to GitHub Pages.
 
 | Path | What lives here |
 |---|---|
-| `src/components/` | Main-page sections (Hero, Bio, Principles, Ticker, Scenario, Tools, Experience, Contact) plus the shared SiteFooter (big lime card with signup + link columns, used by the home and work pages), shared Chrome (nav, grain, scroll progress, skip link), the shared hand-drawn `Icons` set (round line art, one matcha accent shape per glyph, used beside sec-tags on every page), and the `Aurora` (WebGL) + `ContourField` (canvas) hero backdrops, mounted on the home, work, footprint and fashion intros. `ToolNav.jsx` carries the shared nav + compact footer for the standalone tool pages (`/grid/`, `/daily/`, `/super/`, `/progress/`, `/targets/`). Two shared controls sit alongside them: `Range.jsx` (every slider on the site, see the convention below) and `CopyButton.jsx` (every copy-to-clipboard action). |
+| `src/components/` | Main-page sections (Hero, Bio, Principles, Ticker, Scenario, Tools + its `ToolSpecimen` charts, Experience, Contact) plus the shared SiteFooter (big lime card with signup + link columns, used by the home and work pages), shared Chrome (nav, grain, scroll progress, skip link), the shared hand-drawn `Icons` set (round line art, one matcha accent shape per glyph, used beside sec-tags on every page), and the `Aurora` (WebGL) + `ContourField` (canvas) hero backdrops, mounted on the home, work, footprint and fashion intros. `ToolNav.jsx` carries the shared nav + compact footer for the standalone tool pages (`/grid/`, `/daily/`, `/super/`, `/progress/`, `/targets/`). Two shared controls sit alongside them: `Range.jsx` (every slider on the site, see the convention below) and `CopyButton.jsx` (every copy-to-clipboard action). |
 | `src/work/` | Work-samples page: `WorkApp`, `Baseline`, `CaseStudy`, data in `workData.js`, styles in `work.css`. |
 | `src/footprint/` | Life Footprint page: calculation engine and factor data in `lib/` and `data/` (keep rigorous; every factor cites its source), the Wrapped-style reveal in `story/` (WebGL carbon field, carbon characters, share cards), guided audit in `Onboarding.jsx`, dashboard sections alongside. Copy lives in `data/copy.js` and `data/storyCopy.js`. |
 | `src/footprint/method/` | The basis of preparation page (`/footprint/method/`): the written method plus the live factor tables, rendered from the same factor set the engine prices from. |
@@ -36,7 +36,7 @@ built as a React + Vite multi-page app and deployed to GitHub Pages.
 | `src/progress/` | Australia's Climate Progress (`/progress/`): scroll-driven reveal of national numbers (grid mix, EV sales, capacity additions, emissions vs target), each with a reference point, ending on a progress-and-shortfall summary. Reviewed quarterly; the last-updated date renders from one field in `data.js`. Styles in `progress.css` (`pr-` prefix). |
 | `src/targets/` | Target Tracker (`/targets/`): ASX50 net zero commitments plotted against reported Scope 1 and 2 emissions. Each company card draws the claimed path (baseline through absolute interim targets to the net zero year) as an SVG chart with the reported series overlaid, and carries a verification status (`sourced`/`partial`/`unverified`), flags (offsets, intensity, weakened, alliance exits) and per-company sources. Trajectory maths in `lib.js`; all company data and copy in `data.js`; in-page basis of preparation; last-updated date from one field in `data.js`. Styles in `targets.css` (`tt-` prefix). |
 | `src/lib/` | `opennem.js` — the one shared OpenNEM/AEMO client both `/grid/` and `/progress/` read (live NEM data with honest `{ live: false }` failure; callers must label fallbacks as estimates). |
-| `src/data/` | Content and model inputs: `content.js` (all editorial copy, including footer links), `scenario.js` (decarbonisation model). |
+| `src/data/` | Content and model inputs: `content.js` (all editorial copy, including footer links), `scenario.js` (decarbonisation model), `specimens.js` (the small slices of each tool's real data that the home page's tool-card charts are drawn from). |
 | `src/hooks/` | `useMagnetic` — cursor-follow interaction. |
 | `src/utils/` | `media.js` — `prefersReducedMotion()` / `canHover()` guards. `clipboard.js` — the one `copyText()` helper, with the hidden-textarea fallback. |
 | `src/styles/global.css` | Design tokens + all main-page styles. |
@@ -86,12 +86,27 @@ built as a React + Vite multi-page app and deployed to GitHub Pages.
 - **The home page's Tools section indexes every subpage.** `TOOLS` in
   `src/data/content.js` (rendered by `src/components/Tools.jsx` into the `#tools`
   band) carries one card per standalone page, each with what the tool does, the
-  capability it demonstrates, and a `scope` line. Those scope figures are hand-
-  typed counts of the real data (50 ASX50 companies, 258 fashion brands, 10 super
-  funds, and so on), so adding a subpage means adding a card, and growing a
-  tool's data set means updating its count in the same change. The accent colours
-  are chosen to clear contrast on the forest band, which is why `--indigo` is
-  absent there.
+  capability it demonstrates, a `scope` line, a `spec` (its chart) and a `span`
+  (its width in the bento grid). Those scope figures are hand-typed counts of the
+  real data (50 ASX50 companies, 258 fashion brands, 10 super funds, and so on),
+  so adding a subpage means adding a card, and growing a tool's data set means
+  updating its count in the same change. The accent colours are chosen to clear
+  contrast on the forest band, which is why `--indigo` is absent there.
+- **Every tool card draws a chart from that tool's real data.** The specimens
+  (`src/components/ToolSpecimen.jsx`, data in `src/data/specimens.js`) are small
+  SVG charts: a claimed-versus-reported trajectory, a disclosure histogram, a
+  factor comparison, and so on. The numbers are **copied** into `specimens.js`
+  rather than imported, because each tool's data module is 130 kB or more and
+  none of it tree-shakes, so importing one would land the whole file in the home
+  page bundle. That copy is the price, and the rule that pays for it: every slice
+  names the file and export it came from, no figure is ever rounded or invented
+  to suit the drawing, and **a change to a tool's data updates its slice in the
+  same change**. Each specimen also carries a `caption` and a `basis` line
+  (sourced, derived, or illustrative), rendered under the chart, because an
+  unattributed chart is the thing this section argues against. Charts are
+  measured, not scaled: the plate reports its pixel size and the svg takes a 1:1
+  viewBox from it, so every chart takes `(w, h)` and computes its geometry.
+  Animation is skipped outright under `prefersReducedMotion()`, not sped up.
 - **Share thumbnails are generated, and kept current.** Every page's Open
   Graph card (`public/og-<page>.png`) is rendered by `scripts/og`
   (`npm run og:cards`) as one dark card in a shared visual family: the site
