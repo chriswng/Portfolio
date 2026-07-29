@@ -75,7 +75,7 @@ function SourceLine({ s }) {
       {s.detail && <span className="tt-src-detail">{s.detail}</span>}
       <span className="tt-src-meta">
         Accessed {s.accessed}
-        {s.url && <> · <a href={s.url} target="_blank" rel="noopener noreferrer">Source ↗</a></>}
+        {s.url && <> · <a href={s.url} target="_blank" rel="noopener noreferrer">Source</a></>}
       </span>
     </li>
   );

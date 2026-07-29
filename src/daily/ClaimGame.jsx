@@ -96,7 +96,7 @@ export default function ClaimGame({ dayIndex, showToast }) {
               <div className="dy-rule-principle">{claim.principle}</div>
               <p className="dy-note">{claim.reasoning}</p>
               <div className="dy-src">{CLAIM.ruleLabel}: {claim.rule.name}{' '}
-                <a href={claim.rule.url} target="_blank" rel="noopener noreferrer">Source ↗</a>
+                <a href={claim.rule.url} target="_blank" rel="noopener noreferrer">Source</a>
               </div>
             </div>
 

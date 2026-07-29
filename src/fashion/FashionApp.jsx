@@ -617,7 +617,7 @@ function BrandCard({ brand, inCompare, onToggleCompare, onSelect, onOpenGroup })
 
       <div className="ow-card-actions">
         {brand.reportUrl ? (
-          <a className="ow-btn" href={brand.reportUrl} target="_blank" rel="noopener noreferrer">{COPY.lookup.reportLabel} ↗</a>
+          <a className="ow-btn" href={brand.reportUrl} target="_blank" rel="noopener noreferrer">{COPY.lookup.reportLabel}</a>
         ) : (
           <span className="ow-btn" aria-disabled="true" style={{ opacity: 0.5, cursor: 'default' }}>{COPY.lookup.reportMissing}</span>
         )}
@@ -1411,7 +1411,7 @@ function Backlog() {
         </div>
         <div className="ow-file">
           <p>{COPY.backlog.fileNote}</p>
-          <a className="path" href={COPY.backlog.fileHref} target="_blank" rel="noopener noreferrer">{COPY.backlog.filePath} ↗</a>
+          <a className="path" href={COPY.backlog.fileHref} target="_blank" rel="noopener noreferrer">{COPY.backlog.filePath}</a>
           <p>{COPY.backlog.howTo}</p>
         </div>
 
@@ -1447,7 +1447,7 @@ function Footer() {
           <div>
             <h4><Icon name="list" size={28} className="fpi-lead" />{COPY.footer.sourcesLabel}</h4>
             {SOURCES.map((s) => (
-              <a className="src" key={s.url} href={s.url} target="_blank" rel="noopener noreferrer">{s.label} ↗</a>
+              <a className="src" key={s.url} href={s.url} target="_blank" rel="noopener noreferrer">{s.label}</a>
             ))}
           </div>
         </div>

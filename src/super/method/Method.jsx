@@ -99,10 +99,10 @@ export default function Method() {
                       <tr key={f.id}>
                         <td className="strong">{f.name}</td>
                         <td>{f.defaultOption}</td>
-                        <td><span className="mono">as at {f.disclosure.asOf}</span><br /><a href={f.disclosure.url} target="_blank" rel="noopener noreferrer">Disclosure ↗</a></td>
+                        <td><span className="mono">as at {f.disclosure.asOf}</span><br /><a href={f.disclosure.url} target="_blank" rel="noopener noreferrer">Disclosure</a></td>
                         <td>
-                          <a href={f.saaSource.url} target="_blank" rel="noopener noreferrer">Investment guide ↗</a>
-                          {f.marketing[0] && <> · <a href={f.marketing[0].url} target="_blank" rel="noopener noreferrer">Sustainability ↗</a></>}
+                          <a href={f.saaSource.url} target="_blank" rel="noopener noreferrer">Investment guide</a>
+                          {f.marketing[0] && <> · <a href={f.marketing[0].url} target="_blank" rel="noopener noreferrer">Sustainability</a></>}
                         </td>
                       </tr>
                     ))}
