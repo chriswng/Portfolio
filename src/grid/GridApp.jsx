@@ -381,7 +381,7 @@ function MethodSection() {
                 <span className="gi-src-name">{s.name}</span>
                 <span className="gi-src-detail">{s.detail}</span>
                 <span className="gi-src-meta">
-                  {s.url && <a href={s.url} target="_blank" rel="noopener noreferrer">Source ↗</a>}
+                  {s.url && <a href={s.url} target="_blank" rel="noopener noreferrer">Source</a>}
                   {s.accessed && <span className="gi-src-acc">Accessed {s.accessed}</span>}
                 </span>
               </li>

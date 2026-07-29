@@ -87,7 +87,7 @@ function FundDetail({ fund }) {
           </div>
           <p className="sf-note">
             Source: {fund.saaSource.doc}{fund.saaSource.asOf ? ` (${fund.saaSource.asOf})` : ''}.{' '}
-            <a href={fund.saaSource.url} target="_blank" rel="noopener noreferrer">Fund page ↗</a>
+            <a href={fund.saaSource.url} target="_blank" rel="noopener noreferrer">Fund page</a>
           </p>
         </div>
 
@@ -106,7 +106,7 @@ function FundDetail({ fund }) {
                 <p className="sf-quote-t">{m.quote}</p>
                 <div className="sf-quote-attr">
                   {m.attribution}.{' '}
-                  <a href={m.url} target="_blank" rel="noopener noreferrer">Source ↗</a>
+                  <a href={m.url} target="_blank" rel="noopener noreferrer">Source</a>
                   <span className="sf-accessed">Accessed {m.accessed}</span>
                 </div>
               </div>
@@ -152,7 +152,7 @@ function FundDetail({ fund }) {
                     <Conf level={f.conf} />
                     {f.source && (
                       <span className="sf-flag-src">
-                        <a href={f.source.url} target="_blank" rel="noopener noreferrer">{f.source.doc} ↗</a>
+                        <a href={f.source.url} target="_blank" rel="noopener noreferrer">{f.source.doc}</a>
                       </span>
                     )}
                   </div>
@@ -170,7 +170,7 @@ function FundDetail({ fund }) {
         </div>
         <p className="sf-panel-sub" style={{ marginBottom: 0 }}>
           {fund.disclosure.doc}. Holdings as at {fund.disclosure.asOf}.{' '}
-          <a href={fund.disclosure.url} target="_blank" rel="noopener noreferrer" style={{ color: '#5F6A17', fontWeight: 700 }}>Fund disclosure page ↗</a>
+          <a href={fund.disclosure.url} target="_blank" rel="noopener noreferrer" style={{ color: '#5F6A17', fontWeight: 700 }}>Fund disclosure page</a>
         </p>
       </div>
     </div>

@@ -170,7 +170,7 @@ export default function GuessGame({ dayIndex, showToast }) {
               </span>
             </div>
             <div className="dy-src">{GUESS.sourceLabel}: {item.source.name}{' '}
-              <a href={item.source.url} target="_blank" rel="noopener noreferrer">Source ↗</a>
+              <a href={item.source.url} target="_blank" rel="noopener noreferrer">Source</a>
             </div>
 
             <div className="dy-share-row">
