@@ -58,7 +58,7 @@ export default function ClaimGame({ dayIndex, showToast }) {
       <p className="dy-card-blurb">{CLAIM.blurb}</p>
 
       <div className="dy-stats">
-        <div className="dy-stat"><div className="dy-stat-l">{STATS.streak}</div><div className="dy-stat-v">{streak}{streak > 0 && <span className="dy-flame"> 🔥</span>}</div></div>
+        <div className={streak >= 7 ? 'dy-stat dy-stat-hot' : 'dy-stat'}><div className="dy-stat-l">{STATS.streak}</div><div className="dy-stat-v">{streak}{streak > 0 && <span className="dy-flame"> 🔥</span>}</div></div>
         <div className="dy-stat"><div className="dy-stat-l">{STATS.best}</div><div className="dy-stat-v">{state.best}</div></div>
         <div className="dy-stat"><div className="dy-stat-l">{STATS.plays}</div><div className="dy-stat-v">{state.plays}</div></div>
       </div>
