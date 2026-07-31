@@ -54,9 +54,21 @@
 .gi-datastate { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem; }
 .gi-datastate-live { color: var(--accent-ink); }
 .gi-datastate-fallback { color: var(--amber-ink); }
-.gi-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--matcha); box-shadow: 0 0 0 3px rgba(181,196,43,0.22); }
-@media (prefers-reduced-motion: no-preference) { .gi-dot { animation: gi-pulse 2.4s ease-in-out infinite; } }
-@keyframes gi-pulse { 0%,100% { box-shadow: 0 0 0 3px rgba(181,196,43,0.22); } 50% { box-shadow: 0 0 0 6px rgba(181,196,43,0.06); } }
+.gi-dot { position: relative; width: 8px; height: 8px; border-radius: 50%; background: var(--matcha); box-shadow: 0 0 0 3px rgba(181,196,43,0.22); }
+/* Live orbit: a conic arc circling the dot while the feed is live. The dot only
+   renders in the live branch, so the ring is itself the live signal; the
+   fallback state never shows it. Registered angle so the gradient can turn. */
+@property --gi-ring { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+.gi-dot::before {
+  content: ""; position: absolute; inset: -6px; border-radius: 50%; padding: 1.5px;
+  background: conic-gradient(from var(--gi-ring, 0deg), rgba(181,196,43,0) 0deg, var(--matcha) 110deg, rgba(181,196,43,0) 200deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+@media (prefers-reduced-motion: no-preference) { .gi-dot::before { animation: gi-orbit 5s linear infinite; } }
+@keyframes gi-orbit { to { --gi-ring: 360deg; } }
 .gi-est-tag { font-weight: 500; color: var(--mid); border-left: 1px solid var(--rule-dk); padding-left: 0.5rem; text-transform: none; letter-spacing: 0.02em; }
 .gi-refreshing { font-family: var(--mono); font-size: 10px; color: var(--mid); }
 
