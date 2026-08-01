@@ -698,6 +698,28 @@
   font-family: var(--mono); font-size: 10px; letter-spacing: 0.09em; text-transform: uppercase;
   font-weight: 600; color: var(--st-dark-mid);
 }
+/* Frame glint: a faint conic arc drifting around each shareable card on the
+   blackout, phase-offset per card so the row never turns in lockstep. It sits
+   over the card's own border and reads as a catchlight, not a spinner. */
+@property --st-ring { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+.st-gallery-card { position: relative; }
+.st-gallery-card::before {
+  content: ""; position: absolute; inset: -1px; border-radius: 15px; padding: 1px;
+  background: conic-gradient(from var(--st-ring, 0deg),
+    rgba(181,196,43,0) 0deg, rgba(181,196,43,0.55) 90deg, rgba(181,196,43,0) 210deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .st-gallery-card::before { animation: st-ring-turn 9s linear infinite; }
+  .st-gallery-card:nth-child(2)::before { animation-delay: -2.25s; }
+  .st-gallery-card:nth-child(3)::before { animation-delay: -4.5s; }
+  .st-gallery-card:nth-child(4)::before { animation-delay: -6.75s; }
+}
+@keyframes st-ring-turn { to { --st-ring: 360deg; } }
 
 /* The outro's plain-bordered actions inherit dashboard colours meant for a
    light surface; on the blackout they need the dark-scene ink. */

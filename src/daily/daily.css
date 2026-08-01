@@ -63,6 +63,23 @@
 .dy-stat-l { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); font-weight: 600; margin-bottom: 0.25rem; }
 .dy-stat-v { font-family: var(--disp); font-size: 1.35rem; font-weight: 700; color: var(--slate); line-height: 1; font-variant-numeric: tabular-nums; }
 .dy-stat-v .dy-flame { font-size: 0.8em; }
+/* Milestone ring: from a week unbroken the streak cell carries a slow conic
+   ring, the one place on the site an infinite rotation is tonally right.
+   Inset from the cell edge so the strip's rounded corner never clips it. */
+@property --dy-ring { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+.dy-stat-hot { position: relative; }
+.dy-stat-hot::after {
+  content: ""; position: absolute; inset: 2px; border-radius: 4px; padding: 1.5px;
+  background: conic-gradient(from var(--dy-ring, 0deg),
+    rgba(181,196,43,0) 0deg, var(--matcha) 120deg, var(--forest-ink) 180deg, rgba(181,196,43,0) 300deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: no-preference) { .dy-stat-hot::after { animation: dy-ring-turn 6s linear infinite; } }
+@keyframes dy-ring-turn { to { --dy-ring: 360deg; } }
 
 /* Play history: the run behind the streak number. One cell a day for the last
    four weeks, most recent on the right. Filled by how the day scored, hollow

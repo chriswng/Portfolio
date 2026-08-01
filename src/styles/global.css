@@ -643,6 +643,30 @@ section { position:relative; }
   transition:transform 0.5s var(--ease);
 }
 .tool-card:hover .tool-rule, .tool-card:focus-visible .tool-rule{ transform:scaleX(1); }
+/* Border sweep: one conic pass around the card in its own accent when the
+   cursor lands, then gone. Runs once, never idles: eight looping borders would
+   be noise, one finite sweep on the card under the pointer is a power-on.
+   The ring is a masked conic gradient over the card's own border. */
+@property --tc-sweep{ syntax:"<angle>"; inherits:false; initial-value:0deg; }
+.tool-card::after{
+  content:""; position:absolute; inset:0; border-radius:inherit; padding:1px;
+  background:conic-gradient(from var(--tc-sweep,0deg),
+    transparent 0deg, var(--tc) 45deg, transparent 90deg);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite:exclude;
+  opacity:0; pointer-events:none;
+}
+@media (prefers-reduced-motion: no-preference){
+  .tool-card:hover::after{ animation:tc-sweep 1s linear forwards; }
+}
+@keyframes tc-sweep{
+  0%{ --tc-sweep:0deg; opacity:0; }
+  12%{ opacity:1; }
+  82%{ opacity:1; }
+  100%{ --tc-sweep:360deg; opacity:0; }
+}
 
 .tool-top{ display:flex; align-items:center; gap:0.8rem; margin-bottom:0.85rem; }
 .tool-n{
