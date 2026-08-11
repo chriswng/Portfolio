@@ -446,7 +446,7 @@ export default function FootprintApp() {
           </div>
         )}
 
-        <Dashboard agg={agg} period={profile.period} compareAgg={compareAgg} comparePeriod={comparePeriod} isExample={isExample} />
+        <Dashboard agg={agg} period={profile.period} compareAgg={compareAgg} comparePeriod={comparePeriod} isExample={isExample} country={profile.settings.country} />
         {!archived && <Plan macc={macc} pathway={pathway} plan={profile.plan} onToggle={onToggle} />}
         {!isExample && !archived && (
           <DataControls onExport={onExport} onImportFile={onImportFile} onReset={onReset} onShare={onShare} />

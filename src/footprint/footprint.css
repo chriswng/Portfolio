@@ -306,6 +306,7 @@
 .ob-seg{ width:26px; height:3px; background:var(--rule-dk); border-radius:2px; transition:background 0.3s var(--ease); }
 .ob-seg.on{ background:var(--slate); }
 .ob-seg.done{ background:var(--matcha); }
+.ob-stepname{ font-family:var(--mono); font-size:10.5px; letter-spacing:0.06em; text-transform:uppercase; color:var(--mid); }
 .ob-close{ border:1px solid var(--rule-dk); background:none; color:var(--mid); font-size:1.15rem; line-height:1; cursor:pointer; width:36px; height:36px; border-radius:50%; transition:all 0.25s var(--ease); }
 .ob-close:hover{ border-color:#C7274A; color:#C7274A; }
 .ob-body{ flex:1; overflow-y:auto; padding-top:clamp(1.4rem,4vh,3rem); padding-bottom:2rem; }
@@ -482,6 +483,9 @@
 .ob-disclose summary{ font-family:var(--mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase; font-weight:700; color:#75821D; cursor:pointer; }
 .ob-disclose summary:focus-visible{ outline:2px solid var(--matcha); outline-offset:3px; }
 .ob-disclose p{ font-size:0.8rem; color:#475569; line-height:1.65; margin-top:0.6rem; }
+/* Seats-for-others fold-away inside a flight card. */
+.ob-fl-more{ border-top:1px dashed var(--rule-lt); margin-top:0.6rem; }
+.ob-fl-more .ob-field-compact{ margin-top:0.6rem; }
 
 /* ---- Dashboard character strip ---- */
 .fp-char-strip{ display:flex; align-items:center; gap:0.9rem; background:var(--white); border:1px solid var(--rule-dk); border-top:none; padding:0.75rem 1.25rem; margin-bottom:0.75rem; }

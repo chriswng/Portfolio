@@ -16,6 +16,14 @@ const pctOf = (reduction, baseline) => {
 };
 
 function OptionCard({ r, on, baseline, onToggle }) {
+  // The card carries its own dollars: the argument that moves a household is
+  // "saves $400 a year", not dollars per tonne. Same figures the impact strip
+  // totals, same thresholds.
+  const money = r.cost < -20
+    ? fill(PLAN.cardSaves, { n: Math.abs(r.cost).toLocaleString() })
+    : r.cost > 20
+      ? fill(PLAN.cardCosts, { n: r.cost.toLocaleString() })
+      : PLAN.cardEven;
   return (
     <li className={'fp-opt' + (r.applicable ? '' : ' na') + (on ? ' on' : '')} style={{ '--ac': categoryById(r.category).hex }}>
       <div className="fp-opt-name"><span className="fp-action-dot" aria-hidden="true" />{r.action}</div>
@@ -23,7 +31,7 @@ function OptionCard({ r, on, baseline, onToggle }) {
         <>
           <div className="fp-opt-pct display">-{pctOf(r.reduction, baseline)}<span>%</span></div>
           <div className="fp-opt-meta">
-            {fmtT(r.reduction, 2)} t {PLAN.reductionLabel} · {PLAN.effortLabel}: {EFFORT_LABELS[r.effort] || EFFORT_LABELS.med}
+            {fmtT(r.reduction, 2)} t {PLAN.reductionLabel} · {money} · {PLAN.effortLabel}: {EFFORT_LABELS[r.effort] || EFFORT_LABELS.med}
           </div>
         </>
       ) : (

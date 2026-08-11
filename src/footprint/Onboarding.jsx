@@ -269,7 +269,9 @@ const DEFAULTS = {
   // 'no' and 'unsure' are distinct choices that both price at 0% renewable.
   gpChoice: 'no', greenpowerPct: 0, energyPreset: null, kwhQuarter: 1000, gasQuarter: GAS_DEFAULTS.AU, carKmWeek: 0, carOccupancy: 1,
   rideshareWeek: 0, ptWeek: 0, ptCapOverride: false,
-  parcelsMonth: 2, intlOrdersMonth: 0, flights: [], hotelNightsOther: 0,
+  // Parcels start at zero like every other count: a figure the visitor never
+  // confirmed must not ship into the audit as if they had.
+  parcelsMonth: 0, intlOrdersMonth: 0, flights: [], hotelNightsOther: 0,
   ...ADVANCED_DEFAULTS,
 };
 
@@ -516,10 +518,16 @@ function FlightCard({ fl, index, monthOptions, onChange, onRemove }) {
             {monthOptions.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
           </select>
         </label>
-        <Stepper compact icon="people" label={ONBOARD.flights.passengers} value={fl.pax} min={1} max={9} onChange={(v) => set('pax', v)} />
         {/* Nights belong to the trip: the destination country prices them. */}
         <Stepper compact icon="building" label={ONBOARD.flights.nights} value={fl.nights || 0} min={0} max={90} onChange={(v) => set('nights', v)} />
       </div>
+      {/* Seats-for-others is an edge case, so it folds away; a card already
+          carrying more than one seat keeps it open. */}
+      <details className="ob-disclose ob-fl-more" open={fl.pax > 1 || undefined}>
+        <summary>{ONBOARD.flights.paxSummary}</summary>
+        <Stepper compact icon="people" label={ONBOARD.flights.passengers} value={fl.pax} min={1} max={9} onChange={(v) => set('pax', v)} />
+        <p className="ob-note">{ONBOARD.flights.passengersNote}</p>
+      </details>
       <p className="ob-fcard-dist">{distText}</p>
     </div>
   );
@@ -714,6 +722,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
           label={COUNTRIES[a.country].regionQuestion || ONBOARD.you.state}
           options={regionsForCountry(a.country).map(([k, v]) => ({ value: k, label: v.label }))}
           value={a.state} onChange={(v) => set('state', v)}
+          note={ONBOARD.you.stateNote}
         />
       )}
       <Stepper icon="people" label={ONBOARD.you.household} value={a.householdSize} min={1} max={10} onChange={setHousehold} />
@@ -768,6 +777,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         onChange={(v) => setA((s) => ({ ...s, gpChoice: v, greenpowerPct: v === 'half' ? 50 : v === 'full' ? 100 : 0 }))}
         note={COUNTRIES[a.country].renewableNote}
       />
+      {a.gpChoice === 'unsure' && <p className="ob-note">{ONBOARD.energy.gpUnsureNote}</p>}
     </div>,
     <div key="travel">
       <div className="ob-stephead">
@@ -785,9 +795,17 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
             options={Object.entries(roadFuelSetFor(a.country)).map(([k, v]) => ({ value: k, label: v.label }))}
             value={a.fuelType} onChange={(v) => set('fuelType', v)}
           />
-          <Stepper icon="people" label={ONBOARD.travel.occupancy} value={a.carOccupancy} min={1} max={7}
-            onChange={(v) => set('carOccupancy', v)} />
-          <p className="ob-note">{ONBOARD.travel.occupancyNote}</p>
+          {/* Chips, not a stepper: "on average" arithmetic is the visitor's
+              least answerable question, and four honest buckets cover it.
+              Four or more prices as four; the split only sharpens from there. */}
+          <Chips
+            icon="people"
+            label={ONBOARD.travel.occupancy}
+            options={ONBOARD.travel.occupancyChips}
+            value={Math.min(a.carOccupancy, 4)}
+            onChange={(v) => set('carOccupancy', v)}
+            note={ONBOARD.travel.occupancyNote}
+          />
         </>
       )}
       <SliderField icon="phone" label={ONBOARD.travel.rideshare} value={a.rideshareWeek} min={0} max={400} step={5} unit="$ / wk"
@@ -868,6 +886,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         onChange={(v) => set('parcelsMonth', v)} />
       <Stepper icon="globe" label={ONBOARD.food.intlOrders} value={a.intlOrdersMonth} min={0} max={100}
         onChange={(v) => set('intlOrdersMonth', v)} />
+      <p className="ob-note">{ONBOARD.food.intlOrdersNote}</p>
     </div>,
     <div key="advanced">
       <div className="ob-stephead">
@@ -978,8 +997,10 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
               <span key={s} className={'ob-seg' + (i === step ? ' on' : i < step ? ' done' : '')} title={s} />
             ))}
           </span>
-          <span className="sr-only" role="status">
-            {step === 6 ? OB.done.title : fill(OB.stepOf, { n: step + 1, total: OB.stepLabels.length }) + ': ' + OB.stepLabels[step]}
+          {/* The same orientation line the dots encode, in words: visible to
+              everyone, and announced as the step changes. */}
+          <span className="ob-stepname" role="status">
+            {step === 6 ? OB.done.title : fill(OB.stepOf, { n: step + 1, total: OB.stepLabels.length }) + ' · ' + OB.stepLabels[step]}
           </span>
         </div>
         <button type="button" className="ob-close" aria-label="Close" onClick={onCancel}>×</button>

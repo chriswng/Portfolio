@@ -432,7 +432,7 @@ export const CHARACTER_ST = {
 
 export const OB = {
   title: 'Your footprint',
-  intro: 'Five short steps, then an optional sixth. Rough answers now, real bills whenever you like. Everything stays in this browser, and we keep the final total for the reveal.',
+  intro: 'About three minutes: five short steps, then an optional sixth. Rough answers now, real bills whenever you like. Everything stays in this browser, and we keep the final total for the reveal.',
   // Neutral, spoiler-free footer line. The running total is deliberately not
   // shown: seeing it here would spoil the reveal that follows.
   keepForReveal: 'We add it all up at the reveal, not here',
@@ -446,7 +446,7 @@ export const OB = {
     food: 'Food and parcels added',
     advanced: 'Optional detail (skip any time)',
   },
-  stepLabels: ['You', 'Home energy', 'Getting around', 'Flights', 'Food & parcels', 'More detail'],
+  stepLabels: ['You', 'Home energy', 'Getting around', 'Trips', 'Food & parcels', 'More detail'],
   // One playful, sourced fact per step: about the world, never about the
   // visitor's own numbers, so the reveal keeps its punch. Figures match the
   // factor set this calculator prices from. The first two steps carry a
@@ -490,7 +490,7 @@ export const OB = {
   swarmLabel: 'Your year, gathering',
   done: {
     title: 'That is everything',
-    sub: 'Your footprint is saved to this browser. Now the fun part: your reveal walks you through what it all adds up to, where it lands, and how to cut it down.',
+    sub: 'Your footprint is saved to this browser. Now the fun part: your reveal takes about a minute and walks you through what it all adds up to, where it lands, and how to cut it down. Skipping loses nothing; the detail below carries it all.',
     ready: 'Five sections, done. Nothing left to fill in.',
     watch: 'Watch your reveal',
     skip: 'Straight to the detail',

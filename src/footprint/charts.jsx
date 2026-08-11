@@ -264,7 +264,7 @@ export function MaccChart({ rows }) {
         <text x={W - padR} y={H - 8} textAnchor="end" fontSize={fsLabel} fontFamily="JetBrains Mono, monospace" fill="#64748B">
           {'cumulative abatement → ' + totalRed.toFixed(1) + ' t/yr'}
         </text>
-        <text x={14} y={padT + 2} fontSize={fsLabel} fontFamily="JetBrains Mono, monospace" fill="#64748B" transform={'rotate(-90 14 ' + (padT + 2) + ')'} textAnchor="end">$ / tCO₂-e</text>
+        <text x={14} y={padT + 2} fontSize={fsLabel} fontFamily="JetBrains Mono, monospace" fill="#64748B" transform={'rotate(-90 14 ' + (padT + 2) + ')'} textAnchor="end">$ per tonne</text>
       </svg>
       <div className="fp-macc-tip" aria-live="polite">
         {tip ? (
