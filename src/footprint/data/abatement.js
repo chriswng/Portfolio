@@ -166,7 +166,7 @@ export const ABATEMENT_OPTIONS = [
     detail: 'Reverse-cycle heating and heat pump hot water replace 90% of gas use; the new electric load is added to the meter before solar acts on it. Flagged not applicable for renters and apartments: this one belongs to the landlord, and the method says so out loud.',
     effort: 'high',
     source: 'Heat pump COP 3.5 against gas appliance efficiency 0.85; capex about $3,000 net of state rebates, amortised over 12 years and split across the household; running-cost delta at indicative 4c/MJ gas and 30c/kWh electricity, scaled to your audited gas use.',
-    applicable: (st) => st.mj > 0 && st.dwelling === 'house',
+    applicable: (st) => st.mj > 0 && st.dwelling === 'house' && st.roofOwn,
     apply: (st, p) => {
       const cut = st.mj * 0.9 * p;
       st.mj -= cut;
@@ -188,7 +188,7 @@ export const ABATEMENT_OPTIONS = [
     detail: 'Assumes 60% of annual grid draw displaced (generation minus export). Requires a roof you own, so it is flagged not applicable for apartments and rentals.',
     effort: 'high',
     source: 'System cost about $5,500 installed (Solar Choice price index), amortised over 15 years against bill savings at typical capital-city yield, both split across the household.',
-    applicable: (st) => st.dwelling === 'house' && st.kwh > 0,
+    applicable: (st) => st.dwelling === 'house' && st.roofOwn && st.kwh > 0,
     apply: (st, p) => { st.solarReduction = Math.max(st.solarReduction, 0.6 * p); },
     // Costed whole-household then split per adult, so the $/t sits on the
     // same boundary as the per-person reduction. st.kwh is the audited

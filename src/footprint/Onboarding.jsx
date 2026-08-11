@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   COUNTRIES, regionsForCountry, roadFuelSetFor, DIET_TYPES, GOODS, CLOTHING_ITEMS,
-  AIRPORTS, airportByCode, greatCircleKm, flightBandForKm, HOME_AIRPORT, PT_FARE_CAPS, PT_FARE_CAPS_ASOF,
+  AIRPORTS, airportByCode, greatCircleKm, flightBandForKm, HOME_AIRPORT, POPULAR_DESTS, ROUGH_FLIGHT_KM,
+  PT_FARE_CAPS, PT_FARE_CAPS_ASOF,
 } from './data/factors';
 import { CONVERSIONS } from './data/vendorMap';
 import { ONBOARD, ENERGY_PRESETS } from './data/copy';
@@ -79,6 +80,7 @@ export function buildProfileFromOnboarding(a) {
   const period = lastTwelveMonths();
   const settings = {
     name: '', country: a.country, state: a.state, householdSize: a.householdSize, dwelling: a.dwelling,
+    roofOwn: a.roofOwn,
     dietType: a.dietType, fuelType: a.fuelType, greenpowerPct: a.greenpowerPct,
     carOccupancy: a.carOccupancy,
   };
@@ -169,6 +171,25 @@ export function buildProfileFromOnboarding(a) {
           + ' on the ' + to.city + ' trip, priced at the ' + to.country + ' per-room-night factor.',
       }));
     }
+  });
+  // Rough flight counts: N economy returns priced at a stated representative
+  // sector, one entry per bucket, spread across the year like every other
+  // typical-year estimate. Passengers scales the pax-km, so N returns and
+  // one N-seat itinerary price identically; the label carries the count.
+  [
+    ['roughDom', ROUGH_FLIGHT_KM.dom, false, 'Domestic returns'],
+    ['roughShort', ROUGH_FLIGHT_KM.short, true, 'Short overseas returns'],
+    ['roughLong', ROUGH_FLIGHT_KM.long, true, 'Long overseas returns'],
+  ].forEach(([key, km, intl, label]) => {
+    const n = Math.round(a[key] || 0);
+    if (!(n > 0)) return;
+    entries.push(E({
+      category: 'flight', date: period.end, period_months: 12,
+      label: label + ' × ' + n + ' (rough count)',
+      meta: { km, band: flightBandForKm(km, intl), international: intl, cabin: 'economy', return: true, passengers: n, rough: true },
+      notes: 'From a rough count: ' + n + ' economy return' + (n > 1 ? 's' : '') + ' priced at a representative '
+        + km.toLocaleString() + ' km sector each way, with RF. Name the real trips to replace this.',
+    }));
   });
   if (a.hotelNightsOther > 0) {
     entries.push(E({
@@ -264,7 +285,7 @@ const ADVANCED_DEFAULTS = {
 const GAS_DEFAULTS = { AU: 3000, NZ: 850, US: 30 };
 
 const DEFAULTS = {
-  country: 'AU', state: 'NSW', householdSize: 2, dwelling: 'apartment', dietType: 'medMeat', fuelType: 'petrol',
+  country: 'AU', state: 'NSW', householdSize: 2, dwelling: 'apartment', roofOwn: true, dietType: 'medMeat', fuelType: 'petrol',
   // gpChoice is the picked chip; greenpowerPct is what the engine prices from.
   // 'no' and 'unsure' are distinct choices that both price at 0% renewable.
   gpChoice: 'no', greenpowerPct: 0, energyPreset: null, kwhQuarter: 1000, gasQuarter: GAS_DEFAULTS.AU, carKmWeek: 0, carOccupancy: 1,
@@ -272,6 +293,8 @@ const DEFAULTS = {
   // Parcels start at zero like every other count: a figure the visitor never
   // confirmed must not ship into the audit as if they had.
   parcelsMonth: 0, intlOrdersMonth: 0, flights: [], hotelNightsOther: 0,
+  // Rough return counts, the fallback for a year nobody can name trip by trip.
+  roughDom: 0, roughShort: 0, roughLong: 0,
   ...ADVANCED_DEFAULTS,
 };
 
@@ -334,7 +357,8 @@ function readDraft() {
       answers.energyPreset = null;
     }
     const step = Number.isInteger(d.step) && d.step >= 0 && d.step <= 5 ? d.step : 0;
-    return { answers, step };
+    const mode = d.mode === 'express' || d.mode === 'full' ? d.mode : null;
+    return { answers, step, mode };
   } catch {
     return null;
   }
@@ -483,7 +507,7 @@ function AirportSelect({ label, value, placeholder, onChange }) {
 // month, and the seats you paid for. Editable at any time; removable. No
 // carbon shown here on purpose, so the reveal keeps its punch; the distance is
 // shown because it makes the estimate feel honest, not because it spoils it.
-function FlightCard({ fl, index, monthOptions, onChange, onRemove }) {
+function FlightCard({ fl, index, monthOptions, onChange, onRemove, onDuplicate }) {
   const set = (k, v) => onChange({ ...fl, [k]: v });
   const meta = flightMeta(fl);
   let distText = ONBOARD.flights.pickTo;
@@ -493,7 +517,10 @@ function FlightCard({ fl, index, monthOptions, onChange, onRemove }) {
     <div className="ob-fcard">
       <div className="ob-fcard-head">
         <span className="ob-fcard-n"><Icon name="plane" size={30} className="ob-flight-i" /> {fill(ONBOARD.flights.tripLabel, { n: index + 1 })}</span>
-        <button type="button" className="ob-remove" onClick={onRemove}>{ONBOARD.flights.remove} ×</button>
+        <span className="ob-fcard-btns">
+          <button type="button" className="ob-remove" onClick={onDuplicate}>{ONBOARD.flights.duplicate}</button>
+          <button type="button" className="ob-remove" onClick={onRemove}>{ONBOARD.flights.remove} ×</button>
+        </span>
       </div>
       <div className="ob-fcard-route">
         <AirportSelect label={ONBOARD.flights.from} value={fl.from} placeholder={ONBOARD.flights.pickFrom} onChange={(v) => set('from', v)} />
@@ -585,6 +612,10 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
   const [draft] = useState(readDraft);
   const [step, setStep] = useState(draft ? draft.step : 0);
   const [a, setA] = useState(draft ? draft.answers : DEFAULTS);
+  // Which path the visitor picked: null shows the chooser, 'express' the
+  // one-screen estimate, 'full' the staged audit. A resumed draft keeps its
+  // path so reopening lands where the visitor left off.
+  const [mode, setMode] = useState(draft ? draft.mode : null);
   // The audit window's twelve months, oldest first, for the optional
   // when-was-it picker. Value is a mid-month date inside the window.
   const monthOptions = useMemo(() => {
@@ -643,9 +674,9 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
   useEffect(() => {
     if (step >= 6) return;
     try {
-      sessionStorage.setItem(DRAFT_KEY, JSON.stringify({ step, answers: a }));
+      sessionStorage.setItem(DRAFT_KEY, JSON.stringify({ step, answers: a, mode }));
     } catch { /* storage unavailable; the flow runs, closing just loses the draft */ }
-  }, [step, a]);
+  }, [step, a, mode]);
 
   // The done pane says the audit is saved, so save it as the pane appears;
   // closing with Escape or the cross after that point loses nothing. The
@@ -660,7 +691,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
   useEffect(() => {
     const id = window.setTimeout(() => headRef.current?.focus(), prefersReducedMotion() ? 0 : 320);
     return () => window.clearTimeout(id);
-  }, [step]);
+  }, [step, mode]);
 
   useEffect(() => {
     // Modality itself (inert on everything behind) is applied declaratively
@@ -678,14 +709,32 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
     };
   }, [onCancel]);
 
-  const addFlight = () => {
+  const addFlight = (to = '') => {
     setA((s) => ({
       ...s,
-      flights: [...s.flights, { from: homeAirportFor(s.state, s.country), to: '', ret: true, cabin: 'economy', month: '', pax: 1, nights: 0 }],
+      flights: [...s.flights, { from: homeAirportFor(s.state, s.country), to, ret: true, cabin: 'economy', month: '', pax: 1, nights: 0 }],
     }));
   };
   const updateFlight = (i, next) => setA((s) => ({ ...s, flights: s.flights.map((f, j) => (j === i ? next : f)) }));
   const removeFlight = (i) => setA((s) => ({ ...s, flights: s.flights.filter((_, j) => j !== i) }));
+  const duplicateFlight = (i) => setA((s) => ({
+    ...s,
+    flights: [...s.flights.slice(0, i + 1), { ...s.flights[i] }, ...s.flights.slice(i + 1)],
+  }));
+
+  // Entering the quick path pre-selects the plain apartment preset when no
+  // preset is chosen, so the assumption is visible on screen rather than a
+  // silent default underneath.
+  const chooseMode = (m) => {
+    setMode(m);
+    if (m === 'express') {
+      setA((s) => {
+        if (s.energyPreset) return s;
+        const pr = ENERGY_PRESETS[s.country].find((x) => x.id === 'apt');
+        return pr ? { ...s, energyPreset: 'apt', kwhQuarter: pr.kwhPerAdult * s.householdSize, gasQuarter: pr.gasPerAdult * s.householdSize } : s;
+      });
+    }
+  };
 
   const dietOptions = Object.entries(DIET_TYPES).map(([k, v]) => ({
     value: k,
@@ -702,7 +751,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
     ? fill(ONBOARD.energy.splitNote, { n: a.householdSize, s: a.householdSize > 1 ? 's' : '' })
     : ONBOARD.energy.splitNoteSolo;
 
-  const steps = [
+  const panes = [
     <div key="you">
       <div className="ob-stephead">
         <span className="ob-stephead-i" aria-hidden="true"><Icon name="house" size={52} /></span>
@@ -736,6 +785,18 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         ]}
         value={a.dwelling} onChange={(v) => set('dwelling', v)}
       />
+      {a.dwelling === 'house' && (
+        <Chips
+          icon="house"
+          label={ONBOARD.you.roof}
+          options={[
+            { value: true, label: ONBOARD.you.roofYes },
+            { value: false, label: ONBOARD.you.roofNo },
+          ]}
+          value={a.roofOwn} onChange={(v) => set('roofOwn', v)}
+          note={ONBOARD.you.roofNote}
+        />
+      )}
     </div>,
     <div key="energy">
       <div className="ob-stephead">
@@ -746,7 +807,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
       <Chips
         icon="house"
         label={ONBOARD.energy.presetLabel}
-        options={ENERGY_PRESETS[a.country].map((pr) => ({ value: pr.id, label: pr.label }))}
+        options={ENERGY_PRESETS[a.country].map((pr) => ({ value: pr.id, label: pr.label, note: pr.bill }))}
         value={a.energyPreset}
         onChange={(id) => {
           const pr = ENERGY_PRESETS[a.country].find((x) => x.id === id);
@@ -858,13 +919,51 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
             monthOptions={monthOptions}
             onChange={(next) => updateFlight(i, next)}
             onRemove={() => removeFlight(i)}
+            onDuplicate={() => duplicateFlight(i)}
           />
         ))}
       </div>
 
-      <button type="button" className="btn btn-secondary ob-addflight" onClick={addFlight}>
+      <button type="button" className="btn btn-secondary ob-addflight" onClick={() => addFlight()}>
         + {a.flights.length ? ONBOARD.flights.addAnother : ONBOARD.flights.add}
       </button>
+
+      {/* One-tap starts for the routes people actually fly; the card opens
+          prefilled and stays fully editable. */}
+      <div className="ob-quickadd">
+        <span className="ob-quickadd-l">
+          {fill(ONBOARD.flights.quickAdd, { city: (airportByCode(homeAirportFor(a.state, a.country)) || {}).city || '' })}
+        </span>
+        {(POPULAR_DESTS[a.country] || [])
+          .filter((code) => code !== homeAirportFor(a.state, a.country))
+          .slice(0, 6)
+          .map((code) => (
+            <button key={code} type="button" className="ob-chip" onClick={() => addFlight(code)}>
+              + {(airportByCode(code) || {}).city || code}
+            </button>
+          ))}
+      </div>
+
+      {/* The coarse fallback: count the year's returns instead of naming
+          them. Both routes price through the same engine. */}
+      <details className="ob-disclose" open={(a.roughDom + a.roughShort + a.roughLong > 0) || undefined}>
+        <summary>{ONBOARD.roughFlights.summary}</summary>
+        <div className="ob-field">
+          <span className="ob-label">{ONBOARD.roughFlights.label}</span>
+          <div className="ob-items-grid">
+            <Stepper compact label={ONBOARD.roughFlights.dom} value={a.roughDom} min={0} max={99} onChange={(v) => set('roughDom', v)} />
+            <Stepper compact label={ONBOARD.roughFlights.short} value={a.roughShort} min={0} max={99} onChange={(v) => set('roughShort', v)} />
+            <Stepper compact label={ONBOARD.roughFlights.long} value={a.roughLong} min={0} max={99} onChange={(v) => set('roughLong', v)} />
+          </div>
+          <span className="ob-note">
+            {fill(ONBOARD.roughFlights.note, {
+              dom: ROUGH_FLIGHT_KM.dom.toLocaleString(),
+              short: ROUGH_FLIGHT_KM.short.toLocaleString(),
+              long: ROUGH_FLIGHT_KM.long.toLocaleString(),
+            })}
+          </span>
+        </div>
+      </details>
 
       <Stepper icon="building" label={ONBOARD.flights.otherNights} value={a.hotelNightsOther} min={0} max={365}
         onChange={(v) => set('hotelNightsOther', v)} />
@@ -895,6 +994,11 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
       </div>
       <p>{ONBOARD.advanced.sub}</p>
       <p className="ob-optnote"><Icon name="spark" size={28} className="ob-label-i" />{ONBOARD.advanced.optional}</p>
+      {/* The skip lives at the top too: nobody should have to scroll a wall
+          of optional sliders to find out they can decline it. */}
+      <button type="button" className="fp-linkbtn ob-skiptop" onClick={() => { skipAdvanced(); setStep(6); }}>
+        {ONBOARD.advanced.skip} →
+      </button>
       <Chips
         icon="box"
         label={ONBOARD.advanced.clothingHow}
@@ -907,6 +1011,16 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
       {a.clothingMode === 'items' ? (
         <div className="ob-field">
           <span className="ob-label">{ONBOARD.advanced.clothingItemsLabel}</span>
+          {/* Starting presets, so nobody reconstructs a year of shopping from
+              memory just to continue; the grid below stays for the nudging. */}
+          <div className="ob-chips">
+            {ONBOARD.advanced.clothingPresets.options.map((p) => (
+              <button key={p.id} type="button" className="ob-chip" onClick={() => setA((s) => ({ ...s, clothingItems: { ...p.items } }))}>
+                {p.label}
+              </button>
+            ))}
+          </div>
+          <span className="ob-note">{ONBOARD.advanced.clothingPresets.note}</span>
           <div className="ob-items-grid">
             {Object.entries(CLOTHING_ITEMS).map(([k, item]) => (
               <Stepper
@@ -967,13 +1081,97 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
     </div>,
   ];
 
+  // Trips come second (the easiest big-recall question, and often the biggest
+  // category), home energy fourth. The panes keep their authoring order
+  // above; this maps it to the step sequence.
+  const steps = [panes[0], panes[3], panes[2], panes[1], panes[4], panes[5], panes[6]];
+
+  // The fork pane and the one-screen quick path. Both share the same answer
+  // state as the full flow, so switching paths never loses a thing.
+  const chooserPane = (
+    <div key="chooser">
+      <div className="ob-stephead">
+        <span className="ob-stephead-i" aria-hidden="true"><Icon name="leaf" size={52} /></span>
+        <h3 ref={headRef} tabIndex={-1}>{ONBOARD.chooser.title}</h3>
+      </div>
+      <p>{ONBOARD.chooser.sub}</p>
+      <div className="ob-choicewrap">
+        <button type="button" className="ob-choice" onClick={() => chooseMode('express')}>
+          <strong>{ONBOARD.chooser.quick}</strong>
+          <span>{ONBOARD.chooser.quickNote}</span>
+        </button>
+        <button type="button" className="ob-choice" onClick={() => chooseMode('full')}>
+          <strong>{ONBOARD.chooser.full}</strong>
+          <span>{ONBOARD.chooser.fullNote}</span>
+        </button>
+      </div>
+    </div>
+  );
+
+  const expressPane = (
+    <div key="express">
+      <div className="ob-stephead">
+        <span className="ob-stephead-i" aria-hidden="true"><Icon name="spark" size={52} /></span>
+        <h3 ref={headRef} tabIndex={-1}>{ONBOARD.express.title}</h3>
+      </div>
+      <p>{ONBOARD.express.sub}</p>
+      <Chips
+        icon="globe"
+        label={ONBOARD.you.country}
+        options={Object.entries(COUNTRIES).map(([k, c]) => ({ value: k, label: c.label }))}
+        value={a.country} onChange={setCountry}
+      />
+      {regionsForCountry(a.country).length > 1 && (
+        <Chips
+          icon="pin"
+          label={COUNTRIES[a.country].regionQuestion || ONBOARD.you.state}
+          options={regionsForCountry(a.country).map(([k, v]) => ({ value: k, label: v.label }))}
+          value={a.state} onChange={(v) => set('state', v)}
+        />
+      )}
+      <Stepper icon="people" label={ONBOARD.you.household} value={a.householdSize} min={1} max={10} onChange={setHousehold} />
+      <Chips
+        icon="house"
+        label={ONBOARD.energy.presetLabel}
+        options={ENERGY_PRESETS[a.country].map((pr) => ({ value: pr.id, label: pr.label, note: pr.bill }))}
+        value={a.energyPreset}
+        onChange={(id) => {
+          const pr = ENERGY_PRESETS[a.country].find((x) => x.id === id);
+          if (pr) setA((s) => ({ ...s, energyPreset: id, kwhQuarter: pr.kwhPerAdult * s.householdSize, gasQuarter: pr.gasPerAdult * s.householdSize }));
+        }}
+      />
+      <Chips icon="fork" label={ONBOARD.food.diet} options={dietOptions} value={a.dietType} onChange={(v) => set('dietType', v)} />
+      <SliderField icon="car" label={ONBOARD.travel.car} value={a.carKmWeek} min={0} max={1000} step={5} unit="km / wk"
+        onChange={(v) => set('carKmWeek', v)} />
+      <div className="ob-field">
+        <span className="ob-label"><Icon name="plane" size={30} className="ob-label-i" />{ONBOARD.roughFlights.label}</span>
+        <div className="ob-items-grid">
+          <Stepper compact label={ONBOARD.roughFlights.dom} value={a.roughDom} min={0} max={99} onChange={(v) => set('roughDom', v)} />
+          <Stepper compact label={ONBOARD.roughFlights.short} value={a.roughShort} min={0} max={99} onChange={(v) => set('roughShort', v)} />
+          <Stepper compact label={ONBOARD.roughFlights.long} value={a.roughLong} min={0} max={99} onChange={(v) => set('roughLong', v)} />
+        </div>
+        <span className="ob-note">
+          {fill(ONBOARD.roughFlights.note, {
+            dom: ROUGH_FLIGHT_KM.dom.toLocaleString(),
+            short: ROUGH_FLIGHT_KM.short.toLocaleString(),
+            long: ROUGH_FLIGHT_KM.long.toLocaleString(),
+          })}
+        </span>
+      </div>
+      <div className="ob-done-ctas">
+        <button type="button" className="btn btn-primary fp-btn" onClick={() => setStep(6)}>{ONBOARD.express.cta} →</button>
+        <button type="button" className="fp-linkbtn" onClick={() => setMode('full')}>{ONBOARD.express.refine}</button>
+      </div>
+    </div>
+  );
+
   // Neutral, spoiler-free progress line for the footer: what this step
-  // captured, never a tonnes total.
+  // captured, never a tonnes total. Order matches the step sequence.
   const stepStatus = [
     OB.progress.you,
-    OB.progress.energy,
-    OB.progress.travel,
     flightsReady ? fill(OB.progress.flights.some, { n: flightsReady, s: flightsReady > 1 ? 's' : '' }) : OB.progress.flights.none,
+    OB.progress.travel,
+    OB.progress.energy,
     OB.progress.food,
     OB.progress.advanced,
   ][step];
@@ -993,28 +1191,35 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         <div className="ob-head-left">
           <span className="ob-title">{OB.title}</span>
           <span className="ob-progress" aria-hidden="true">
-            {OB.stepLabels.map((s, i) => (
+            {mode === 'full' && OB.stepLabels.map((s, i) => (
               <span key={s} className={'ob-seg' + (i === step ? ' on' : i < step ? ' done' : '')} title={s} />
             ))}
           </span>
           {/* The same orientation line the dots encode, in words: visible to
-              everyone, and announced as the step changes. */}
+              everyone, and announced as the step or path changes. */}
           <span className="ob-stepname" role="status">
-            {step === 6 ? OB.done.title : fill(OB.stepOf, { n: step + 1, total: OB.stepLabels.length }) + ' · ' + OB.stepLabels[step]}
+            {mode === null ? ''
+              : step === 6 ? OB.done.title
+                : mode === 'express' ? ONBOARD.express.name
+                  : fill(OB.stepOf, { n: step + 1, total: OB.stepLabels.length }) + ' · ' + OB.stepLabels[step]}
           </span>
         </div>
         <button type="button" className="ob-close" aria-label="Close" onClick={onCancel}>×</button>
       </div>
 
       <div className="ob-body canvas">
-        {step === 0 && <p className="ob-intro">{OB.intro}</p>}
+        {mode === 'full' && step === 0 && <p className="ob-intro">{OB.intro}</p>}
         <AnimatePresence mode="wait" initial={false}>
-          <motion.div key={step} {...stepMotion} className="ob-pane">
-            {steps[step]}
+          <motion.div
+            key={mode === null ? 'chooser' : mode === 'express' && step < 6 ? 'express' : step}
+            {...stepMotion}
+            className="ob-pane"
+          >
+            {mode === null ? chooserPane : mode === 'express' && step < 6 ? expressPane : steps[step]}
             {/* One sourced fact per step: about the world, never about the
                 visitor's own numbers, so the reveal keeps its punch. The
-                first steps carry the home country's own fact. */}
-            {step < 6 && OB.factsByCountry[a.country][step] && (
+                country facts ride the steps where country and energy land. */}
+            {mode === 'full' && step < 6 && OB.factsByCountry[a.country][step] && (
               <aside className="ob-fact">
                 <span className="ob-fact-k"><Icon name="spark" size={26} className="ob-label-i" />{OB.factKicker}</span>
                 <p>{OB.factsByCountry[a.country][step].text}</p>
@@ -1025,9 +1230,9 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         </AnimatePresence>
       </div>
 
-      {step < 6 && <SwarmMeter answers={a} step={step} />}
+      {step < 6 && mode !== null && <SwarmMeter answers={a} step={step} />}
 
-      {step < 6 && (
+      {step < 6 && mode === 'full' && (
         <div className="ob-foot">
           <div className="canvas ob-foot-inner">
             <div className="ob-foot-status">
@@ -1036,8 +1241,10 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
               <span className="ob-foot-note">{OB.keepForReveal}</span>
             </div>
             <div className="ob-foot-btns">
-              <button type="button" className="fp-linkbtn" onClick={() => (step === 0 ? onCancel() : setStep(step - 1))}>
-                {step === 0 ? ONBOARD.cancel : ONBOARD.back}
+              {/* Step 0 backs out to the path chooser; Escape and the cross
+                  still close the whole dialog. */}
+              <button type="button" className="fp-linkbtn" onClick={() => (step === 0 ? setMode(null) : setStep(step - 1))}>
+                {ONBOARD.back}
               </button>
               {step === 5 ? (
                 // The optional step: a prominent Skip that adds nothing, and a

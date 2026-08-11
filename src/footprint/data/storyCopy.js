@@ -446,7 +446,7 @@ export const OB = {
     food: 'Food and parcels added',
     advanced: 'Optional detail (skip any time)',
   },
-  stepLabels: ['You', 'Home energy', 'Getting around', 'Trips', 'Food & parcels', 'More detail'],
+  stepLabels: ['You', 'Trips', 'Getting around', 'Home energy', 'Food & parcels', 'More detail'],
   // One playful, sourced fact per step: about the world, never about the
   // visitor's own numbers, so the reveal keeps its punch. Figures match the
   // factor set this calculator prices from. The first two steps carry a
@@ -466,8 +466,9 @@ export const OB = {
       text: 'Every $100 a month of general spending adds roughly 0.12 tonnes a year, which is why this step is worth the extra minute.',
       src: 'US EPA supply-chain factors',
     };
-    // Step order: you, energy, travel, flights, food, detail.
-    const build = (you, energy, flight) => [you, energy, rideshare, flight, diet, spend];
+    // Step order: you, trips, travel, energy, food, detail. The country
+    // facts ride on the steps where country and energy actually land.
+    const build = (you, energy, flight) => [you, flight, rideshare, energy, diet, spend];
     return {
       AU: build(
         { text: 'The average Australian sits near 22 tonnes of CO₂-e a year, more than three times the world average.', src: 'EDGAR / JRC 2024' },
@@ -491,7 +492,7 @@ export const OB = {
   done: {
     title: 'That is everything',
     sub: 'Your footprint is saved to this browser. Now the fun part: your reveal takes about a minute and walks you through what it all adds up to, where it lands, and how to cut it down. Skipping loses nothing; the detail below carries it all.',
-    ready: 'Five sections, done. Nothing left to fill in.',
+    ready: 'All answered. Nothing left to fill in.',
     watch: 'Watch your reveal',
     skip: 'Straight to the detail',
   },

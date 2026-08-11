@@ -117,7 +117,35 @@ export const PLAN = {
 export const ONBOARD = {
   title: 'Calculate your footprint',
   intro: 'Five quick steps, then an optional sixth. Rough answers are fine; you can put real bills in later. Everything stays in this browser.',
-  steps: ['You', 'Home energy', 'Getting around', 'Trips', 'Food & parcels', 'More detail'],
+  steps: ['You', 'Trips', 'Getting around', 'Home energy', 'Food & parcels', 'More detail'],
+  // The fork before the flow: a one-minute estimate or the full audit. Both
+  // price from the same factors; the quick path leans on typical-home
+  // figures and rough counts, so its range reads wider.
+  chooser: {
+    title: 'How much time do you have?',
+    sub: 'Both paths build a real footprint from the same factors. The quick one leans on typical-home figures and rough counts, so its range reads wider; you can deepen it any time.',
+    quick: 'Quick estimate',
+    quickNote: 'About a minute · six questions',
+    full: 'The full audit',
+    fullNote: 'About three minutes · five steps plus an optional sixth',
+  },
+  express: {
+    title: 'The quick version',
+    sub: 'Six answers, one screen. Rough is fine: every figure here can be sharpened later, and the result carries an honest range.',
+    name: 'Quick estimate',
+    cta: 'See your estimate',
+    refine: 'Do the full audit instead',
+  },
+  // Rough flight counts: the fallback for a year nobody can reconstruct trip
+  // by trip. Shared by the quick path and the trips step's disclosure.
+  roughFlights: {
+    summary: 'Cannot remember each trip? Use rough counts',
+    label: 'Return flights in a typical year',
+    dom: 'Domestic returns',
+    short: 'Short overseas returns (under about 4 hours)',
+    long: 'Long overseas returns (Asia, Europe, the Americas)',
+    note: 'Priced at representative sector lengths ({dom} km domestic, {short} km short overseas, {long} km long haul, each way, economy). A named trip card beats a rough count, so cover a given trip one way, not both.',
+  },
   you: {
     title: 'About you',
     sub: 'Where you live sets your power mix, and we split shared home energy across the people who live there.',
@@ -128,14 +156,20 @@ export const ONBOARD = {
     household: 'How many adults share your home? (counting you)',
     householdNote: 'We split shared home energy across the adults at home, so you are only counted for your share. Two adults means half of each bill is yours.',
     dwelling: 'Your place',
-    dwellingHouse: 'House you own or could put solar on',
-    dwellingApartment: 'Apartment or rental',
+    dwellingHouse: 'House',
+    dwellingApartment: 'Apartment or unit',
+    // Tenure asked separately from building type: a renter in a house was
+    // previously forced into a wrong answer either way.
+    roof: 'Is the roof yours to change?',
+    roofYes: 'Yes',
+    roofNo: 'No, renting or strata',
+    roofNote: 'Rooftop solar and appliance swaps only appear in your plan when the roof is yours to change.',
   },
   energy: {
     title: 'Home energy',
-    sub: 'Usually one of the bigger slices of a footprint. Best case: read the figures straight off a power and gas bill. No bills nearby? Start with a typical home and nudge it.',
-    presetLabel: 'No bills nearby? Start with a typical home',
-    presetNote: 'Rough starting points, sized to your household: each adult adds their share, so a busier home reads higher. The figures below are the whole-home total per quarter for the number of adults you set. Gas-heated homes in cold climates often run well above these. Swap in your real bills whenever you find them.',
+    sub: 'Usually one of the bigger slices of a footprint. Pick a typical home to start, or better, read the figures straight off a power and gas bill.',
+    presetLabel: 'Which sounds most like your place?',
+    presetNote: 'Rough starting points, sized to your household: each adult adds their share, so a busier home reads higher. The figures below are the whole-home total per quarter for the number of adults you set. The dollar figures are a very rough two-adult power-bill anchor at typical rates, a sanity check rather than a price. Gas-heated homes in cold climates often run well above these. Swap in your real bills whenever you find them.',
     kwh: 'Electricity, kWh per quarter (whole home)',
     gas: 'Gas, {unit} per quarter (0 if no gas)',
     // {n}/{s} filled with the household size in the component.
@@ -195,6 +229,8 @@ export const ONBOARD = {
     paxSummary: 'Booked seats for others?',
     add: 'Add a flight',
     addAnother: 'Add another flight',
+    quickAdd: 'Popular from {city}',
+    duplicate: 'Duplicate',
     remove: 'Remove',
     tripLabel: 'Flight {n}',
     listTitle: 'Your flights',
@@ -242,6 +278,17 @@ export const ONBOARD = {
     clothingByItemsNote: 'Recommended',
     clothingBySpend: 'Count the spend',
     clothingItemsLabel: 'Bought new in the last 12 months',
+    // Preset starting counts, like the energy presets: coarse on purpose, so
+    // nobody has to reconstruct a year of shopping from memory to continue.
+    clothingPresets: {
+      label: 'Start from a typical year',
+      note: 'Rough starting counts; nudge any of them to match your year.',
+      options: [
+        { id: 'few', label: 'A few pieces', items: { tops: 3, jumpers: 1, trousers: 1, dresses: 0, coats: 0, shoes: 1 } },
+        { id: 'typical', label: 'A typical year', items: { tops: 6, jumpers: 2, trousers: 3, dresses: 2, coats: 1, shoes: 2 } },
+        { id: 'big', label: 'A big year', items: { tops: 12, jumpers: 4, trousers: 6, dresses: 5, coats: 2, shoes: 5 } },
+      ],
+    },
     clothingItemsNote: 'Each item is priced on a published per-garment life-cycle factor, so ten cheap tees weigh ten times one tee, whatever they cost. Count what you bought new; second-hand pieces carry almost none of this and can be left out.',
     clothing: 'Clothing and footwear, $ a month',
     clothingNote: 'Spend-based, so every dollar carries the same factor: a $300 boutique jacket counts ten times a $30 fast-fashion tee, even though the physical impact of the cheap haul may be no smaller. If that sits badly, count the items instead; it is the more honest measure.',
@@ -283,11 +330,15 @@ export const ONBOARD = {
 // without a bill in reach can still finish, and the note tells them to swap
 // in real numbers later.
 export const ENERGY_PRESETS = {
+  // The AU `bill` strings are indicative two-adult quarterly power-bill
+  // anchors (usage at a typical retail rate plus a supply charge, rounded
+  // hard), because most people know their bill in dollars, not kilowatt-
+  // hours. Anchors only, never converted: the engine prices from kWh.
   AU: [
-    { id: 'aptSmall', label: 'Small apartment', kwhPerAdult: 350, gasPerAdult: 0 },
-    { id: 'apt', label: 'Apartment', kwhPerAdult: 550, gasPerAdult: 1250 },
-    { id: 'house', label: 'House', kwhPerAdult: 800, gasPerAdult: 2750 },
-    { id: 'houseLarge', label: 'Large house', kwhPerAdult: 1150, gasPerAdult: 4500 },
+    { id: 'aptSmall', label: 'Small apartment', kwhPerAdult: 350, gasPerAdult: 0, bill: '≈ $300 power / quarter' },
+    { id: 'apt', label: 'Apartment', kwhPerAdult: 550, gasPerAdult: 1250, bill: '≈ $450 power / quarter' },
+    { id: 'house', label: 'House', kwhPerAdult: 800, gasPerAdult: 2750, bill: '≈ $600 power / quarter' },
+    { id: 'houseLarge', label: 'Large house', kwhPerAdult: 1150, gasPerAdult: 4500, bill: '≈ $800 power / quarter' },
   ],
   NZ: [
     { id: 'aptSmall', label: 'Small apartment', kwhPerAdult: 400, gasPerAdult: 0 },
@@ -335,7 +386,7 @@ export const METHOD = {
     title: 'How results are calculated',
     paras: [
       'Each item is activity times a factor: kilowatt-hours times the grid factor, litres times the fuel factor, passenger-kilometres times the flight factor, and so on. Flights include the extra warming effect of burning fuel at altitude, which reasonable calculators treat differently, so this one reads a little higher than a CO₂-only figure.',
-      'Where a real bill or itinerary is not to hand, the calculator estimates: it turns spend into litres, kilometres or parcels at stated rates, or extends a metered daily average over an unbilled period. In Australia, public-transport spend is capped at the state weekly fare cap first (in NSW, the $50 Opal cap), because spending past the cap buys no extra travel; US and NZ networks cap too differently to carry one honest ceiling, so spend there is counted as given. Gas bills read in the local unit (megajoules in Australia, kilowatt-hours in New Zealand, therms in the United States) and convert to megajoules before pricing. Estimates are labelled, and replacing one with a real number tightens the range shown next to the total. A certified renewable purchase (GreenPower in Australia, a certified green-power plan elsewhere), where you have it, lowers your purchased-electricity figure, and the same netting applies to electricity an EV draws from the grid; no offsets are subtracted anywhere.',
+      'Where a real bill or itinerary is not to hand, the calculator estimates: it turns spend into litres, kilometres or parcels at stated rates, or extends a metered daily average over an unbilled period. The quick-estimate path works the same way, only coarser: a typical-home preset stands in for the bills, and rough flight counts price each return at a stated representative sector length (1,100 km domestic, 2,400 km short overseas, 11,000 km long haul, each way, economy), so the range beside the total reads wider until named trips and real bills replace them. In Australia, public-transport spend is capped at the state weekly fare cap first (in NSW, the $50 Opal cap), because spending past the cap buys no extra travel; US and NZ networks cap too differently to carry one honest ceiling, so spend there is counted as given. Gas bills read in the local unit (megajoules in Australia, kilowatt-hours in New Zealand, therms in the United States) and convert to megajoules before pricing. Estimates are labelled, and replacing one with a real number tightens the range shown next to the total. A certified renewable purchase (GreenPower in Australia, a certified green-power plan elsewhere), where you have it, lowers your purchased-electricity figure, and the same netting applies to electricity an EV draws from the grid; no offsets are subtracted anywhere.',
     ],
   },
   interpret: {

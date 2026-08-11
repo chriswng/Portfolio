@@ -486,6 +486,19 @@
 /* Seats-for-others fold-away inside a flight card. */
 .ob-fl-more{ border-top:1px dashed var(--rule-lt); margin-top:0.6rem; }
 .ob-fl-more .ob-field-compact{ margin-top:0.6rem; }
+/* Path chooser: two big honest options before the flow starts. */
+.ob-choicewrap{ display:grid; gap:0.8rem; grid-template-columns:1fr; max-width:560px; margin-top:1rem; }
+@media(min-width:560px){ .ob-choicewrap{ grid-template-columns:1fr 1fr; } }
+.ob-choice{ text-align:left; border:1px solid var(--rule-dk); background:var(--white); padding:1.1rem 1.2rem; cursor:pointer; transition:border-color 0.25s var(--ease), transform 0.25s var(--ease); }
+.ob-choice:hover{ border-color:var(--matcha); transform:translateY(-2px); }
+.ob-choice:focus-visible{ outline:2px solid var(--matcha); outline-offset:3px; }
+.ob-choice strong{ display:block; font-family:var(--disp); font-size:1.05rem; color:var(--slate); margin-bottom:0.3rem; }
+.ob-choice span{ font-family:var(--mono); font-size:10.5px; letter-spacing:0.05em; text-transform:uppercase; color:var(--mid); }
+/* Quick-add chips under the add-a-flight button. */
+.ob-quickadd{ display:flex; flex-wrap:wrap; gap:0.4rem; align-items:center; margin-top:0.7rem; }
+.ob-quickadd-l{ font-family:var(--mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--mid); }
+.ob-fcard-btns{ display:flex; gap:0.4rem; }
+.ob-skiptop{ margin-bottom:1.1rem; }
 
 /* ---- Dashboard character strip ---- */
 .fp-char-strip{ display:flex; align-items:center; gap:0.9rem; background:var(--white); border:1px solid var(--rule-dk); border-top:none; padding:0.75rem 1.25rem; margin-bottom:0.75rem; }

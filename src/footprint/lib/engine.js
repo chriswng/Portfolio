@@ -425,6 +425,10 @@ export function baselineState(profile, agg) {
     country: countryOf(s),
     state: s.state || COUNTRIES[countryOf(s)].defaultRegion,
     dwelling: s.dwelling || 'house',
+    // Tenure travels separately from building type. Profiles saved before
+    // the roof question packed ownership into dwelling === 'house', so an
+    // absent value means yes, not no.
+    roofOwn: s.roofOwn !== false,
     greenpowerPct: (s.greenpowerPct || 0) / 100,
     kwh, mj,
     kmCar, kmRide, kmPt,

@@ -347,6 +347,15 @@ file):
   to the 12-month average ending June or July 2026, and re-check the AU rate
   from the RBA/ATO annual FY2026 table at the same time
   (https://www.ato.gov.au/tax-rates-and-codes/foreign-exchange-rates-annual-2026-financial-year).
+- **Typical-bill anchors on the energy presets.** The onboarding's AU
+  typical-home chips carry indicative two-adult quarterly power-bill dollar
+  anchors (about $300 to $800 a quarter across the four presets, computed at
+  a typical retail rate plus a supply charge and rounded hard). Verify or
+  replace them against the AER's annual retail markets report or the current
+  default market offer determination, and add NZ and US anchors from an
+  equivalent source if one can be read. Lands in `ENERGY_PRESETS` in
+  `src/footprint/data/copy.js` (`bill` strings; anchors only, the engine
+  never converts dollars to kWh).
 - **EV consumption citation.** `ROAD_FUELS.ev.kWhPerKm` is 0.16 and is the
   one uncited factor in the set; real-world Australian testing runs higher.
   The **AAA Real-World Testing Program** (https://realworld.org.au,
