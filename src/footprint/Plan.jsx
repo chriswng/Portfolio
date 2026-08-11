@@ -2,13 +2,11 @@ import { useRef, useState } from 'react';
 import SplitText from '../components/SplitText';
 import { categoryById } from './data/factors';
 import { BUDGET_2030 } from './data/benchmarks';
-import { PLAN, fmtT } from './data/copy';
+import { PLAN, EFFORT_LABELS, fmtT } from './data/copy';
 import { fill } from './data/storyCopy';
 import { prefersReducedMotion } from '../utils/media';
-import { PathwayChart, MaccChart } from './charts';
+import { PathwayChart, MaccChart, PATHWAY_COLORS } from './charts';
 import Icon from '../components/Icons';
-
-const EFFORT = { low: 'Easy', med: 'Moderate', high: 'Harder' };
 
 // A cut as a share of the year: whole percentages, small-but-real shown as "<1".
 const pctOf = (reduction, baseline) => {
@@ -25,7 +23,7 @@ function OptionCard({ r, on, baseline, onToggle }) {
         <>
           <div className="fp-opt-pct display">-{pctOf(r.reduction, baseline)}<span>%</span></div>
           <div className="fp-opt-meta">
-            {fmtT(r.reduction, 2)} t {PLAN.reductionLabel} · {PLAN.effortLabel}: {EFFORT[r.effort] || 'Moderate'}
+            {fmtT(r.reduction, 2)} t {PLAN.reductionLabel} · {PLAN.effortLabel}: {EFFORT_LABELS[r.effort] || EFFORT_LABELS.med}
           </div>
         </>
       ) : (
@@ -129,15 +127,14 @@ export default function Plan({ macc, pathway, plan, onToggle }) {
                   labels={{ bau: PLAN.bauLabel, plan: PLAN.planLabel, budget: PLAN.budgetLabel }}
                 />
                 <div className="fp-legend" aria-hidden="true">
-                  <span className="fp-leg-item"><span className="fp-leg-line dash" style={{ color: '#6E7469' }} />{PLAN.bauLabel}</span>
-                  <span className="fp-leg-item"><span className="fp-leg-line" style={{ color: '#1F2A1E' }} />{PLAN.planLabel}</span>
-                  <span className="fp-leg-item"><span className="fp-leg-line dash" style={{ color: '#C7274A' }} />{PLAN.budgetLabel}</span>
+                  <span className="fp-leg-item"><span className="fp-leg-line dash" style={{ color: PATHWAY_COLORS.bau }} />{PLAN.bauLabel}</span>
+                  <span className="fp-leg-item"><span className="fp-leg-line" style={{ color: PATHWAY_COLORS.plan }} />{PLAN.planLabel}</span>
+                  <span className="fp-leg-item"><span className="fp-leg-line dash" style={{ color: PATHWAY_COLORS.budget }} />{PLAN.budgetLabel}</span>
                 </div>
                 <p className="fp-takeaway">
-                  By FY{horizonYear} your choices land you at <em>{fmtT(landing)} t</em>, next to {fmtT(bauLanding)} t if nothing changes.
-                  At 2030 that reads {fmtT(at2030)} t, {gap > 0
-                    ? <>still <em>{fmtT(gap)} t over</em> the 2.5 t benchmark.</>
-                    : <>which is <em>inside the 2.5 t benchmark</em>.</>}
+                  {fill(PLAN.takeaway.lead, { year: horizonYear })} <em>{fmtT(landing)} t</em>, {fill(PLAN.takeaway.mid, { bau: fmtT(bauLanding), at2030: fmtT(at2030) })} {gap > 0
+                    ? <>{PLAN.takeaway.over} <em>{fill(PLAN.impact.over, { gap: fmtT(gap) })}</em>.</>
+                    : <>{PLAN.takeaway.within} <em>{PLAN.impact.within}</em>.</>}
                 </p>
               </>
             )}

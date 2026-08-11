@@ -93,6 +93,14 @@ export const PLAN = {
     costs: 'about ${n} a year net, upfront costs spread out',
     evens: 'roughly cost-neutral over the year',
   },
+  // The takeaway line under the pathway chart. The verdict clauses reuse
+  // impact.over / impact.within so the two readouts can never disagree.
+  takeaway: {
+    lead: 'By FY{year} your choices land you at',
+    mid: 'next to {bau} t if nothing changes. At 2030 that reads {at2030} t,',
+    over: 'still',
+    within: 'which is',
+  },
   // The cost curve view: each change alone, cheapest abatement first.
   chartViewLabel: 'Chart view',
   costTab: 'Cost curve',
@@ -298,7 +306,7 @@ export const METHOD = {
     title: 'The reporting period',
     paras: [
       'The worked example runs on the Australian financial year, July to June: it is FY2026 (July 2025 to June 2026). Your own audit runs on your last twelve complete months, whichever country is home, and rolls over a year at a time from there.',
-      'Timing is honest about what is known. Dated trips land in the month they happened, bills spread across the months they cover, and rough typical-year estimates spread evenly rather than being given made-up dates. The month-by-month chart and the worst-month reveal only appear once real dates give them something to show.',
+      'Timing is honest about what is known. Dated trips land in the month they happened, bills spread across the months they cover, and rough typical-year estimates spread evenly rather than being given made-up dates. A bill that reaches back past the start of the reporting window keeps its early share in the window\'s first month, so the monthly chart always sums to the annual total. The month-by-month chart and the worst-month reveal only appear once real dates give them something to show.',
     ],
   },
   sources: {
@@ -313,7 +321,7 @@ export const METHOD = {
     title: 'How results are calculated',
     paras: [
       'Each item is activity times a factor: kilowatt-hours times the grid factor, litres times the fuel factor, passenger-kilometres times the flight factor, and so on. Flights include the extra warming effect of burning fuel at altitude, which reasonable calculators treat differently, so this one reads a little higher than a CO₂-only figure.',
-      'Where a real bill or itinerary is not to hand, the calculator estimates: it turns spend into litres, kilometres or parcels at stated rates, or extends a metered daily average over an unbilled period. In Australia, public-transport spend is capped at the state weekly fare cap first (in NSW, the $50 Opal cap), because spending past the cap buys no extra travel; US and NZ networks cap too differently to carry one honest ceiling, so spend there is counted as given. Gas bills read in the local unit (megajoules in Australia, kilowatt-hours in New Zealand, therms in the United States) and convert to megajoules before pricing. Estimates are labelled, and replacing one with a real number tightens the range shown next to the total. A certified renewable purchase (GreenPower in Australia, a certified green-power plan elsewhere), where you have it, lowers your purchased-electricity figure; no offsets are subtracted anywhere.',
+      'Where a real bill or itinerary is not to hand, the calculator estimates: it turns spend into litres, kilometres or parcels at stated rates, or extends a metered daily average over an unbilled period. In Australia, public-transport spend is capped at the state weekly fare cap first (in NSW, the $50 Opal cap), because spending past the cap buys no extra travel; US and NZ networks cap too differently to carry one honest ceiling, so spend there is counted as given. Gas bills read in the local unit (megajoules in Australia, kilowatt-hours in New Zealand, therms in the United States) and convert to megajoules before pricing. Estimates are labelled, and replacing one with a real number tightens the range shown next to the total. A certified renewable purchase (GreenPower in Australia, a certified green-power plan elsewhere), where you have it, lowers your purchased-electricity figure, and the same netting applies to electricity an EV draws from the grid; no offsets are subtracted anywhere.',
     ],
   },
   interpret: {
@@ -326,7 +334,7 @@ export const METHOD = {
   plan: {
     title: 'How the reductions are modelled',
     paras: [
-      'Each reduction is worked out against your own numbers, not a national average, so the estimate fits your year. When you choose several, the calculator applies them in a sensible order (behaviour first, then switching to electric, then rooftop solar on the load that remains) so they add up without double-counting. Bigger changes take a year or two to fully phase in.',
+      'Each reduction is worked out against your own numbers, not a national average, so the estimate fits your year. When you choose several, the calculator applies them in a sensible order (behaviour first, then switching to electric, then rooftop solar on the load that remains) so they add up without double-counting. Bigger changes take a year or two to fully phase in. Indicative costs sit on the same boundary as the reductions: a whole-household outlay like solar or electrifying the gas is split across the adults at home, the same way the bills are, and running-cost savings scale with your own audited use.',
       'The background grid keeps getting cleaner in both lines, because that happens whether or not you act. Offsets and green-power products are left out of the reductions on purpose: they retire certificates rather than remove the activity.',
     ],
   },
@@ -385,6 +393,22 @@ export const METHOD_LINK = {
   factorLine: 'Australian factors (DCCEEW) for energy and fuel, with US (EPA / EIA) and NZ (MfE) sets for audits based there; UK Government (DESNZ / DEFRA) factors for flights and freight.',
 };
 
+// The difficulty labels the option cards and the cost-curve tip both read
+// from, so the two can never drift apart.
+export const EFFORT_LABELS = { low: 'Easy', med: 'Moderate', high: 'Harder' };
+
+// Chart furniture previously inline in charts.jsx.
+export const CHART_UI = {
+  maccEmpty: 'Nothing applicable to plot yet. Add some entries first.',
+  maccHint: 'Tap, hover or tab across the bars. Width is tonnes; below the line pays you.',
+  maccCapNote: 'Axis capped at -${cap}/t, MACC convention; marked bars run further and carry their true figure.',
+  maccEffortSuffix: 'difficulty',
+  monthTotal: 'Month total: {t} t',
+};
+
+// Nav control labels previously inline in Nav.jsx.
+export const NAV_UI = { menuOpen: 'Open menu', menuClose: 'Close menu' };
+
 // Transient UI feedback, previously inline in components.
 export const TOASTS = {
   shareCopied: 'That link carries a summary only; your details stay in this browser.',
@@ -402,7 +426,7 @@ export const SHARE = {
   readsAs: 'A year that reads as',
   // The nudge that converts a viewer into a player.
   tease: 'Reckon yours is smaller? Find out.',
-  namePrompt: 'Add a name to the shared page? Leave blank to keep it as "My FY2026 carbon emissions".',
+  namePrompt: 'Add a name to the shared page? Leave blank to keep it as "My {label} carbon emissions".',
   provenance: 'The numbers come from a calculator built on published factors.',
   provenanceCta: 'See how it works',
   cta: 'Calculate your own',

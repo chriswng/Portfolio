@@ -8,7 +8,7 @@ const slug = (s) => String(s || '').replace(/[^a-z0-9-]+/gi, '-').toLowerCase();
 // to a story, a post or LinkedIn, or save the PNG. The card is only ever drawn
 // in this browser; "Share" hands the file to the native share sheet where it
 // exists (mobile), and falls back to a download everywhere else.
-export default function ShareSheet({ kind, data, linkedIn, onClose }) {
+export default function ShareSheet({ kind, data, linkedIn, initialFormat, onClose }) {
   // Freeze the card inputs at open time: the underlying moment does not change
   // while the sheet is up, and this keeps the preview effect from re-running on
   // every parent render (data is an inline literal upstream).
@@ -21,19 +21,23 @@ export default function ShareSheet({ kind, data, linkedIn, onClose }) {
     return base;
   }, [li]);
 
-  const [fmt, setFmt] = useState('story');
+  // Open on the format the caller's preview showed, so preview and sheet agree.
+  const [fmt, setFmt] = useState(() => (formats.includes(initialFormat) ? initialFormat : 'story'));
   const [url, setUrl] = useState('');
   const [busy, setBusy] = useState(true);
   const [status, setStatus] = useState('');
   const canvasRef = useRef(null);
   const dialogRef = useRef(null);
   const closeRef = useRef(null);
+  const tabRefs = useRef({});
+  const urlRef = useRef('');
   const canNativeShare = useMemo(() => canShareImage(), []);
 
-  // Draw a fresh preview whenever the format changes.
+  // Draw a fresh preview whenever the format changes. The outgoing preview's
+  // blob URL stays alive until its replacement exists, so the img never
+  // points at a revoked URL mid-switch; the last URL is revoked on unmount.
   useEffect(() => {
     let alive = true;
-    let objUrl = '';
     setBusy(true);
     setStatus('');
     (async () => {
@@ -44,19 +48,34 @@ export default function ShareSheet({ kind, data, linkedIn, onClose }) {
       canvasRef.current = canvas;
       canvas.toBlob((blob) => {
         if (!alive || !blob) { if (alive) setBusy(false); return; }
-        objUrl = URL.createObjectURL(blob);
+        const objUrl = URL.createObjectURL(blob);
+        if (urlRef.current) URL.revokeObjectURL(urlRef.current);
+        urlRef.current = objUrl;
         setUrl(objUrl);
         setBusy(false);
       }, 'image/png');
     })();
-    return () => { alive = false; if (objUrl) URL.revokeObjectURL(objUrl); };
+    return () => { alive = false; };
   }, [fmt, k, d, li]);
+  useEffect(() => () => { if (urlRef.current) URL.revokeObjectURL(urlRef.current); }, []);
 
-  // Modal chrome: focus in, scroll lock, Escape to close, focus back on exit.
+  // Modal chrome: focus in, scroll lock, Escape to close, Tab trapped inside
+  // the dialog, focus back on exit.
   useEffect(() => {
     const opener = document.activeElement;
     closeRef.current?.focus();
-    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    const onKey = (e) => {
+      if (e.key === 'Escape') { onClose(); return; }
+      if (e.key !== 'Tab' || !dialogRef.current) return;
+      const focusables = Array.from(dialogRef.current.querySelectorAll('button, [href], [tabindex]'))
+        .filter((el) => !el.disabled && el.getAttribute('tabindex') !== '-1');
+      if (!focusables.length) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (!dialogRef.current.contains(document.activeElement)) { e.preventDefault(); first.focus(); }
+      else if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    };
     window.addEventListener('keydown', onKey);
     document.body.style.overflow = 'hidden';
     return () => {
@@ -66,12 +85,24 @@ export default function ShareSheet({ kind, data, linkedIn, onClose }) {
     };
   }, [onClose]);
 
+  // Roving radio focus: arrow keys move selection and focus together.
+  const onTabKey = (e) => {
+    const i = formats.indexOf(fmt);
+    let next = null;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = formats[(i + 1) % formats.length];
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = formats[(i - 1 + formats.length) % formats.length];
+    if (!next) return;
+    e.preventDefault();
+    setFmt(next);
+    tabRefs.current[next]?.focus();
+  };
+
   const filename = () => 'carbon-footprint-' + k + '-' + fmt + '-' + slug(d.fy) + '.png';
 
   const onShare = async () => {
     if (!canvasRef.current || busy) return;
     setStatus('');
-    const result = await shareCanvas(canvasRef.current, filename(), d.title || '');
+    const result = await shareCanvas(canvasRef.current, filename(), SHARE_ST.shareText);
     if (result === 'shared') setStatus(SHARE_ST.sheet.shared);
     else if (result === 'saved') setStatus(SHARE_ST.sheet.saved);
   };
@@ -100,14 +131,18 @@ export default function ShareSheet({ kind, data, linkedIn, onClose }) {
           <button type="button" className="st-sheet-x" aria-label={SHARE_ST.sheet.close} onClick={onClose} ref={closeRef}>×</button>
         </div>
 
-        <div className="st-sheet-tabs" role="group" aria-label="Format">
+        <div className="st-sheet-tabs" role="radiogroup" aria-label={SHARE_ST.sheet.formatLabel}>
           {formats.map((f) => (
             <button
               key={f}
               type="button"
+              role="radio"
               className={'st-sheet-tab' + (fmt === f ? ' on' : '')}
-              aria-pressed={fmt === f}
+              aria-checked={fmt === f}
+              tabIndex={fmt === f ? 0 : -1}
               onClick={() => setFmt(f)}
+              onKeyDown={onTabKey}
+              ref={(el) => { tabRefs.current[f] = el; }}
             >
               {SHARE_ST.sheet.formats[f]}
             </button>

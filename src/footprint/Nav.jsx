@@ -2,34 +2,44 @@
 // and the basis of preparation at /footprint/method/. `home` is the relative
 // path back to the site root from wherever the page sits.
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NAV_LINKS } from '../data/content';
-import { FOOTER } from './data/copy';
+import { FOOTER, NAV_UI } from './data/copy';
 import Mark from '../components/Mark';
 
 export function FootprintNav({ home = '../' }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  // Escape closes the open mobile menu, matching every other dismissable
+  // surface on the page.
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+    const onKey = (e) => { if (e.key === 'Escape') setMenuOpen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [menuOpen]);
   return (
     <nav className="nav" aria-label="Primary">
       <div className="nav-inner canvas">
         <a href={home} className="nav-logo"><Mark label="Chris Wang, home" /></a>
-        <div className={`nav-links${menuOpen ? ' open' : ''}`}>
+        <div id="fp-nav-links" className={`nav-links${menuOpen ? ' open' : ''}`}>
           {NAV_LINKS.map((l) => {
             const self = l.href === 'footprint/';
             // From the dashboard itself the footprint link stays in place;
             // from the method page it climbs back up to the dashboard.
             const href = self && home === '../' ? './' : home + l.href;
             return (
-              <a key={l.label} href={href} className={self ? 'active' : undefined} aria-current={self ? 'true' : undefined}>
+              <a key={l.label} href={href} className={self ? 'active' : undefined} aria-current={self ? 'true' : undefined} onClick={() => setMenuOpen(false)}>
                 {l.label}
               </a>
             );
           })}
         </div>
         <button
+          type="button"
           className={`nav-hamburger${menuOpen ? ' open' : ''}`}
-          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          aria-label={menuOpen ? NAV_UI.menuClose : NAV_UI.menuOpen}
           aria-expanded={menuOpen}
+          aria-controls="fp-nav-links"
           onClick={() => setMenuOpen((v) => !v)}
         >
           <span /><span /><span />

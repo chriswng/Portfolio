@@ -165,14 +165,21 @@ export const ABATEMENT_OPTIONS = [
     action: 'Electrify the gas appliances',
     detail: 'Reverse-cycle heating and heat pump hot water replace 90% of gas use; the new electric load is added to the meter before solar acts on it. Flagged not applicable for renters and apartments: this one belongs to the landlord, and the method says so out loud.',
     effort: 'high',
-    source: 'Heat pump COP 3.5 against gas appliance efficiency 0.85; capex about $3,000 net of state rebates, amortised over 12 years, less running-cost saving.',
+    source: 'Heat pump COP 3.5 against gas appliance efficiency 0.85; capex about $3,000 net of state rebates, amortised over 12 years and split across the household; running-cost delta at indicative 4c/MJ gas and 30c/kWh electricity, scaled to your audited gas use.',
     applicable: (st) => st.mj > 0 && st.dwelling === 'house',
     apply: (st, p) => {
       const cut = st.mj * 0.9 * p;
       st.mj -= cut;
       st.addedKwh0 += (cut * 0.85) / 3.6 / 3.5;
     },
-    cost: () => 250 - 180,
+    // Same per-person boundary as the reduction: capex splits across the
+    // household, and the running saving scales with the audited (per-person)
+    // gas share instead of a flat figure.
+    cost: (st) => {
+      const cutMj = st.mj * 0.9;
+      const addedKwh = (cutMj * 0.85) / 3.6 / 3.5;
+      return 250 / st.householdSize - (cutMj * 0.04 - addedKwh * 0.3);
+    },
   },
   {
     id: 'solar',
@@ -180,9 +187,12 @@ export const ABATEMENT_OPTIONS = [
     action: 'Rooftop solar (6.6 kW)',
     detail: 'Assumes 60% of annual grid draw displaced (generation minus export). Requires a roof you own, so it is flagged not applicable for apartments and rentals.',
     effort: 'high',
-    source: 'System cost about $5,500 installed (Solar Choice price index), amortised over 15 years against bill savings at typical capital-city yield.',
+    source: 'System cost about $5,500 installed (Solar Choice price index), amortised over 15 years against bill savings at typical capital-city yield, both split across the household.',
     applicable: (st) => st.dwelling === 'house' && st.kwh > 0,
     apply: (st, p) => { st.solarReduction = Math.max(st.solarReduction, 0.6 * p); },
-    cost: (st) => 367 - Math.min(st.kwh, 4400) * 0.6 * 0.3,
+    // Costed whole-household then split per adult, so the $/t sits on the
+    // same boundary as the per-person reduction. st.kwh is the audited
+    // per-person share; the system's capex and yield belong to the home.
+    cost: (st) => (367 - Math.min(st.kwh * st.householdSize, 4400) * 0.6 * 0.3) / st.householdSize,
   },
 ];

@@ -25,6 +25,9 @@
   padding: 5.5rem var(--gut) 5.5rem;
   scroll-margin-top: 0.5rem;
 }
+/* Programmatic-focus targets only (goToMoment stamps tabindex="-1"); each
+   moment's first interactive child keeps its own ring. */
+.st-moment:focus { outline: none; }
 .st-center { max-width: 720px; margin: 0 auto; width: 100%; text-align: left; }
 .st-wide { max-width: 860px; }
 
@@ -108,6 +111,8 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.7rem var(--gut);
+  /* Notched phones: keep the pills clear of the status bar. */
+  padding-top: max(0.7rem, env(safe-area-inset-top));
   pointer-events: none;
 }
 .st-chrome > * { pointer-events: auto; }
@@ -189,8 +194,6 @@
   font-weight: 600; color: var(--st-dark-mid); margin-top: 1.2rem;
 }
 .st-cover-note-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--matcha); flex-shrink: 0; }
-.st-cover .st-assessor { color: var(--st-dark-mid); }
-.st-cover .st-assessor:hover { color: var(--st-dark-ink); }
 .st-cue {
   position: absolute;
   bottom: 1.6rem; left: 50%;
@@ -408,7 +411,6 @@
 .st-needle-pct { font-size: 0.55em; color: #75821D; font-weight: 700; }
 .st-needle-of { font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mid); font-weight: 600; margin-bottom: 0.7rem; }
 .st-needle-name { font-weight: 700; font-size: 0.92rem; color: var(--slate); line-height: 1.4; margin-bottom: 0.45rem; }
-.st-needle-cost { font-family: var(--mono); font-size: 10.5px; color: #66731A; font-weight: 600; }
 
 /* ---- Outro ---- */
 .st-outro { border-bottom: 1px solid var(--st-dark-rule); }
@@ -427,7 +429,7 @@
   .st-total .st-sticky { padding-top: 7rem; padding-bottom: 4.5rem; }
   .st-total .st-cat-chip { font-size: 9.5px; padding: 0.4rem 0.7rem; }
   .st-cat-hint { min-height: 1.2em; }
-  .st-chrome { padding: 0.55rem 3vw; }
+  .st-chrome { padding: 0.55rem 3vw; padding-top: max(0.55rem, env(safe-area-inset-top)); }
   .st-skip { max-width: 52vw; overflow: hidden; text-overflow: ellipsis; }
   /* The rail is a desktop affordance: on phones it crowds the text edge and
      the dots fall under minimum touch size. The chrome and scroll carry it. */
@@ -477,6 +479,8 @@
 /* ---- Next chapter pill ---- */
 .st-next {
   position: fixed; bottom: 1.1rem; left: 50%; transform: translateX(-50%); z-index: 60;
+  /* Home-indicator phones: the pill rides above the gesture bar. */
+  bottom: calc(1.1rem + env(safe-area-inset-bottom));
   font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
   font-weight: 600; color: var(--st-dark-ink); background: rgba(23, 28, 19, 0.62);
   backdrop-filter: blur(8px); border: 1px solid rgba(244, 246, 238, 0.16); border-radius: 999px;
@@ -578,6 +582,8 @@
 @keyframes st-sheet-in { from { opacity: 0; } to { opacity: 1; } }
 .st-sheet {
   width: min(440px, 100%); max-height: 92vh; overflow-y: auto;
+  /* iOS: dvh tracks the visible viewport under the collapsing URL bar. */
+  max-height: 92dvh;
   background: var(--st-dark); color: var(--st-dark-ink);
   border: 1px solid var(--st-dark-rule); border-radius: 18px;
   padding: 1.3rem 1.3rem 1.4rem;
@@ -607,7 +613,7 @@
   background: rgba(0, 0, 0, 0.28); border: 1px solid var(--st-dark-rule); border-radius: 14px;
   min-height: 200px; max-height: 52vh; overflow: hidden; padding: 0.8rem;
 }
-.st-sheet-preview img { max-width: 100%; max-height: calc(52vh - 1.6rem); width: auto; height: auto; display: block; border-radius: 8px; }
+.st-sheet-preview img { max-width: 100%; max-height: calc(52vh - 1.6rem); max-height: calc(52dvh - 1.6rem); width: auto; height: auto; display: block; border-radius: 8px; }
 .st-sheet-loading { position: absolute; font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--st-dark-mid); }
 .st-sheet-fmtnote { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--st-dark-mid); margin: 0.7rem 0 0; text-align: center; }
 .st-sheet-actions { display: flex; gap: 0.7rem; align-items: center; margin-top: 1.1rem; }

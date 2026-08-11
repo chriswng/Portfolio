@@ -34,6 +34,10 @@ const inView = { once: true, margin: '-18% 0px' };
 // sharing instead of a row of identical buttons. Tapping the preview or the
 // button opens the share sheet with the full format choices.
 // ---------------------------------------------------------------------------
+// The gallery thumbnails render as square posts; the sheet opens on the same
+// format so the preview and the sheet agree.
+const PREVIEW_FORMAT = 'post';
+
 export function GalleryCard({ kind, data, fy, linkedIn, label }) {
   const [open, setOpen] = useState(false);
   const [url, setUrl] = useState('');
@@ -47,7 +51,7 @@ export function GalleryCard({ kind, data, fy, linkedIn, label }) {
     const el = boxRef.current;
     const draw = async () => {
       let canvas;
-      try { canvas = await renderShare('post', kind, { ...data, fy }); }
+      try { canvas = await renderShare(PREVIEW_FORMAT, kind, { ...data, fy }); }
       catch { return; }
       if (!alive) return;
       canvas.toBlob((blob) => {
@@ -87,7 +91,7 @@ export function GalleryCard({ kind, data, fy, linkedIn, label }) {
         <span aria-hidden="true">↗</span> {SHARE_ST.button}
       </button>
       {open && (
-        <ShareSheet kind={kind} data={{ ...data, fy }} linkedIn={linkedIn} onClose={() => setOpen(false)} />
+        <ShareSheet kind={kind} data={{ ...data, fy }} linkedIn={linkedIn} initialFormat={PREVIEW_FORMAT} onClose={() => setOpen(false)} />
       )}
     </div>
   );
@@ -440,8 +444,6 @@ export function TotalReveal({ d, voice, guess, onCopyLink, reduced }) {
 // ---------------------------------------------------------------------------
 const fmtCount = (v) => (v >= 20 ? Math.round(v).toLocaleString('en-AU') : String(Math.round(v * 10) / 10));
 
-const DOT_RENDER_CAP = 168;
-
 export function Equivalences({ d, voice, tags }) {
   const [sel, setSel] = useState(EQUIVALENCES[0].id);
   const eq = EQUIVALENCES.find((e) => e.id === sel) || EQUIVALENCES[0];
@@ -484,15 +486,16 @@ export function Equivalences({ d, voice, tags }) {
           <p className="st-eq-cad">{cadLine}</p>
           {/* The wall of dots: felt scale, one glance. Decorative; the readout
               above carries the number. */}
+          {/* equivCount snaps the per-dot grain so dots never exceeds 150. */}
           <div className="st-eq-dots" key={eq.id} aria-hidden="true">
-            {Array.from({ length: Math.min(dots, DOT_RENDER_CAP) }).map((_, i) => (
+            {Array.from({ length: dots }).map((_, i) => (
               <i key={i} style={{ animationDelay: `${Math.min(i * 7, 1100)}ms` }} />
             ))}
           </div>
           <p className="st-eq-legend" aria-hidden="true">{legend}</p>
           <p className="st-eq-basis">{eq.basis}</p>
         </motion.div>
-        <motion.p className="st-caveat" variants={rise} custom={5}>{EQUIV_ST.note}</motion.p>
+        <motion.p className="st-caveat" variants={rise} custom={5}>{EQUIV_ST.note[voice]}</motion.p>
       </motion.div>
     </section>
   );
@@ -699,7 +702,7 @@ export function Bench({ d, voice, tags }) {
             <span className="st-overshoot-k">{BENCH_ST.overshoot.kicker}</span>
             <span className="st-overshoot-line">
               {d.overshoot.within
-                ? BENCH_ST.overshoot.within
+                ? BENCH_ST.overshoot.within[voice]
                 : fill(BENCH_ST.overshoot.line[voice], { date: d.overshoot.date, day: d.overshoot.day })}
             </span>
           </motion.div>

@@ -23,7 +23,16 @@ export function loadOwnProfile() {
   try {
     const raw = window.localStorage.getItem(KEY);
     if (!raw) return null;
-    return migrate(JSON.parse(raw));
+    const parsed = JSON.parse(raw);
+    const p = migrate(parsed);
+    // A save written by a newer schema than this bundle knows (plausible on
+    // GitHub Pages, where a cached old bundle can outlive a deploy) must not
+    // be clobbered by the fresh profile the app would then create: park the
+    // raw payload under a backup key before treating it as absent.
+    if (!p && parsed && typeof parsed.schema === 'string' && parsed.schema.startsWith('cw-footprint/')) {
+      window.localStorage.setItem(KEY + '-unrecognised-backup', raw);
+    }
+    return p;
   } catch {
     return null;
   }
@@ -72,6 +81,24 @@ export function exportProfile(profile) {
   URL.revokeObjectURL(url);
 }
 
+// Entries from a file are numerically sanitised before the engine sees them:
+// a string or missing tco2e would otherwise turn every aggregate into NaN or
+// string concatenation. Entries with no usable date are dropped; values are
+// coerced to finite numbers.
+const numOr0 = (v) => (Number.isFinite(Number(v)) ? Number(v) : 0);
+const sanitiseEntry = (e) => {
+  if (!e || typeof e !== 'object' || typeof e.date !== 'string' || typeof e.category !== 'string') return null;
+  return {
+    ...e,
+    tco2e: numOr0(e.tco2e),
+    period_months: numOr0(e.period_months),
+    components: Array.isArray(e.components)
+      ? e.components.map((c) => ({ scope: String((c && c.scope) || '3'), tco2e: numOr0(c && c.tco2e) }))
+      : undefined,
+  };
+};
+const sanitiseEntries = (list) => list.map(sanitiseEntry).filter(Boolean);
+
 export function parseImported(text) {
   const p = JSON.parse(text);
   if (!p || (p.schema !== 'cw-footprint/1' && p.schema !== 'cw-footprint/2')) throw new Error('Not a footprint export file.');
@@ -81,10 +108,12 @@ export function parseImported(text) {
     kind: 'own',
     settings: p.settings,
     period: p.period,
-    entries: p.entries,
+    entries: sanitiseEntries(p.entries),
     plan: p.plan && Array.isArray(p.plan.enabled) ? p.plan : { enabled: [] },
     pastYears: Array.isArray(p.pastYears)
-      ? p.pastYears.filter((y) => y && y.label && y.start && y.end && Array.isArray(y.entries))
+      ? p.pastYears
+        .filter((y) => y && y.label && y.start && y.end && Array.isArray(y.entries))
+        .map((y) => ({ ...y, entries: sanitiseEntries(y.entries) }))
       : [],
   };
 }
@@ -109,7 +138,9 @@ export function decodeSnapshot() {
     if (!m) return null;
     const b64 = m[1].replace(/-/g, '+').replace(/_/g, '/');
     const s = JSON.parse(decodeURIComponent(escape(atob(b64))));
-    if (typeof s.total !== 'number' || !Array.isArray(s.cats)) return null;
+    if (!Number.isFinite(s.total) || !Array.isArray(s.cats)) return null;
+    // A crafted link must render labels and numbers, not NaN tiles.
+    s.cats = s.cats.filter((c) => Array.isArray(c) && typeof c[0] === 'string' && Number.isFinite(c[1]));
     return s;
   } catch {
     return null;

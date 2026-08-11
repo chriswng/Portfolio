@@ -6,12 +6,12 @@ import { BENCHMARK_CAVEAT } from './data/benchmarks';
 import { DASH, DASH_UI, fmtT } from './data/copy';
 import { DASH_EXTRA, fill } from './data/storyCopy';
 import { CountUp } from './story/CountUp';
-import { TrendChart } from './charts';
+import { TrendChart, MONTH_NAMES } from './charts';
 import Icon from '../components/Icons';
 
 const monthName = (key) => {
   const [y, m] = key.split('-');
-  return ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][Number(m) - 1] + ' ' + y;
+  return MONTH_NAMES[Number(m) - 1] + ' ' + y;
 };
 
 const fadeUp = {

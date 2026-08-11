@@ -273,6 +273,75 @@ const DEFAULTS = {
   ...ADVANCED_DEFAULTS,
 };
 
+// In-progress answers persist here so Escape or the close button never
+// discards typed answers; the draft belongs to the guided audit alone and is
+// cleared the moment the audit is built.
+const DRAFT_KEY = 'cw-footprint-draft-v1';
+
+// A stored flight card may be malformed, so each field falls back to the
+// shape addFlight creates.
+const sanitiseFlight = (f) => ({
+  from: typeof f.from === 'string' ? f.from : '',
+  to: typeof f.to === 'string' ? f.to : '',
+  ret: f.ret !== false,
+  cabin: ONBOARD.flights.cabins[f.cabin] ? f.cabin : 'economy',
+  month: typeof f.month === 'string' ? f.month : '',
+  pax: Number.isFinite(f.pax) ? f.pax : 1,
+  nights: Number.isFinite(f.nights) ? f.nights : 0,
+});
+
+// Read the saved draft, or null. Everything is validated against DEFAULTS
+// (only known keys, each held to its default's type, merged over the
+// defaults) so a malformed draft can never crash the flow, and storage
+// access is wrapped because sessionStorage itself can throw.
+function readDraft() {
+  try {
+    const raw = sessionStorage.getItem(DRAFT_KEY);
+    if (!raw) return null;
+    const d = JSON.parse(raw);
+    if (!d || typeof d !== 'object' || !d.answers || typeof d.answers !== 'object') return null;
+    const answers = { ...DEFAULTS };
+    for (const k of Object.keys(DEFAULTS)) {
+      const v = d.answers[k];
+      if (v === undefined) continue;
+      if (k === 'flights') {
+        if (Array.isArray(v)) answers.flights = v.filter((f) => f && typeof f === 'object').map(sanitiseFlight);
+      } else if (k === 'clothingItems') {
+        if (v && typeof v === 'object') {
+          answers.clothingItems = { ...DEFAULTS.clothingItems };
+          for (const ck of Object.keys(DEFAULTS.clothingItems)) {
+            if (Number.isFinite(v[ck])) answers.clothingItems[ck] = v[ck];
+          }
+        }
+      } else if (k === 'energyPreset') {
+        // The one nullable field: a preset id string, or null for none.
+        if (v === null || typeof v === 'string') answers[k] = v;
+      } else if (typeof v === typeof DEFAULTS[k] && (typeof v !== 'number' || Number.isFinite(v))) {
+        answers[k] = v;
+      }
+    }
+    // Enumerated fields are indexed straight into their tables, so an
+    // unknown value falls back rather than crashing a step or the build.
+    if (!COUNTRIES[answers.country]) answers.country = DEFAULTS.country;
+    if (!regionsForCountry(answers.country).some(([k]) => k === answers.state)) {
+      answers.state = COUNTRIES[answers.country].defaultRegion;
+    }
+    if (!DIET_TYPES[answers.dietType]) answers.dietType = DEFAULTS.dietType;
+    if (!roadFuelSetFor(answers.country)[answers.fuelType]) answers.fuelType = DEFAULTS.fuelType;
+    if (answers.energyPreset && !ENERGY_PRESETS[answers.country].some((p) => p.id === answers.energyPreset)) {
+      answers.energyPreset = null;
+    }
+    const step = Number.isInteger(d.step) && d.step >= 0 && d.step <= 5 ? d.step : 0;
+    return { answers, step };
+  } catch {
+    return null;
+  }
+}
+
+const clearDraft = () => {
+  try { sessionStorage.removeItem(DRAFT_KEY); } catch { /* storage unavailable */ }
+};
+
 // Airports grouped by region for the From/To dropdowns, order preserved.
 const AIRPORT_GROUPS = (() => {
   const out = [];
@@ -310,15 +379,32 @@ function Chips({ label, options, value, onChange, note, icon }) {
 
 function Stepper({ label, value, onChange, min = 0, max = 99, step = 1, icon, compact }) {
   const clamp = (v) => Math.min(max, Math.max(min, v));
+  // Typing needs a transient state (empty, or the first digit of a bigger
+  // number), so the input holds local text and only a parseable figure is
+  // committed; blur reconciles the text with the clamped value. The +/-
+  // buttons work on the numeric value directly.
+  const [text, setText] = useState(String(value));
+  useEffect(() => { setText(String(value)); }, [value]);
+  const onType = (raw) => {
+    setText(raw);
+    if (raw === '' || raw === '-') return;
+    const n = Number(raw);
+    if (!isNaN(n)) onChange(clamp(n));
+  };
+  const onBlurInput = () => {
+    const n = Number(text);
+    setText(String(text === '' || isNaN(n) ? value : clamp(n)));
+  };
   return (
     <div className={compact ? 'ob-field ob-field-compact' : 'ob-field'}>
       <span className="ob-label">{icon && <Icon name={icon} size={30} className="ob-label-i" />}{label}</span>
       <div className="ob-stepper">
         <button type="button" aria-label={'Decrease ' + label} onClick={() => onChange(clamp(value - step))}>−</button>
         <input
-          type="number" min={min} max={max} step={step} value={value}
+          type="number" min={min} max={max} step={step} value={text}
           aria-label={label}
-          onChange={(e) => onChange(clamp(Number(e.target.value) || 0))}
+          onChange={(e) => onType(e.target.value)}
+          onBlur={onBlurInput}
         />
         <button type="button" aria-label={'Increase ' + label} onClick={() => onChange(clamp(value + step))}>+</button>
         {/* The +/- buttons keep focus, so echo the new value politely. */}
@@ -485,8 +571,12 @@ function SwarmMeter({ answers: a, step }) {
 // shape and its context all belong to the reveal that follows.
 // ---------------------------------------------------------------------------
 export default function Onboarding({ onDone, onBuilt, onCancel }) {
-  const [step, setStep] = useState(0);
-  const [a, setA] = useState(DEFAULTS);
+  // Resume a draft left by Escape or the close button, step included; a
+  // fresh open (no draft, or a completed audit that cleared it) starts from
+  // the defaults.
+  const [draft] = useState(readDraft);
+  const [step, setStep] = useState(draft ? draft.step : 0);
+  const [a, setA] = useState(draft ? draft.answers : DEFAULTS);
   // The audit window's twelve months, oldest first, for the optional
   // when-was-it picker. Value is a mid-month date inside the window.
   const monthOptions = useMemo(() => {
@@ -539,9 +629,24 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
   // means "add nothing", then jumps to the done pane.
   const skipAdvanced = () => setA((s) => ({ ...s, ...ADVANCED_DEFAULTS }));
 
+  // Keep the draft current while the visitor is mid-flow, so Escape or the
+  // cross closes without data loss. Step 6 never writes: the audit is built
+  // there and a completed build must not leave a stale draft behind.
+  useEffect(() => {
+    if (step >= 6) return;
+    try {
+      sessionStorage.setItem(DRAFT_KEY, JSON.stringify({ step, answers: a }));
+    } catch { /* storage unavailable; the flow runs, closing just loses the draft */ }
+  }, [step, a]);
+
   // The done pane says the audit is saved, so save it as the pane appears;
-  // closing with Escape or the cross after that point loses nothing.
-  useEffect(() => { if (doneProfile) onBuilt(doneProfile); }, [doneProfile, onBuilt]);
+  // closing with Escape or the cross after that point loses nothing. The
+  // draft has served its purpose once the profile exists, so it goes too.
+  useEffect(() => {
+    if (!doneProfile) return;
+    clearDraft();
+    onBuilt(doneProfile);
+  }, [doneProfile, onBuilt]);
 
   // Focus the incoming step's heading after the pane transition settles.
   useEffect(() => {
