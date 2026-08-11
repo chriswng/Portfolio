@@ -510,6 +510,8 @@
 .st-char-line { font-size: 0.95rem; font-weight: 300; color: var(--st-dark-mid); line-height: 1.7; max-width: 480px; margin-bottom: 0.8rem; }
 .st-char-stat { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--matcha); font-weight: 700; margin-bottom: 0.5rem; }
 .st-char-hint { font-size: 0.9rem; font-weight: 500; color: var(--st-dark-ink); border-left: 3px solid var(--matcha); padding-left: 0.8rem; max-width: 460px; margin-bottom: 0.6rem; }
+/* The verdict's bridge to action, on the screenshot moment itself. */
+.st-char-hook { font-family: var(--mono); font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; font-weight: 700; color: var(--matcha); max-width: 460px; margin-bottom: 0.6rem; }
 .st-char-others { border-top: 1px solid var(--st-dark-rule); padding-top: 1.6rem; }
 /* The workings, after the reveal: how the three meters read the year. */
 .st-char-how { border-top: 1px solid var(--st-dark-rule); padding-top: 1.5rem; margin-bottom: 2rem; }
@@ -645,6 +647,12 @@
 .st-ref-unit { font-family: var(--mono); font-size: 0.3em; font-weight: 500; color: var(--mid); letter-spacing: 0.04em; }
 .st-ref-label { font-family: var(--disp); font-weight: 600; font-size: 1.1rem; color: var(--slate); }
 .st-ref-note { font-size: 0.85rem; color: #475569; line-height: 1.5; }
+
+/* Total moment: instant everyday anchor beside the number */
+.st-anchor {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.05em; font-weight: 700;
+  color: var(--matcha); text-transform: uppercase; margin-bottom: 0.5rem;
+}
 
 /* Total moment: cute -e explainer and the category hint line */
 .st-enote {

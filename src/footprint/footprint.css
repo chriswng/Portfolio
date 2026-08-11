@@ -499,6 +499,9 @@
 .ob-quickadd-l{ font-family:var(--mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--mid); }
 .ob-fcard-btns{ display:flex; gap:0.4rem; }
 .ob-skiptop{ margin-bottom:1.1rem; }
+/* The swarm's answer-landed burst: motion only, never a number. */
+.ob-swarm-dots.pulse{ animation:ob-swarm-pulse 0.6s var(--ease); }
+@keyframes ob-swarm-pulse{ 0%{ transform:scale(1); } 35%{ transform:scale(1.14); } 100%{ transform:scale(1); } }
 
 /* ---- Dashboard character strip ---- */
 .fp-char-strip{ display:flex; align-items:center; gap:0.9rem; background:var(--white); border:1px solid var(--rule-dk); border-top:none; padding:0.75rem 1.25rem; margin-bottom:0.75rem; }

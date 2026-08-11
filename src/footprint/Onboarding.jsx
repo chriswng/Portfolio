@@ -566,6 +566,9 @@ function FlightCard({ fl, index, monthOptions, onChange, onRemove, onDuplicate }
 // questions have answers, never how big the answers are. Positions are a
 // deterministic golden-angle spiral; purely decorative.
 function SwarmMeter({ answers: a, step }) {
+  // A visible burst when a new answer lands: reaction without a number, so
+  // the meter reads as alive while the total stays for the reveal.
+  const [pulse, setPulse] = useState(false);
   const signals =
     2 + step * 2
     + (a.kwhQuarter > 0 ? 2 : 0) + (a.gasQuarter > 0 ? 2 : 0)
@@ -577,10 +580,19 @@ function SwarmMeter({ answers: a, step }) {
       .filter((v) => v > 0).length
     + (a.homeNewBuild && a.homeAreaM2 > 0 ? 2 : 0);
   const n = Math.min(64, 6 + signals * 2);
+  const prevSignals = useRef(signals);
+  useEffect(() => {
+    const grew = signals > prevSignals.current;
+    prevSignals.current = signals;
+    if (!grew || prefersReducedMotion()) return undefined;
+    setPulse(true);
+    const id = window.setTimeout(() => setPulse(false), 600);
+    return () => window.clearTimeout(id);
+  }, [signals]);
   const GA = 2.399963;
   return (
     <div className="ob-swarm" aria-hidden="true">
-      <div className="ob-swarm-dots">
+      <div className={'ob-swarm-dots' + (pulse ? ' pulse' : '')}>
         {Array.from({ length: n }).map((_, i) => {
           const r = 5.5 * Math.sqrt(i);
           return (

@@ -15,7 +15,7 @@ import { baselineState, stateEmissions } from '../lib/engine';
 import { ABATEMENT_OPTIONS, APPLY_ORDER } from '../data/abatement';
 import {
   CHROME, COVER, YEAR, GUESS, LOCKIN, TOTAL, EQUIV_ST, SCOPES, HOTSPOTS_ST,
-  MONTHS_ST, BENCH_ST, NEEDLE, OUTRO, SHARE_ST, fill,
+  MONTHS_ST, BENCH_ST, NEEDLE, OUTRO, SHARE_ST, fill, ratioPhrase,
 } from '../data/storyCopy';
 
 // Standard whileInView reveal used by the calm moments.
@@ -338,6 +338,13 @@ export function LockIn({ tags, goTo, guess, setGuess, locked, onLock, onSkip }) 
 // the flights become a plane, dinner becomes a drumstick, a fish or a leaf.
 // ---------------------------------------------------------------------------
 export function TotalReveal({ d, voice, guess, onCopyLink, reduced }) {
+  // One everyday anchor in the same breath as the number: the familiar
+  // domestic return, from the same table the equivalences moment counts with.
+  const anchorEq = EQUIVALENCES.find((e) => e.id === 'flight');
+  const anchorN = anchorEq ? (d.total * 1000) / anchorEq.kg : 0;
+  const anchorLine = anchorEq && anchorN >= 1
+    ? fill(TOTAL.anchor, { n: fmtCount(anchorN), unit: anchorN >= 1.5 ? anchorEq.unit[1] : anchorEq.unit[0] })
+    : null;
   // The guess, settled: under, over, or close enough to brag about.
   let guessLine = null;
   if (guess != null && d.total > 0.005) {
@@ -385,6 +392,7 @@ export function TotalReveal({ d, voice, guess, onCopyLink, reduced }) {
               viewport={{ once: true, margin: '-15% 0px' }}
               transition={{ duration: 0.5, delay: 0.35, ease: [0.25, 1, 0.5, 1] }}
             >
+              {anchorLine && <p className="st-anchor">{anchorLine}</p>}
               <p className="st-line">{TOTAL.line[voice]}</p>
               {guessLine && (
                 <p className="st-verdict"><strong>{TOTAL.guess.kicker}.</strong> {guessLine}</p>
@@ -664,6 +672,19 @@ export function Bench({ d, voice, tags }) {
       <motion.div className="st-center st-wide" initial="hidden" whileInView="visible" viewport={inView}>
         <motion.div className="sec-tag" data-idx="" variants={rise}>{tags['st-bench']}</motion.div>
         <motion.h2 className="st-h2 display" variants={rise} custom={1}>{BENCH_ST.headline[voice]}</motion.h2>
+        {/* The synthesis first: one sentence to leave with, then the tiles
+            and bars unpack it. */}
+        {tiles.length === 3 && (
+          <motion.p className="st-line" variants={rise} custom={1.3}>
+            {fill(BENCH_ST.verdict[voice], {
+              t: fmtT(d.total),
+              home: ratioPhrase(d.total, tiles[0].base.t),
+              homeName: tiles[0].base.label,
+              world: ratioPhrase(d.total, tiles[1].base.t),
+              budget: ratioPhrase(d.total, tiles[2].base.t),
+            })}
+          </motion.p>
+        )}
         <div className="st-bench-tiles">
           {tiles.map((t, i) => (
             <motion.div className="st-bench-tile" key={t.key} variants={rise} custom={1.5 + i * 0.5}>

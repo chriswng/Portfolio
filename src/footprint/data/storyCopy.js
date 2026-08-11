@@ -131,6 +131,10 @@ export const TOTAL = {
     example: 'Every flight, power bill, parcel and dinner, added up.',
     own: 'Everything you entered, added up. The awkward bits left in.',
   },
+  // One instant everyday anchor beside the number, so the unit means
+  // something in the same breath it is read; the equivalences moment does
+  // the full counting later.
+  anchor: 'That is about {n} {unit}.',
   // The guess, settled. Shown only when a guess was locked in; "close" is
   // within ten percent either way.
   guess: {
@@ -246,6 +250,13 @@ export const MONTHS_ST = {
 export const BENCH_ST = {
   tag: 'In context',
   headline: { example: 'How my year compares', own: 'How your year compares' },
+  // The synthesis first, then the tiles and bars that unpack it: one sentence
+  // a lay reader can leave with. {home}/{world}/{budget} arrive pre-phrased
+  // ("58% of" or "2.2 times") from ratioPhrase.
+  verdict: {
+    example: 'My {t} t is {home} the {homeName}, {world} the world average, and {budget} the 2.5 t benchmark.',
+    own: 'Your {t} t is {home} the {homeName}, {world} the world average, and {budget} the 2.5 t benchmark.',
+  },
   rows: {
     you: { example: 'My emissions', own: 'Your emissions' },
     // The home-country row's label comes from the benchmark data itself
@@ -415,6 +426,13 @@ export const CHARACTER_ST = {
     note: 'Inside the 2.5 t lifestyle benchmark, which almost nobody is.',
   },
   topEntry: 'Biggest single item: {label}, {t} t on its own.',
+  // The verdict's bridge to action: the label is the screenshot moment, so
+  // the one-line "what would change it" lives right here, not three moments
+  // later. {label} is the biggest category.
+  hook: {
+    example: 'The {label} line is the lever: change it and next year reads as someone else.',
+    own: 'Your biggest lever is the {label} line: change it and next year reads as someone else.',
+  },
   matrixTitle: 'The twelve results',
   matrixCols: [
     ['One category', 'in spikes'],
@@ -428,6 +446,15 @@ export const CHARACTER_ST = {
   matrixAria: 'The twelve results as a grid: three size rows by four pattern columns. Yours is {name}.',
   othersNote: 'A bit of fun, worked out from the numbers, not a quiz. The exact cut-offs are on the how-it-works page.',
   yoursFlag: 'you',
+};
+
+// One-line phrasing helpers for the ratio sentences: under one reads as a
+// percentage, over as a multiplier, matching the benchmark tiles.
+export const ratioPhrase = (total, base) => {
+  const r = total / base;
+  return r < 1
+    ? Math.round(r * 100) + '% of'
+    : (Math.round(r * 10) / 10).toString().replace(/\.0$/, '') + ' times';
 };
 
 export const OB = {

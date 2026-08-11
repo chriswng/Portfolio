@@ -129,6 +129,10 @@ export default function CharacterMoment({ d, voice, tags, character }) {
               </p>
             )}
             <p className="st-char-hint">{character.hint}</p>
+            {/* The bridge to action lives on the screenshot moment itself. */}
+            {d.ranked && d.ranked[0] && (
+              <p className="st-char-hook">{fill(CHARACTER_ST.hook[voice], { label: d.ranked[0].label.toLowerCase() })}</p>
+            )}
             {character.badge && (
               <div className="st-char-badge">
                 <EmblemDots stencil={BADGE.stencil} hex={lighten(BADGE.hex, 0.3)} size={34} />
