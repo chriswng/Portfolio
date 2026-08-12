@@ -5,7 +5,6 @@
 
 export const CHROME = {
   skip: 'Skip to the dashboard',
-  replay: 'Replay the reveal',
   progressLabel: 'Story progress',
   next: 'Next:',
   keepScrolling: 'Keep scrolling',
@@ -132,6 +131,10 @@ export const TOTAL = {
     example: 'Every flight, power bill, parcel and dinner, added up.',
     own: 'Everything you entered, added up. The awkward bits left in.',
   },
+  // One instant everyday anchor beside the number, so the unit means
+  // something in the same breath it is read; the equivalences moment does
+  // the full counting later.
+  anchor: 'That is about {n} {unit}.',
   // The guess, settled. Shown only when a guess was locked in; "close" is
   // within ten percent either way.
   guess: {
@@ -155,7 +158,6 @@ export const EQUIV_ST = {
   },
   chipsLabel: 'Count the year in a different unit',
   // {n} pre-formatted; {unit} singular or plural to match.
-  headcount: '{unit}',
   cadence: {
     day: 'about {n} a day, every day of the year',
     week: 'about {n} a week, every week of the year',
@@ -163,7 +165,10 @@ export const EQUIV_ST = {
   },
   legendOne: 'one dot = one {unit}',
   legendMany: 'one dot = {k} {unit}',
-  note: 'Display conversions only: nothing here changes your total, and every factor and assumption is on the how-it-works page.',
+  note: {
+    example: 'Display conversions only: nothing here changes my total, and every factor and assumption is on the how-it-works page.',
+    own: 'Display conversions only: nothing here changes your total, and every factor and assumption is on the how-it-works page.',
+  },
 };
 
 export const SCOPES = {
@@ -235,7 +240,6 @@ export const CATEGORY_QUIPS = {
 
 export const MONTHS_ST = {
   tag: 'The worst month',
-  kicker: 'Worst month',
   line: {
     example: 'in a single month, almost all of it flights. One month of travel outweighed the rest of the year.',
     own: 'in a single month. Bills spread out evenly; big trips spike.',
@@ -246,6 +250,13 @@ export const MONTHS_ST = {
 export const BENCH_ST = {
   tag: 'In context',
   headline: { example: 'How my year compares', own: 'How your year compares' },
+  // The synthesis first, then the tiles and bars that unpack it: one sentence
+  // a lay reader can leave with. {home}/{world}/{budget} arrive pre-phrased
+  // ("58% of" or "2.2 times") from ratioPhrase.
+  verdict: {
+    example: 'My {t} t is {home} the {homeName}, {world} the world average, and {budget} the 2.5 t benchmark.',
+    own: 'Your {t} t is {home} the {homeName}, {world} the world average, and {budget} the 2.5 t benchmark.',
+  },
   rows: {
     you: { example: 'My emissions', own: 'Your emissions' },
     // The home-country row's label comes from the benchmark data itself
@@ -269,7 +280,6 @@ export const BENCH_ST = {
   // tooltip and label variants below say the same thing in fewer words for
   // the row name and the tile.
   benchNote: 'The 2.5 t line marks a sustainable, fair share of carbon for one person, worked out from what it takes to keep warming near 1.5°C. It is not a future deadline: the goal is to already be under it, today. The further above the line a year sits, the more it adds to a hotter, harsher climate.',
-  benchNoteShort: '2.5 t is a sustainable level for one person, today, not a future target.',
   benchNoteTooltip: 'The level a year should already sit under, not something to reach later.',
   benchNoteLabel: 'Aim to stay under this line',
   // Personal overshoot day: the date the 2.5 t budget ran out at this pace.
@@ -279,7 +289,10 @@ export const BENCH_ST = {
       example: 'At my pace, a whole year of the 2.5 t benchmark was used up by {date}. Day {day} of 365; the rest of the year ran over.',
       own: 'At your pace, a whole year of the 2.5 t benchmark was used up by {date}. Day {day} of 365; everything after ran over.',
     },
-    within: 'You stayed inside the 2.5 t benchmark all year. That almost never happens.',
+    within: {
+      example: 'I stayed inside the 2.5 t benchmark all year. That almost never happens.',
+      own: 'You stayed inside the 2.5 t benchmark all year. That almost never happens.',
+    },
   },
   caveat: 'The national and world averages count a wider basket than the core survey does. The optional detail step adds some of it back (clothes, gadgets, services), and hotel nights ride along with your trips; even then a few things stay out, so the real gap is if anything bigger, not smaller.',
 };
@@ -325,12 +338,8 @@ export const OUTRO = {
 
 export const SHARE_ST = {
   button: 'Share this card',
-  copied: 'Card saved.',
   copyLink: 'Copy link',
   copyLinkDone: 'Link copied',
-  linkCopied: 'Link copied.',
-  shareAria: 'Share this moment',
-  linkedin: 'LinkedIn banner (PNG)',
   // The share sheet: pick a size, preview it, then share or save.
   sheet: {
     title: 'Share this',
@@ -344,6 +353,7 @@ export const SHARE_ST = {
     saved: 'Saved to your device.',
     shared: 'Shared.',
     close: 'Close',
+    formatLabel: 'Format',
     formats: {
       story: 'Instagram story',
       post: 'Square post',
@@ -357,6 +367,10 @@ export const SHARE_ST = {
   },
   // Card footers and titles by moment.
   site: 'itschriswang.com/footprint',
+  // What rides beside the card file through the native share sheet: a human
+  // sentence and the canonical page link.
+  shareText: 'A year of carbon, counted honestly.',
+  shareUrl: 'https://itschriswang.com/footprint/',
   method: 'Home energy, travel, freight and diet · published factors, no offsets',
   cards: {
     total: { example: 'CARBON EMISSIONS', own: 'CARBON EMISSIONS' },
@@ -384,9 +398,11 @@ export const CHARACTER_ST = {
       gloss: 'how big the year is',
       levels: { feather: 'Small', middle: 'Medium', heavy: 'Large' },
       reading: '{t} t',
+      // {t} is filled from GLOBAL_T / HEAVY_T (characters.js), so a
+      // benchmark refresh moves these labels with the tick positions.
       ticks: [
-        { label: '6.6 t · world avg' },
-        { label: '16 t' },
+        { label: '{t} t · world avg' },
+        { label: '{t} t' },
       ],
     },
     shape: {
@@ -410,6 +426,13 @@ export const CHARACTER_ST = {
     note: 'Inside the 2.5 t lifestyle benchmark, which almost nobody is.',
   },
   topEntry: 'Biggest single item: {label}, {t} t on its own.',
+  // The verdict's bridge to action: the label is the screenshot moment, so
+  // the one-line "what would change it" lives right here, not three moments
+  // later. {label} is the biggest category.
+  hook: {
+    example: 'The {label} line is the lever: change it and next year reads as someone else.',
+    own: 'Your biggest lever is the {label} line: change it and next year reads as someone else.',
+  },
   matrixTitle: 'The twelve results',
   matrixCols: [
     ['One category', 'in spikes'],
@@ -417,15 +440,26 @@ export const CHARACTER_ST = {
     ['Spread out', 'in spikes'],
     ['Spread out', 'even'],
   ],
-  matrixRows: { feather: 'Under 6.6 t', middle: '6.6 to 16 t', heavy: 'Over 16 t' },
+  // {g} and {h} are GLOBAL_T and HEAVY_T (characters.js): the row labels
+  // move together with the thresholds on a benchmark refresh.
+  matrixRows: { feather: 'Under {g} t', middle: '{g} to {h} t', heavy: 'Over {h} t' },
   matrixAria: 'The twelve results as a grid: three size rows by four pattern columns. Yours is {name}.',
   othersNote: 'A bit of fun, worked out from the numbers, not a quiz. The exact cut-offs are on the how-it-works page.',
   yoursFlag: 'you',
 };
 
+// One-line phrasing helpers for the ratio sentences: under one reads as a
+// percentage, over as a multiplier, matching the benchmark tiles.
+export const ratioPhrase = (total, base) => {
+  const r = total / base;
+  return r < 1
+    ? Math.round(r * 100) + '% of'
+    : (Math.round(r * 10) / 10).toString().replace(/\.0$/, '') + ' times';
+};
+
 export const OB = {
   title: 'Your footprint',
-  intro: 'Five short steps, then an optional sixth. Rough answers now, real bills whenever you like. Everything stays in this browser, and we keep the final total for the reveal.',
+  intro: 'About three minutes: five short steps, then an optional sixth. Rough answers now, real bills whenever you like. Everything stays in this browser, and we keep the final total for the reveal.',
   // Neutral, spoiler-free footer line. The running total is deliberately not
   // shown: seeing it here would spoil the reveal that follows.
   keepForReveal: 'We add it all up at the reveal, not here',
@@ -439,7 +473,7 @@ export const OB = {
     food: 'Food and parcels added',
     advanced: 'Optional detail (skip any time)',
   },
-  stepLabels: ['You', 'Home energy', 'Getting around', 'Flights', 'Food & parcels', 'More detail'],
+  stepLabels: ['You', 'Trips', 'Getting around', 'Home energy', 'Food & parcels', 'More detail'],
   // One playful, sourced fact per step: about the world, never about the
   // visitor's own numbers, so the reveal keeps its punch. Figures match the
   // factor set this calculator prices from. The first two steps carry a
@@ -459,8 +493,9 @@ export const OB = {
       text: 'Every $100 a month of general spending adds roughly 0.12 tonnes a year, which is why this step is worth the extra minute.',
       src: 'US EPA supply-chain factors',
     };
-    // Step order: you, energy, travel, flights, food, detail.
-    const build = (you, energy, flight) => [you, energy, rideshare, flight, diet, spend];
+    // Step order: you, trips, travel, energy, food, detail. The country
+    // facts ride on the steps where country and energy actually land.
+    const build = (you, energy, flight) => [you, flight, rideshare, energy, diet, spend];
     return {
       AU: build(
         { text: 'The average Australian sits near 22 tonnes of CO₂-e a year, more than three times the world average.', src: 'EDGAR / JRC 2024' },
@@ -483,8 +518,8 @@ export const OB = {
   swarmLabel: 'Your year, gathering',
   done: {
     title: 'That is everything',
-    sub: 'Your footprint is saved to this browser. Now the fun part: your reveal walks you through what it all adds up to, where it lands, and how to cut it down.',
-    ready: 'Five sections, done. Nothing left to fill in.',
+    sub: 'Your footprint is saved to this browser. Now the fun part: your reveal takes about a minute and walks you through what it all adds up to, where it lands, and how to cut it down. Skipping loses nothing; the detail below carries it all.',
+    ready: 'All answered. Nothing left to fill in.',
     watch: 'Watch your reveal',
     skip: 'Straight to the detail',
   },
@@ -505,8 +540,6 @@ export const DASH_EXTRA = {
 export const CARD_TEXT = {
   tonnes: 'TONNES CO₂-E · ',
   ofYear: '% OF THE YEAR',
-  guessLabel: 'THE GUESS',
-  auditLabel: 'THE AUDIT',
   benchNote: 'National figures cover a wider boundary than this calculator.',
   counted: 'SELF-COUNTED',
 };

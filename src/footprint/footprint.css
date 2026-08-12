@@ -58,10 +58,8 @@
 /* ---- KPIs ---- */
 .fp-kpis{ display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--rule-dk); border:1px solid var(--rule-dk); margin-bottom:0.75rem; }
 @media(min-width:760px){ .fp-kpis{ grid-template-columns:repeat(4,1fr); } }
-.fp-kpis-2{ grid-template-columns:repeat(2,1fr); max-width:560px; }
-@media(min-width:760px){ .fp-kpis-2{ grid-template-columns:repeat(2,1fr); } }
 /* Narrow phones: two abreast crushes the range note; stack them. */
-@media(max-width:419px){ .fp-kpis-2{ grid-template-columns:1fr; } }
+@media(max-width:419px){ .fp-kpis{ grid-template-columns:1fr; } }
 .fp-kpi{ background:var(--white); padding:1.1rem 1.25rem; transition:background 0.3s var(--ease); }
 .fp-kpi:hover{ background:oklch(0.975 0.008 118); }
 .fp-kpi.live{ background:rgba(181,196,43,0.10); }
@@ -306,6 +304,7 @@
 .ob-seg{ width:26px; height:3px; background:var(--rule-dk); border-radius:2px; transition:background 0.3s var(--ease); }
 .ob-seg.on{ background:var(--slate); }
 .ob-seg.done{ background:var(--matcha); }
+.ob-stepname{ font-family:var(--mono); font-size:10.5px; letter-spacing:0.06em; text-transform:uppercase; color:var(--mid); }
 .ob-close{ border:1px solid var(--rule-dk); background:none; color:var(--mid); font-size:1.15rem; line-height:1; cursor:pointer; width:36px; height:36px; border-radius:50%; transition:all 0.25s var(--ease); }
 .ob-close:hover{ border-color:#C7274A; color:#C7274A; }
 .ob-body{ flex:1; overflow-y:auto; padding-top:clamp(1.4rem,4vh,3rem); padding-bottom:2rem; }
@@ -482,6 +481,25 @@
 .ob-disclose summary{ font-family:var(--mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase; font-weight:700; color:#75821D; cursor:pointer; }
 .ob-disclose summary:focus-visible{ outline:2px solid var(--matcha); outline-offset:3px; }
 .ob-disclose p{ font-size:0.8rem; color:#475569; line-height:1.65; margin-top:0.6rem; }
+/* Seats-for-others fold-away inside a flight card. */
+.ob-fl-more{ border-top:1px dashed var(--rule-lt); margin-top:0.6rem; }
+.ob-fl-more .ob-field-compact{ margin-top:0.6rem; }
+/* Path chooser: two big honest options before the flow starts. */
+.ob-choicewrap{ display:grid; gap:0.8rem; grid-template-columns:1fr; max-width:560px; margin-top:1rem; }
+@media(min-width:560px){ .ob-choicewrap{ grid-template-columns:1fr 1fr; } }
+.ob-choice{ text-align:left; border:1px solid var(--rule-dk); background:var(--white); padding:1.1rem 1.2rem; cursor:pointer; transition:border-color 0.25s var(--ease), transform 0.25s var(--ease); }
+.ob-choice:hover{ border-color:var(--matcha); transform:translateY(-2px); }
+.ob-choice:focus-visible{ outline:2px solid var(--matcha); outline-offset:3px; }
+.ob-choice strong{ display:block; font-family:var(--disp); font-size:1.05rem; color:var(--slate); margin-bottom:0.3rem; }
+.ob-choice span{ font-family:var(--mono); font-size:10.5px; letter-spacing:0.05em; text-transform:uppercase; color:var(--mid); }
+/* Quick-add chips under the add-a-flight button. */
+.ob-quickadd{ display:flex; flex-wrap:wrap; gap:0.4rem; align-items:center; margin-top:0.7rem; }
+.ob-quickadd-l{ font-family:var(--mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--mid); }
+.ob-fcard-btns{ display:flex; gap:0.4rem; }
+.ob-skiptop{ margin-bottom:1.1rem; }
+/* The swarm's answer-landed burst: motion only, never a number. */
+.ob-swarm-dots.pulse{ animation:ob-swarm-pulse 0.6s var(--ease); }
+@keyframes ob-swarm-pulse{ 0%{ transform:scale(1); } 35%{ transform:scale(1.14); } 100%{ transform:scale(1); } }
 
 /* ---- Dashboard character strip ---- */
 .fp-char-strip{ display:flex; align-items:center; gap:0.9rem; background:var(--white); border:1px solid var(--rule-dk); border-top:none; padding:0.75rem 1.25rem; margin-bottom:0.75rem; }

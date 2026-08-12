@@ -453,6 +453,22 @@ export const HOME_AIRPORT = {
   NZ: 'AKL', US: 'JFK',
 };
 
+// Quick-add destinations for the trips step, most-flown first, per home
+// country. Codes must exist in AIRPORTS; a quick-added card opens prefilled
+// from the home airport and stays fully editable.
+export const POPULAR_DESTS = {
+  AU: ['MEL', 'SYD', 'BNE', 'PER', 'AKL', 'DPS', 'SIN', 'LHR', 'LAX'],
+  NZ: ['SYD', 'MEL', 'WLG', 'CHC', 'BNE', 'SIN', 'LHR', 'LAX'],
+  US: ['JFK', 'LAX', 'SFO', 'ORD', 'MIA', 'LHR', 'CDG', 'HND'],
+};
+
+// Representative one-way sector lengths for rough flight counts, used when a
+// visitor counts trips instead of naming them. Deliberately coarse and stated
+// on every entry they price: domestic sits near the big east-coast sectors,
+// short overseas near trans-Tasman, long overseas near an Asia/US mix. Each
+// stays on the right side of the 3,700 km DEFRA band boundary.
+export const ROUGH_FLIGHT_KM = { dom: 1100, short: 2400, long: 11000 };
+
 export function flightBandForKm(km, international) {
   if (!international) return km < 3700 ? 'domestic' : 'longIntl';
   return km < 3700 ? 'shortIntl' : 'longIntl';

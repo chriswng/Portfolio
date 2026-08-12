@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   COUNTRIES, regionsForCountry, roadFuelSetFor, DIET_TYPES, GOODS, CLOTHING_ITEMS,
-  AIRPORTS, airportByCode, greatCircleKm, flightBandForKm, HOME_AIRPORT, PT_FARE_CAPS, PT_FARE_CAPS_ASOF,
+  AIRPORTS, airportByCode, greatCircleKm, flightBandForKm, HOME_AIRPORT, POPULAR_DESTS, ROUGH_FLIGHT_KM,
+  PT_FARE_CAPS, PT_FARE_CAPS_ASOF,
 } from './data/factors';
 import { CONVERSIONS } from './data/vendorMap';
 import { ONBOARD, ENERGY_PRESETS } from './data/copy';
@@ -79,6 +80,7 @@ export function buildProfileFromOnboarding(a) {
   const period = lastTwelveMonths();
   const settings = {
     name: '', country: a.country, state: a.state, householdSize: a.householdSize, dwelling: a.dwelling,
+    roofOwn: a.roofOwn,
     dietType: a.dietType, fuelType: a.fuelType, greenpowerPct: a.greenpowerPct,
     carOccupancy: a.carOccupancy,
   };
@@ -169,6 +171,25 @@ export function buildProfileFromOnboarding(a) {
           + ' on the ' + to.city + ' trip, priced at the ' + to.country + ' per-room-night factor.',
       }));
     }
+  });
+  // Rough flight counts: N economy returns priced at a stated representative
+  // sector, one entry per bucket, spread across the year like every other
+  // typical-year estimate. Passengers scales the pax-km, so N returns and
+  // one N-seat itinerary price identically; the label carries the count.
+  [
+    ['roughDom', ROUGH_FLIGHT_KM.dom, false, 'Domestic returns'],
+    ['roughShort', ROUGH_FLIGHT_KM.short, true, 'Short overseas returns'],
+    ['roughLong', ROUGH_FLIGHT_KM.long, true, 'Long overseas returns'],
+  ].forEach(([key, km, intl, label]) => {
+    const n = Math.round(a[key] || 0);
+    if (!(n > 0)) return;
+    entries.push(E({
+      category: 'flight', date: period.end, period_months: 12,
+      label: label + ' × ' + n + ' (rough count)',
+      meta: { km, band: flightBandForKm(km, intl), international: intl, cabin: 'economy', return: true, passengers: n, rough: true },
+      notes: 'From a rough count: ' + n + ' economy return' + (n > 1 ? 's' : '') + ' priced at a representative '
+        + km.toLocaleString() + ' km sector each way, with RF. Name the real trips to replace this.',
+    }));
   });
   if (a.hotelNightsOther > 0) {
     entries.push(E({
@@ -264,13 +285,87 @@ const ADVANCED_DEFAULTS = {
 const GAS_DEFAULTS = { AU: 3000, NZ: 850, US: 30 };
 
 const DEFAULTS = {
-  country: 'AU', state: 'NSW', householdSize: 2, dwelling: 'apartment', dietType: 'medMeat', fuelType: 'petrol',
+  country: 'AU', state: 'NSW', householdSize: 2, dwelling: 'apartment', roofOwn: true, dietType: 'medMeat', fuelType: 'petrol',
   // gpChoice is the picked chip; greenpowerPct is what the engine prices from.
   // 'no' and 'unsure' are distinct choices that both price at 0% renewable.
   gpChoice: 'no', greenpowerPct: 0, energyPreset: null, kwhQuarter: 1000, gasQuarter: GAS_DEFAULTS.AU, carKmWeek: 0, carOccupancy: 1,
   rideshareWeek: 0, ptWeek: 0, ptCapOverride: false,
-  parcelsMonth: 2, intlOrdersMonth: 0, flights: [], hotelNightsOther: 0,
+  // Parcels start at zero like every other count: a figure the visitor never
+  // confirmed must not ship into the audit as if they had.
+  parcelsMonth: 0, intlOrdersMonth: 0, flights: [], hotelNightsOther: 0,
+  // Rough return counts, the fallback for a year nobody can name trip by trip.
+  roughDom: 0, roughShort: 0, roughLong: 0,
   ...ADVANCED_DEFAULTS,
+};
+
+// In-progress answers persist here so Escape or the close button never
+// discards typed answers; the draft belongs to the guided audit alone and is
+// cleared the moment the audit is built.
+const DRAFT_KEY = 'cw-footprint-draft-v1';
+
+// A stored flight card may be malformed, so each field falls back to the
+// shape addFlight creates.
+const sanitiseFlight = (f) => ({
+  from: typeof f.from === 'string' ? f.from : '',
+  to: typeof f.to === 'string' ? f.to : '',
+  ret: f.ret !== false,
+  cabin: ONBOARD.flights.cabins[f.cabin] ? f.cabin : 'economy',
+  month: typeof f.month === 'string' ? f.month : '',
+  pax: Number.isFinite(f.pax) ? f.pax : 1,
+  nights: Number.isFinite(f.nights) ? f.nights : 0,
+});
+
+// Read the saved draft, or null. Everything is validated against DEFAULTS
+// (only known keys, each held to its default's type, merged over the
+// defaults) so a malformed draft can never crash the flow, and storage
+// access is wrapped because sessionStorage itself can throw.
+function readDraft() {
+  try {
+    const raw = sessionStorage.getItem(DRAFT_KEY);
+    if (!raw) return null;
+    const d = JSON.parse(raw);
+    if (!d || typeof d !== 'object' || !d.answers || typeof d.answers !== 'object') return null;
+    const answers = { ...DEFAULTS };
+    for (const k of Object.keys(DEFAULTS)) {
+      const v = d.answers[k];
+      if (v === undefined) continue;
+      if (k === 'flights') {
+        if (Array.isArray(v)) answers.flights = v.filter((f) => f && typeof f === 'object').map(sanitiseFlight);
+      } else if (k === 'clothingItems') {
+        if (v && typeof v === 'object') {
+          answers.clothingItems = { ...DEFAULTS.clothingItems };
+          for (const ck of Object.keys(DEFAULTS.clothingItems)) {
+            if (Number.isFinite(v[ck])) answers.clothingItems[ck] = v[ck];
+          }
+        }
+      } else if (k === 'energyPreset') {
+        // The one nullable field: a preset id string, or null for none.
+        if (v === null || typeof v === 'string') answers[k] = v;
+      } else if (typeof v === typeof DEFAULTS[k] && (typeof v !== 'number' || Number.isFinite(v))) {
+        answers[k] = v;
+      }
+    }
+    // Enumerated fields are indexed straight into their tables, so an
+    // unknown value falls back rather than crashing a step or the build.
+    if (!COUNTRIES[answers.country]) answers.country = DEFAULTS.country;
+    if (!regionsForCountry(answers.country).some(([k]) => k === answers.state)) {
+      answers.state = COUNTRIES[answers.country].defaultRegion;
+    }
+    if (!DIET_TYPES[answers.dietType]) answers.dietType = DEFAULTS.dietType;
+    if (!roadFuelSetFor(answers.country)[answers.fuelType]) answers.fuelType = DEFAULTS.fuelType;
+    if (answers.energyPreset && !ENERGY_PRESETS[answers.country].some((p) => p.id === answers.energyPreset)) {
+      answers.energyPreset = null;
+    }
+    const step = Number.isInteger(d.step) && d.step >= 0 && d.step <= 5 ? d.step : 0;
+    const mode = d.mode === 'express' || d.mode === 'full' ? d.mode : null;
+    return { answers, step, mode };
+  } catch {
+    return null;
+  }
+}
+
+const clearDraft = () => {
+  try { sessionStorage.removeItem(DRAFT_KEY); } catch { /* storage unavailable */ }
 };
 
 // Airports grouped by region for the From/To dropdowns, order preserved.
@@ -310,15 +405,32 @@ function Chips({ label, options, value, onChange, note, icon }) {
 
 function Stepper({ label, value, onChange, min = 0, max = 99, step = 1, icon, compact }) {
   const clamp = (v) => Math.min(max, Math.max(min, v));
+  // Typing needs a transient state (empty, or the first digit of a bigger
+  // number), so the input holds local text and only a parseable figure is
+  // committed; blur reconciles the text with the clamped value. The +/-
+  // buttons work on the numeric value directly.
+  const [text, setText] = useState(String(value));
+  useEffect(() => { setText(String(value)); }, [value]);
+  const onType = (raw) => {
+    setText(raw);
+    if (raw === '' || raw === '-') return;
+    const n = Number(raw);
+    if (!isNaN(n)) onChange(clamp(n));
+  };
+  const onBlurInput = () => {
+    const n = Number(text);
+    setText(String(text === '' || isNaN(n) ? value : clamp(n)));
+  };
   return (
     <div className={compact ? 'ob-field ob-field-compact' : 'ob-field'}>
       <span className="ob-label">{icon && <Icon name={icon} size={30} className="ob-label-i" />}{label}</span>
       <div className="ob-stepper">
         <button type="button" aria-label={'Decrease ' + label} onClick={() => onChange(clamp(value - step))}>−</button>
         <input
-          type="number" min={min} max={max} step={step} value={value}
+          type="number" min={min} max={max} step={step} value={text}
           aria-label={label}
-          onChange={(e) => onChange(clamp(Number(e.target.value) || 0))}
+          onChange={(e) => onType(e.target.value)}
+          onBlur={onBlurInput}
         />
         <button type="button" aria-label={'Increase ' + label} onClick={() => onChange(clamp(value + step))}>+</button>
         {/* The +/- buttons keep focus, so echo the new value politely. */}
@@ -395,7 +507,7 @@ function AirportSelect({ label, value, placeholder, onChange }) {
 // month, and the seats you paid for. Editable at any time; removable. No
 // carbon shown here on purpose, so the reveal keeps its punch; the distance is
 // shown because it makes the estimate feel honest, not because it spoils it.
-function FlightCard({ fl, index, monthOptions, onChange, onRemove }) {
+function FlightCard({ fl, index, monthOptions, onChange, onRemove, onDuplicate }) {
   const set = (k, v) => onChange({ ...fl, [k]: v });
   const meta = flightMeta(fl);
   let distText = ONBOARD.flights.pickTo;
@@ -405,7 +517,10 @@ function FlightCard({ fl, index, monthOptions, onChange, onRemove }) {
     <div className="ob-fcard">
       <div className="ob-fcard-head">
         <span className="ob-fcard-n"><Icon name="plane" size={30} className="ob-flight-i" /> {fill(ONBOARD.flights.tripLabel, { n: index + 1 })}</span>
-        <button type="button" className="ob-remove" onClick={onRemove}>{ONBOARD.flights.remove} ×</button>
+        <span className="ob-fcard-btns">
+          <button type="button" className="ob-remove" onClick={onDuplicate}>{ONBOARD.flights.duplicate}</button>
+          <button type="button" className="ob-remove" onClick={onRemove}>{ONBOARD.flights.remove} ×</button>
+        </span>
       </div>
       <div className="ob-fcard-route">
         <AirportSelect label={ONBOARD.flights.from} value={fl.from} placeholder={ONBOARD.flights.pickFrom} onChange={(v) => set('from', v)} />
@@ -430,10 +545,16 @@ function FlightCard({ fl, index, monthOptions, onChange, onRemove }) {
             {monthOptions.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
           </select>
         </label>
-        <Stepper compact icon="people" label={ONBOARD.flights.passengers} value={fl.pax} min={1} max={9} onChange={(v) => set('pax', v)} />
         {/* Nights belong to the trip: the destination country prices them. */}
         <Stepper compact icon="building" label={ONBOARD.flights.nights} value={fl.nights || 0} min={0} max={90} onChange={(v) => set('nights', v)} />
       </div>
+      {/* Seats-for-others is an edge case, so it folds away; a card already
+          carrying more than one seat keeps it open. */}
+      <details className="ob-disclose ob-fl-more" open={fl.pax > 1 || undefined}>
+        <summary>{ONBOARD.flights.paxSummary}</summary>
+        <Stepper compact icon="people" label={ONBOARD.flights.passengers} value={fl.pax} min={1} max={9} onChange={(v) => set('pax', v)} />
+        <p className="ob-note">{ONBOARD.flights.passengersNote}</p>
+      </details>
       <p className="ob-fcard-dist">{distText}</p>
     </div>
   );
@@ -445,6 +566,9 @@ function FlightCard({ fl, index, monthOptions, onChange, onRemove }) {
 // questions have answers, never how big the answers are. Positions are a
 // deterministic golden-angle spiral; purely decorative.
 function SwarmMeter({ answers: a, step }) {
+  // A visible burst when a new answer lands: reaction without a number, so
+  // the meter reads as alive while the total stays for the reveal.
+  const [pulse, setPulse] = useState(false);
   const signals =
     2 + step * 2
     + (a.kwhQuarter > 0 ? 2 : 0) + (a.gasQuarter > 0 ? 2 : 0)
@@ -456,10 +580,19 @@ function SwarmMeter({ answers: a, step }) {
       .filter((v) => v > 0).length
     + (a.homeNewBuild && a.homeAreaM2 > 0 ? 2 : 0);
   const n = Math.min(64, 6 + signals * 2);
+  const prevSignals = useRef(signals);
+  useEffect(() => {
+    const grew = signals > prevSignals.current;
+    prevSignals.current = signals;
+    if (!grew || prefersReducedMotion()) return undefined;
+    setPulse(true);
+    const id = window.setTimeout(() => setPulse(false), 600);
+    return () => window.clearTimeout(id);
+  }, [signals]);
   const GA = 2.399963;
   return (
     <div className="ob-swarm" aria-hidden="true">
-      <div className="ob-swarm-dots">
+      <div className={'ob-swarm-dots' + (pulse ? ' pulse' : '')}>
         {Array.from({ length: n }).map((_, i) => {
           const r = 5.5 * Math.sqrt(i);
           return (
@@ -485,8 +618,16 @@ function SwarmMeter({ answers: a, step }) {
 // shape and its context all belong to the reveal that follows.
 // ---------------------------------------------------------------------------
 export default function Onboarding({ onDone, onBuilt, onCancel }) {
-  const [step, setStep] = useState(0);
-  const [a, setA] = useState(DEFAULTS);
+  // Resume a draft left by Escape or the close button, step included; a
+  // fresh open (no draft, or a completed audit that cleared it) starts from
+  // the defaults.
+  const [draft] = useState(readDraft);
+  const [step, setStep] = useState(draft ? draft.step : 0);
+  const [a, setA] = useState(draft ? draft.answers : DEFAULTS);
+  // Which path the visitor picked: null shows the chooser, 'express' the
+  // one-screen estimate, 'full' the staged audit. A resumed draft keeps its
+  // path so reopening lands where the visitor left off.
+  const [mode, setMode] = useState(draft ? draft.mode : null);
   // The audit window's twelve months, oldest first, for the optional
   // when-was-it picker. Value is a mid-month date inside the window.
   const monthOptions = useMemo(() => {
@@ -539,15 +680,30 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
   // means "add nothing", then jumps to the done pane.
   const skipAdvanced = () => setA((s) => ({ ...s, ...ADVANCED_DEFAULTS }));
 
+  // Keep the draft current while the visitor is mid-flow, so Escape or the
+  // cross closes without data loss. Step 6 never writes: the audit is built
+  // there and a completed build must not leave a stale draft behind.
+  useEffect(() => {
+    if (step >= 6) return;
+    try {
+      sessionStorage.setItem(DRAFT_KEY, JSON.stringify({ step, answers: a, mode }));
+    } catch { /* storage unavailable; the flow runs, closing just loses the draft */ }
+  }, [step, a, mode]);
+
   // The done pane says the audit is saved, so save it as the pane appears;
-  // closing with Escape or the cross after that point loses nothing.
-  useEffect(() => { if (doneProfile) onBuilt(doneProfile); }, [doneProfile, onBuilt]);
+  // closing with Escape or the cross after that point loses nothing. The
+  // draft has served its purpose once the profile exists, so it goes too.
+  useEffect(() => {
+    if (!doneProfile) return;
+    clearDraft();
+    onBuilt(doneProfile);
+  }, [doneProfile, onBuilt]);
 
   // Focus the incoming step's heading after the pane transition settles.
   useEffect(() => {
     const id = window.setTimeout(() => headRef.current?.focus(), prefersReducedMotion() ? 0 : 320);
     return () => window.clearTimeout(id);
-  }, [step]);
+  }, [step, mode]);
 
   useEffect(() => {
     // Modality itself (inert on everything behind) is applied declaratively
@@ -565,14 +721,32 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
     };
   }, [onCancel]);
 
-  const addFlight = () => {
+  const addFlight = (to = '') => {
     setA((s) => ({
       ...s,
-      flights: [...s.flights, { from: homeAirportFor(s.state, s.country), to: '', ret: true, cabin: 'economy', month: '', pax: 1, nights: 0 }],
+      flights: [...s.flights, { from: homeAirportFor(s.state, s.country), to, ret: true, cabin: 'economy', month: '', pax: 1, nights: 0 }],
     }));
   };
   const updateFlight = (i, next) => setA((s) => ({ ...s, flights: s.flights.map((f, j) => (j === i ? next : f)) }));
   const removeFlight = (i) => setA((s) => ({ ...s, flights: s.flights.filter((_, j) => j !== i) }));
+  const duplicateFlight = (i) => setA((s) => ({
+    ...s,
+    flights: [...s.flights.slice(0, i + 1), { ...s.flights[i] }, ...s.flights.slice(i + 1)],
+  }));
+
+  // Entering the quick path pre-selects the plain apartment preset when no
+  // preset is chosen, so the assumption is visible on screen rather than a
+  // silent default underneath.
+  const chooseMode = (m) => {
+    setMode(m);
+    if (m === 'express') {
+      setA((s) => {
+        if (s.energyPreset) return s;
+        const pr = ENERGY_PRESETS[s.country].find((x) => x.id === 'apt');
+        return pr ? { ...s, energyPreset: 'apt', kwhQuarter: pr.kwhPerAdult * s.householdSize, gasQuarter: pr.gasPerAdult * s.householdSize } : s;
+      });
+    }
+  };
 
   const dietOptions = Object.entries(DIET_TYPES).map(([k, v]) => ({
     value: k,
@@ -589,7 +763,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
     ? fill(ONBOARD.energy.splitNote, { n: a.householdSize, s: a.householdSize > 1 ? 's' : '' })
     : ONBOARD.energy.splitNoteSolo;
 
-  const steps = [
+  const panes = [
     <div key="you">
       <div className="ob-stephead">
         <span className="ob-stephead-i" aria-hidden="true"><Icon name="house" size={52} /></span>
@@ -609,6 +783,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
           label={COUNTRIES[a.country].regionQuestion || ONBOARD.you.state}
           options={regionsForCountry(a.country).map(([k, v]) => ({ value: k, label: v.label }))}
           value={a.state} onChange={(v) => set('state', v)}
+          note={ONBOARD.you.stateNote}
         />
       )}
       <Stepper icon="people" label={ONBOARD.you.household} value={a.householdSize} min={1} max={10} onChange={setHousehold} />
@@ -622,6 +797,18 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         ]}
         value={a.dwelling} onChange={(v) => set('dwelling', v)}
       />
+      {a.dwelling === 'house' && (
+        <Chips
+          icon="house"
+          label={ONBOARD.you.roof}
+          options={[
+            { value: true, label: ONBOARD.you.roofYes },
+            { value: false, label: ONBOARD.you.roofNo },
+          ]}
+          value={a.roofOwn} onChange={(v) => set('roofOwn', v)}
+          note={ONBOARD.you.roofNote}
+        />
+      )}
     </div>,
     <div key="energy">
       <div className="ob-stephead">
@@ -632,7 +819,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
       <Chips
         icon="house"
         label={ONBOARD.energy.presetLabel}
-        options={ENERGY_PRESETS[a.country].map((pr) => ({ value: pr.id, label: pr.label }))}
+        options={ENERGY_PRESETS[a.country].map((pr) => ({ value: pr.id, label: pr.label, note: pr.bill }))}
         value={a.energyPreset}
         onChange={(id) => {
           const pr = ENERGY_PRESETS[a.country].find((x) => x.id === id);
@@ -663,6 +850,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         onChange={(v) => setA((s) => ({ ...s, gpChoice: v, greenpowerPct: v === 'half' ? 50 : v === 'full' ? 100 : 0 }))}
         note={COUNTRIES[a.country].renewableNote}
       />
+      {a.gpChoice === 'unsure' && <p className="ob-note">{ONBOARD.energy.gpUnsureNote}</p>}
     </div>,
     <div key="travel">
       <div className="ob-stephead">
@@ -680,9 +868,17 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
             options={Object.entries(roadFuelSetFor(a.country)).map(([k, v]) => ({ value: k, label: v.label }))}
             value={a.fuelType} onChange={(v) => set('fuelType', v)}
           />
-          <Stepper icon="people" label={ONBOARD.travel.occupancy} value={a.carOccupancy} min={1} max={7}
-            onChange={(v) => set('carOccupancy', v)} />
-          <p className="ob-note">{ONBOARD.travel.occupancyNote}</p>
+          {/* Chips, not a stepper: "on average" arithmetic is the visitor's
+              least answerable question, and four honest buckets cover it.
+              Four or more prices as four; the split only sharpens from there. */}
+          <Chips
+            icon="people"
+            label={ONBOARD.travel.occupancy}
+            options={ONBOARD.travel.occupancyChips}
+            value={Math.min(a.carOccupancy, 4)}
+            onChange={(v) => set('carOccupancy', v)}
+            note={ONBOARD.travel.occupancyNote}
+          />
         </>
       )}
       <SliderField icon="phone" label={ONBOARD.travel.rideshare} value={a.rideshareWeek} min={0} max={400} step={5} unit="$ / wk"
@@ -735,13 +931,51 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
             monthOptions={monthOptions}
             onChange={(next) => updateFlight(i, next)}
             onRemove={() => removeFlight(i)}
+            onDuplicate={() => duplicateFlight(i)}
           />
         ))}
       </div>
 
-      <button type="button" className="btn btn-secondary ob-addflight" onClick={addFlight}>
+      <button type="button" className="btn btn-secondary ob-addflight" onClick={() => addFlight()}>
         + {a.flights.length ? ONBOARD.flights.addAnother : ONBOARD.flights.add}
       </button>
+
+      {/* One-tap starts for the routes people actually fly; the card opens
+          prefilled and stays fully editable. */}
+      <div className="ob-quickadd">
+        <span className="ob-quickadd-l">
+          {fill(ONBOARD.flights.quickAdd, { city: (airportByCode(homeAirportFor(a.state, a.country)) || {}).city || '' })}
+        </span>
+        {(POPULAR_DESTS[a.country] || [])
+          .filter((code) => code !== homeAirportFor(a.state, a.country))
+          .slice(0, 6)
+          .map((code) => (
+            <button key={code} type="button" className="ob-chip" onClick={() => addFlight(code)}>
+              + {(airportByCode(code) || {}).city || code}
+            </button>
+          ))}
+      </div>
+
+      {/* The coarse fallback: count the year's returns instead of naming
+          them. Both routes price through the same engine. */}
+      <details className="ob-disclose" open={(a.roughDom + a.roughShort + a.roughLong > 0) || undefined}>
+        <summary>{ONBOARD.roughFlights.summary}</summary>
+        <div className="ob-field">
+          <span className="ob-label">{ONBOARD.roughFlights.label}</span>
+          <div className="ob-items-grid">
+            <Stepper compact label={ONBOARD.roughFlights.dom} value={a.roughDom} min={0} max={99} onChange={(v) => set('roughDom', v)} />
+            <Stepper compact label={ONBOARD.roughFlights.short} value={a.roughShort} min={0} max={99} onChange={(v) => set('roughShort', v)} />
+            <Stepper compact label={ONBOARD.roughFlights.long} value={a.roughLong} min={0} max={99} onChange={(v) => set('roughLong', v)} />
+          </div>
+          <span className="ob-note">
+            {fill(ONBOARD.roughFlights.note, {
+              dom: ROUGH_FLIGHT_KM.dom.toLocaleString(),
+              short: ROUGH_FLIGHT_KM.short.toLocaleString(),
+              long: ROUGH_FLIGHT_KM.long.toLocaleString(),
+            })}
+          </span>
+        </div>
+      </details>
 
       <Stepper icon="building" label={ONBOARD.flights.otherNights} value={a.hotelNightsOther} min={0} max={365}
         onChange={(v) => set('hotelNightsOther', v)} />
@@ -763,6 +997,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         onChange={(v) => set('parcelsMonth', v)} />
       <Stepper icon="globe" label={ONBOARD.food.intlOrders} value={a.intlOrdersMonth} min={0} max={100}
         onChange={(v) => set('intlOrdersMonth', v)} />
+      <p className="ob-note">{ONBOARD.food.intlOrdersNote}</p>
     </div>,
     <div key="advanced">
       <div className="ob-stephead">
@@ -771,6 +1006,11 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
       </div>
       <p>{ONBOARD.advanced.sub}</p>
       <p className="ob-optnote"><Icon name="spark" size={28} className="ob-label-i" />{ONBOARD.advanced.optional}</p>
+      {/* The skip lives at the top too: nobody should have to scroll a wall
+          of optional sliders to find out they can decline it. */}
+      <button type="button" className="fp-linkbtn ob-skiptop" onClick={() => { skipAdvanced(); setStep(6); }}>
+        {ONBOARD.advanced.skip} →
+      </button>
       <Chips
         icon="box"
         label={ONBOARD.advanced.clothingHow}
@@ -783,6 +1023,16 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
       {a.clothingMode === 'items' ? (
         <div className="ob-field">
           <span className="ob-label">{ONBOARD.advanced.clothingItemsLabel}</span>
+          {/* Starting presets, so nobody reconstructs a year of shopping from
+              memory just to continue; the grid below stays for the nudging. */}
+          <div className="ob-chips">
+            {ONBOARD.advanced.clothingPresets.options.map((p) => (
+              <button key={p.id} type="button" className="ob-chip" onClick={() => setA((s) => ({ ...s, clothingItems: { ...p.items } }))}>
+                {p.label}
+              </button>
+            ))}
+          </div>
+          <span className="ob-note">{ONBOARD.advanced.clothingPresets.note}</span>
           <div className="ob-items-grid">
             {Object.entries(CLOTHING_ITEMS).map(([k, item]) => (
               <Stepper
@@ -843,13 +1093,97 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
     </div>,
   ];
 
+  // Trips come second (the easiest big-recall question, and often the biggest
+  // category), home energy fourth. The panes keep their authoring order
+  // above; this maps it to the step sequence.
+  const steps = [panes[0], panes[3], panes[2], panes[1], panes[4], panes[5], panes[6]];
+
+  // The fork pane and the one-screen quick path. Both share the same answer
+  // state as the full flow, so switching paths never loses a thing.
+  const chooserPane = (
+    <div key="chooser">
+      <div className="ob-stephead">
+        <span className="ob-stephead-i" aria-hidden="true"><Icon name="leaf" size={52} /></span>
+        <h3 ref={headRef} tabIndex={-1}>{ONBOARD.chooser.title}</h3>
+      </div>
+      <p>{ONBOARD.chooser.sub}</p>
+      <div className="ob-choicewrap">
+        <button type="button" className="ob-choice" onClick={() => chooseMode('express')}>
+          <strong>{ONBOARD.chooser.quick}</strong>
+          <span>{ONBOARD.chooser.quickNote}</span>
+        </button>
+        <button type="button" className="ob-choice" onClick={() => chooseMode('full')}>
+          <strong>{ONBOARD.chooser.full}</strong>
+          <span>{ONBOARD.chooser.fullNote}</span>
+        </button>
+      </div>
+    </div>
+  );
+
+  const expressPane = (
+    <div key="express">
+      <div className="ob-stephead">
+        <span className="ob-stephead-i" aria-hidden="true"><Icon name="spark" size={52} /></span>
+        <h3 ref={headRef} tabIndex={-1}>{ONBOARD.express.title}</h3>
+      </div>
+      <p>{ONBOARD.express.sub}</p>
+      <Chips
+        icon="globe"
+        label={ONBOARD.you.country}
+        options={Object.entries(COUNTRIES).map(([k, c]) => ({ value: k, label: c.label }))}
+        value={a.country} onChange={setCountry}
+      />
+      {regionsForCountry(a.country).length > 1 && (
+        <Chips
+          icon="pin"
+          label={COUNTRIES[a.country].regionQuestion || ONBOARD.you.state}
+          options={regionsForCountry(a.country).map(([k, v]) => ({ value: k, label: v.label }))}
+          value={a.state} onChange={(v) => set('state', v)}
+        />
+      )}
+      <Stepper icon="people" label={ONBOARD.you.household} value={a.householdSize} min={1} max={10} onChange={setHousehold} />
+      <Chips
+        icon="house"
+        label={ONBOARD.energy.presetLabel}
+        options={ENERGY_PRESETS[a.country].map((pr) => ({ value: pr.id, label: pr.label, note: pr.bill }))}
+        value={a.energyPreset}
+        onChange={(id) => {
+          const pr = ENERGY_PRESETS[a.country].find((x) => x.id === id);
+          if (pr) setA((s) => ({ ...s, energyPreset: id, kwhQuarter: pr.kwhPerAdult * s.householdSize, gasQuarter: pr.gasPerAdult * s.householdSize }));
+        }}
+      />
+      <Chips icon="fork" label={ONBOARD.food.diet} options={dietOptions} value={a.dietType} onChange={(v) => set('dietType', v)} />
+      <SliderField icon="car" label={ONBOARD.travel.car} value={a.carKmWeek} min={0} max={1000} step={5} unit="km / wk"
+        onChange={(v) => set('carKmWeek', v)} />
+      <div className="ob-field">
+        <span className="ob-label"><Icon name="plane" size={30} className="ob-label-i" />{ONBOARD.roughFlights.label}</span>
+        <div className="ob-items-grid">
+          <Stepper compact label={ONBOARD.roughFlights.dom} value={a.roughDom} min={0} max={99} onChange={(v) => set('roughDom', v)} />
+          <Stepper compact label={ONBOARD.roughFlights.short} value={a.roughShort} min={0} max={99} onChange={(v) => set('roughShort', v)} />
+          <Stepper compact label={ONBOARD.roughFlights.long} value={a.roughLong} min={0} max={99} onChange={(v) => set('roughLong', v)} />
+        </div>
+        <span className="ob-note">
+          {fill(ONBOARD.roughFlights.note, {
+            dom: ROUGH_FLIGHT_KM.dom.toLocaleString(),
+            short: ROUGH_FLIGHT_KM.short.toLocaleString(),
+            long: ROUGH_FLIGHT_KM.long.toLocaleString(),
+          })}
+        </span>
+      </div>
+      <div className="ob-done-ctas">
+        <button type="button" className="btn btn-primary fp-btn" onClick={() => setStep(6)}>{ONBOARD.express.cta} →</button>
+        <button type="button" className="fp-linkbtn" onClick={() => setMode('full')}>{ONBOARD.express.refine}</button>
+      </div>
+    </div>
+  );
+
   // Neutral, spoiler-free progress line for the footer: what this step
-  // captured, never a tonnes total.
+  // captured, never a tonnes total. Order matches the step sequence.
   const stepStatus = [
     OB.progress.you,
-    OB.progress.energy,
-    OB.progress.travel,
     flightsReady ? fill(OB.progress.flights.some, { n: flightsReady, s: flightsReady > 1 ? 's' : '' }) : OB.progress.flights.none,
+    OB.progress.travel,
+    OB.progress.energy,
     OB.progress.food,
     OB.progress.advanced,
   ][step];
@@ -869,26 +1203,35 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         <div className="ob-head-left">
           <span className="ob-title">{OB.title}</span>
           <span className="ob-progress" aria-hidden="true">
-            {OB.stepLabels.map((s, i) => (
+            {mode === 'full' && OB.stepLabels.map((s, i) => (
               <span key={s} className={'ob-seg' + (i === step ? ' on' : i < step ? ' done' : '')} title={s} />
             ))}
           </span>
-          <span className="sr-only" role="status">
-            {step === 6 ? OB.done.title : fill(OB.stepOf, { n: step + 1, total: OB.stepLabels.length }) + ': ' + OB.stepLabels[step]}
+          {/* The same orientation line the dots encode, in words: visible to
+              everyone, and announced as the step or path changes. */}
+          <span className="ob-stepname" role="status">
+            {mode === null ? ''
+              : step === 6 ? OB.done.title
+                : mode === 'express' ? ONBOARD.express.name
+                  : fill(OB.stepOf, { n: step + 1, total: OB.stepLabels.length }) + ' · ' + OB.stepLabels[step]}
           </span>
         </div>
         <button type="button" className="ob-close" aria-label="Close" onClick={onCancel}>×</button>
       </div>
 
       <div className="ob-body canvas">
-        {step === 0 && <p className="ob-intro">{OB.intro}</p>}
+        {mode === 'full' && step === 0 && <p className="ob-intro">{OB.intro}</p>}
         <AnimatePresence mode="wait" initial={false}>
-          <motion.div key={step} {...stepMotion} className="ob-pane">
-            {steps[step]}
+          <motion.div
+            key={mode === null ? 'chooser' : mode === 'express' && step < 6 ? 'express' : step}
+            {...stepMotion}
+            className="ob-pane"
+          >
+            {mode === null ? chooserPane : mode === 'express' && step < 6 ? expressPane : steps[step]}
             {/* One sourced fact per step: about the world, never about the
                 visitor's own numbers, so the reveal keeps its punch. The
-                first steps carry the home country's own fact. */}
-            {step < 6 && OB.factsByCountry[a.country][step] && (
+                country facts ride the steps where country and energy land. */}
+            {mode === 'full' && step < 6 && OB.factsByCountry[a.country][step] && (
               <aside className="ob-fact">
                 <span className="ob-fact-k"><Icon name="spark" size={26} className="ob-label-i" />{OB.factKicker}</span>
                 <p>{OB.factsByCountry[a.country][step].text}</p>
@@ -899,9 +1242,9 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         </AnimatePresence>
       </div>
 
-      {step < 6 && <SwarmMeter answers={a} step={step} />}
+      {step < 6 && mode !== null && <SwarmMeter answers={a} step={step} />}
 
-      {step < 6 && (
+      {step < 6 && mode === 'full' && (
         <div className="ob-foot">
           <div className="canvas ob-foot-inner">
             <div className="ob-foot-status">
@@ -910,8 +1253,10 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
               <span className="ob-foot-note">{OB.keepForReveal}</span>
             </div>
             <div className="ob-foot-btns">
-              <button type="button" className="fp-linkbtn" onClick={() => (step === 0 ? onCancel() : setStep(step - 1))}>
-                {step === 0 ? ONBOARD.cancel : ONBOARD.back}
+              {/* Step 0 backs out to the path chooser; Escape and the cross
+                  still close the whole dialog. */}
+              <button type="button" className="fp-linkbtn" onClick={() => (step === 0 ? setMode(null) : setStep(step - 1))}>
+                {ONBOARD.back}
               </button>
               {step === 5 ? (
                 // The optional step: a prominent Skip that adds nothing, and a

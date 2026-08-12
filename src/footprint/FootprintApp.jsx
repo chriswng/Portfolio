@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { MotionConfig } from 'framer-motion';
 import { Grain, ScrollProgress, SkipLink } from '../components/Chrome';
 import Aurora from '../components/Aurora';
@@ -19,6 +19,7 @@ import {
 } from './lib/store';
 import { prefersReducedMotion } from '../utils/media';
 import { copyText } from '../utils/clipboard';
+import CopyButton from '../components/CopyButton';
 import Story from './story/Story';
 import Dashboard from './Dashboard';
 import Plan from './Plan';
@@ -73,7 +74,7 @@ function DataControls({ onExport, onImportFile, onReset, onShare }) {
           <div className="fp-card-head">{DATA_CTRL.title}</div>
           <p className="fp-card-sub">{DATA_CTRL.body}</p>
           <div className="fp-ctrl-row">
-            <button type="button" className="fp-linkbtn" onClick={onShare}>{DATA_CTRL.share}</button>
+            <CopyButton className="fp-linkbtn" label={DATA_CTRL.share} onCopy={onShare} iconSize={14} />
             <button type="button" className="fp-linkbtn" onClick={onExport}>{DATA_CTRL.export}</button>
             <label className="fp-linkbtn fp-import-label">
               {DATA_CTRL.import}
@@ -139,7 +140,14 @@ export default function FootprintApp() {
     });
   };
 
-  const flash = (msg) => { setToast(msg); window.setTimeout(() => setToast(''), 3500); };
+  // One timer for the toast: a second flash inside the first one's 3.5 s
+  // would otherwise be blanked early by the stale timeout.
+  const toastTimer = useRef(null);
+  const flash = (msg) => {
+    setToast(msg);
+    window.clearTimeout(toastTimer.current);
+    toastTimer.current = window.setTimeout(() => setToast(''), 3500);
+  };
 
   const onToggle = (id) => {
     if (isExample) {
@@ -166,7 +174,7 @@ export default function FootprintApp() {
   // title "[Name]'s FY2026 carbon emissions"; blank makes it "My ...", because
   // whoever opens the link is now looking at it as theirs to pass on.
   const onShare = async () => {
-    const name = (window.prompt(SHARE.namePrompt, isExample ? SEED_NAME : '') || '').trim();
+    const name = (window.prompt(fill(SHARE.namePrompt, { label: profile.period.label }), isExample ? SEED_NAME : '') || '').trim();
     const cats = Object.entries(agg.byCategory)
       .sort((a, b) => b[1] - a[1]).slice(0, 4)
       .map(([id, t]) => [categoryById(id).label, Math.round(t * 100) / 100]);
@@ -438,7 +446,7 @@ export default function FootprintApp() {
           </div>
         )}
 
-        <Dashboard agg={agg} period={profile.period} compareAgg={compareAgg} comparePeriod={comparePeriod} isExample={isExample} />
+        <Dashboard agg={agg} period={profile.period} compareAgg={compareAgg} comparePeriod={comparePeriod} isExample={isExample} country={profile.settings.country} />
         {!archived && <Plan macc={macc} pathway={pathway} plan={profile.plan} onToggle={onToggle} />}
         {!isExample && !archived && (
           <DataControls onExport={onExport} onImportFile={onImportFile} onReset={onReset} onShare={onShare} />

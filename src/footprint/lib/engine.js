@@ -24,6 +24,14 @@ export const newId = (prefix = 'e') =>
 
 const round = (v, dp = 4) => Math.round(v * 10 ** dp) / 10 ** dp;
 
+// Activity reads are coerced through this so the engine can never emit a
+// non-finite entry, whatever the UI or an imported file feeds it: undefined,
+// strings and negatives all price as zero.
+const num = (v) => {
+  const n = Number(v);
+  return Number.isFinite(n) && n > 0 ? n : 0;
+};
+
 // ---------------------------------------------------------------------------
 // Entry pricing. Takes a draft { category, date, label, notes, period_months,
 // meta } plus profile settings, returns a complete schema-shaped entry:
@@ -41,7 +49,7 @@ export function priceEntry(draft, settings) {
     case 'electricity': {
       const f = electricityFor(settings);
       const gp = Math.min(1, Math.max(0, (settings.greenpowerPct || 0) / 100));
-      activity = meta.kwh; unit = 'kWh';
+      activity = num(meta.kwh); unit = 'kWh';
       // Market-based scope 2 nets off certified renewable purchases (GreenPower
       // in Australia); scope 3 retained in full (conservative treatment of
       // losses and fuel cycle).
@@ -54,7 +62,7 @@ export function priceEntry(draft, settings) {
     }
     case 'gas': {
       const g = gasFactorsFor(settings);
-      activity = meta.mj; unit = 'MJ';
+      activity = num(meta.mj); unit = 'MJ';
       components = [
         { scope: '1', tco2e: activity * g.s1 * share / 1000 },
         { scope: '3', tco2e: activity * g.s3 * share / 1000 },
@@ -65,31 +73,35 @@ export function priceEntry(draft, settings) {
     case 'road': {
       const mode = meta.mode || 'car';
       if (mode === 'rideshare' || mode === 'taxi') {
-        activity = meta.km; unit = 'km';
-        components = [{ scope: '3', tco2e: meta.km * ROAD_MODES.rideshare.perKm / 1000 }];
+        activity = num(meta.km); unit = 'km';
+        components = [{ scope: '3', tco2e: activity * ROAD_MODES.rideshare.perKm / 1000 }];
         scope = '3'; source = ROAD_MODES.rideshare.source.split('.')[0] + '.';
       } else if (mode === 'pt') {
-        activity = meta.km; unit = 'km';
-        components = [{ scope: '3', tco2e: meta.km * ROAD_MODES.pt.perKm / 1000 }];
+        activity = num(meta.km); unit = 'km';
+        components = [{ scope: '3', tco2e: activity * ROAD_MODES.pt.perKm / 1000 }];
         scope = '3'; source = ROAD_MODES.pt.source.split('.')[0] + '.';
       } else if (meta.fuel === 'ev') {
         // Average occupancy splits car emissions per person, the same
-        // equal-share attribution used for household bills.
+        // equal-share attribution used for household bills. A certified
+        // renewable purchase nets off the charged kWh the same way it nets
+        // the home meter, so the audit and the pathway model agree.
         const occ = Math.max(1, Math.round(meta.occupants || 1));
+        const gp = Math.min(1, Math.max(0, (settings.greenpowerPct || 0) / 100));
         const f = electricityFor(settings);
-        const kwh = meta.km * ROAD_FUELS.ev.kWhPerKm / occ;
-        activity = meta.km; unit = 'km';
+        const kwh = num(meta.km) * ROAD_FUELS.ev.kWhPerKm / occ;
+        activity = num(meta.km); unit = 'km';
         components = [
-          { scope: '2', tco2e: kwh * f.s2 / 1000 },
+          { scope: '2', tco2e: kwh * f.s2 * (1 - gp) / 1000 },
           { scope: '3', tco2e: kwh * f.s3 / 1000 },
         ];
-        scope = '2'; source = electricitySourceFor(f.country).name + ' (EV at ' + ROAD_FUELS.ev.kWhPerKm + ' kWh/km, ' + f.label + ')'
+        scope = '2'; source = electricitySourceFor(f.country).name + ' (EV at ' + ROAD_FUELS.ev.kWhPerKm + ' kWh/km, ' + f.label
+          + (gp > 0 ? ', ' + Math.round(gp * 100) + '% renewable market-based' : '') + ')'
           + (occ > 1 ? ', split across ' + occ + ' occupants' : '');
       } else {
         const occ = Math.max(1, Math.round(meta.occupants || 1));
         const fuel = roadFuelFor(country, meta.fuel);
-        const litres = meta.litres != null ? meta.litres : (meta.km * (meta.l100km || fuel.defaultL100km)) / 100;
-        activity = meta.litres != null ? litres : meta.km;
+        const litres = meta.litres != null ? num(meta.litres) : (num(meta.km) * (meta.l100km || fuel.defaultL100km)) / 100;
+        activity = meta.litres != null ? litres : num(meta.km);
         unit = meta.litres != null ? 'L' : 'km';
         components = [
           { scope: '1', tco2e: litres * fuel.s1_per_L / occ / 1000 },
@@ -104,7 +116,7 @@ export function priceEntry(draft, settings) {
       const band = meta.band || flightBandForKm(meta.km, meta.international);
       const cabin = meta.cabin || 'economy';
       const legs = meta.return ? 2 : 1;
-      const paxkm = meta.km * FLIGHT_DISTANCE_UPLIFT * legs * (meta.passengers || 1);
+      const paxkm = num(meta.km) * FLIGHT_DISTANCE_UPLIFT * legs * (num(meta.passengers) || 1);
       const perKm = FLIGHT_FACTORS[band].withRF[cabin] || FLIGHT_FACTORS[band].withRF.economy;
       activity = Math.round(paxkm); unit = 'pax-km';
       components = [{ scope: '3', tco2e: paxkm * perKm / 1000 }];
@@ -114,26 +126,26 @@ export function priceEntry(draft, settings) {
     }
     case 'freight': {
       if (meta.parcels != null) {
-        activity = meta.parcels; unit = 'parcels';
-        components = [{ scope: '3', tco2e: meta.parcels * FREIGHT_MODES.parcel.perParcel / 1000 }];
+        activity = num(meta.parcels); unit = 'parcels';
+        components = [{ scope: '3', tco2e: activity * FREIGHT_MODES.parcel.perParcel / 1000 }];
       } else {
         const mode = FREIGHT_MODES[meta.mode] || FREIGHT_MODES.road;
-        activity = meta.tonneKm; unit = 't-km';
-        components = [{ scope: '3', tco2e: meta.tonneKm * mode.perTonneKm / 1000 }];
+        activity = num(meta.tonneKm); unit = 't-km';
+        components = [{ scope: '3', tco2e: activity * mode.perTonneKm / 1000 }];
       }
       scope = '3'; source = FREIGHT_SOURCE.name;
       break;
     }
     case 'diet': {
       const dt = DIET_TYPES[meta.dietType] || DIET_TYPES.medMeat;
-      activity = meta.days; unit = 'days';
-      components = [{ scope: '3', tco2e: meta.days * dt.perDay / 1000 }];
+      activity = num(meta.days); unit = 'days';
+      components = [{ scope: '3', tco2e: activity * dt.perDay / 1000 }];
       scope = '3'; source = DIET_SOURCE.name + ' (' + dt.label.toLowerCase() + ')';
       break;
     }
     case 'other': {
       const f = OTHER_FUELS[meta.fuel] || OTHER_FUELS.lpg;
-      activity = meta.amount; unit = f.unit;
+      activity = num(meta.amount); unit = f.unit;
       components = [
         { scope: '1', tco2e: activity * f.s1 * share / 1000 },
         { scope: '3', tco2e: activity * f.s3 * share / 1000 },
@@ -166,7 +178,7 @@ export function priceEntry(draft, settings) {
       // name so nothing stored re-prices); the snapshotted factor is per
       // dollar.
       const kind = GOODS[meta.kind] ? meta.kind : 'other';
-      activity = meta.spendAud || 0; unit = '$';
+      activity = num(meta.spendAud); unit = '$';
       components = [{ scope: '3', tco2e: activity * goodsPerDollar(kind, country) / 1000 }];
       scope = '3';
       source = GOODS_SOURCE.name + ' (' + GOODS[kind].label.toLowerCase() + ', spend-based screening, ' + COUNTRIES[country].currency + ')';
@@ -178,7 +190,7 @@ export function priceEntry(draft, settings) {
       // country price at the home country; the worked example sets it per trip.
       const stayCountry = meta.country || country;
       const perNight = hotelPerNight(stayCountry);
-      activity = meta.nights || 0; unit = 'nights';
+      activity = num(meta.nights); unit = 'nights';
       components = [{ scope: '3', tco2e: activity * perNight / 1000 }];
       scope = '3';
       const c = HOTEL.countries[stayCountry];
@@ -192,7 +204,7 @@ export function priceEntry(draft, settings) {
       // floor area; the effective factor snapshotted is the annual per-m2
       // share. A home logged as an existing (not new) build never reaches here.
       const t = HOME.types[meta.dwelling] || HOME.types.house;
-      const area = meta.areaM2 || 0;
+      const area = num(meta.areaM2);
       const annualKg = (area * t.perM2) / HOME.amortiseYears;
       activity = area; unit = 'm²';
       components = [{ scope: '3', tco2e: annualKg * share / 1000 }];
@@ -268,12 +280,15 @@ export function aggregate(profile) {
       byScope[byScope[c.scope] != null ? c.scope : '3'] += c.tco2e;
     }
     if (!largest || e.tco2e > largest.tco2e) largest = e;
-    // Spread bills across the months they cover (date = period end).
+    // Spread bills across the months they cover (date = period end). A bill
+    // reaching back past the window start keeps its early share in the first
+    // window month, so byMonth always sums back to the total.
     const span = Math.max(1, e.period_months || 1);
     const endK = monthKey(e.date);
     for (let i = 0; i < span; i++) {
       const k = addMonths(endK, -i);
-      if (byMonth[k]) byMonth[k][e.category] = (byMonth[k][e.category] || 0) + e.tco2e / span;
+      const target = byMonth[k] ? k : months[0];
+      if (byMonth[target]) byMonth[target][e.category] = (byMonth[target][e.category] || 0) + e.tco2e / span;
     }
   }
 
@@ -404,9 +419,16 @@ export function baselineState(profile, agg) {
   }
   const dietType = s.dietType || 'medMeat';
   return {
+    // Whole-household outlays in the option costs split by this, so cost and
+    // reduction sit on the same per-person boundary.
+    householdSize: Math.max(1, s.householdSize || 1),
     country: countryOf(s),
     state: s.state || COUNTRIES[countryOf(s)].defaultRegion,
     dwelling: s.dwelling || 'house',
+    // Tenure travels separately from building type. Profiles saved before
+    // the roof question packed ownership into dwelling === 'house', so an
+    // absent value means yes, not no.
+    roofOwn: s.roofOwn !== false,
     greenpowerPct: (s.greenpowerPct || 0) / 100,
     kwh, mj,
     kmCar, kmRide, kmPt,
@@ -444,7 +466,9 @@ export function stateEmissions(st, yearOffset) {
     + st.kmPt * ROAD_MODES.pt.perKm) / 1000;
   const flight = Math.max(0, st.flightT - st.droppedFlightT);
   const diet = (st.dietPerDay * st.dietDays) / 1000;
-  const freight = st.freightAirT * (1 - (st.seaShift || 0) * (1 - 0.016 / 1.13)) + st.freightOtherT;
+  // The sea-shift residual derives from the freight table itself, so a
+  // factor refresh reaches the pathway without a hand edit here.
+  const freight = st.freightAirT * (1 - (st.seaShift || 0) * (1 - FREIGHT_MODES.sea.perTonneKm / FREIGHT_MODES.air.perTonneKm)) + st.freightOtherT;
 
   return {
     total: elec + gas + road + flight + diet + freight + st.otherT + (st.goodsT || 0) + (st.dwellingT || 0),

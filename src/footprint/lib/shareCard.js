@@ -207,23 +207,6 @@ const PAINTERS = {
     ctx.font = `400 34px ${SANS}`;
     ctx.fillText(d.quip, 84, 1010);
   },
-  guess(ctx, d) {
-    ctx.fillStyle = MID;
-    ctx.font = `500 32px ${MONO}`;
-    ctx.fillText(CARD_TEXT.guessLabel, 84, 400);
-    ctx.fillStyle = INK;
-    ctx.font = `700 170px ${DISP}`;
-    ctx.fillText(d.guess + ' t', 78, 560);
-    ctx.fillStyle = MID;
-    ctx.font = `500 32px ${MONO}`;
-    ctx.fillText(CARD_TEXT.auditLabel, 84, 720);
-    ctx.fillStyle = MATCHA;
-    ctx.font = `700 170px ${DISP}`;
-    ctx.fillText(d.actual + ' t', 78, 880);
-    ctx.fillStyle = INK;
-    ctx.font = `400 40px ${SANS}`;
-    ctx.fillText(d.verdict, 84, 1010);
-  },
   bench(ctx, d) {
     bars(ctx, d.rows, 420, { gap: 150, barH: 44 });
     ctx.fillStyle = MID;
@@ -418,14 +401,19 @@ export function canShareImage() {
 
 // Returns 'shared' | 'saved' | 'cancelled'. Tries the native share sheet first
 // (so the user can pick Instagram Story / LinkedIn), and falls back to a
-// download otherwise.
+// download otherwise. The canonical page link rides beside the file so the
+// shared post always leads back to the calculator.
 export async function shareCanvas(canvas, filename, shareText) {
   const blob = await new Promise((res) => canvas.toBlob(res, 'image/png'));
   if (!blob) return 'cancelled';
   const file = new File([blob], filename, { type: 'image/png' });
   if (navigator.canShare && navigator.canShare({ files: [file] })) {
     try {
-      await navigator.share({ files: [file], text: shareText });
+      await navigator.share({
+        files: [file],
+        text: shareText || SHARE_ST.shareText,
+        url: SHARE_ST.shareUrl,
+      });
       return 'shared';
     } catch (err) {
       if (err && err.name === 'AbortError') return 'cancelled';
@@ -459,14 +447,4 @@ export async function renderShare(format, kind, data, linkedIn) {
   if (format === 'linkedin') return drawLinkedInCard(linkedIn);
   if (format === 'story') return drawStoryCard(kind, data);
   return drawShareCard(kind, data);
-}
-
-export async function shareCard(kind, data, filename) {
-  const canvas = await drawShareCard(kind, data);
-  return shareCanvas(canvas, filename);
-}
-
-export async function shareLinkedIn(data, filename) {
-  const canvas = await drawLinkedInCard(data);
-  return shareCanvas(canvas, filename);
 }
