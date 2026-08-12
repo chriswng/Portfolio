@@ -58,10 +58,8 @@
 /* ---- KPIs ---- */
 .fp-kpis{ display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--rule-dk); border:1px solid var(--rule-dk); margin-bottom:0.75rem; }
 @media(min-width:760px){ .fp-kpis{ grid-template-columns:repeat(4,1fr); } }
-.fp-kpis-2{ grid-template-columns:repeat(2,1fr); max-width:560px; }
-@media(min-width:760px){ .fp-kpis-2{ grid-template-columns:repeat(2,1fr); } }
 /* Narrow phones: two abreast crushes the range note; stack them. */
-@media(max-width:419px){ .fp-kpis-2{ grid-template-columns:1fr; } }
+@media(max-width:419px){ .fp-kpis{ grid-template-columns:1fr; } }
 .fp-kpi{ background:var(--white); padding:1.1rem 1.25rem; transition:background 0.3s var(--ease); }
 .fp-kpi:hover{ background:oklch(0.975 0.008 118); }
 .fp-kpi.live{ background:rgba(181,196,43,0.10); }
