@@ -221,6 +221,12 @@ export default function CarbonField({
     const resize = () => {
       const w = ctn.offsetWidth, h = ctn.offsetHeight;
       if (!w || !h) return;
+      // devicePixelRatio changes when the window crosses monitors: the
+      // renderer's dpr and the point-size uniform must move together or
+      // points render at the wrong size.
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      renderer.dpr = dpr;
+      program.uniforms.uDpr.value = dpr;
       renderer.setSize(w, h);
       // Keep the field square-ish so emblems never stretch.
       program.uniforms.uScale.value = w > h ? [h / w, 1] : [1, w / h];
@@ -246,8 +252,8 @@ export default function CarbonField({
 
     let lastSig = mode + '|' + (focus || '') + '|' + hex;
     let raf = 0;
-    let intersecting = true;
-    let inView = true;
+    let intersecting = false;
+    let inView = false;
     let lastT = 0;
     const syncInView = () => {
       inView = intersecting && !document.hidden;
@@ -289,19 +295,27 @@ export default function CarbonField({
       geometry.attributes.position.needsUpdate = true;
       renderer.render({ scene: mesh });
     };
-    raf = requestAnimationFrame(tick);
 
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => { intersecting = e.isIntersecting; });
+    // The observer's guaranteed initial callback starts the loop, so a field
+    // mounted below the fold never spins a hidden WebGL loop; without
+    // IntersectionObserver the loop starts directly.
+    let io = null;
+    if ('IntersectionObserver' in window) {
+      io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => { intersecting = e.isIntersecting; });
+        syncInView();
+      });
+      io.observe(ctn);
+    } else {
+      intersecting = true;
       syncInView();
-    });
-    io.observe(ctn);
+    }
     const onVis = () => syncInView();
     document.addEventListener('visibilitychange', onVis);
 
     return () => {
       if (raf) cancelAnimationFrame(raf);
-      io.disconnect();
+      if (io) io.disconnect();
       document.removeEventListener('visibilitychange', onVis);
       window.removeEventListener('resize', resize);
       ctn.removeEventListener('pointermove', onMove);

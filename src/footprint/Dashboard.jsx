@@ -2,16 +2,16 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import SplitText from '../components/SplitText';
 import { CATEGORIES } from './data/factors';
-import { BENCHMARK_CAVEAT } from './data/benchmarks';
+import { BENCHMARK_CAVEAT, BUDGET_2030, homeAverageFor } from './data/benchmarks';
 import { DASH, DASH_UI, fmtT } from './data/copy';
 import { DASH_EXTRA, fill } from './data/storyCopy';
 import { CountUp } from './story/CountUp';
-import { TrendChart } from './charts';
+import { TrendChart, MONTH_NAMES } from './charts';
 import Icon from '../components/Icons';
 
 const monthName = (key) => {
   const [y, m] = key.split('-');
-  return ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][Number(m) - 1] + ' ' + y;
+  return MONTH_NAMES[Number(m) - 1] + ' ' + y;
 };
 
 const fadeUp = {
@@ -22,12 +22,14 @@ const fadeUp = {
 };
 
 // The working detail below the reveal: the exact numbers, the year month by
-// month, and the split by category. The reveal above tells the story; this is
-// the spreadsheet behind it, so it deliberately does not re-tell the scopes,
-// the benchmarks or the result label.
-export default function Dashboard({ agg, period, compareAgg, comparePeriod, isExample }) {
+// month, and the split by category. The reveal tells the story; this is the
+// spreadsheet behind it, so it does not re-tell the scopes or the result
+// label. The two benchmark tiles are the exception: a visitor who skipped
+// the reveal still deserves a verdict, not just a number.
+export default function Dashboard({ agg, period, compareAgg, comparePeriod, isExample, country }) {
   const [compareOn, setCompareOn] = useState(false);
   const total = agg.total;
+  const homeAvg = homeAverageFor(country);
   const cats = CATEGORIES
     .map((c) => ({ ...c, t: agg.byCategory[c.id] || 0 }))
     .filter((c) => c.t > 0);
@@ -55,13 +57,23 @@ export default function Dashboard({ agg, period, compareAgg, comparePeriod, isEx
         <h2 className="display fp-h2"><SplitText text={DASH.title[0]} /> <SplitText text={DASH.title[1]} accentIndex={1} /></h2>
         <p className="fp-sub">{DASH.sub}</p>
 
-        <motion.div className="fp-kpis fp-kpis-2" {...fadeUp}>
+        <motion.div className="fp-kpis" {...fadeUp}>
           <div className="fp-kpi live">
             <div className="fp-kpi-l">{period.label} {DASH.kpis.total}</div>
             <div className="fp-kpi-v"><CountUp value={total} decimals={1} duration={0.9} /><span> tCO₂-e</span></div>
             {agg.uncertainty && agg.uncertainty.band > 0.005 && (
               <div className="fp-kpi-n">{fill(DASH.kpis.range, { low: fmtT(agg.uncertainty.low), high: fmtT(agg.uncertainty.high) })}</div>
             )}
+          </div>
+          <div className="fp-kpi">
+            <div className="fp-kpi-l">{DASH.kpis.aus}</div>
+            <div className="fp-kpi-v">{Math.round((total / homeAvg.tco2e) * 100)}<span>%</span></div>
+            <div className="fp-kpi-n">{homeAvg.short} · {homeAvg.tco2e} t</div>
+          </div>
+          <div className="fp-kpi">
+            <div className="fp-kpi-l">{DASH.kpis.budget}</div>
+            <div className="fp-kpi-v">{Math.round((total / BUDGET_2030.tco2e) * 100)}<span>%</span></div>
+            <div className="fp-kpi-n">{BUDGET_2030.short} · {BUDGET_2030.tco2e} t</div>
           </div>
           <div className="fp-kpi">
             <div className="fp-kpi-l">{DASH.kpis.largest}</div>

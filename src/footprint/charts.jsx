@@ -4,6 +4,8 @@ import {
   LinearScale, CategoryScale, Filler, Tooltip,
 } from 'chart.js';
 import { CATEGORIES, categoryById } from './data/factors';
+import { CHART_UI, EFFORT_LABELS } from './data/copy';
+import { fill } from './data/storyCopy';
 import { prefersReducedMotion } from '../utils/media';
 
 // Register only what these charts use; chart.js/auto doubles the bundle.
@@ -18,10 +20,17 @@ const TOOLTIP_STYLE = {
 const AXIS_TICKS = { font: { family: MONO, size: 10 }, color: '#64748B' };
 const GRID = { color: 'rgba(15,23,42,0.05)' };
 
+// The one month list the footprint charts and dashboard both read from.
+export const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
 const monthLabel = (key) => {
   const [y, m] = key.split('-');
-  return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][Number(m) - 1] + ' ' + y.slice(2);
+  return MONTH_NAMES[Number(m) - 1].slice(0, 3) + ' ' + y.slice(2);
 };
+
+// Pathway series colours, exported so the legend in Plan.jsx renders from the
+// same values the datasets draw with.
+export const PATHWAY_COLORS = { bau: '#6E7469', plan: '#1F2A1E', planFill: 'rgba(117,130,29,0.14)', budget: '#C7274A' };
 
 // ---------------------------------------------------------------------------
 // Monthly stacked bars by category.
@@ -46,7 +55,7 @@ export function TrendChart({ agg }) {
             ...TOOLTIP_STYLE,
             callbacks: {
               label: (c) => ' ' + c.dataset.label + ': ' + (Math.round(c.raw * 100) / 100).toFixed(2) + ' t',
-              footer: (items) => 'Month total: ' + (Math.round(items.reduce((s, i) => s + i.raw, 0) * 100) / 100).toFixed(2) + ' t',
+              footer: (items) => fill(CHART_UI.monthTotal, { t: (Math.round(items.reduce((s, i) => s + i.raw, 0) * 100) / 100).toFixed(2) }),
             },
             footerFont: { family: MONO, size: 11 },
           },
@@ -104,9 +113,9 @@ export function PathwayChart({ pathway, budget, labels }) {
     const ch = new Chart(ctx.getContext('2d'), {
       type: 'line',
       data: { labels: [], datasets: [
-        { label: labels.bau, data: [], borderColor: '#6E7469', borderWidth: 2, borderDash: [5, 4], pointRadius: 0, fill: false, tension: 0.15 },
-        { label: labels.plan, data: [], borderColor: '#1F2A1E', borderWidth: 2.5, backgroundColor: 'rgba(117,130,29,0.14)', fill: 'origin', pointRadius: 0, tension: 0.15 },
-        { label: labels.budget, data: [], borderColor: '#C7274A', borderWidth: 1.5, borderDash: [2, 3], pointRadius: 0, fill: false },
+        { label: labels.bau, data: [], borderColor: PATHWAY_COLORS.bau, borderWidth: 2, borderDash: [5, 4], pointRadius: 0, fill: false, tension: 0.15 },
+        { label: labels.plan, data: [], borderColor: PATHWAY_COLORS.plan, borderWidth: 2.5, backgroundColor: PATHWAY_COLORS.planFill, fill: 'origin', pointRadius: 0, tension: 0.15 },
+        { label: labels.budget, data: [], borderColor: PATHWAY_COLORS.budget, borderWidth: 1.5, borderDash: [2, 3], pointRadius: 0, fill: false },
       ] },
       options: {
         responsive: true, maintainAspectRatio: false,
@@ -175,7 +184,7 @@ export function MaccChart({ rows }) {
 
   const live = rows.filter((r) => r.applicable && r.reduction > 0.004 && r.costPerTonne != null)
     .sort((a, b) => a.costPerTonne - b.costPerTonne);
-  if (!live.length) return <p className="fp-empty">Nothing applicable to plot yet. Add some entries first.</p>;
+  if (!live.length) return <p className="fp-empty">{CHART_UI.maccEmpty}</p>;
 
   const W = compact ? 440 : 720;
   const H = compact ? 330 : 300;
@@ -208,6 +217,9 @@ export function MaccChart({ rows }) {
   for (let v = Math.ceil(minC / tickStep) * tickStep; v <= maxC; v += tickStep) yTicks.push(v);
   if (!yTicks.includes(0)) yTicks.push(0);
 
+  const pinnedId = tip && tip.pinned ? tip.id : null;
+  const togglePin = (b) => setTip((t) => (t && t.id === b.id && t.pinned ? null : { ...b, pinned: true }));
+
   let cum = 0;
   const bars = live.map((r) => {
     const x = xFor(cum) + 1;
@@ -220,7 +232,9 @@ export function MaccChart({ rows }) {
 
   return (
     <div className="fp-macc" ref={wrapRef}>
-      <svg viewBox={'0 0 ' + W + ' ' + H} role="img" style={{ width: '100%', height: 'auto', display: 'block' }}
+      {/* role="group", not "img": the bars inside are focusable buttons, and
+          an img ancestor would flatten them away from assistive tech. */}
+      <svg viewBox={'0 0 ' + W + ' ' + H} role="group" style={{ width: '100%', height: 'auto', display: 'block' }}
         aria-label={'Marginal abatement cost curve: ' + live.map((r) => r.action + ' abates ' + r.reduction.toFixed(2) + ' tonnes a year at ' + (r.costPerTonne < 0 ? 'a saving of $' + Math.abs(r.costPerTonne) : '$' + r.costPerTonne) + ' per tonne').join('; ') + '.'}>
         {yTicks.map((v) => (
           <g key={v}>
@@ -229,12 +243,15 @@ export function MaccChart({ rows }) {
           </g>
         ))}
         <line x1={padL} x2={W - padR} y1={y0} y2={y0} stroke="#475569" strokeWidth="1.5" />
+        {/* Enter and Space never reach onClick on an SVG group, so the pin
+            toggle answers the keys itself via onKeyDown. */}
         {bars.map((b) => (
-          <g key={b.id} tabIndex={0} className="fp-macc-bar" role="img"
+          <g key={b.id} tabIndex={0} className="fp-macc-bar" role="button" aria-pressed={pinnedId === b.id}
             aria-label={b.action + ': ' + b.reduction.toFixed(2) + ' tonnes a year at ' + (b.costPerTonne < 0 ? 'a saving of $' + Math.abs(b.costPerTonne) : '$' + b.costPerTonne) + ' per tonne' + (b.offScale ? ', beyond the axis cap' : '')}
             onMouseEnter={() => setTip(b)} onMouseLeave={() => setTip((t) => (t && t.id === b.id && !t.pinned ? null : t))}
             onFocus={() => setTip(b)} onBlur={() => setTip((t) => (t && t.id === b.id && !t.pinned ? null : t))}
-            onClick={() => setTip((t) => (t && t.id === b.id && t.pinned ? null : { ...b, pinned: true }))}>
+            onClick={() => togglePin(b)}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); togglePin(b); } }}>
             <title>{b.action + ': ' + b.reduction.toFixed(2) + ' t/yr at ' + (b.costPerTonne < 0 ? '-$' + Math.abs(b.costPerTonne) : '$' + b.costPerTonne) + '/t' + (b.offScale ? ' (beyond the axis cap)' : '')}</title>
             {/* Invisible hit area widens skinny bars to a tappable target. */}
             <rect x={b.x - 4} y={padT} width={b.w + 8} height={H - padT - padB} fill="transparent" />
@@ -247,19 +264,19 @@ export function MaccChart({ rows }) {
         <text x={W - padR} y={H - 8} textAnchor="end" fontSize={fsLabel} fontFamily="JetBrains Mono, monospace" fill="#64748B">
           {'cumulative abatement → ' + totalRed.toFixed(1) + ' t/yr'}
         </text>
-        <text x={14} y={padT + 2} fontSize={fsLabel} fontFamily="JetBrains Mono, monospace" fill="#64748B" transform={'rotate(-90 14 ' + (padT + 2) + ')'} textAnchor="end">$ / tCO₂-e</text>
+        <text x={14} y={padT + 2} fontSize={fsLabel} fontFamily="JetBrains Mono, monospace" fill="#64748B" transform={'rotate(-90 14 ' + (padT + 2) + ')'} textAnchor="end">$ per tonne</text>
       </svg>
       <div className="fp-macc-tip" aria-live="polite">
         {tip ? (
           <>
             <span className="fp-macc-tip-dot" style={{ background: categoryById(tip.category).hex }} />
             <strong>{tip.action}</strong>
-            <span>{tip.reduction.toFixed(2)} t/yr · {tip.costPerTonne < 0 ? 'saves $' + Math.abs(tip.costPerTonne) : 'costs $' + tip.costPerTonne}/t · {tip.effort} effort</span>
+            <span>{tip.reduction.toFixed(2)} t/yr · {tip.costPerTonne < 0 ? 'saves $' + Math.abs(tip.costPerTonne) : 'costs $' + tip.costPerTonne}/t · {EFFORT_LABELS[tip.effort] || EFFORT_LABELS.med} {CHART_UI.maccEffortSuffix}</span>
           </>
         ) : (
           <span>
-            Tap, hover or tab across the bars. Width is tonnes; below the line pays you.
-            {clamped ? ' Axis capped at -$' + Math.abs(CAP_MIN).toLocaleString() + '/t, MACC convention; marked bars run further and carry their true figure.' : ''}
+            {CHART_UI.maccHint}
+            {clamped ? ' ' + fill(CHART_UI.maccCapNote, { cap: Math.abs(CAP_MIN).toLocaleString() }) : ''}
           </span>
         )}
       </div>

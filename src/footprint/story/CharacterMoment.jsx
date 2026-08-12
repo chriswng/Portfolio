@@ -73,9 +73,12 @@ export default function CharacterMoment({ d, voice, tags, character }) {
       axisKey: 'weight', level: ax.weight.level,
       frac: Math.min(1, ax.weight.total / WEIGHT_CAP),
       reading: fill(CHARACTER_ST.axes.weight.reading, { t: fmtT(ax.weight.total) }),
+      // Label and position both derive from the thresholds, so a benchmark
+      // refresh moves them together. String(6.6) and String(16) render with
+      // no trailing zeros.
       ticks: [
-        { at: GLOBAL_T / WEIGHT_CAP, label: CHARACTER_ST.axes.weight.ticks[0].label },
-        { at: HEAVY_T / WEIGHT_CAP, label: CHARACTER_ST.axes.weight.ticks[1].label },
+        { at: GLOBAL_T / WEIGHT_CAP, label: fill(CHARACTER_ST.axes.weight.ticks[0].label, { t: GLOBAL_T }) },
+        { at: HEAVY_T / WEIGHT_CAP, label: fill(CHARACTER_ST.axes.weight.ticks[1].label, { t: HEAVY_T }) },
       ],
     },
     {
@@ -126,6 +129,10 @@ export default function CharacterMoment({ d, voice, tags, character }) {
               </p>
             )}
             <p className="st-char-hint">{character.hint}</p>
+            {/* The bridge to action lives on the screenshot moment itself. */}
+            {d.ranked && d.ranked[0] && (
+              <p className="st-char-hook">{fill(CHARACTER_ST.hook[voice], { label: d.ranked[0].label.toLowerCase() })}</p>
+            )}
             {character.badge && (
               <div className="st-char-badge">
                 <EmblemDots stencil={BADGE.stencil} hex={lighten(BADGE.hex, 0.3)} size={34} />
@@ -162,7 +169,7 @@ export default function CharacterMoment({ d, voice, tags, character }) {
                 </span>
               ))}
               {WEIGHT_ROWS.map((w) => [
-                <span className="st-matrix-rowlab" key={w}>{CHARACTER_ST.matrixRows[w]}</span>,
+                <span className="st-matrix-rowlab" key={w}>{fill(CHARACTER_ST.matrixRows[w], { g: GLOBAL_T, h: HEAVY_T })}</span>,
                 ...TEMPERAMENT_COLS.map((t, ci) => {
                   const c = CHARACTERS.find(
                     (x) => x.weight === w && x.shape === t.shape && x.rhythm === t.rhythm,

@@ -22,7 +22,7 @@ export const CARDS = [
     chips: ['Flights', 'Driving', 'Home', 'Food', 'Freight', 'Stuff'],
     ghost: { text: 'CO', sub: '2', size: 400, subSize: 268, baseline: 348, subBaseline: 452, endX: 1178 },
     url: 'itschriswang.com/footprint',
-    footer: 'Run your own · ten minutes · data stays in your browser',
+    footer: 'Run your own · quick estimate in a minute · data stays in your browser',
     meshSeed: 20260722,
     excludeX: 812,
   },

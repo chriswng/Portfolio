@@ -15,7 +15,7 @@ import { baselineState, stateEmissions } from '../lib/engine';
 import { ABATEMENT_OPTIONS, APPLY_ORDER } from '../data/abatement';
 import {
   CHROME, COVER, YEAR, GUESS, LOCKIN, TOTAL, EQUIV_ST, SCOPES, HOTSPOTS_ST,
-  MONTHS_ST, BENCH_ST, NEEDLE, OUTRO, SHARE_ST, fill,
+  MONTHS_ST, BENCH_ST, NEEDLE, OUTRO, SHARE_ST, fill, ratioPhrase,
 } from '../data/storyCopy';
 
 // Standard whileInView reveal used by the calm moments.
@@ -34,6 +34,10 @@ const inView = { once: true, margin: '-18% 0px' };
 // sharing instead of a row of identical buttons. Tapping the preview or the
 // button opens the share sheet with the full format choices.
 // ---------------------------------------------------------------------------
+// The gallery thumbnails render as square posts; the sheet opens on the same
+// format so the preview and the sheet agree.
+const PREVIEW_FORMAT = 'post';
+
 export function GalleryCard({ kind, data, fy, linkedIn, label }) {
   const [open, setOpen] = useState(false);
   const [url, setUrl] = useState('');
@@ -47,7 +51,7 @@ export function GalleryCard({ kind, data, fy, linkedIn, label }) {
     const el = boxRef.current;
     const draw = async () => {
       let canvas;
-      try { canvas = await renderShare('post', kind, { ...data, fy }); }
+      try { canvas = await renderShare(PREVIEW_FORMAT, kind, { ...data, fy }); }
       catch { return; }
       if (!alive) return;
       canvas.toBlob((blob) => {
@@ -87,7 +91,7 @@ export function GalleryCard({ kind, data, fy, linkedIn, label }) {
         <span aria-hidden="true">↗</span> {SHARE_ST.button}
       </button>
       {open && (
-        <ShareSheet kind={kind} data={{ ...data, fy }} linkedIn={linkedIn} onClose={() => setOpen(false)} />
+        <ShareSheet kind={kind} data={{ ...data, fy }} linkedIn={linkedIn} initialFormat={PREVIEW_FORMAT} onClose={() => setOpen(false)} />
       )}
     </div>
   );
@@ -334,6 +338,13 @@ export function LockIn({ tags, goTo, guess, setGuess, locked, onLock, onSkip }) 
 // the flights become a plane, dinner becomes a drumstick, a fish or a leaf.
 // ---------------------------------------------------------------------------
 export function TotalReveal({ d, voice, guess, onCopyLink, reduced }) {
+  // One everyday anchor in the same breath as the number: the familiar
+  // domestic return, from the same table the equivalences moment counts with.
+  const anchorEq = EQUIVALENCES.find((e) => e.id === 'flight');
+  const anchorN = anchorEq ? (d.total * 1000) / anchorEq.kg : 0;
+  const anchorLine = anchorEq && anchorN >= 1
+    ? fill(TOTAL.anchor, { n: fmtCount(anchorN), unit: anchorN >= 1.5 ? anchorEq.unit[1] : anchorEq.unit[0] })
+    : null;
   // The guess, settled: under, over, or close enough to brag about.
   let guessLine = null;
   if (guess != null && d.total > 0.005) {
@@ -381,6 +392,7 @@ export function TotalReveal({ d, voice, guess, onCopyLink, reduced }) {
               viewport={{ once: true, margin: '-15% 0px' }}
               transition={{ duration: 0.5, delay: 0.35, ease: [0.25, 1, 0.5, 1] }}
             >
+              {anchorLine && <p className="st-anchor">{anchorLine}</p>}
               <p className="st-line">{TOTAL.line[voice]}</p>
               {guessLine && (
                 <p className="st-verdict"><strong>{TOTAL.guess.kicker}.</strong> {guessLine}</p>
@@ -440,8 +452,6 @@ export function TotalReveal({ d, voice, guess, onCopyLink, reduced }) {
 // ---------------------------------------------------------------------------
 const fmtCount = (v) => (v >= 20 ? Math.round(v).toLocaleString('en-AU') : String(Math.round(v * 10) / 10));
 
-const DOT_RENDER_CAP = 168;
-
 export function Equivalences({ d, voice, tags }) {
   const [sel, setSel] = useState(EQUIVALENCES[0].id);
   const eq = EQUIVALENCES.find((e) => e.id === sel) || EQUIVALENCES[0];
@@ -484,15 +494,16 @@ export function Equivalences({ d, voice, tags }) {
           <p className="st-eq-cad">{cadLine}</p>
           {/* The wall of dots: felt scale, one glance. Decorative; the readout
               above carries the number. */}
+          {/* equivCount snaps the per-dot grain so dots never exceeds 150. */}
           <div className="st-eq-dots" key={eq.id} aria-hidden="true">
-            {Array.from({ length: Math.min(dots, DOT_RENDER_CAP) }).map((_, i) => (
+            {Array.from({ length: dots }).map((_, i) => (
               <i key={i} style={{ animationDelay: `${Math.min(i * 7, 1100)}ms` }} />
             ))}
           </div>
           <p className="st-eq-legend" aria-hidden="true">{legend}</p>
           <p className="st-eq-basis">{eq.basis}</p>
         </motion.div>
-        <motion.p className="st-caveat" variants={rise} custom={5}>{EQUIV_ST.note}</motion.p>
+        <motion.p className="st-caveat" variants={rise} custom={5}>{EQUIV_ST.note[voice]}</motion.p>
       </motion.div>
     </section>
   );
@@ -661,6 +672,19 @@ export function Bench({ d, voice, tags }) {
       <motion.div className="st-center st-wide" initial="hidden" whileInView="visible" viewport={inView}>
         <motion.div className="sec-tag" data-idx="" variants={rise}>{tags['st-bench']}</motion.div>
         <motion.h2 className="st-h2 display" variants={rise} custom={1}>{BENCH_ST.headline[voice]}</motion.h2>
+        {/* The synthesis first: one sentence to leave with, then the tiles
+            and bars unpack it. */}
+        {tiles.length === 3 && (
+          <motion.p className="st-line" variants={rise} custom={1.3}>
+            {fill(BENCH_ST.verdict[voice], {
+              t: fmtT(d.total),
+              home: ratioPhrase(d.total, tiles[0].base.t),
+              homeName: tiles[0].base.label,
+              world: ratioPhrase(d.total, tiles[1].base.t),
+              budget: ratioPhrase(d.total, tiles[2].base.t),
+            })}
+          </motion.p>
+        )}
         <div className="st-bench-tiles">
           {tiles.map((t, i) => (
             <motion.div className="st-bench-tile" key={t.key} variants={rise} custom={1.5 + i * 0.5}>
@@ -699,7 +723,7 @@ export function Bench({ d, voice, tags }) {
             <span className="st-overshoot-k">{BENCH_ST.overshoot.kicker}</span>
             <span className="st-overshoot-line">
               {d.overshoot.within
-                ? BENCH_ST.overshoot.within
+                ? BENCH_ST.overshoot.within[voice]
                 : fill(BENCH_ST.overshoot.line[voice], { date: d.overshoot.date, day: d.overshoot.day })}
             </span>
           </motion.div>

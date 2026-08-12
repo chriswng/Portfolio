@@ -203,7 +203,6 @@ export const SPIKE_MULTIPLE = 2;
 export const BADGE = {
   id: 'pacifist-run', name: 'The Pacifist Run', hex: '#75821D', stencil: S.core,
   tagline: 'Finished the year, harmed almost nothing.',
-  line: 'Inside the 2.5 t lifestyle budget, which almost nobody is. The rarest ending in the game; the models call it the destination.',
 };
 
 // The roster, one character per cell, ordered for the 3 x 4 matrix:
