@@ -13,8 +13,12 @@ on:
 permissions:
   contents: read
 
+# Keyed on the branch name rather than the ref, so the push run and the pull
+# request run for the same branch land in one group and the earlier of the two
+# is cancelled. Both triggers are wanted (a branch with no pull request open
+# still gets checked), but the same commit only needs checking once.
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-${{ github.event.pull_request.head.ref || github.ref_name }}
   cancel-in-progress: true
 
 jobs:
