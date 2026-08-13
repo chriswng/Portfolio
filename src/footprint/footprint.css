@@ -497,6 +497,9 @@
 .ob-quickadd-l{ font-family:var(--mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--mid); }
 .ob-fcard-btns{ display:flex; gap:0.4rem; }
 .ob-skiptop{ margin-bottom:1.1rem; }
+/* The region picker's select form, used once a country has more places than
+   chips can carry. Sized to sit beside the other single-line controls. */
+.ob-regionsel{ max-width:340px; }
 /* The swarm's answer-landed burst: motion only, never a number. */
 .ob-swarm-dots.pulse{ animation:ob-swarm-pulse 0.6s var(--ease); }
 @keyframes ob-swarm-pulse{ 0%{ transform:scale(1); } 35%{ transform:scale(1.14); } 100%{ transform:scale(1); } }
