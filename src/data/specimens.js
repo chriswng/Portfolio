@@ -109,19 +109,20 @@ export const SPECIMENS = {
 
   // Computed by the site's own engine: aggregate(buildSeedProfile(),
   // SEED_SETTINGS, SEED_PERIOD).byCategory in src/footprint/lib/engine.js,
-  // over the worked example year. Totals 14.7 t CO2e.
+  // over the worked example year. Totals 14.6 t CO2e on the 2026 DEFRA
+  // factor set, which revised flights and air freight down.
   footprint: {
     kind: 'stack',
-    totalT: 14.7,
+    totalT: 14.6,
     parts: [
-      { label: 'Flights', pct: 62.9 },
-      { label: 'Diet', pct: 14.0 },
-      { label: 'Hotel nights', pct: 6.6 },
-      { label: 'Freight', pct: 4.7 },
+      { label: 'Flights', pct: 63.5 },
+      { label: 'Diet', pct: 14.1 },
+      { label: 'Hotel nights', pct: 6.7 },
+      { label: 'Freight', pct: 3.9 },
       { label: 'Goods', pct: 3.3 },
       { label: 'Everything else', pct: 8.5 },
     ],
-    caption: 'One real year, 14.7 t, priced by category',
+    caption: 'One real year, 14.6 t, priced by category',
     basis: 'Derived · the page engine over the worked example',
   },
 

@@ -29,7 +29,8 @@ kept in-repo as working provenance.
 
 ## Files kept in this folder
 
-- `sbti-companies-taking-action.xlsx` — the SBTi public company dataset, kept as
+- `sbti-companies-taking-action.xlsx` — the SBTi public company dataset,
+  snapshot of 6 August 2026 (15,375 companies), kept as
   provenance for the climate-target signals shown on the page.
 
 ## Files intentionally not kept

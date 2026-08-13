@@ -10,8 +10,8 @@
 // its source and an accessed date, and the constructed fallback curves are
 // labelled as indicative estimates, never as measured or live figures.
 
-export const ACCESSED = '21 July 2026';
-export const LAST_UPDATED = '21 July 2026';
+export const ACCESSED = '24 July 2026';
+export const LAST_UPDATED = '24 July 2026';
 
 // ---------------------------------------------------------------------------
 // Sources
@@ -27,7 +27,7 @@ export const NGA_SOURCE = {
 export const RMF_SOURCE = {
   name: 'Clean Energy Regulator, Voluntary market-based Scope 2 emissions guideline',
   detail:
-    'National residual mix factor (RMF) for the 2024-25 reporting year, 0.81 kg CO2-e per kWh. This is the market-based reference for any electricity a business or household has not covered with surrendered contractual instruments. Published August 2025.',
+    'National residual mix factor (RMF) for the 2025-26 reporting year, 0.81 kg CO2-e per kWh, applying to every facility using the market-based method regardless of its state or whether it is connected to the main grid. This is the market-based reference for any electricity a business or household has not covered with surrendered contractual instruments. Guideline published July 2026.',
   url: 'https://cer.gov.au/document/voluntary-market-based-scope-2-emissions-guideline',
   accessed: ACCESSED,
 };
@@ -195,11 +195,12 @@ export const LOCATION_FACTORS = {
   NT: { label: 'Northern Territory (DKIS grid)', s2: 0.56 },
 };
 
-// National residual mix factor for the 2024-25 reporting year. For 2024-25
-// the published RMF is a single national figure, so market-based sits on the
-// same number in every state. State-level RMFs are being introduced from the
-// 2025-26 reporting year; they land here once the published figures are
-// verified, alongside the next NGA workbook.
+// National residual mix factor for the 2025-26 reporting year. The published
+// RMF is a single national figure that applies to every facility using the
+// market-based method, whatever state it is in and whether or not it is on the
+// main grid, so market-based sits on the same number everywhere. Only the
+// jurisdictional renewable power percentage varies by state, and that is a
+// renewables share rather than an emissions factor, so it is not modelled here.
 export const RMF = 0.81;
 
 // Year selector. Only one edition is shipped because only one is verified to
@@ -207,7 +208,7 @@ export const RMF = 0.81;
 export const EXPLORER_YEARS = [
   {
     id: '2025',
-    label: '2025 workbook, 2024-25 RMF',
+    label: '2025 workbook, 2025-26 RMF',
     locationSource: NGA_SOURCE,
     rmf: RMF,
     rmfSource: RMF_SOURCE,
@@ -220,7 +221,7 @@ export const EXPLORER_COPY = {
   sub: 'The same kilowatt-hour has two carbon numbers. This shows both side by side, and lets you move the one your electricity contract can actually change.',
   yearLabel: 'Reporting edition',
   yearNote:
-    'Only the current edition is shown. Earlier years are left out because their exact published figures could not be verified to citation grade here, and a wrong factor is worse than a missing one. One coming change is worth knowing: the 2024-25 residual mix factor is a single national figure, and state-level residual mix factors are being introduced from 2025-26 reporting. They will be added here once published and verified.',
+    'Only the current edition is shown. Earlier years are left out because their exact published figures could not be verified to citation grade here, and a wrong factor is worse than a missing one. One thing is worth knowing: the 2025-26 residual mix factor is a single national figure, and the guideline applies it to every facility on the market-based method, whatever state it is in and whether or not it is on the main grid. There is no state-level residual mix factor to pick from.',
   stateLabel: 'State',
   locTitle: 'Location-based',
   locSub: 'What the wires around you averaged over the year.',
@@ -283,7 +284,8 @@ export const METHOD = {
       title: 'What the reporting factor is',
       paras: [
         'The Explorer view is a different quantity. The location-based factor is the annual, consumption-based average for your state from the DCCEEW National Greenhouse Accounts, with transmission and distribution losses included. It describes the wires around you and does not change with the time of day or with your contract.',
-        'The market-based factor is what you are left accountable for once contractual instruments are taken into account. Electricity you have covered with surrendered certificates counts as zero; the rest sits on the Clean Energy Regulator\'s national residual mix factor, which is higher than the grid average because the renewables in the grid have already been claimed by the people who surrendered those certificates.',
+        'The market-based factor is what you are left accountable for once contractual instruments are taken into account. Electricity you have covered with surrendered certificates counts as zero; the rest sits on the Clean Energy Regulator\'s national residual mix factor for the 2025-26 reporting year, which is higher than the grid average because the renewables in the grid have already been claimed by the people who surrendered those certificates.',
+        'That residual mix factor is one national number. The guideline applies it to every facility using the market-based method, whatever state it is in and whether or not it is connected to the main grid, so the market-based side of the Explorer does not vary by state the way the location-based side does.',
       ],
     },
     {
@@ -291,7 +293,7 @@ export const METHOD = {
       title: 'How often it updates',
       paras: [
         'The live feed refreshes every few minutes at the source, and this page re-reads it about every five minutes while the tab is open and visible. The "as of" time is the timestamp of the most recent interval the feed returned, not the moment you loaded the page.',
-        'The reporting factors update once a year. The National Greenhouse Accounts workbook is published around August, and the residual mix factor follows the reporting year it is calculated from. This page was last checked against those sources on ' + LAST_UPDATED + '.',
+        'The reporting factors update once a year. The National Greenhouse Accounts workbook is published around August, and the residual mix factor follows the reporting year it is calculated from, in the market-based guideline reissued for that year. The edition read here is the July 2026 guideline, for 2025-26, which still cites the 2025 workbook for how the factor is calculated. This page was last checked against those sources on ' + LAST_UPDATED + '.',
       ],
     },
     {
