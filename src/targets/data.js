@@ -7,7 +7,8 @@
 // own verification date, and a status:
 //   'sourced'    every figure read from a company report or an equivalent
 //                published disclosure
-//   'partial'    the commitment is sourced but the emissions series has gaps
+//   'partial'    the commitment is sourced but the emissions series has gaps,
+//                or part of it is read from a chart label rather than a table
 //   'unverified' the commitment is sourced and the emissions series could not
 //                be verified, so `reported` is empty and no chart is drawn
 // A year that could not be verified is omitted. Nothing is interpolated into
@@ -17,7 +18,7 @@
 export const META = {
   navLabel: 'Targets',
   // Single source of truth for the last-updated stamp, rendered top and bottom.
-  updated: '27 July 2026',
+  updated: '13 August 2026',
   cadence: 'Reviewed twice a year, after the annual reporting season and again when the Clean Energy Regulator publishes its NGER data. Each company also carries its own verified date, because reports land at different times. If the dates are old, treat the numbers as old.',
   // The vertical rule drawn on every chart.
   nowYear: 2026,
@@ -150,10 +151,9 @@ export const UI = {
   },
 };
 
-// PLACEHOLDER, replaced by researched data.
-// Structure is final; every figure below is an illustrative stand in so the
-// page, the maths and the layout can be built and checked. Do not cite any of
-// it. Units are Mt CO2e, Scope 1 and 2, on the company's own reporting basis.
+// Units are Mt CO2e, Scope 1 and 2, on the company's own reporting basis.
+// Every figure is read from a published disclosure and carries the source and
+// page it came from; a year that could not be read stays out of `reported`.
 export const COMPANIES = [
   {
     id: 'bhp',
@@ -291,13 +291,13 @@ export const COMPANIES = [
         }
       ],
       scope3: 'Fortescue targets Net Zero Scope 3 by 2040 and, by 2030, a 7.5% reduction in customer steelmaking emissions intensity from FY21 levels, making Scope 3 an enablement target rather than an absolute cut.',
-      flags: []
+      flags: [ 'exited-sbti' ]
     },
     baseline: null,
     reported: [ { y: 2025, mt: 3.02 } ],
     boundaryNote: 'The Real Zero target covers Australian terrestrial iron ore operations, while the reported Scope 1 and 2 total covers the wider group including shipping and energy businesses, so the reported series is broader than the target boundary.',
     status: 'partial',
-    verified: '27 July 2026',
+    verified: '13 August 2026',
     sources: [
       {
         name: 'Fortescue FY25 Climate Transition Plan, Metrics and Targets',
@@ -315,7 +315,7 @@ export const COMPANIES = [
         accessed: '27 July 2026'
       }
     ],
-    note: 'Fortescue reported Scope 1 and 2 emissions of 3.02 Mt CO2e in FY2025 and says renewable energy projects offset 11% of Scope 1 and 2 emissions that year, with the remainder due to be eliminated by the end of 2030; the FY2021 baseline value could not be corroborated.'
+    note: "Fortescue reported Scope 1 and 2 emissions of 3.02 Mt CO2e in FY2025 and says renewable energy projects offset 11% of Scope 1 and 2 emissions that year, with the remainder due to be eliminated by the end of 2030; the FY2021 baseline value could not be corroborated. The SBTi register, at its 6 August 2026 export, records Fortescue's near-term and net zero commitments as removed for expiry, on a register record last updated 20 October 2022, so the most ambitious dated target on this page carries no external validation."
   },
   {
     id: 's32',
@@ -439,10 +439,13 @@ export const COMPANIES = [
       flags: [ 'offsets', 'weakened' ]
     },
     baseline: { year: 2020, mt: 5.9 },
-    reported: [],
-    boundaryNote: "Targets and reporting are equity share, covering Santos's ownership percentage of each asset rather than emissions from assets it operates, and the baseline combines Santos with Oil Search following the 2021 merger.",
-    status: 'unverified',
-    verified: '27 July 2026',
+    reported: [
+      { y: 2020, mt: 5.9 },
+      { y: 2025, mt: 3.41 }
+    ],
+    boundaryNote: "Targets and reporting are equity share, covering Santos's ownership percentage of each asset rather than emissions from assets it operates, and the baseline combines Santos with Oil Search following the 2021 merger. Both points are net, after Moomba carbon capture and storage and offsets: the 2025 Climate Strategy Update publishes no gross figure and no Scope 1 versus Scope 2 split. Only the 2019-20 baseline and 2025 carry data labels on the chart, so the years between them are not recorded here.",
+    status: 'partial',
+    verified: '13 August 2026',
     sources: [
       {
         name: 'Santos Climate Transition Action Plan',
@@ -450,9 +453,9 @@ export const COMPANIES = [
         accessed: '27 July 2026'
       },
       {
-        name: 'Santos Climate Strategy Update 2025',
+        name: 'Santos Climate Strategy Update 2025 (Climate-Strategy-Update-2025.pdf), targets and footnotes p4, net emissions chart and Moomba CCS p5',
         url: 'https://www.santos.com/sustainability/ctap/',
-        accessed: '27 July 2026'
+        accessed: '13 August 2026'
       },
       {
         name: 'Carbon Pulse, Santos pushes part of net zero target back by a decade',
@@ -460,7 +463,7 @@ export const COMPANIES = [
         accessed: '27 July 2026'
       }
     ],
-    note: 'Santos says it reached its 2030 target of 4.1 Mt CO2e or lower in 2025, helped by the Moomba CCS project storing 1.23 Mt CO2e that year, but published annual Scope 1 and 2 values conflicted between sources so no series is recorded here; Santos also moved its Scope 2 net zero date from 2040 to 2050, keeping 2040 only for its net equity share of Scope 1.'
+    note: 'Net equity share Scope 1 and 2 of 3.41 Mt CO2e in 2025 is 42% below the 5.9 Mt baseline, so Santos passed its 2030 target of 4.1 Mt or lower five years early. The target is explicitly a net one and the result leans on Moomba carbon capture and storage, which stored 1.23 Mt CO2e in 2025, while Santos states its unabated emissions will rise with Barossa, Pikka phase 1 and potential future projects. Santos also moved its Scope 2 net zero date from 2040 to 2050, keeping 2040 only for its net equity share of Scope 1.'
   },
   {
     id: 'org',
@@ -543,22 +546,33 @@ export const COMPANIES = [
           cutPct: 30,
           vsBaseYear: 2021,
           absolute: true,
-          note: '30% reduction in gas infrastructure operational emissions from the FY21 base year, first set in the 2022 Climate Transition Plan and reconfirmed in the 2025 Climate Transition Plan; APA also holds a power generation emissions intensity target'
+          note: '30% reduction in gas infrastructure operational emissions from the FY21 base year of 553,512 tCO2e on the adjusted net basis, giving an FY2030 target level of about 387 kt CO2e; first set in the 2022 Climate Transition Plan and reconfirmed in the 2025 Climate Transition Plan, which benchmarks it to well below 2 degrees rather than 1.5. APA also holds a power generation emissions intensity target of 0.25 t CO2e per MWh by 2030, at 0.34 in FY2025'
         }
       ],
       scope3: 'APA reports Scope 3 emissions but sets no Scope 3 reduction target; its net zero commitment is operational only, which excludes the emissions from the gas it transports.',
       flags: [ 'offsets' ]
     },
-    baseline: null,
-    reported: [],
-    boundaryNote: 'APA reports its 2030 interim progress in percentages against an FY21 base year for the gas infrastructure portfolio rather than in absolute tonnes, and reports separate gross and net (offset-inclusive) figures.',
-    status: 'unverified',
-    verified: '27 July 2026',
+    baseline: { year: 2021, mt: 0.553512 },
+    reported: [
+      { y: 2021, mt: 0.553512 },
+      { y: 2022, mt: 0.535388 },
+      { y: 2023, mt: 0.516474 },
+      { y: 2024, mt: 0.498327 },
+      { y: 2025, mt: 0.479710 }
+    ],
+    boundaryNote: 'The series plotted is the gas infrastructure portfolio on APA\'s adjusted net basis, because that is the boundary the 30% by 2030 target is written on. Adjusted restates the earlier years onto the current portfolio, and net is after offsets surrendered and after adding back Australian Carbon Credit Units issued by APA\'s own projects, which is why its FY2025 net group figure exceeds its gross one. This is not the group total: whole of group Scope 1 and 2 on the market method was 2.00 Mt in FY2025 against 2.18 Mt in FY2021 on the same adjusted basis, roughly four times the segment and 8% lower over four years. The 2050 net zero commitment covers total operational Scope 1 and 2, so the claimed line falls to zero on a wider boundary than the series drawn beneath it.',
+    status: 'sourced',
+    verified: '13 August 2026',
     sources: [
       {
-        name: 'APA releases 2025 Climate Transition Plan',
+        name: 'APA 2025 Climate Transition Plan (2025_climate_transition_plan.pdf), gas infrastructure emissions chart and 2030 target p13, goals table p14',
         url: 'https://www.apa.com.au/news/asx-and-media-releases/apa-releases-2025-climate-transition-plan',
-        accessed: '27 July 2026'
+        accessed: '13 August 2026'
+      },
+      {
+        name: 'APA FY25 Sustainability Data Book (250820_sustainability_report_data_book_fy25.pdf), gas infrastructure emissions p42, group total emissions p43',
+        url: 'https://www.apa.com.au/sustainability/climate',
+        accessed: '13 August 2026'
       },
       {
         name: 'APA Group Climate',
@@ -571,7 +585,7 @@ export const COMPANIES = [
         accessed: '27 July 2026'
       }
     ],
-    note: 'APA reported a 6.5% gross and a 13.3% net (offset-inclusive) reduction in gas infrastructure emissions against its FY21 base year in FY25, against a 30% reduction target for 2030, and no absolute tonnage series could be corroborated.'
+    note: 'This card plots gas infrastructure emissions on the adjusted net basis, the one the 2030 target is set on: 553,512 tCO2e in FY2021 falling to 479,710 in FY2025, a 13.3% cut against a 30% cut by 2030, with the FY2030 target level at about 387 kt CO2e. On a gross basis the same segment fell 6.5%. The 2025 Climate Transition Plan realigned the long term goal so that net zero by 2050 now covers total operational Scope 1 and 2 rather than the gas infrastructure segment alone, after securityholders pressed for an absolute goal covering power generation.'
   },
   {
     id: 'qan',
@@ -641,16 +655,23 @@ export const COMPANIES = [
       scope3: 'Brambles holds an SBTi-validated 17% absolute Scope 3 reduction target for 2030 from FY2020, which matters because Scope 3 makes up the large majority of its footprint.',
       flags: [ 'sbti-validated' ]
     },
-    baseline: null,
-    reported: [],
-    boundaryNote: 'Brambles reports a combined Scope 1, 2 and 3 total of 1,290.5 kt CO2e for FY2025, 17.2% below its FY2020 baseline, but the Scope 1 and 2 split needed to track the 42% target could not be corroborated from search results.',
-    status: 'unverified',
-    verified: '27 July 2026',
+    baseline: { year: 2020, mt: 0.044 },
+    reported: [
+      { y: 2020, mt: 0.044 },
+      { y: 2021, mt: 0.042 },
+      { y: 2022, mt: 0.038 },
+      { y: 2023, mt: 0.033 },
+      { y: 2024, mt: 0.032 },
+      { y: 2025, mt: 0.0295 }
+    ],
+    boundaryNote: 'FY2024 (32.0 kt) and FY2025 (29.5 kt) are read from the emissions table; FY2020 to FY2023 are the whole kilotonne labels on the Scope 1 and 2 chart, so those four points are rounded and the baseline implied by the stated 32.3% fall is about 43.6 kt rather than the 44 the chart prints. Scope 2 is market based and has been nil since FY2021, because Brambles buys bundled and unbundled energy attribute certificates against all of its electricity and publishes no location based figure, so the total is effectively fleet and site fuel. Brambles also reports that network changes in CHEP North America moved operational control of some sites and transferred Scope 1 and 2 emissions into Scope 3, so part of the fall is a boundary shift out of the targeted scopes rather than abatement.',
+    status: 'partial',
+    verified: '13 August 2026',
     sources: [
       {
-        name: 'Brambles Sustainability Review 2025',
+        name: 'Brambles Sustainability Review 2025 (Brambles-2025-Sustainability-Review.pdf), emissions by source table p21, Scope 1 and 2 chart p20',
         url: 'https://www.brambles.com/Content/cms/FY25-Results/pdf/Sustainability/Brambles-2025-Sustainability-Review.pdf',
-        accessed: '27 July 2026'
+        accessed: '13 August 2026'
       },
       {
         name: 'Brambles FY25 Annual Report',
@@ -663,7 +684,7 @@ export const COMPANIES = [
         accessed: '27 July 2026'
       }
     ],
-    note: 'Brambles reported total Scope 1, 2 and 3 emissions of 1.29 Mt CO2e in FY2025, 17.2% below the FY2020 baseline, says it has run on 100% renewable electricity since FY21 and has maintained carbon neutral operations, and states it is tracking ahead of the glidepath to its 2030 science-based targets.'
+    note: 'Scope 1 and 2 of 29.5 kt CO2e in FY2025 is about a third below the FY2020 baseline against a 42% cut by 2030, made up of 11.3 kt of CHEP fleet fuel and 18.2 kt of site fuel with nil market based Scope 2. Total Scope 1, 2 and 3 was 1,290.5 kt, 17.2% below FY2020, and Scope 3 alone was 1,261 kt, so almost the whole footprint sits outside the 42% target. Brambles has run on 100% renewable electricity since FY2021 and maintains carbon neutral operations.'
   },
   {
     id: 'nst',
@@ -733,16 +754,19 @@ export const COMPANIES = [
       scope3: 'Net zero commitment is stated as Scope 1 and 2 only; no Scope 3 reduction target was found.',
       flags: []
     },
-    baseline: null,
-    reported: [],
-    boundaryNote: 'The FY2020 baseline was estimated on a location-based method while FY2023 onward are market-based, and the baseline has been adjusted for portfolio changes including Northparkes, so the reported percentage falls are not a like-for-like absolute comparison.',
-    status: 'unverified',
-    verified: '27 July 2026',
+    baseline: { year: 2020, mt: 0.919167 },
+    reported: [
+      { y: 2020, mt: 0.919167 },
+      { y: 2025, mt: 0.761424 }
+    ],
+    boundaryNote: 'Only the two endpoints are published as absolute tonnes: the report gives the FY2020 baseline and FY2025, and FY2021 to FY2024 appear as emissions intensity ratios only, so the line has a four year gap in the middle rather than a series. The FY2020 baseline was validated on a location based method while FY2023 onward are market based, and the baseline has been adjusted for portfolio changes including Northparkes, so the reported fall is not a like-for-like comparison.',
+    status: 'partial',
+    verified: '13 August 2026',
     sources: [
       {
-        name: 'Evolution Mining Sustainability Report 2025',
+        name: 'Evolution Mining Integrated Sustainability Report 2025 (evolution-mining-sustainability-report-web.pdf), FY25 emissions performance against FY20 baseline p90, emissions by operation p91',
         url: 'https://evolutionmining.com/wp-content/uploads/2025/11/evolution-mining-sustainability-report-web.pdf',
-        accessed: '27 July 2026'
+        accessed: '13 August 2026'
       },
       {
         name: 'Evolution Mining, Energy and Emissions and our Net Zero Commitment',
@@ -755,7 +779,7 @@ export const COMPANIES = [
         accessed: '27 July 2026'
       }
     ],
-    note: 'Evolution reports being about 12% below the adjusted FY2020 baseline at FY2024 and about 16% at FY2025, driven mainly by the Cowal solar power purchase agreement, but absolute Scope 1 and 2 tonnes could not be corroborated, so no series is shown; the company also restated FY2023 and FY2024 market-based figures after a miscalculation found in FY2025.'
+    note: "Total Scope 1 and 2 of 761,424 tCO2e in FY2025 is about 17% below the FY2020 baseline of 919,167 tCO2e, against a 30% cut by 2030, and Evolution revised that figure up from the about 16% first stated in its FY25 Directors' Report after corporate and exploration data were included. Almost all of the reduction is Scope 2: Scope 1 moved from 231,823 to 229,680 tCO2e, about 1%, while Scope 2 fell 23% on the Cowal solar power purchase agreement and market based accounting. The company also disclosed a miscalculation in its previously reported FY2023 and FY2024 market based figures without publishing the corrected tonnages."
   },
   {
     id: 'lyc',
@@ -886,7 +910,9 @@ export const COMPANIES = [
     name: 'James Hardie',
     ticker: 'JHX',
     sector: 'Materials',
-    yearBasis: 'FY',
+    // Calendar, not fiscal: every emissions figure James Hardie publishes is on
+    // a calendar year, including in its FY2025 report.
+    yearBasis: 'CY',
     commitment: {
       netZeroYear: 2050,
       scopes: 'Scope 1 and 2',
@@ -903,16 +929,22 @@ export const COMPANIES = [
       scope3: 'Scope 3 is disclosed and is the large majority of the footprint, but no dated Scope 3 reduction target was corroborated.',
       flags: []
     },
-    baseline: null,
-    reported: [],
-    boundaryNote: "James Hardie's financial year ends 31 March, so FY2025 is the year ended 31 March 2025, while the target baseline is calendar 2021; the two are on different year bases.",
-    status: 'unverified',
-    verified: '27 July 2026',
+    baseline: { year: 2021, mt: 0.662727 },
+    reported: [
+      { y: 2020, mt: 0.558975 },
+      { y: 2021, mt: 0.662727 },
+      { y: 2022, mt: 0.646409 },
+      { y: 2023, mt: 0.596700 },
+      { y: 2024, mt: 0.573039 }
+    ],
+    boundaryNote: "James Hardie's financial year ends 31 March, but every emissions figure it publishes is on a calendar year, so this series runs CY2020 to CY2024 and the FY2025 report contains no emissions figure for the year ended 31 March 2025. Each year is the sum of the disclosed Scope 1 and location based Scope 2 rows in the data summary. Scope 2 is location based because the market based row reads not applicable for all five years, so the 42% target is tracked on a location based Scope 2 and grid decarbonisation, rather than procurement, does part of the work.",
+    status: 'sourced',
+    verified: '13 August 2026',
     sources: [
       {
-        name: 'James Hardie Sustainability Report FY2025 (Building Resilience)',
+        name: 'James Hardie Sustainability Report FY2025, Building Resilience (JHX_Sustainability_Report_FY2025_FINAL.pdf), data summary p39, decarbonisation pathway p42',
         url: 'https://assets.ctfassets.net/dzi2asncd44t/5jWpMtnrYu30RiNoEVBDge/30b8ef93fac91e8cd6e6f7abd4dcc229/JHX_Sustainability_Report_FY2025_FINAL.pdf',
-        accessed: '27 July 2026'
+        accessed: '13 August 2026'
       },
       {
         name: 'James Hardie Releases Annual Sustainability Report 2025 (media release)',
@@ -920,7 +952,7 @@ export const COMPANIES = [
         accessed: '27 July 2026'
       }
     ],
-    note: 'James Hardie reports Scope 1 and 2 down 14% in FY2025 against the calendar 2021 baseline, against a 42% by 2030 target, but absolute tonnes were not corroborated so no series is shown; the target baseline also moved from a 2019 intensity basis to a 2021 absolute basis.'
+    note: 'Scope 1 and 2 of 573,039 tCO2e in CY2024 is 14% below the CY2021 base year of 662,727 tCO2e, the reduction James Hardie states, against a 42% cut by CY2030. The company attributes the fall to lower volumes, grid decarbonisation, the move away from coal and the closure of its Philippines operations rather than to a single abatement programme, and the target baseline itself moved from a 2019 intensity basis to a 2021 absolute basis. Scope 3 is about 80% of the footprint at 2.25 Mt in CY2024 and carries no dated reduction target.'
   },
   {
     id: 'nem',
@@ -994,7 +1026,7 @@ export const COMPANIES = [
     reported: [],
     boundaryNote: "ALS's financial year ends 31 March, so FY2025 is the year ended 31 March 2025.",
     status: 'unverified',
-    verified: '27 July 2026',
+    verified: '13 August 2026',
     sources: [
       {
         name: 'ALS Sustainability Report 2025',
@@ -1007,7 +1039,7 @@ export const COMPANIES = [
         accessed: '27 July 2026'
       }
     ],
-    note: 'ALS reports a 58% cut in Scope 1 and 2 by the end of FY2023 against its 2020 base year and says it reached carbon neutrality for Scope 1 and 2 ahead of plan, which means residual emissions are being offset rather than eliminated; absolute tonnes were not corroborated so no series is shown.'
+    note: 'ALS reports a 58% cut in Scope 1 and 2 by the end of FY2023 against its 2020 base year and says it reached carbon neutrality for Scope 1 and 2 ahead of plan, which means residual emissions are being offset rather than eliminated; absolute tonnes were not corroborated so no series is shown. The SBTi register, at its 6 August 2026 export, lists ALS as committed as at 14 May 2026, which is a signed commitment letter rather than a validated target, and it is the most recently updated ASX50 record in that file.'
   },
   {
     id: 'tcl',
@@ -1081,21 +1113,21 @@ export const COMPANIES = [
       baseYear: 2021,
       interim: [
         {
-          year: 2030,
+          year: 2033,
           cutPct: 89.3,
           vsBaseYear: 2021,
           absolute: true,
-          note: '89.3% cut in Scope 1 and 2 by 2030 from an FY2021 base year'
+          note: '89.3% cut in Scope 1 and 2 by FY2033 from an FY2021 base year, validated by the SBTi at 1.5 degrees; the target year is FY2033 on the register, not the 2030 previously recorded here'
         }
       ],
-      scope3: '32.5% reduction in Scope 3 by 2030 from an FY2023 base year, rising to 90% by 2050.',
-      flags: []
+      scope3: '32.5% reduction in Scope 3 by FY2033 from an FY2023 base year, rising to 90% by FY2042.',
+      flags: [ 'sbti-validated' ]
     },
     baseline: null,
     reported: [],
     boundaryNote: 'Base year is FY2021 for Scope 1 and 2 and FY2023 for Scope 3, so the two target lines start from different years.',
     status: 'unverified',
-    verified: '27 July 2026',
+    verified: '13 August 2026',
     sources: [
       {
         name: 'Computershare Sustainability Report FY25',
@@ -1113,7 +1145,7 @@ export const COMPANIES = [
         accessed: '27 July 2026'
       }
     ],
-    note: 'Computershare states a net zero year of 2042, earlier than the 2050 date most of its peers use, with an 89.3% cut in Scope 1 and 2 by 2030 from FY2021; the FY25 report describes the targets as aligned with the Science Based Targets initiative but validation was not confirmed here, and absolute tonnes were not corroborated.'
+    note: 'Computershare states a net zero year of 2042, earlier than the 2050 date most of its peers use. The SBTi register, at its 6 August 2026 export, records the near-term, long-term and net zero targets all as validated at 1.5 degrees, and dates the 89.3% Scope 1 and 2 cut from the FY2021 base year to FY2033 rather than the 2030 this page previously carried, which is three years of extra headroom on the claimed line. Absolute tonnes were not corroborated, so nothing is charted.'
   },
   {
     id: 'cba',
@@ -1183,16 +1215,26 @@ export const COMPANIES = [
       scope3: 'NAB has set twelve interim 2030 sectoral decarbonisation targets across eight of the nine high emitting sectors named in the UNEP FI guidance, most of them intensity based, and reports financed emissions in its annual Climate Report; it has no single group wide absolute Scope 3 target.',
       flags: []
     },
-    baseline: null,
-    reported: [],
-    boundaryNote: "NAB's financial year ends 30 September, so FY labels are September year ends. The commitment covers financed and facilitated emissions as well as operations; no operational tonnage series could be corroborated at source, and operational Scope 1 and 2 would in any case be a tiny fraction of NAB's financed emissions.",
-    status: 'unverified',
-    verified: '27 July 2026',
+    baseline: { year: 2022, mt: 0.023018 },
+    reported: [
+      { y: 2022, mt: 0.023018 },
+      { y: 2023, mt: 0.015041 },
+      { y: 2024, mt: 0.009880 },
+      { y: 2025, mt: 0.008359 }
+    ],
+    boundaryNote: "The series is market based Scope 1 and 2, the exact basis the 72% target is set against. NAB's financial year ends 30 September while its environmental reporting year runs 1 July to 30 June, so the two year ends behind each label do not coincide. Market based Scope 2 was nil in 2025 on 100% renewable electricity, which makes that year's total its Scope 1 alone; location based Scope 2 was 44,444 tCO2e in the same year, five times the whole market based total. The commitment covers financed and facilitated emissions as well as operations, and operational Scope 1 and 2 is a tiny fraction of NAB's financed emissions.",
+    status: 'sourced',
+    verified: '13 August 2026',
     sources: [
       {
-        name: 'NAB Climate Report 2023',
+        name: 'NAB Climate Report 2025 (2025-climate-report.pdf), operational emissions p45, science based target progress Table 2 p48, GHG emissions and energy use Table 3 p49',
+        url: 'https://www.nab.com.au/about-us/sustainability/environment/climate-change',
+        accessed: '13 August 2026'
+      },
+      {
+        name: 'NAB Climate Report 2023 (2023-climate-report.pdf), operational emissions by scope p58, science based target progress Table 1 p61',
         url: 'https://www.nab.com.au/content/dam/nab/documents/reports/corporate/2023-climate-report.pdf',
-        accessed: '27 July 2026'
+        accessed: '13 August 2026'
       },
       {
         name: 'NAB, Taking action on climate change',
@@ -1205,7 +1247,7 @@ export const COMPANIES = [
         accessed: '27 July 2026'
       }
     ],
-    note: "NAB's 72% by 2030 operational target uses science based methodology but has not been validated by the SBTi, which NAB itself states. NAB retires carbon offsets against residual operational emissions after avoiding and reducing them. It remained a Net-Zero Banking Alliance member until the alliance ceased operations in late 2025 and declined to comment publicly on its membership during the 2025 exodus."
+    note: "Market based Scope 1 and 2 fell from 23,018 tCO2e in 2022 to 8,359 in 2025, 64% below the base year against a 72% cut by 2030, almost all of it delivered by zeroing market based Scope 2 through renewable electricity procurement. The target replaced an earlier one of 51% by 2025 from a 2015 baseline, moving both the base year and the horizon. NAB states the target uses science based methodology but has not been submitted to the SBTi for validation. NAB retires carbon offsets against residual operational emissions after avoiding and reducing them. It remained a Net-Zero Banking Alliance member until the alliance ceased operations in late 2025 and declined to comment publicly on its membership during the 2025 exodus."
   },
   {
     id: 'wbc',
@@ -1356,13 +1398,13 @@ export const COMPANIES = [
       baseYear: null,
       interim: [],
       scope3: 'ASX has no dated net zero or reduction target for Scope 3. As a market operator it has no lending book, so there is no financed emissions commitment of the kind the banks and insurers carry.',
-      flags: []
+      flags: [ 'exited-sbti' ]
     },
     baseline: null,
     reported: [],
     boundaryNote: 'ASX reports emissions on a financial control basis for financial years ending 30 June and presents figures to the nearest significant figure. Its net zero claim covers operational Scope 1 and 2 only, which is a much narrower boundary than the 2050 financed emissions claims made by the banks and insurers in this sector.',
     status: 'unverified',
-    verified: '27 July 2026',
+    verified: '13 August 2026',
     sources: [
       {
         name: 'ASX, Environment',
@@ -1375,7 +1417,7 @@ export const COMPANIES = [
         accessed: '27 July 2026'
       }
     ],
-    note: "ASX targeted net zero Scope 1 and 2 in FY2025, reached 100% renewable electricity for offices where it chooses the retailer, and expects to cancel the unavoidable residual of under 1% with Australian Carbon Credit Units. No year by year tonnage could be corroborated at source, so nothing is charted. The narrow Scope 1 and 2 boundary is the point to read: ASX's headline net zero says nothing about the emissions of the market it operates."
+    note: "ASX targeted net zero Scope 1 and 2 in FY2025, reached 100% renewable electricity for offices where it chooses the retailer, and expects to cancel the unavoidable residual of under 1% with Australian Carbon Credit Units. No year by year tonnage could be corroborated at source, so nothing is charted. The SBTi register, at its 6 August 2026 export, records ASX's near-term and net zero commitments as removed for expiry, on a register record last updated 12 May 2022. The narrow Scope 1 and 2 boundary is the point to read: ASX's headline net zero says nothing about the emissions of the market it operates."
   },
   {
     id: 'qbe',
@@ -1716,12 +1758,17 @@ export const COMPANIES = [
       scope3: 'Aristocrat has SBTi-validated Scope 3 targets of a 32.5% absolute reduction by 2033 and 90% by 2050 from a 2022 base year.',
       flags: [ 'sbti-validated' ]
     },
-    baseline: null,
-    reported: [],
-    boundaryNote: "Aristocrat's financial year ends 30 September, so its FY labels are not directly comparable with the June-end reporters in this set.",
-    status: 'unverified',
-    note: 'The target architecture is unusually complete for a company this size, covering all three scopes with SBTi validation and a 90% abatement floor before residuals. No absolute Scope 1+2 tonnage for any year could be corroborated from the sources checked, so nothing can yet be plotted against the claimed path.',
-    verified: '27 July 2026',
+    baseline: { year: 2022, mt: 0.017258 },
+    reported: [
+      { y: 2022, mt: 0.017258 },
+      { y: 2023, mt: 0.021163 },
+      { y: 2024, mt: 0.016291 },
+      { y: 2025, mt: 0.016823 }
+    ],
+    boundaryNote: "Aristocrat's financial year ends 30 September, so its FY labels are not directly comparable with the June-end reporters in this set. Scope 2 is location based, the only basis Aristocrat discloses. The FY2025 point sits on a different boundary from the three years before it: the company states FY2025 is not directly comparable to earlier years after the NeoGames acquisition, the Plarium divestment and a methodology change, and that it will re-baseline to FY2025, revalidate its science based targets and report against the updated targets from FY2026.",
+    status: 'sourced',
+    note: 'Scope 1 and 2 of 16,823 tCO2e in FY2025 sits 2.5% below the FY2022 base year of 17,258 tCO2e, against a 54.6% cut by FY2033, and FY2023 at 21,163 tCO2e was above the base year. The target architecture is unusually complete for a company this size, covering all three scopes with SBTi validation and a 90% abatement floor before residuals, but the FY2022 baseline the claimed line runs from is the one Aristocrat has said it will replace with FY2025.',
+    verified: '13 August 2026',
     sources: [
       {
         name: 'Aristocrat FY24 Sustainability Report',
@@ -1729,9 +1776,9 @@ export const COMPANIES = [
         accessed: '27 July 2026'
       },
       {
-        name: 'Aristocrat FY25 Sustainability Report',
+        name: 'Aristocrat FY25 Sustainability Report (FY25_Sustainability_Report.pdf), emissions and science based targets p37',
         url: 'https://s25652.pcdn.co/wp-content/uploads/2025/12/FY25_Sustainability_Report.pdf',
-        accessed: '27 July 2026'
+        accessed: '13 August 2026'
       },
       {
         name: 'Aristocrat launches FY24 Sustainability Report (SBTi validation announcement)',
@@ -1869,14 +1916,14 @@ export const COMPANIES = [
         }
       ],
       scope3: 'Telstra targets a 50% absolute reduction in Scope 3 emissions by 2030 from the FY2019 base year, unchanged when the Scope 1+2 target was raised.',
-      flags: []
+      flags: [ 'sbti-validated' ]
     },
     baseline: null,
     reported: [ { y: 2024, mt: 0.82 } ],
     boundaryNote: "The Scope 2 basis for the FY2024 figure of about 817,606 tCO2e is not stated in the sources checked, and the figure is drawn from third-party aggregation rather than read from Telstra's data pack. The FY2019 base year excludes Digicel Pacific. A published FY2019 all-scopes baseline of 3,974,980 tCO2e circulates in secondary sources but covers Scope 1, 2 and 3 combined, not Scope 1+2 alone.",
     status: 'partial',
-    note: 'Telstra left the Climate Active programme on 30 June 2024, stopped buying offsets, and removed carbon neutral claims from its products, redirecting that spend to direct abatement. It raised its 2030 Scope 1+2 target from 50% to 70% at the same time, so the ambition went up as the certification came off. Telstra reported combined Scope 1+2 44% below the FY2019 base year in FY2025, with 116,876 MWh (73,223 tCO2e annualised) saved in FY2025 from legacy network decommissioning and efficiency work.',
-    verified: '27 July 2026',
+    note: 'Telstra left the Climate Active programme on 30 June 2024, stopped buying offsets, and removed carbon neutral claims from its products, redirecting that spend to direct abatement. It raised its 2030 Scope 1+2 target from 50% to 70% at the same time, so the ambition went up as the certification came off. The SBTi register, at its 6 August 2026 export, records the near-term target (70% by FY2030 from FY2019), the long-term target (95% by FY2050) and net zero by FY2050 all as validated at 1.5 degrees. Telstra reported combined Scope 1+2 44% below the FY2019 base year in FY2025, with 116,876 MWh (73,223 tCO2e annualised) saved in FY2025 from legacy network decommissioning and efficiency work.',
+    verified: '13 August 2026',
     sources: [
       {
         name: 'Telstra 2025 Bigger Picture Sustainability Report',
@@ -1941,26 +1988,26 @@ export const COMPANIES = [
     yearBasis: 'FY',
     commitment: {
       netZeroYear: 2050,
-      scopes: 'Net zero by 2050 as defined by the SBTi; the near-term target covers absolute Scope 1 and 2, with a separate Scope 3 target',
-      baseYear: 2020,
+      scopes: 'Company stated net zero by 2050; the SBTi validated near-term target covers absolute Scope 1 and 2, with separate Scope 3 and supplier engagement targets',
+      baseYear: 2024,
       interim: [
         {
-          year: 2030,
-          cutPct: 42,
-          vsBaseYear: 2020,
+          year: 2034,
+          cutPct: 58.8,
+          vsBaseYear: 2024,
           absolute: true,
-          note: '42% absolute cut in Scope 1+2 by 2030 from an FY2020 base of 991.25 tCO2e'
+          note: '58.8% absolute cut in Scope 1 and 2 by FY2034 from an FY2024 base year, validated by the SBTi at 1.5 degrees; the earlier company stated target of a 42% cut by 2030 from an FY2020 base of 991.25 tCO2e is not the target the register carries'
         }
       ],
-      scope3: 'Xero targets a 17% absolute Scope 3 reduction by 2030 from an FY2020 base of about 16,193 tCO2e, a materially shallower cut than the Scope 1+2 target on the far larger number.',
-      flags: [ 'offsets', 'aspirational' ]
+      scope3: 'The SBTi register records a 35% absolute cut in Scope 3 from purchased goods and services and business travel by FY2034, and 67.4% of suppliers by emissions holding science based targets by FY2029. An earlier company stated 17% Scope 3 cut by 2030 sat on the superseded FY2020 base of about 16,193 tCO2e.',
+      flags: [ 'offsets', 'aspirational', 'sbti-validated' ]
     },
-    baseline: { year: 2020, mt: 0.001 },
+    baseline: null,
     reported: [ { y: 2020, mt: 0.001 } ],
-    boundaryNote: "Xero's financial year ends 31 March, so its FY labels are offset from the June-end reporters in this set. The FY2020 base of 991.25 tCO2e is Scope 1+2 combined.",
+    boundaryNote: "Xero's financial year ends 31 March, so its FY labels are offset from the June-end reporters in this set. The single reported point is the FY2020 Scope 1 and 2 total of 991.25 tCO2e, which belonged to the superseded target. No tonnage has been verified for the FY2024 base year the validated target is cut from, so no claimed line is drawn: pricing the 58.8% cut without that base year figure would be a guess.",
     status: 'partial',
-    note: "Xero has offset 100% of its emissions since FY2019 and holds carbon neutral certification, so its present-day neutrality claim rests on purchased offsets rather than abatement, while the 42% by 2030 target is the actual abatement commitment. The targets are described as aligned with SBTi recommendations and the 2050 date uses the SBTi definition, but formal SBTi validation of Xero's targets was not corroborated, so no sbti-validated flag is applied. No post-baseline absolute Scope 1+2 figure could be corroborated.",
-    verified: '27 July 2026',
+    note: "The SBTi register, at its 6 August 2026 export, records Xero's near-term target as validated at 1.5 degrees, a 58.8% absolute cut in Scope 1 and 2 by FY2034 from an FY2024 base year, so the validated flag now applies. The same record removes Xero's net zero commitment for expiry, which leaves the 2050 date as a company statement with nothing on the register behind it. Xero has offset 100% of its emissions since FY2019 and holds carbon neutral certification, so its present-day neutrality claim rests on purchased offsets rather than abatement.",
+    verified: '13 August 2026',
     sources: [
       {
         name: 'Xero FY25 Sustainability Report',
@@ -2091,17 +2138,17 @@ export const COMPANIES = [
           cutPct: 42,
           vsBaseYear: 2022,
           absolute: true,
-          note: '42% absolute cut in Scope 1 and 2 by FY2030 from an FY2022 base year, set in line with SBTi guidance'
+          note: '42% absolute cut in Scope 1 and 2 by FY2030 from an FY2022 base year, described by ResMed as set in line with SBTi guidance; the SBTi register carries no validated target for ResMed and records its commitment as removed'
         }
       ],
       scope3: 'Net zero is stated across the whole value chain by FY2050; no separate corroborated near-term Scope 3 reduction target.',
-      flags: []
+      flags: [ 'exited-sbti' ]
     },
     baseline: null,
     reported: [ { y: 2025, mt: 0.028 } ],
     boundaryNote: 'ResMed is US domiciled and reports in metric tonnes on a 1 July to 30 June financial year; the FY2025 figure is total operational Scope 1 and 2 (Scope 1 of 3,957 tonnes) and the market-based versus location-based basis of Scope 2 was not established.',
     status: 'partial',
-    verified: '27 July 2026',
+    verified: '13 August 2026',
     sources: [
       {
         name: 'ResMed Sustainability Report 2025',
@@ -2119,7 +2166,7 @@ export const COMPANIES = [
         accessed: '27 July 2026'
       }
     ],
-    note: 'Total operational Scope 1 and 2 emissions were 27,530 tonnes in FY2025, about 4% below FY2024, with only the single latest year corroborated so progress against the FY2022 base year cannot be measured here.'
+    note: 'Total operational Scope 1 and 2 emissions were 27,530 tonnes in FY2025, about 4% below FY2024, with only the single latest year corroborated so progress against the FY2022 base year cannot be measured here. The SBTi register, at its 6 August 2026 export, records both the near-term and net zero commitments as removed for expiry, on a register record last updated 23 February 2023, which is a stronger statement than an unvalidated target: ResMed signed up and the commitment lapsed.'
   },
   {
     id: 'shl',
@@ -2259,7 +2306,7 @@ export const COMPANIES = [
     yearBasis: 'FY',
     commitment: {
       netZeroYear: 2050,
-      scopes: 'Absolute Scope 1 and 2 for corporate activities and the parts of the portfolio Goodman operationally controls',
+      scopes: 'Absolute Scope 1 and 2 for corporate activities and the parts of the portfolio Goodman operationally controls; the 2050 net zero date is company stated, since the SBTi register records that commitment as removed',
       baseYear: 2021,
       interim: [
         {
@@ -2277,7 +2324,7 @@ export const COMPANIES = [
     reported: [ { y: 2022, mt: 0.033 } ],
     boundaryNote: "The FY2022 figure is location-based Scope 1 and 2; the Climate Active certification boundary covers corporate activities and areas where Goodman controls day to day operations, and excludes customers' activities in leased areas and embodied emissions.",
     status: 'partial',
-    verified: '27 July 2026',
+    verified: '13 August 2026',
     sources: [
       {
         name: 'Goodman Group Annual Report 2025',
@@ -2300,7 +2347,7 @@ export const COMPANIES = [
         accessed: '27 July 2026'
       }
     ],
-    note: 'Goodman reached carbon neutral certification for its global operations about four years ahead of its 2025 target, using emissions cuts, GreenPower and international renewable energy certificates plus 100% Australian Carbon Credit Units for the residual, and it has withdrawn its Climate Active organisation certification effective 30 June 2026 while keeping its NABERS buildings profile; only one year of absolute Scope 1 and 2 data, 32,870 tonnes location-based in FY2022, could be corroborated.'
+    note: 'Goodman reached carbon neutral certification for its global operations about four years ahead of its 2025 target, using emissions cuts, GreenPower and international renewable energy certificates plus 100% Australian Carbon Credit Units for the residual, and it has withdrawn its Climate Active organisation certification effective 30 June 2026 while keeping its NABERS buildings profile; only one year of absolute Scope 1 and 2 data, 32,870 tonnes location-based in FY2022, could be corroborated. The SBTi register, at its 6 August 2026 export, validates the 42% by FY2030 near-term target but records the net zero commitment as removed for expiry, so the validated flag on this card covers the 2030 cut and not the 2050 date.'
   },
   {
     id: 'gpt',
@@ -2414,13 +2461,13 @@ export const COMPANIES = [
         }
       ],
       scope3: 'No dated Scope 3 target was corroborated; Stockland describes lower carbon concrete and steel partnerships to reduce Scope 3 emissions across its development pipeline.',
-      flags: [ 'offsets' ]
+      flags: [ 'offsets', 'exited-sbti' ]
     },
     baseline: null,
     reported: [],
     boundaryNote: 'The net zero claim is a net position, reached with onsite rooftop solar, purchased renewable electricity certificates and the retirement of nature-based carbon offsets, so it is not a gross Scope 1 and 2 figure.',
     status: 'unverified',
-    verified: '27 July 2026',
+    verified: '13 August 2026',
     sources: [
       {
         name: 'Stockland media release, achieves net zero Scope 1 and 2 emissions with scalable renewable model',
@@ -2443,7 +2490,7 @@ export const COMPANIES = [
         accessed: '27 July 2026'
       }
     ],
-    note: 'Stockland states it reached net zero Scope 1 and 2 in 2025, three years ahead of its 2028 target, using 75,000 rooftop solar panels of up to 45 MWp, purchased large-scale generation certificates and a small volume of retired nature-based offsets, but no absolute Scope 1 and 2 tonnage for any year could be corroborated.'
+    note: 'Stockland states it reached net zero Scope 1 and 2 in 2025, three years ahead of its 2028 target, using 75,000 rooftop solar panels of up to 45 MWp, purchased large-scale generation certificates and a small volume of retired nature-based offsets, but no absolute Scope 1 and 2 tonnage for any year could be corroborated. The SBTi register, at its 6 August 2026 export, records its near-term and net zero commitments as removed for expiry, on a register record last updated 1 September 2021, so the 2028 claim rests on Stockland alone.'
   },
 ];
 
@@ -2482,7 +2529,7 @@ export const SUMMARY = {
   moving: {
     head: 'What is genuinely there',
     items: [
-      '42 of the 50 carry a dated net zero commitment, and 34 back it with an absolute 2030 era interim target rather than an intensity ratio. Five years ago neither count would have been close.',
+      '42 of the 50 carry a dated net zero commitment, and 32 back it with an absolute 2030 era interim target rather than an intensity ratio. Five years ago neither count would have been close.',
       'Some targets got harder, not softer. Telstra lifted its 2030 cut from 50 to 70 per cent as it walked away from offset backed neutrality claims, and Woolworths replaced its old target with a deeper SBTi validated one.',
       'Suncorp pulled its operational net zero date forward by twenty years, and Transurban passed its 2030 halving seven years early on renewable electricity contracts.',
       'The best disclosers leave nothing to reconstruct. BHP publishes a restated baseline and a clean series, and sits about 25 per cent below its own claimed line without counting a single credit.',
@@ -2491,9 +2538,9 @@ export const SUMMARY = {
   short: {
     head: 'What the charts do not support',
     items: [
-      'Only 9 of the 50 publish enough verified data to be checked against their own line, and 6 of those 9 are behind it. For most of the rest the claim simply cannot be tested from what is public.',
+      'Only 16 of the 50 publish enough verified data to be checked against their own line, and 7 of those 16 are behind it. For most of the rest the claim simply cannot be tested from what is public.',
       'Woodside met its 2025 target on a net basis by retiring 1.28 Mt of carbon credits, while its gross equity emissions never fell below the base the target is cut from.',
-      'The retreat is real: QBE withdrew its 2050 targets for underwriting and investments, Santos moved Scope 2 net zero out a decade, Macquarie was the first major Australian bank to leave the Net-Zero Banking Alliance, and the alliance itself has since ceased operations.',
+      'The retreat is real: QBE withdrew its 2050 targets for underwriting and investments, Santos moved Scope 2 net zero out a decade, Macquarie was the first major Australian bank to leave the Net-Zero Banking Alliance, and the alliance itself has since ceased operations. The SBTi register carries expired commitments for Fortescue, ASX Limited, Stockland and ResMed, and has removed the net zero commitments of Goodman and Xero for the same reason.',
       'Five companies have no net zero commitment this page could find at all, and one of them, CAR Group, says in its own reporting that it has chosen not to set one while calling its operations carbon neutral on purchased offsets.',
     ],
   },
@@ -2516,10 +2563,10 @@ export const SOURCES = {
     accessed: '27 July 2026',
   },
   sbti: {
-    name: 'Science Based Targets initiative, target dashboard',
-    detail: 'The public register of validated targets, used only to set the validated and exited flags on a company card.',
+    name: 'Science Based Targets initiative, Companies Taking Action export, snapshot of 6 August 2026',
+    detail: 'The public register of commitments and validated targets, read as the full companies export rather than the web dashboard, and used only to set the validated and exited flags, to confirm target years and to record a commitment the register shows as removed. The export states no publication date of its own, so it is dated by its latest updated record and its file timestamps, both 6 August 2026.',
     url: 'https://sciencebasedtargets.org/companies-taking-action',
-    accessed: '27 July 2026',
+    accessed: '13 August 2026',
   },
 };
 
@@ -2534,7 +2581,7 @@ export const METHOD = {
       title: 'The fifty, and how they were compiled',
       paras: [
         'The companies are the constituents of the S&P/ASX 50 as at the June 2026 quarterly rebalance, which brought ALS in for Pro Medicus, following the March 2026 review that added Light and Wonder and PLS Group for Seek and TechnologyOne. Index membership shifts quarterly, so the tail of the list is checked at each review and the make up is stated here rather than assumed.',
-        'Every figure was compiled from the company\'s own disclosures, its annual, sustainability, climate or transition reports, and cross checked against published summaries, regulator data and independent registers. Where a number could not be confirmed back to the company\'s own reporting it was left out, and the company is marked partial or unverified rather than padded with a plausible figure.',
+        'Every figure was compiled from the company\'s own disclosures, its annual, sustainability, climate or transition reports, and cross checked against published summaries, regulator data and independent registers. Where a number could not be confirmed back to the company\'s own reporting it was left out, and the company is marked partial or unverified rather than padded with a plausible figure. A series that rests on a chart label rather than a table is marked partial as well, because a printed label is rounded and a table is not.',
         'More than half the ledger fails some part of that test. Showing that plainly, rather than quietly filling the gaps, is the point of the status chip on every card.',
       ],
     },
@@ -2571,7 +2618,8 @@ export const METHOD = {
       title: 'Sources and verification',
       paras: [
         'Company reports come first: the annual report, the sustainability or climate report, and the climate transition action plan where one exists. Clean Energy Regulator NGER data and independent registers are used to cross check, never as the origin of a figure.',
-        'Climate Action 100+ and the Science Based Targets initiative register are used only to corroborate scope coverage and to set the validated, weakened and alliance flags. A handful of single year figures rest on third party compilations of company reporting; every card that leans on one says so in its boundary note.',
+        'The August 2026 review read seven of those reports directly rather than through summaries, and each of those cards names the file and the page the table sits on: the Aristocrat FY25 Sustainability Report (p37), the James Hardie FY2025 Sustainability Report (p39), the Brambles Sustainability Review 2025 (p21 table and p20 chart), the Evolution Mining Integrated Sustainability Report 2025 (p90), the NAB Climate Report 2025 (p48 and p49) with the 2023 report (p61), the APA FY25 Sustainability Data Book (p42 and p43) with the 2025 Climate Transition Plan (p13), and the Santos Climate Strategy Update 2025 (p4 and p5). Seven cards that had no series before now carry one, which is why the assessable count moved.',
+        'Climate Action 100+ and the Science Based Targets initiative register are used only to corroborate scope coverage and to set the validated, weakened and alliance flags. The register is read as the Companies Taking Action export, snapshot of 6 August 2026. Where that record and a company\'s own wording disagree about a target year the register is followed and the card says so, which is why Computershare now shows FY2033 and Xero FY2034 rather than 2030. A commitment the register shows as removed is recorded as removed, with the date and the reason, because a lapsed commitment is a different fact from a target that was never submitted. A handful of single year figures rest on third party compilations of company reporting; every card that leans on one says so in its boundary note.',
         'Where two sources conflict, the company\'s most recent report is used and the conflict is named on the card, and where it could not be resolved at all no number is shown. Where a series has been restated, the restated basis is used consistently across all years, and three companies with restatements in flight are flagged as such.',
       ],
     },
