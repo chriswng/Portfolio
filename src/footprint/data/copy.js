@@ -169,7 +169,7 @@ export const ONBOARD = {
     title: 'Home energy',
     sub: 'Usually one of the bigger slices of a footprint. Pick a typical home to start, or better, read the figures straight off a power and gas bill.',
     presetLabel: 'Which sounds most like your place?',
-    presetNote: 'Rough starting points, sized to your household: each adult adds their share, so a busier home reads higher. The figures below are the whole-home total per quarter for the number of adults you set. The dollar figures are a very rough two-adult power-bill anchor at typical rates, a sanity check rather than a price. Gas-heated homes in cold climates often run well above these. Swap in your real bills whenever you find them.',
+    presetNote: 'Rough starting points, sized to your household: each adult adds their share, so a busier home reads higher. The figures below are the whole-home total per quarter for the number of adults you set. For scale, the regulator puts average annual household use between about 4,400 and 6,700 kWh depending on where you live, which the apartment and house rungs bracket. The dollar figures beside each are an indicative feel at typical rates, not a published bill: the regulator prints bills only as charts, so a figure read off one would not meet the standard the rest of this page holds. Gas-heated homes in cold climates often run well above these. Swap in your real bills whenever you find them.',
     kwh: 'Electricity, kWh per quarter (whole home)',
     gas: 'Gas, {unit} per quarter (0 if no gas)',
     // {n}/{s} filled with the household size in the component.
@@ -337,10 +337,19 @@ export const ONBOARD = {
 // without a bill in reach can still finish, and the note tells them to swap
 // in real numbers later.
 export const ENERGY_PRESETS = {
-  // The AU `bill` strings are indicative two-adult quarterly power-bill
-  // anchors (usage at a typical retail rate plus a supply charge, rounded
-  // hard), because most people know their bill in dollars, not kilowatt-
-  // hours. Anchors only, never converted: the engine prices from kWh.
+  // Sanity-checked against the AER Annual Retail Markets Report 2024-25
+  // (published 30 November 2025), Table A2.1: average annual electricity use
+  // per residential customer runs 4,449 kWh (CitiPower, Victoria) to 6,692
+  // (Ergon, Queensland). At two adults the apartment rung is 4,400 a year and
+  // the house rung 6,400, so the ladder brackets the published range.
+  // The US house rung is anchored on the EIA average of 10,791 kWh a year per
+  // residential customer (1,348.9 per adult per quarter at two adults); the
+  // other US rungs and every gas figure remain a coarse construction, because
+  // the uploaded RECS tables carry housing characteristics, not consumption.
+  // The AU `bill` strings are an indicative feel only, NOT a published figure:
+  // the AER prints residential bills as chart images rather than tables, so no
+  // dollar amount in that report can be read to this page's standard.
+  // Anchors only, never converted: the engine prices from kWh.
   AU: [
     { id: 'aptSmall', label: 'Small apartment', kwhPerAdult: 350, gasPerAdult: 0, bill: '≈ $300 power / quarter' },
     { id: 'apt', label: 'Apartment', kwhPerAdult: 550, gasPerAdult: 1250, bill: '≈ $450 power / quarter' },

@@ -59,17 +59,18 @@ const coffeeKg = equivalenceById('coffee').kg;    // 0.4 kg, dairy flat white
 const lpgLitreKg = OTHER_FUELS.lpg.s1 + OTHER_FUELS.lpg.s3;
 
 // ---------------------------------------------------------------------------
-// External sources: for items the footprint model does not carry. Each is a
-// published figure verified via web search on 2026-07-22, and each item that
-// uses one is flagged an estimate in its reveal.
+// External sources: for items the footprint model does not carry. Every item
+// that uses one is flagged an estimate in its reveal. The streaming and pet-diet
+// figures are read from the primary documents themselves, accessed 13 August
+// 2026; the rest stand on a web-search verification of 22 July 2026.
 // ---------------------------------------------------------------------------
 const SRC = {
   carbonTrustStreaming: {
-    name: 'Carbon Trust, Carbon impact of video streaming (2021)',
+    name: 'Carbon Trust, Carbon impact of video streaming, white paper, June 2021 (accessed 13 August 2026)',
     url: 'https://www.carbontrust.com/news-and-insights/news/updated-calculation-released-on-the-carbon-impact-of-online-video-streaming',
   },
   petDiets: {
-    name: 'Alexander et al. 2022, Environmental impact of diets for dogs and cats, Scientific Reports 12:18021',
+    name: 'Pedrinelli et al. 2022, Environmental impact of diets for dogs and cats, Scientific Reports 12:18510 (accessed 13 August 2026)',
     url: 'https://www.nature.com/articles/s41598-022-22631-0',
   },
   poore: {
@@ -120,15 +121,15 @@ export const GUESS_POOL = [
   },
   {
     id: 'netflix-year', item: 'A year of Netflix', short: 'A year of streaming',
-    kg: 0.055 * 2 * 365, unit: 'About two hours a day for a year, device included',
+    kg: 0.055 * 2 * 365, unit: 'About two hours a day for a year, device included, European average grid',
     source: SRC.carbonTrustStreaming, estimate: true,
-    note: 'Streaming is a famous over-estimate. At the Carbon Trust figure of about 55 g an hour, two hours a night for a year lands near 40 kg, and the screen you watch on drives most of it, not the data centre. Smaller than one cheeseburger a week.',
+    note: 'Streaming is a famous over-estimate. At the Carbon Trust figure of about 55 g an hour, two hours a night for a year lands near 40 kg. The screen is 46% of that hour and your home router another 38%, while the data centre is under 1%, so the weight sits in your lounge room rather than in the cloud. Smaller than one cheeseburger a week.',
   },
   {
     id: 'dog-year', item: "A year of feeding a dog", short: 'A dog year, dry food',
-    kg: 828, unit: 'A 10 kg dog on a dry diet for a year',
+    kg: 828, unit: 'A 10 kg dog on a dry diet for a year, 534 kcal a day',
     source: SRC.petDiets, estimate: true,
-    note: 'Pet food is mostly meat, so it lands heavier than people expect: about 828 kg a year for a small dog on dry food in this study. Wet food is roughly seven times worse, and a bigger dog eats proportionally more, so a Labrador sits well above this.',
+    note: 'Pet food is mostly meat, so it lands heavier than people expect: 828 kg a year for a 10 kg dog on dry food, taken from the median of 316 Brazilian commercial dry diets in this study. Wet food is roughly eight times worse for the same calories, and a bigger dog eats more, so a Labrador sits well above this.',
   },
   {
     id: 'tee', item: 'A new cotton tee or shirt', short: 'A new top',
@@ -651,7 +652,7 @@ export const METHOD = {
   tag: 'How this works',
   title: 'Where the numbers and the rules come from',
   sub: 'The same honesty standard as the rest of the site. Every figure is either priced from this site\'s own footprint model or carries a published external source, and the two are always flagged apart.',
-  lastUpdated: '22 July 2026',
+  lastUpdated: '13 August 2026',
   cadence: 'Updated when the underlying footprint factors change or a new item or claim is added. New items append to the end of each pool so the daily rotation stays stable.',
   blocks: [
     {
@@ -659,7 +660,7 @@ export const METHOD = {
       title: 'Guess the Footprint: the numbers',
       paras: [
         'Wherever an item also exists in the site\'s Life Footprint model, its answer is derived live from the very same factor tables the footprint engine prices from: the DCCEEW National Greenhouse Accounts Factors 2025 for electricity, gas and fuels, the UK Government (DEFRA) conversion factors for flights, hotels and freight, and Poore & Nemecek 2018 for food. Flights are priced exactly as the calculator prices them: great-circle distance uplifted 8%, doubled for the return, at the economy factor with radiative forcing counted. Clothing uses the per-item ADEME life-cycle figures. So a factor refresh moves this game in the same change.',
-        'A handful of items sit outside the model: a year of streaming, a year of dog food, a pint of beer. Those carry a published external source and are marked an estimate on the reveal. Every card states its unit assumption plainly, for example "one seat, economy" or "one occupied room-night at the country average". Numbers are rounded to the confidence behind them, never past it.',
+        'A handful of items sit outside the model: a year of streaming, a year of dog food, a pint of beer. Those carry a published external source and are marked an estimate on the reveal. Two of them were read back against the original documents on 13 August 2026. The streaming figure is the Carbon Trust\'s European average for 2020, about 55 g an hour on a 2018-vintage European grid, and the paper itself warns those figures are not designed to be representative of any given scenario, so an Australian hour on a dirtier grid runs higher. The dog-food figure is the median of 316 Brazilian commercial dry diets in Pedrinelli et al. 2022, a worked illustration for a 10 kg dog rather than a measured animal. Every card states its unit assumption plainly, for example "one seat, economy" or "one occupied room-night at the country average". Numbers are rounded to the confidence behind them, never past it.',
       ],
     },
     {
