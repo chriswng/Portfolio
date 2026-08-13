@@ -1,0 +1,31 @@
+name: CI
+
+# The gate on the way in. deploy.yml runs the same two steps on main, but that
+# fires after a merge; this one runs on the branch, so a broken engine or a
+# figure that no longer matches its source is caught before it lands.
+
+on:
+  pull_request:
+  push:
+    branches-ignore: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build

@@ -531,6 +531,14 @@
 .fp-skim-contact .fp-linkbtn{ color:#E8EDE6; border-color:rgba(255,255,255,0.35); }
 .fp-skim-contact .fp-linkbtn:hover{ color:var(--matcha); border-color:var(--matcha); }
 
+/* ---- Quick-path dwelling nudge --------------------------------------------
+   Sits directly above the option cards, because the two it unlocks are the
+   greyed-out ones right below it. Same visual family as the rollover card. */
+.fp-dwelling-nudge{ border:1px solid #75821D; border-left:4px solid var(--matcha); background:rgba(181,196,43,0.08); padding:1.1rem 1.3rem; margin:0 0 1.2rem; }
+.fp-dwelling-k{ display:block; font-family:var(--mono); font-size:10px; letter-spacing:0.22em; text-transform:uppercase; color:#66731A; font-weight:700; margin-bottom:0.45rem; }
+.fp-dwelling-body{ font-size:0.95rem; line-height:1.65; color:var(--slate); max-width:60ch; margin:0 0 0.9rem; }
+.fp-dwelling-nudge .fp-ctrl-row{ margin:0; }
+
 /* ---- Year rollover and the multi-year record ------------------------------ */
 .fp-rollover{ padding:1.5rem 0 0; }
 .fp-roll-card{ border:1px solid #75821D; border-left:4px solid var(--matcha); background:rgba(181,196,43,0.08); padding:1.25rem 1.5rem; }
