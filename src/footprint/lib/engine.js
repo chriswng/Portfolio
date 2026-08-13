@@ -76,10 +76,14 @@ export function priceEntry(draft, settings) {
         activity = num(meta.km); unit = 'km';
         components = [{ scope: '3', tco2e: activity * ROAD_MODES.rideshare.perKm / 1000 }];
         scope = '3'; source = ROAD_MODES.rideshare.source.split('.')[0] + '.';
-      } else if (mode === 'pt') {
+      } else if (mode === 'pt' || mode === 'bus') {
+        // Rail and bus are both per-passenger-km modes needing no occupancy
+        // split, but a bus runs about four times the rail factor, so they
+        // price from their own rows rather than one blended proxy.
+        const m = ROAD_MODES[mode];
         activity = num(meta.km); unit = 'km';
-        components = [{ scope: '3', tco2e: activity * ROAD_MODES.pt.perKm / 1000 }];
-        scope = '3'; source = ROAD_MODES.pt.source.split('.')[0] + '.';
+        components = [{ scope: '3', tco2e: activity * m.perKm / 1000 }];
+        scope = '3'; source = m.source.split('.')[0] + '.';
       } else if (meta.fuel === 'ev') {
         // Average occupancy splits car emissions per person, the same
         // equal-share attribution used for household bills. A certified
@@ -380,7 +384,7 @@ export function rolloverProfile(profile, todayIso) {
 export function baselineState(profile, agg) {
   const s = profile.settings;
   const share = 1 / Math.max(1, s.householdSize || 1);
-  let kwh = 0, mj = 0, kmCar = 0, kmEv = 0, litres = 0, kmRide = 0, kmPt = 0;
+  let kwh = 0, mj = 0, kmCar = 0, kmEv = 0, litres = 0, kmRide = 0, kmPt = 0, kmBus = 0;
   let dietDays = 0, freightAirT = 0, freightOtherT = 0, otherT = 0, goodsT = 0, dwellingT = 0;
   const flights = [];
   for (const e of profile.entries) {
@@ -398,6 +402,7 @@ export function baselineState(profile, agg) {
       const occ = Math.max(1, Math.round(m.occupants || 1));
       if (mode === 'rideshare' || mode === 'taxi') kmRide += m.km || 0;
       else if (mode === 'pt') kmPt += m.km || 0;
+      else if (mode === 'bus') kmBus += m.km || 0;
       else if (m.fuel === 'ev') { kmCar += (m.km || 0) / occ; kmEv += (m.km || 0) / occ; }
       else {
         const dflt = roadFuelFor(countryOf(s), m.fuel).defaultL100km || 7;
@@ -431,7 +436,7 @@ export function baselineState(profile, agg) {
     roofOwn: s.roofOwn !== false,
     greenpowerPct: (s.greenpowerPct || 0) / 100,
     kwh, mj,
-    kmCar, kmRide, kmPt,
+    kmCar, kmRide, kmPt, kmBus,
     // l100km describes the combustion share only; audited EV kilometres set
     // the starting evShare so an EV driver is never offered "switch to an EV".
     l100km: kmCar - kmEv > 0 ? (litres / (kmCar - kmEv)) * 100 : (roadFuelFor(countryOf(s), s.fuelType || 'petrol').defaultL100km || 7),
@@ -463,7 +468,8 @@ export function stateEmissions(st, yearOffset) {
   const litres = (st.kmCar * (1 - st.evShare) * st.l100km) / 100;
   const road = (litres * (fuel.s1_per_L + fuel.s3_per_L)
     + st.kmRide * ROAD_MODES.rideshare.perKm
-    + st.kmPt * ROAD_MODES.pt.perKm) / 1000;
+    + st.kmPt * ROAD_MODES.pt.perKm
+    + (st.kmBus || 0) * ROAD_MODES.bus.perKm) / 1000;
   const flight = Math.max(0, st.flightT - st.droppedFlightT);
   const diet = (st.dietPerDay * st.dietDays) / 1000;
   // The sea-shift residual derives from the freight table itself, so a

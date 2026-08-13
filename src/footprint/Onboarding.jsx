@@ -132,12 +132,26 @@ export function buildProfileFromOnboarding(a) {
   if (ptWeekEff > 0) {
     const cap = PT_FARE_CAPS[a.state];
     const capped = cap && !a.ptCapOverride && a.ptWeek > cap.weekly;
-    entries.push(E({
-      category: 'road', date: period.end, period_months: 12, label: 'Public transport, typical year (onboarding)',
-      meta: { mode: 'pt', km: Math.round((ptWeekEff * 52) / CONVERSIONS.ptPerKm.value) },
-      notes: 'Fares converted at about ' + Math.round(CONVERSIONS.ptPerKm.value * 100) + 'c per km. Indicative rail factor.'
-        + (capped ? ' Weekly spend capped at the ' + a.state + (cap.approx ? ' effective fare ceiling of about $' : ' weekly fare cap of $') + cap.weekly + '.' : ''),
-    }));
+    const capNote = capped
+      ? ' Weekly spend capped at the ' + a.state + (cap.approx ? ' effective fare ceiling of about $' : ' weekly fare cap of $') + cap.weekly + '.'
+      : '';
+    const totalKm = Math.round((ptWeekEff * 52) / CONVERSIONS.ptPerKm.value);
+    // A bus runs about four times the rail factor per passenger-km, so the
+    // fares split by the mode the visitor actually rides rather than pricing
+    // every trip as rail.
+    const busShare = a.ptMix === 'bus' ? 1 : a.ptMix === 'rail' ? 0 : 0.5;
+    [
+      ['pt', Math.round(totalKm * (1 - busShare)), 'Indicative rail factor.'],
+      ['bus', Math.round(totalKm * busShare), 'Indicative local bus factor.'],
+    ].forEach(([mode, km, basis]) => {
+      if (!(km > 0)) return;
+      entries.push(E({
+        category: 'road', date: period.end, period_months: 12,
+        label: (mode === 'bus' ? 'Bus' : 'Public transport') + ', typical year (onboarding)',
+        meta: { mode, km },
+        notes: 'Fares converted at about ' + Math.round(CONVERSIONS.ptPerKm.value * 100) + 'c per km. ' + basis + capNote,
+      }));
+    });
   }
   // A flight given a month lands in that month as a real point event; one
   // left open carries no invented date and spreads evenly across the year
@@ -289,7 +303,7 @@ const DEFAULTS = {
   // gpChoice is the picked chip; greenpowerPct is what the engine prices from.
   // 'no' and 'unsure' are distinct choices that both price at 0% renewable.
   gpChoice: 'no', greenpowerPct: 0, energyPreset: null, kwhQuarter: 1000, gasQuarter: GAS_DEFAULTS.AU, carKmWeek: 0, carOccupancy: 1,
-  rideshareWeek: 0, ptWeek: 0, ptCapOverride: false,
+  rideshareWeek: 0, ptWeek: 0, ptCapOverride: false, ptMix: 'mixed',
   // Parcels start at zero like every other count: a figure the visitor never
   // confirmed must not ship into the audit as if they had.
   parcelsMonth: 0, intlOrdersMonth: 0, flights: [], hotelNightsOther: 0,
@@ -885,6 +899,15 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         onChange={(v) => set('rideshareWeek', v)} />
       <SliderField icon="bus" label={ONBOARD.travel.pt} value={a.ptWeek} min={0} max={250} step={5} unit="$ / wk"
         onChange={(v) => set('ptWeek', v)} />
+      {a.ptWeek > 0 && (
+        <Chips
+          icon="bus"
+          label={ONBOARD.travel.ptMix}
+          options={ONBOARD.travel.ptMixChips}
+          value={a.ptMix} onChange={(v) => set('ptMix', v)}
+          note={ONBOARD.travel.ptMixNote}
+        />
+      )}
       {ptCap && (
         <div className="ob-ptcap">
           <p className="ob-note ob-ptcap-note">

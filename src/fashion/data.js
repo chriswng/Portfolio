@@ -780,12 +780,15 @@ const FASHION_PACT_FORMER = new Set(['herm-s']); // slug('Hermès') === 'herm-s'
 const B_CORP_IDS = new Set(['patagonia', 'r-m-williams', 'camilla', 'chlo']);
 
 // Science Based Targets initiative status, read from the SBTi "Companies
-// Taking Action" export. Every id below has a near-term target with SBTi
-// status "Targets set" (validated). Split by whether the validated entity is
-// the brand's own company ('brand') or its corporate parent/group ('parent'),
-// so the climate-target signal can be honest about the level. Parents not in
-// the SBTi dataset (Wesfarmers, ABF, TJX, Ross, Cotton On, Boohoo, Tattarang,
-// PDD) are absent and stay "Needs research".
+// Taking Action" export, 6 August 2026 snapshot (15,375 companies). Every id
+// below has a near-term target with SBTi status "Targets set" (validated).
+// Split by whether the validated entity is the brand's own company ('brand')
+// or its corporate parent/group ('parent'), so the climate-target signal can
+// be honest about the level. Parents not in the SBTi dataset (Wesfarmers,
+// ABF, TJX, Ross, Cotton On, Boohoo, Tattarang, PDD) are absent and their
+// brands stay "Needs research". ABF is the one case where the group is absent
+// but the brand is not: Primark Limited holds its own validated target, so
+// Primark is flagged at brand level while ABF stays off the list.
 const SBTI_BRAND = new Set([
   'nike', 'adidas', 'puma', 'asics', 'new-balance', 'under-armour', 'lululemon',
   'herm-s', 'chanel', 'burberry', 'moncler', 'ralph-lauren', 'levi-strauss', 'gap',
@@ -799,6 +802,10 @@ const SBTI_BRAND = new Set([
   'desigual', 'disney', 'fossil', 'gildan', 'hanes', 'john-lewis', 'kohl-s',
   'mizuno', 'nordstrom', 'otto', 's-oliver', 'shimamura', 'steve-madden',
   'tchibo', 'tom-tailor', 'united-arrows', 'very', 'walmart', 'woolworths-south-africa',
+  // 6 August 2026 export (own company validated)
+  'aldi-south', 'aldo', 'carter-s', 'celio', 'dr-martens', 'ermenegildo-zegna',
+  'fruit-of-the-loom', 'helly-hansen', 'lacoste', 'lindex', 'primark', 'ted-baker',
+  'tesco', 'the-children-s-place', 'tod-s', 'triumph',
 ]);
 const SBTI_PARENT = new Set([
   'louis-vuitton', 'dior', 'loewe', 'fendi', 'celine', 'gucci', 'saint-laurent',
@@ -813,6 +820,8 @@ const SBTI_PARENT = new Set([
   // full-coverage batch (parent/group validated)
   'banana-republic', 'bonprix', 'chlo', 'hollister-co', 'jack-and-jones',
   'joe-fresh', 'la-redoute', 'russell-athletic', 'sports-direct', 'vero-moda',
+  // 6 August 2026 export (parent/group validated)
+  'bally', 'marc-jacobs', 'sandro', 'topvalu-collection',
 ]);
 function sbtiLevelFor(id) {
   if (SBTI_BRAND.has(id)) return 'brand';
@@ -827,7 +836,7 @@ function commitmentsFor(id) {
 
 // The date the structural facts (ownership, provenance, memberships) were last
 // checked. Shown as a freshness stamp: the one thing no competitor exposes.
-export const VERIFIED_AS_OF = 'July 2026';
+export const VERIFIED_AS_OF = 'August 2026';
 
 // ---------------------------------------------------------------------------
 // Ownership provenance. The white space in this whole category: every rival
@@ -1354,6 +1363,7 @@ export const LENS_READING = {
 // the actual dates the changes landed in the repository.
 // ---------------------------------------------------------------------------
 export const CHANGELOG = [
+  { date: '13 August 2026', note: 'SBTi climate-target status re-matched against the Companies Taking Action export, 6 August 2026 snapshot of 15,375 companies: 131 companies matched, up from 111. The 20 additions all meet the existing rule of a near-term target at status "Targets set", 16 through their own validated company row and 4 through a validated parent or group. No badge already on file was contradicted by the newer export: celio moved from committed to validated, and Primark holds its own validated target even though its parent, Associated British Foods, is not on the register.' },
   { date: '20 July 2026', note: 'The four explainers consolidated into one field guide; the personal lens and the ownership map added; the garment studio retired. Logo loading moved from the retired Clearbit CDN to a keyless multi-provider chain, with domains on file for the full brand universe.' },
   { date: '20 July 2026', note: 'Fashion Transparency Index 2023 relabelled as the final edition of that index. What Fuels Fashion 2024, Fashion Revolution’s successor on decarbonisation, added as a per-brand link-out; its scores await ingestion from the primary report.' },
   { date: '19 July 2026', note: 'Full FTI 2023 universe ingested: 258 brands and retailers on file, 248 with a score read from the report’s Final Scores table. SBTi climate-target status matched for 111 companies; fuzzy name matches discarded.' },
@@ -2065,7 +2075,7 @@ export const COPY = {
   },
 
   footer: {
-    method: 'Method: brand ownership from corporate filings and official brand pages. Transparency scores are the Fashion Transparency Index 2023, published by Fashion Revolution, which rates public disclosure only; 2023 was the final edition of that index, and its successor, What Fuels Fashion, is linked from every brand card until its scores are ingested from the primary report. Climate-target status is drawn from the Science Based Targets initiative dashboard; memberships from The Fashion Pact and B Lab. Per-field disclosure statuses are tracked in the repository and marked "Needs research" until a source is confirmed. Garment studio figures are indicative estimates assembled from published life cycle assessment literature (including Mistra Future Fashion’s six-garment study and ADEME’s consumer-goods LCAs), freight and petrol-car factors from the DESNZ and Defra 2026 conversion factors, and public grid intensity data, rounded and simplified so they can be manipulated live. Nothing here is assured reporting, a product footprint, or advice about a real brand.',
+    method: 'Method: brand ownership from corporate filings and official brand pages. Transparency scores are the Fashion Transparency Index 2023, published by Fashion Revolution, which rates public disclosure only; 2023 was the final edition of that index, and its successor, What Fuels Fashion, is linked from every brand card until its scores are ingested from the primary report. Climate-target status is drawn from the Science Based Targets initiative’s Companies Taking Action export, 6 August 2026 snapshot, and counts only a near-term target the SBTi records as validated; memberships from The Fashion Pact and B Lab. Per-field disclosure statuses are tracked in the repository and marked "Needs research" until a source is confirmed. Garment studio figures are indicative estimates assembled from published life cycle assessment literature (including Mistra Future Fashion’s six-garment study and ADEME’s consumer-goods LCAs), freight and petrol-car factors from the DESNZ and Defra 2026 conversion factors, and public grid intensity data, rounded and simplified so they can be manipulated live. Nothing here is assured reporting, a product footprint, or advice about a real brand.',
     attributionLabel: 'Data and attribution',
     attribution: 'This tool reproduces published figures with attribution, and claims none of them as its own. Fashion Transparency Index scores are © Fashion Revolution CIC, used for reference under their public research. Science Based Targets initiative data © SBTi. Certification and membership marks belong to their owners: The Fashion Pact, B Lab (B Corp), and the brands named. Company ownership is a matter of public record. Cost Per Wear is an independent, non-commercial reference tool and is not affiliated with, or endorsed by, any brand or organisation named. Every figure links to its source so you can check it. If you own a listing and something is wrong, it can be corrected.',
     sourcesLabel: 'Sources',

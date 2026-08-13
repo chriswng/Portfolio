@@ -12,9 +12,9 @@
 // never silently re-prices old entries. It is a data key, not a brand: the
 // UI shows the plain source list below, never this string.
 export const FACTOR_SET = {
-  id: 'nga2025-ukghg2025-intl1',
-  updated: 'July 2026',
-  note: 'Australian electricity, gas and transport fuels use the DCCEEW National Greenhouse Accounts Factors (2025). United States factors use the US EPA GHG Emission Factors Hub defaults and the EIA national grid average; New Zealand electricity uses the MfE Measuring Emissions Catalogue grid factor, with the Australian combustion factors as stated proxies for fuels. Flights and freight use the UK Government conversion factors (2025 edition), published by DESNZ and still widely known as the DEFRA factors. Updated when new editions are published and verified against the source workbook.',
+  id: 'nga2025-ukghg2026-intl2',
+  updated: 'August 2026',
+  note: 'Australian electricity, gas and transport fuels use the DCCEEW National Greenhouse Accounts Factors (2025), which remain search-verified rather than read from the workbook: no 2025 or 2026 edition could be obtained, and the 2024 workbook is a different vintage, so the shipped values are left as they stand rather than being replaced by older ones. Flights, freight, hotel nights, rail and bus use the UK Government conversion factors (2026 edition), published by DESNZ and still widely known as the DEFRA factors, read cell for cell. United States electricity is priced per state from EPA eGRID2023 rev2, with gas and motor fuels from the EPA GHG Emission Factors Hub. New Zealand electricity, gas, transport fuels and hotel nights come from the MfE Measuring Emissions Catalogue 2026; only the NZ fuel-cycle line still rides an Australian proxy. Updated when new editions are published and verified against the source workbook.',
 };
 
 // ---------------------------------------------------------------------------
@@ -43,7 +43,7 @@ export const COUNTRIES = {
   },
   US: {
     label: 'United States', currency: 'US$', defaultRegion: 'US',
-    regionQuestion: null, // priced at the national grid average; state factors queued
+    regionQuestion: 'Which state?',
     gasUnit: 'therms', mjPerGasUnit: 105.505, gasMax: 400, gasStep: 5,
     homeAirport: 'JFK',
     renewableQuestion: 'Is your electricity on a 100% renewable (green power) plan?',
@@ -92,22 +92,20 @@ export const ELECTRICITY_SOURCE = {
   url: 'https://www.dcceew.gov.au/climate-change/publications/national-greenhouse-accounts-factors-2025',
 };
 
-// Grid factors for the other two countries. Both are national figures: New
-// Zealand genuinely runs one national grid factor (MfE publishes a single
-// grid average), and the United States is priced at the national average
-// because the state-level eGRID table could not be verified against the EPA
-// workbook from this edition's environment; state factors are recorded as
-// queued in the method's exclusions rather than shipped unchecked.
+// Grid factors for the other two countries. New Zealand genuinely runs one
+// national grid factor (MfE publishes a single grid average). The United
+// States is priced per state from eGRID, with the national average kept as
+// the default until a state is chosen.
 export const ELECTRICITY_SOURCE_NZ = {
-  name: 'NZ Ministry for the Environment, Measuring Emissions Catalogue (2025)',
-  detail: 'Purchased grid-average electricity for the national grid, about 85% renewable (hydro, wind, geothermal). The primary workbook could not be reached from this edition\'s environment, so the value is carried from the catalogue as republished by multiple secondary sources and is queued for cell-level verification. The separate transmission-and-distribution loss factor is queued with it, so scope 3 currently reads zero and slightly understates.',
-  url: 'https://measuringemissionsguide.environment.govt.nz/',
+  name: 'NZ Ministry for the Environment, Measuring Emissions Catalogue 2026',
+  detail: 'Purchased grid-average electricity for the national grid, about 85% renewable (hydro, wind, geothermal), read from Table 5.2 (annual averages, 2010 to 2025) at the 2025 annual figure. Scope 3 is the catalogue\'s own separate transmission-and-distribution loss factor from Table 5.4, so the line no longer understates by leaving losses out. The annual series is genuinely volatile because a dry hydrological year pulls thermal generation in: 2024 read 0.0993596 against 2025\'s 0.0786625, a 26% swing, so a New Zealand total moves with the year it is priced in.',
+  url: 'https://environment.govt.nz/publications/measuring-emissions-a-guide-for-organisations-2026-detailed-guide/',
 };
 
 export const ELECTRICITY_SOURCE_US = {
-  name: 'US EIA (2023 national average), corroborated against EPA eGRID2023',
-  detail: 'US utility-scale generation averaged about 0.81 lb CO2 per kWh in 2023 (EIA FAQ), about 0.37 kg CO2e per kWh with the small CH4 and N2O share included, consistent with eGRID-based republications near 370 g/kWh. Scope 3 is transmission and distribution losses at about 5% of generation (EIA); upstream fuel-cycle is not counted. State-level eGRID factors are queued: the grid varies widely by state, and the method says so.',
-  url: 'https://www.eia.gov/tools/faqs/faq.php?id=74&t=11',
+  name: 'US EPA eGRID2023 (rev2, 12 June 2025), state annual CO2-equivalent total output emission rates',
+  detail: 'Every state, the District of Columbia and Puerto Rico priced from its own eGRID row (sheet ST23), read cell for cell and converted from lb CO2e/MWh at 0.45359237/1000. The national average row is eGRID\'s own US figure (770.884 lb CO2e/MWh, 0.3497 kg CO2e/kWh) and applies until a state is chosen. Scope 3 is the eGRID grid gross loss factor of 4.2% (sheet GGL23), grossed up rather than taken as a flat share, because a kWh consumed needs 1/(1-0.042) generated behind it; upstream fuel-cycle is not counted, so that side still understates. The spread is the point: Vermont reads 0.0237 and West Virginia 0.8931, a factor of 38, so a national average was never a fair answer for an individual. eGRID2024 was scheduled for January 2026 but has not been published, so rev2 of the 2023 edition remains current.',
+  url: 'https://www.epa.gov/egrid/download-data',
 };
 
 // label: the full place name, used consistently everywhere the visitor picks
@@ -124,8 +122,68 @@ export const ELECTRICITY = {
   WA: { label: 'Western Australia', country: 'AU', grid: 'SWIS grid', s2: 0.50, s3: 0.06 },
   TAS: { label: 'Tasmania', country: 'AU', s2: 0.20, s3: 0.03 },
   NT: { label: 'Northern Territory', country: 'AU', grid: 'Darwin-Katherine (DKIS)', s2: 0.56, s3: 0.09 },
-  NZ: { label: 'New Zealand', country: 'NZ', grid: 'national grid', s2: 0.073, s3: 0 },
-  US: { label: 'United States', country: 'US', grid: 'national average', s2: 0.37, s3: 0.02 },
+  NZ: { label: 'New Zealand', country: 'NZ', grid: 'national grid', s2: 0.0786625, s3: 0.00595616 },
+  // United States: 50 states, DC and Puerto Rico, each from eGRID2023 rev2
+  // sheet ST23, converted lb CO2e/MWh to kg CO2e/kWh at 0.45359237/1000.
+  // Scope 3 grosses the state factor up for the 4.2% grid gross loss
+  // (GGL23), because a consumed kWh needs 1/(1-0.042) generated behind it.
+  // Keys are namespaced US-XX: the bare two-letter codes would collide with
+  // the Australian rows, where WA already means Western Australia. The plain
+  // 'US' row stays as the national average, both as the default before a
+  // state is chosen and so profiles saved before state pricing still price.
+  US: { label: 'United States (national average)', country: 'US', grid: 'national average', s2: 0.3497, s3: 0.01533 },
+  'US-AL': { label: 'Alabama', country: 'US', grid: 'eGRID AL', s2: 0.3239, s3: 0.0142 },
+  'US-AK': { label: 'Alaska', country: 'US', grid: 'eGRID AK', s2: 0.3694, s3: 0.01619 },
+  'US-AZ': { label: 'Arizona', country: 'US', grid: 'eGRID AZ', s2: 0.3126, s3: 0.0137 },
+  'US-AR': { label: 'Arkansas', country: 'US', grid: 'eGRID AR', s2: 0.4529, s3: 0.01986 },
+  'US-CA': { label: 'California', country: 'US', grid: 'eGRID CA', s2: 0.1791, s3: 0.00785 },
+  'US-CO': { label: 'Colorado', country: 'US', grid: 'eGRID CO', s2: 0.4949, s3: 0.0217 },
+  'US-CT': { label: 'Connecticut', country: 'US', grid: 'eGRID CT', s2: 0.2452, s3: 0.01075 },
+  'US-DE': { label: 'Delaware', country: 'US', grid: 'eGRID DE', s2: 0.3194, s3: 0.014 },
+  'US-DC': { label: 'District of Columbia', country: 'US', grid: 'eGRID DC', s2: 0.1792, s3: 0.00786 },
+  'US-FL': { label: 'Florida', country: 'US', grid: 'eGRID FL', s2: 0.3579, s3: 0.01569 },
+  'US-GA': { label: 'Georgia', country: 'US', grid: 'eGRID GA', s2: 0.3254, s3: 0.01427 },
+  'US-HI': { label: 'Hawaii', country: 'US', grid: 'eGRID HI', s2: 0.6326, s3: 0.02773 },
+  'US-ID': { label: 'Idaho', country: 'US', grid: 'eGRID ID', s2: 0.1424, s3: 0.00624 },
+  'US-IL': { label: 'Illinois', country: 'US', grid: 'eGRID IL', s2: 0.2152, s3: 0.00943 },
+  'US-IN': { label: 'Indiana', country: 'US', grid: 'eGRID IN', s2: 0.6647, s3: 0.02914 },
+  'US-IA': { label: 'Iowa', country: 'US', grid: 'eGRID IA', s2: 0.2876, s3: 0.01261 },
+  'US-KS': { label: 'Kansas', country: 'US', grid: 'eGRID KS', s2: 0.3326, s3: 0.01458 },
+  'US-KY': { label: 'Kentucky', country: 'US', grid: 'eGRID KY', s2: 0.7924, s3: 0.03474 },
+  'US-LA': { label: 'Louisiana', country: 'US', grid: 'eGRID LA', s2: 0.3461, s3: 0.01517 },
+  'US-ME': { label: 'Maine', country: 'US', grid: 'eGRID ME', s2: 0.1437, s3: 0.0063 },
+  'US-MD': { label: 'Maryland', country: 'US', grid: 'eGRID MD', s2: 0.2369, s3: 0.01039 },
+  'US-MA': { label: 'Massachusetts', country: 'US', grid: 'eGRID MA', s2: 0.3765, s3: 0.01651 },
+  'US-MI': { label: 'Michigan', country: 'US', grid: 'eGRID MI', s2: 0.3617, s3: 0.01586 },
+  'US-MN': { label: 'Minnesota', country: 'US', grid: 'eGRID MN', s2: 0.3413, s3: 0.01496 },
+  'US-MS': { label: 'Mississippi', country: 'US', grid: 'eGRID MS', s2: 0.3757, s3: 0.01647 },
+  'US-MO': { label: 'Missouri', country: 'US', grid: 'eGRID MO', s2: 0.6598, s3: 0.02893 },
+  'US-MT': { label: 'Montana', country: 'US', grid: 'eGRID MT', s2: 0.4826, s3: 0.02116 },
+  'US-NE': { label: 'Nebraska', country: 'US', grid: 'eGRID NE', s2: 0.4653, s3: 0.0204 },
+  'US-NV': { label: 'Nevada', country: 'US', grid: 'eGRID NV', s2: 0.292, s3: 0.0128 },
+  'US-NH': { label: 'New Hampshire', country: 'US', grid: 'eGRID NH', s2: 0.1253, s3: 0.00549 },
+  'US-NJ': { label: 'New Jersey', country: 'US', grid: 'eGRID NJ', s2: 0.2133, s3: 0.00935 },
+  'US-NM': { label: 'New Mexico', country: 'US', grid: 'eGRID NM', s2: 0.3509, s3: 0.01538 },
+  'US-NY': { label: 'New York', country: 'US', grid: 'eGRID NY', s2: 0.2117, s3: 0.00928 },
+  'US-NC': { label: 'North Carolina', country: 'US', grid: 'eGRID NC', s2: 0.2841, s3: 0.01246 },
+  'US-ND': { label: 'North Dakota', country: 'US', grid: 'eGRID ND', s2: 0.5887, s3: 0.02581 },
+  'US-OH': { label: 'Ohio', country: 'US', grid: 'eGRID OH', s2: 0.4846, s3: 0.02125 },
+  'US-OK': { label: 'Oklahoma', country: 'US', grid: 'eGRID OK', s2: 0.2943, s3: 0.0129 },
+  'US-OR': { label: 'Oregon', country: 'US', grid: 'eGRID OR', s2: 0.1655, s3: 0.00726 },
+  'US-PA': { label: 'Pennsylvania', country: 'US', grid: 'eGRID PA', s2: 0.2939, s3: 0.01288 },
+  'US-PR': { label: 'Puerto Rico', country: 'US', grid: 'eGRID PR', s2: 0.7024, s3: 0.03079 },
+  'US-RI': { label: 'Rhode Island', country: 'US', grid: 'eGRID RI', s2: 0.381, s3: 0.0167 },
+  'US-SC': { label: 'South Carolina', country: 'US', grid: 'eGRID SC', s2: 0.2542, s3: 0.01114 },
+  'US-SD': { label: 'South Dakota', country: 'US', grid: 'eGRID SD', s2: 0.1522, s3: 0.00667 },
+  'US-TN': { label: 'Tennessee', country: 'US', grid: 'eGRID TN', s2: 0.2999, s3: 0.01315 },
+  'US-TX': { label: 'Texas', country: 'US', grid: 'eGRID TX', s2: 0.3498, s3: 0.01534 },
+  'US-UT': { label: 'Utah', country: 'US', grid: 'eGRID UT', s2: 0.6447, s3: 0.02826 },
+  'US-VT': { label: 'Vermont', country: 'US', grid: 'eGRID VT', s2: 0.0237, s3: 0.00104 },
+  'US-VA': { label: 'Virginia', country: 'US', grid: 'eGRID VA', s2: 0.2448, s3: 0.01073 },
+  'US-WA': { label: 'Washington', country: 'US', grid: 'eGRID WA', s2: 0.1209, s3: 0.0053 },
+  'US-WV': { label: 'West Virginia', country: 'US', grid: 'eGRID WV', s2: 0.8931, s3: 0.03915 },
+  'US-WI': { label: 'Wisconsin', country: 'US', grid: 'eGRID WI', s2: 0.5278, s3: 0.02314 },
+  'US-WY': { label: 'Wyoming', country: 'US', grid: 'eGRID WY', s2: 0.8316, s3: 0.03646 },
 };
 
 // Regions offered by the guided audit's place picker for a country, in table
@@ -184,14 +242,14 @@ export const GAS_SOURCE_US = {
 };
 
 export const GAS_SOURCE_NZ = {
-  name: 'Australian NGA combustion factor, used as a stated proxy for NZ reticulated gas',
-  detail: 'Natural gas combustion chemistry is near-identical across the two markets; the MfE Measuring Emissions Catalogue publishes an NZ-specific factor a few per cent higher that is queued for primary verification. Upstream fuel-cycle and distribution losses are not counted, so the line understates slightly.',
-  url: 'https://measuringemissionsguide.environment.govt.nz/',
+  name: 'NZ Ministry for the Environment, Measuring Emissions Catalogue 2026',
+  detail: 'Reticulated natural gas at the catalogue\'s commercial-use stationary combustion factor (Table 3.2, 54.2862 kg CO2-e per GJ), which runs about 5% above the Australian figure this line used as a proxy before. Scope 3 is the catalogue\'s reticulated-gas transmission and distribution loss factor (Table 3.5, 1.61768 kg CO2-e per GJ), which is a network-loss figure rather than a full well-to-tank fuel cycle, so the upstream side still understates a little and says so.',
+  url: 'https://environment.govt.nz/publications/measuring-emissions-a-guide-for-organisations-2026-detailed-guide/',
 };
 
 export const GAS_INTL = {
   US: { s1_per_MJ: 0.05034, s3_per_MJ: 0 },
-  NZ: { s1_per_MJ: 0.05153, s3_per_MJ: 0 },
+  NZ: { s1_per_MJ: 0.0542862, s3_per_MJ: 0.00161768 },
 };
 
 // Effective gas factors for a settings object: AU prices per state; US and
@@ -245,9 +303,9 @@ export const ROAD_SOURCE_US = {
 };
 
 export const ROAD_SOURCE_NZ = {
-  name: 'Australian NGA combustion and fuel-cycle factors, used as a stated proxy for NZ',
-  detail: 'Published NZ figures (petrol about 2.31, diesel about 2.68 kg CO2 per litre) sit within a few per cent of the NGA values used here; the MfE cells are queued for primary verification. A hybrid burns petrol at the petrol factors; only the default consumption differs.',
-  url: 'https://measuringemissionsguide.environment.govt.nz/',
+  name: 'NZ Ministry for the Environment, Measuring Emissions Catalogue 2026 (combustion), with Australian NGA fuel-cycle factors as a stated proxy',
+  detail: 'Combustion is read from the catalogue\'s transport fuel table (Table 3.3): regular petrol 2.36143 and diesel 2.67177 kg CO2-e per litre, replacing the Australian proxy the tool carried before. The separate fuel-cycle (scope 3) line has no NZ equivalent in the catalogue, so it keeps the Australian NGA well-to-tank factors as a stated proxy and is marked as such. A hybrid burns petrol at the petrol factors; only the default consumption differs.',
+  url: 'https://environment.govt.nz/publications/measuring-emissions-a-guide-for-organisations-2026-detailed-guide/',
 };
 
 export const ROAD_FUELS_INTL = {
@@ -257,7 +315,15 @@ export const ROAD_FUELS_INTL = {
     diesel: { label: 'Diesel', s1_per_L: 2.70, s3_per_L: 0.67, defaultL100km: 8.0 },
     ev: { label: 'Electric (grid-charged)', s1_per_L: 0, s3_per_L: 0, kWhPerKm: 0.16 },
   },
-  NZ: ROAD_FUELS,
+  // Combustion (s1) from the MfE 2026 catalogue Table 3.3; the fuel-cycle
+  // (s3) side has no NZ equivalent published, so it keeps the Australian NGA
+  // figures as a stated proxy. Default consumption follows the AU set.
+  NZ: {
+    petrol: { label: 'Petrol', s1_per_L: 2.36143, s3_per_L: ROAD_FUELS.petrol.s3_per_L, defaultL100km: ROAD_FUELS.petrol.defaultL100km },
+    hybrid: { label: 'Hybrid (petrol)', s1_per_L: 2.36143, s3_per_L: ROAD_FUELS.hybrid.s3_per_L, defaultL100km: ROAD_FUELS.hybrid.defaultL100km },
+    diesel: { label: 'Diesel', s1_per_L: 2.67177, s3_per_L: ROAD_FUELS.diesel.s3_per_L, defaultL100km: ROAD_FUELS.diesel.defaultL100km },
+    ev: ROAD_FUELS.ev,
+  },
 };
 
 export const roadFuelSetFor = (country) => ROAD_FUELS_INTL[country] || ROAD_FUELS;
@@ -280,26 +346,40 @@ export const ROAD_MODES = {
   },
   pt: {
     label: 'Public transport (rail, indicative)',
-    perKm: 0.035,
-    source: 'UK Government GHG Conversion Factors 2025, national rail per passenger-km, used as an indicative proxy pending a published Australian per-passenger-km figure. The honest range is wide and depends on how you count the grid. On a location-based (physical grid) basis the real Sydney figure is higher than this, roughly twice, because the NSW grid is far more coal-heavy than the UK one. On a market-based basis it is close to zero, because Sydney Trains has bought 100 per cent renewable electricity since 2021. This proxy sits between the two. Public transport is a small line for most people, so the choice moves the total very little.',
+    perKm: 0.03092,
+    source: 'UK Government GHG Conversion Factors 2026, national rail per passenger-km (sheet "Business travel- land", cell D87, tank-to-wheel), used as an indicative proxy pending a published Australian per-passenger-km figure. The 2026 edition rebuilt the rail factors on new Office of Rail and Road and Transport for London data, the first CO2 update since 2021, which had still been running on pre-COVID 2019 loadings. The honest range is wide and depends on how you count the grid. On a location-based (physical grid) basis the real Sydney figure is higher than this, roughly twice, because the NSW grid is far more coal-heavy than the UK one. On a market-based basis it is close to zero, because Sydney Trains has bought 100 per cent renewable electricity since 2021. This proxy sits between the two. Public transport is a small line for most people, so the choice moves the total very little.',
+  },
+  // Buses run about four times the rail factor per passenger-km, so a
+  // bus-heavy commute priced at the rail proxy reads far too low. Same proxy
+  // caveat as rail: a UK figure standing in until an Australian one is
+  // published, and the local (non-London) row is the closest match to an
+  // Australian urban route.
+  bus: {
+    label: 'Public transport (bus, indicative)',
+    perKm: 0.12552,
+    source: 'UK Government GHG Conversion Factors 2026, local bus excluding London, per passenger-km (sheet "Business travel- land", cell D79, tank-to-wheel). A stated proxy pending a published Australian per-passenger-km bus figure. Australian urban buses run a diesel fleet of broadly similar occupancy, so the figure is a defensible stand-in; a fuller electric-bus rollout would pull it down.',
   },
 };
 
 // ---------------------------------------------------------------------------
 // Flights: distance-based, per passenger-km. UK Government (DESNZ/DEFRA)
-// GHG Conversion Factors 2025 edition, business travel: air, WITH radiative
-// forcing. Values below match the 2025 workbook cell-for-cell (verified
-// against the full-set spreadsheet in docs/footprint-research). The 2026
-// edition (published June 2026) was not reachable to verify, so the tool
-// cites the edition it can substantiate. Without-RF figures are shown in the
-// method as with-RF divided by 1.7 and labelled derived.
+// GHG Conversion Factors 2026 edition, business travel: air, WITH radiative
+// forcing. Values below match the 2026 workbook cell-for-cell, read from
+// docs/ghg-conversion-factors-2026-full-set (1).xlsx, sheet 'Business travel-
+// air', rows 23 to 31. The 2026 edition left aviation unchanged in method: its
+// "What's new" sheet lists electricity, rail, electric cars and HGV naming,
+// and never mentions aviation.
+// The workbook publishes without-RF factors in their own columns (I23:I31), so
+// they are carried here as read rather than derived. Note the with-RF total is
+// NOT 1.7x the without-RF total: the uplift applies to the CO2 component only,
+// leaving CH4 and N2O untouched, so the ratio of the totals lands near 1.69.
 // Cross-check methodology: ICAO Carbon Emissions Calculator (CO2 only, no RF,
 // route-specific fuel burn), which reads materially lower.
 // ---------------------------------------------------------------------------
 export const FLIGHT_SOURCE = {
-  name: 'UK Government (DESNZ / DEFRA) GHG Conversion Factors 2025, business travel: air',
-  detail: 'Per passenger-km by haul and cabin, radiative forcing included (the 2025 workbook carries about a 1.69 uplift; the method shows the without-RF view as the total divided by 1.7). Great-circle distance uplifted 8% per the DEFRA method. The domestic band is applied to Australian domestic sectors as a stated proxy: a BITRE-derived Australian figure (about 0.156 kg CO2-e per passenger-km, CO2 only, from 2018-19 domestic aviation emissions over revenue passenger-km) lands close to this once radiative forcing is added, so the DEFRA-with-RF value is a defensible stand-in. ICAO calculator used as a further cross-check.',
-  url: 'https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2025',
+  name: 'UK Government (DESNZ / DEFRA) GHG Conversion Factors 2026, business travel: air',
+  detail: 'Per passenger-km by haul and cabin, radiative forcing included, read cell for cell from the 2026 full set (Year 2026, Version 1). Great-circle distance uplifted 8% per the DEFRA method, which the 2026 workbook restates. Without-RF factors are published in the same table and are carried as read, not derived: the uplift lands on the CO2 component alone, so the with-RF total is about 1.69 times the without-RF total rather than exactly 1.7. The domestic band is applied to Australian domestic sectors as a stated proxy: a BITRE-derived Australian figure (about 0.156 kg CO2-e per passenger-km, CO2 only, from 2018-19 domestic aviation emissions over revenue passenger-km) lands close to this once radiative forcing is added, so the DEFRA-with-RF value is a defensible stand-in. The 2026 edition also publishes a fourth band for flights between two non-UK destinations, averaging about 6.7% below the equivalent to-and-from-UK cabin; this tool keeps the distance-banded UK figures because they stay sensitive to sector length, which makes its international flights marginally conservative. ICAO calculator used as a further cross-check.',
+  url: 'https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2026',
 };
 
 // Bands: domestic (a sector within one country, DEFRA domestic
@@ -308,23 +388,33 @@ export const FLIGHT_SOURCE = {
 // transcontinental or Hawaii leg; no Australian pair reaches it) prices at
 // the long-haul factor instead: the domestic band describes short sectors,
 // and stretching it across an ocean would overstate by half.
-// kg CO2-e per passenger-km, with RF.
+// kg CO2-e per passenger-km. withRF is what the engine prices from; withoutRF
+// is published alongside it and shown in the method, both as read from the
+// 2026 workbook. Short-haul publishes only three rows (average, economy,
+// business), so premium repeats economy and first repeats business, which is
+// the workbook's own coverage rather than an assumption of ours.
 export const FLIGHT_FACTORS = {
   domestic: {
     label: 'Domestic',
-    withRF: { economy: 0.229, premium: 0.229, business: 0.229, first: 0.229 },
+    withRF: { economy: 0.22928, premium: 0.22928, business: 0.22928, first: 0.22928 },
+    withoutRF: { economy: 0.13552, premium: 0.13552, business: 0.13552, first: 0.13552 },
     noCabinSplit: true,
   },
   shortIntl: {
     label: 'Short-haul international',
-    withRF: { economy: 0.126, premium: 0.126, business: 0.189, first: 0.189 },
+    withRF: { economy: 0.12576, premium: 0.12576, business: 0.18863, first: 0.18863 },
+    withoutRF: { economy: 0.07435, premium: 0.07435, business: 0.11152, first: 0.11152 },
   },
   longIntl: {
     label: 'Long-haul international',
-    withRF: { economy: 0.117, premium: 0.187, business: 0.339, first: 0.468 },
+    withRF: { economy: 0.11704, premium: 0.18726, business: 0.3394, first: 0.46814 },
+    withoutRF: { economy: 0.06926, premium: 0.11081, business: 0.20083, first: 0.27701 },
   },
 };
 
+// The stated uplift DEFRA applies to the CO2 component of an aviation factor.
+// It is not the ratio between the published with-RF and without-RF totals,
+// because CH4 and N2O are left un-uplifted; that ratio lands near 1.69.
 export const FLIGHT_RF_MULTIPLIER = 1.7;
 export const FLIGHT_DISTANCE_UPLIFT = 1.08;
 
@@ -539,15 +629,15 @@ export const PT_FARE_CAPS = {
 // stated: the 2026 edition revised air downward, so this reads conservative.
 // ---------------------------------------------------------------------------
 export const FREIGHT_SOURCE = {
-  name: 'UK Government (DESNZ / DEFRA) GHG Conversion Factors, freighting goods',
-  detail: 'Air: long-haul dedicated freighter with RF, 2024 edition (verified cell; the 2026 edition revised air freight down, so this is conservative). Sea: container ship average. Road: average laden HGV. Per-parcel: indicative order-of-magnitude from courier corporate disclosures (0.4 to 1.2 kg CO2-e per parcel; Siragusa et al. 2022).',
-  url: 'https://www.gov.uk/government/collections/government-conversion-factors-for-company-reporting',
+  name: 'UK Government (DESNZ / DEFRA) GHG Conversion Factors 2026, freighting goods',
+  detail: 'Read cell for cell from the 2026 full set, sheet "Freighting goods", which carries direct (tank-to-wheel) factors only; the fuel supply chain sits on its own WTT sheet and is not added here, matching how the rest of this table treats combustion. Air: long-haul dedicated freighter with RF (D100). The 2026 edition revised air freight down 18% against 2024, so the shipped figure falls with it rather than staying conservative on a stale number. Sea: container ship average (E159). Road: average laden non-refrigerated HGV (D63). Per-parcel: indicative order-of-magnitude from courier corporate disclosures (0.4 to 1.2 kg CO2-e per parcel; Siragusa et al. 2022), which is not a DEFRA figure and stays marked as indicative.',
+  url: 'https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2026',
 };
 
 export const FREIGHT_MODES = {
-  road: { label: 'Road (HGV avg laden)', perTonneKm: 0.108 },
-  air: { label: 'Air (long-haul, with RF)', perTonneKm: 1.10 },
-  sea: { label: 'Sea (container)', perTonneKm: 0.016 },
+  road: { label: 'Road (HGV avg laden)', perTonneKm: 0.10356 },
+  air: { label: 'Air (long-haul, with RF)', perTonneKm: 0.89939 },
+  sea: { label: 'Sea (container)', perTonneKm: 0.01612 },
   parcel: { label: 'Parcel (indicative, each)', perParcel: 0.75 },
 };
 
@@ -614,7 +704,7 @@ export const GOODS_SOURCE = {
 // canonical shape old code and the method page read.
 export const GOODS_FX = {
   audUsd: 0.6785,
-  audUsdNote: 'FY2026 average (July 2025 to June 2026), USD per 1 AUD, from the RBA daily exchange-rate series (Statistical Table F11.1, mean of the 251 trading days).',
+  audUsdNote: 'FY2026 average (July 2025 to June 2026), USD per 1 AUD, from the RBA daily exchange-rate series (Statistical Table F11.1, mean of the 251 trading days). Cross-checked against the ATO\'s published annual average for the year ended 30 June 2026, which is drawn from the RBA and agrees to four decimal places.',
   inflation: 1.120,
   inflationNote: 'US CPI-U (all items) rose about 12% from the 2022 annual average (292.7) to the FY2026 average (327.7), per the US Bureau of Labor Statistics series CUUR0000SA0.',
 };
@@ -625,8 +715,8 @@ export const GOODS_FX_BY_COUNTRY = {
     rateNote: GOODS_FX.audUsdNote,
   },
   NZ: {
-    rate: 0.5873,
-    rateNote: 'Rolling 12-month average to July 2025, USD per 1 NZD, from the NZ Inland Revenue overseas currency rates tables.',
+    rate: 0.5842,
+    rateNote: 'Rolling 12-month average to 15 July 2026, USD per 1 NZD, from the NZ Inland Revenue overseas currency rates tables. This now sits on the same twelve months as the Australian rate beside it; it previously lagged a year behind.',
   },
   US: {
     rate: 1,
@@ -741,21 +831,25 @@ export const CLOTHING_ITEMS = {
 // Research notes: docs/footprint-research/factor-sources.md.
 // ---------------------------------------------------------------------------
 export const HOTEL_SOURCE = {
-  name: 'UK Government (DESNZ / DEFRA) GHG Conversion Factors 2025, hotel stay',
-  detail: 'kg CO2e per occupied room-night by country, from the "Hotel stay" tab (Greenview Hotel Footprinting Tool, built on the Cornell Hotel Sustainability Benchmarking Index). An estimate priced at the country average, not the specific hotel; nights are priced at the destination country of the trip they belong to, with the home country\'s figure for stays logged without a flight (New Zealand is not listed in the verified table, so it uses the Australian figure as a stated proxy).',
-  url: 'https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2025',
+  name: 'UK Government (DESNZ / DEFRA) GHG Conversion Factors 2026, hotel stay',
+  detail: 'kg CO2e per occupied room-night by country, from the "Hotel stay" tab (Greenview Hotel Footprinting Tool, built on the Cornell Hotel Sustainability Benchmarking Index). The 2026 table is identical to 2025 row for row, so only the edition cited moves. An estimate priced at the country average, not the specific hotel; nights are priced at the destination country of the trip they belong to, with the home country\'s figure for stays logged without a flight. Sixteen countries appear as rows with no factor published against them, New Zealand among them, so those still fall back to the default; New Zealand is the exception, now priced from its own national catalogue instead.',
+  url: 'https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2026',
 };
 
 // Per occupied room-night, kg CO2e. `default` is the Australian figure,
-// applied when a country is not carried here (for example New Zealand or
-// Taiwan, which the DEFRA table this was verified against does not list).
-// Nights logged with no flight attached price at the home country's own row
-// where one exists; a New Zealand home therefore prices at the default, a
-// stated proxy queued for a published NZ figure.
+// applied when a country is not carried here. Sixteen DEFRA rows (Taiwan and
+// New Zealand among them) exist but carry no factor, so they are not
+// available to read; New Zealand is priced from the MfE catalogue instead,
+// which lands 4.2 times below the Australian default the tool used before.
+// Nights logged with no flight attached price at the home country's own row.
 export const HOTEL = {
   default: 35,
   countries: {
     AU: { label: 'Australia', perNight: 35 },
+    // The one row not from the DEFRA table: DEFRA lists New Zealand but
+    // publishes no factor against it, and the MfE catalogue does. At 8.34 it
+    // lands 4.2 times below the Australian default a NZ stay used to price at.
+    NZ: { label: 'New Zealand', perNight: 8.33691, source: 'mfe' },
     JP: { label: 'Japan', perNight: 39 },
     KR: { label: 'South Korea', perNight: 55.8 },
     SG: { label: 'Singapore', perNight: 24.5 },

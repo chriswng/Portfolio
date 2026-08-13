@@ -21,8 +21,8 @@ export const BENCHMARKS = [
     short: 'World average',
     kind: 'national',
     tco2e: 6.6,
-    basis: 'National per-capita emissions of all greenhouse gases, world total, 2023: 6.59 t CO2-e (EDGAR / JRC, excludes land use). This is territorial accounting across whole economies, so it is broader than a personal lifestyle footprint.',
-    url: 'https://edgar.jrc.ec.europa.eu/report_2024',
+    basis: 'National per-capita emissions of all greenhouse gases, world total, 2024: 6.562 t CO2-e (EDGAR / JRC 2025 report, Annex 5 world fact sheet, printed page 65, verified August 2026; all anthropogenic sectors, excludes land use and large-scale biomass burning). The world total includes international shipping and aviation, which the country fact sheets leave out, so it sits on a marginally wider boundary than the national rows below. This is territorial accounting across whole economies, so it is broader than a personal lifestyle footprint.',
+    url: 'https://edgar.jrc.ec.europa.eu/report_2025',
   },
   {
     id: 'aus',
@@ -31,8 +31,8 @@ export const BENCHMARKS = [
     kind: 'national',
     country: 'AU',
     tco2e: 22.3,
-    basis: 'National per-capita emissions of all greenhouse gases, Australia, 2024: 22.3 t CO2-e (EDGAR / JRC, excludes land use). Including the land sink, the national inventory works out nearer 16 t a person. Territorial accounting across the whole economy, so it counts far more than a personal footprint.',
-    url: 'https://edgar.jrc.ec.europa.eu/',
+    basis: 'National per-capita emissions of all greenhouse gases, Australia, 2024: 22.258 t CO2-e (EDGAR / JRC 2025 report, Annex 6 Australia fact sheet, printed page 79, verified August 2026; excludes land use, large-scale biomass burning and international transport). Including the land sink, the national inventory works out nearer 16 t a person. Territorial accounting across the whole economy, so it counts far more than a personal footprint.',
+    url: 'https://edgar.jrc.ec.europa.eu/report_2025',
   },
   {
     id: 'us',
@@ -41,7 +41,7 @@ export const BENCHMARKS = [
     kind: 'national',
     country: 'US',
     tco2e: 17.3,
-    basis: 'National per-capita emissions of all greenhouse gases, United States, 2024: about 17.3 t CO2-e (EDGAR / JRC 2025 report basis, excludes land use; the primary report could not be reached from this edition\'s environment, so the figure is carried from EDGAR-based republications and marked about). Territorial accounting across the whole economy, so it counts far more than a personal footprint.',
+    basis: 'National per-capita emissions of all greenhouse gases, United States, 2024: 17.344 t CO2-e (EDGAR / JRC 2025 report, Annex 6 United States fact sheet, printed page 268, verified August 2026; excludes land use, large-scale biomass burning and international transport). Territorial accounting across the whole economy, so it counts far more than a personal footprint.',
     url: 'https://edgar.jrc.ec.europa.eu/report_2025',
   },
   {
@@ -50,9 +50,9 @@ export const BENCHMARKS = [
     short: 'New Zealand average',
     kind: 'national',
     country: 'NZ',
-    tco2e: 14.6,
-    basis: 'Derived: New Zealand gross emissions of all greenhouse gases, 2023, 76.4 Mt CO2-e (NZ Greenhouse Gas Inventory 1990-2023, excludes forestry) over an estimated resident population of about 5.2 million. Agricultural methane carries much of it. Territorial accounting across the whole economy, so it counts far more than a personal footprint.',
-    url: 'https://environment.govt.nz/publications/',
+    tco2e: 15.6,
+    basis: 'National per-capita emissions of all greenhouse gases, New Zealand, 2024: 15.586 t CO2-e (EDGAR / JRC 2025 report, Annex 6 New Zealand fact sheet, printed page 202, verified August 2026), read from the fact sheet rather than derived from an inventory total. The boundary is every greenhouse gas, CO2, methane, nitrous oxide and F-gases aggregated on AR5 GWP-100, and it excludes land use, land-use change and forestry as well as large-scale biomass burning. That boundary does more work here than anywhere else on this list: methane is the largest single gas at 44.2% of the national total, and no forest sink is netted off against it. Territorial accounting across the whole economy, so it counts far more than a personal footprint.',
+    url: 'https://edgar.jrc.ec.europa.eu/report_2025',
   },
 ];
 

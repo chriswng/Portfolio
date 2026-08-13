@@ -150,7 +150,7 @@ export const ONBOARD = {
     title: 'About you',
     sub: 'Where you live sets your power mix, and we split shared home energy across the people who live there.',
     country: 'Where is home?',
-    usGridNote: 'US electricity is priced at the national grid average for now. Your state\'s grid may run well above or below it; state-by-state factors are coming, and the how-it-works page says what applies meanwhile.',
+    usGridNote: 'Pick your state and your power is priced on that state\'s own grid, from the EPA\'s eGRID data. It matters: the cleanest state grid runs about forty times lighter than the dirtiest, so the same house reads very differently in Vermont and West Virginia.',
     state: 'Where do you live?',
     stateNote: 'Your state sets how clean your electricity is, so it shapes every powered line in the result.',
     household: 'How many adults share your home? (counting you)',
@@ -169,7 +169,7 @@ export const ONBOARD = {
     title: 'Home energy',
     sub: 'Usually one of the bigger slices of a footprint. Pick a typical home to start, or better, read the figures straight off a power and gas bill.',
     presetLabel: 'Which sounds most like your place?',
-    presetNote: 'Rough starting points, sized to your household: each adult adds their share, so a busier home reads higher. The figures below are the whole-home total per quarter for the number of adults you set. The dollar figures are a very rough two-adult power-bill anchor at typical rates, a sanity check rather than a price. Gas-heated homes in cold climates often run well above these. Swap in your real bills whenever you find them.',
+    presetNote: 'Rough starting points, sized to your household: each adult adds their share, so a busier home reads higher. The figures below are the whole-home total per quarter for the number of adults you set. For scale, the regulator puts average annual household use between about 4,400 and 6,700 kWh depending on where you live, which the apartment and house rungs bracket. The dollar figures beside each are an indicative feel at typical rates, not a published bill: the regulator prints bills only as charts, so a figure read off one would not meet the standard the rest of this page holds. Gas-heated homes in cold climates often run well above these. Swap in your real bills whenever you find them.',
     kwh: 'Electricity, kWh per quarter (whole home)',
     gas: 'Gas, {unit} per quarter (0 if no gas)',
     // {n}/{s} filled with the household size in the component.
@@ -198,6 +198,13 @@ export const ONBOARD = {
     occupancyNote: 'We split car emissions across everyone in the car, the same way we split the home bills. Two people halves your share.',
     rideshare: 'Rideshare spend per week, $',
     pt: 'Public transport spend per week, $',
+    ptMix: 'Mostly trains, or mostly buses?',
+    ptMixChips: [
+      { value: 'rail', label: 'Mostly trains' },
+      { value: 'mixed', label: 'A mix' },
+      { value: 'bus', label: 'Mostly buses' },
+    ],
+    ptMixNote: 'A bus carries about four times the carbon of a train per passenger-kilometre, so this is worth a tap. A mix splits your fares evenly between the two.',
     // Filled in the component. Exact = NSW's published weekly cap; approx =
     // a derived ceiling for networks that cap by the day, by the trip, or not
     // at all right now. {asOf} dates the approximate figures.
@@ -330,10 +337,19 @@ export const ONBOARD = {
 // without a bill in reach can still finish, and the note tells them to swap
 // in real numbers later.
 export const ENERGY_PRESETS = {
-  // The AU `bill` strings are indicative two-adult quarterly power-bill
-  // anchors (usage at a typical retail rate plus a supply charge, rounded
-  // hard), because most people know their bill in dollars, not kilowatt-
-  // hours. Anchors only, never converted: the engine prices from kWh.
+  // Sanity-checked against the AER Annual Retail Markets Report 2024-25
+  // (published 30 November 2025), Table A2.1: average annual electricity use
+  // per residential customer runs 4,449 kWh (CitiPower, Victoria) to 6,692
+  // (Ergon, Queensland). At two adults the apartment rung is 4,400 a year and
+  // the house rung 6,400, so the ladder brackets the published range.
+  // The US house rung is anchored on the EIA average of 10,791 kWh a year per
+  // residential customer (1,348.9 per adult per quarter at two adults); the
+  // other US rungs and every gas figure remain a coarse construction, because
+  // the uploaded RECS tables carry housing characteristics, not consumption.
+  // The AU `bill` strings are an indicative feel only, NOT a published figure:
+  // the AER prints residential bills as chart images rather than tables, so no
+  // dollar amount in that report can be read to this page's standard.
+  // Anchors only, never converted: the engine prices from kWh.
   AU: [
     { id: 'aptSmall', label: 'Small apartment', kwhPerAdult: 350, gasPerAdult: 0, bill: '≈ $300 power / quarter' },
     { id: 'apt', label: 'Apartment', kwhPerAdult: 550, gasPerAdult: 1250, bill: '≈ $450 power / quarter' },
@@ -377,15 +393,15 @@ export const METHOD = {
   sources: {
     title: 'Where the numbers come from',
     paras: [
-      'Australian electricity, gas and road-fuel factors are from the Australian Government (DCCEEW) National Greenhouse Accounts Factors. Flights and freight use the UK Government conversion factors 2025 edition, published by DESNZ and still widely known as the DEFRA factors, because they are the most complete public source for aviation by distance and cabin. The flight numbers here match that workbook cell for cell; the June 2026 edition could not be reached to check, so the page cites the edition it can stand behind.',
-      'The calculator also runs a United States or New Zealand audit, with the home country picked in the first step. US electricity is priced at the national grid average (about 0.37 kg CO₂-e per kWh, from the EIA 2023 average with eGRID corroboration) because the state-level eGRID workbook could not be verified cell for cell in this edition; the grid varies widely by state, so state factors are queued and the audit says so. US gas and road fuels use the EPA GHG Emission Factors Hub defaults. New Zealand electricity uses the single national grid factor from the MfE Measuring Emissions Catalogue (about 0.073 kg CO₂-e per kWh, carried from the catalogue as republished because the primary workbook was unreachable this edition, and queued for cell-level verification). NZ gas and road fuels use the Australian combustion factors as stated proxies: the fuels are chemically near-identical and published NZ figures sit within a few per cent. Liquid-fuel fuel-cycle (scope 3) keeps the Australian factors as a stated proxy in all three countries so the well-to-tank boundary matches; gas fuel-cycle and grid-loss factors outside Australia are not counted where no national figure could be verified, so those lines understate slightly, and each table below says which treatment applies.',
+      'Australian electricity, gas and road-fuel factors are from the Australian Government (DCCEEW) National Greenhouse Accounts Factors 2025. Those Australian figures remain the one part of this table checked against published summaries rather than read from the workbook itself: the 2025 edition could not be obtained, and replacing it with the older 2024 workbook would be a step backwards, so it stays as it is and says so here. Flights, freight, hotel nights, rail and bus use the UK Government conversion factors 2026 edition, published by DESNZ and still widely known as the DEFRA factors, because they are the most complete public source for aviation by distance and cabin. Those numbers match the 2026 workbook cell for cell.',
+      'The calculator also runs a United States or New Zealand audit, with the home country picked in the first step. US electricity is priced from the state you live in: every state, the District of Columbia and Puerto Rico carries its own factor from the EPA eGRID2023 workbook, read cell for cell. That matters more than any other single choice in a US audit, because the American grid runs from about 0.02 kg CO₂-e per kWh in Vermont to about 0.89 in West Virginia, a spread of nearly forty times, and a national average flattered half the country while punishing the other half. Scope 3 adds the eGRID grid gross loss of 4.2 per cent. US gas and road fuels use the EPA GHG Emission Factors Hub defaults. New Zealand electricity, gas, road fuels and hotel nights now come from the MfE Measuring Emissions Catalogue 2026 rather than the Australian stand-ins they used before, including the separate transmission-loss factor that the electricity line previously left out. One New Zealand line still rides a proxy: the fuel-cycle (scope 3) side of petrol and diesel, where the catalogue publishes no equivalent, so the Australian well-to-tank factors stand in and the table says so.',
       'Diet is an estimate, not a precise figure: it uses published UK per-day values by diet type, chosen because they separate the six diet patterns cleanly. Australian studies find the same direction (CSIRO and Ridoutt), but on different accounting boundaries, so they anchor the size rather than replace the numbers. Public transport uses a UK rail factor as a stand-in until a published Australian per-passenger figure is available. On the physical NSW grid the real rail figure is higher than this proxy, because the grid is coal-heavy; measured against Sydney Trains renewable electricity contracts it is close to zero. Public transport is a small line, so the choice barely moves a total. The optional detail is the coarsest part: clothing counted by item uses the ADEME consumer-products LCA study (2018, the basis of the French Base Empreinte per-item textile factors), cross-checked against the Mistra Future Fashion per-garment assessments and the WRAP UK aggregate; the remaining goods and services are a spend-based screening estimate from the US EPA Supply Chain factors converted to Australian dollars; and hotel nights use the UK Government (DEFRA) per-room-night factors by country, priced at the destination country of the trip they belong to. The optional home line uses indicative per-square-metre upfront embodied-carbon figures for Australian dwellings (detached houses from Illankoon et al. 2023; apartments anchored on the GBCA and thinkstep-anz 2021 report), amortised over 50 years; residential figures span a wide range, so it is a screening estimate, not a measured one. All are labelled that way. Every factor and its source is in the tables below.',
     ],
   },
   quality: {
     title: 'How results are calculated',
     paras: [
-      'Each item is activity times a factor: kilowatt-hours times the grid factor, litres times the fuel factor, passenger-kilometres times the flight factor, and so on. Flights include the extra warming effect of burning fuel at altitude, which reasonable calculators treat differently, so this one reads a little higher than a CO₂-only figure.',
+      'Each item is activity times a factor: kilowatt-hours times the grid factor, litres times the fuel factor, passenger-kilometres times the flight factor, and so on. Flights include the extra warming effect of burning fuel at altitude, which reasonable calculators treat differently, so this one reads a little higher than a CO₂-only figure. The 2026 factor set publishes both views, so the table below shows the without-altitude figure beside the one used; note the uplift applies to the carbon dioxide alone, so the two differ by about 1.69 times rather than the 1.7 the uplift itself implies. Public transport splits between rail and bus on the answer you give, because a bus carries roughly four times the carbon of a train per passenger-kilometre and pricing every fare as rail understated a bus commute badly.',
       'Where a real bill or itinerary is not to hand, the calculator estimates: it turns spend into litres, kilometres or parcels at stated rates, or extends a metered daily average over an unbilled period. The quick-estimate path works the same way, only coarser: a typical-home preset stands in for the bills, and rough flight counts price each return at a stated representative sector length (1,100 km domestic, 2,400 km short overseas, 11,000 km long haul, each way, economy), so the range beside the total reads wider until named trips and real bills replace them. In Australia, public-transport spend is capped at the state weekly fare cap first (in NSW, the $50 Opal cap), because spending past the cap buys no extra travel; US and NZ networks cap too differently to carry one honest ceiling, so spend there is counted as given. Gas bills read in the local unit (megajoules in Australia, kilowatt-hours in New Zealand, therms in the United States) and convert to megajoules before pricing. Estimates are labelled, and replacing one with a real number tightens the range shown next to the total. A certified renewable purchase (GreenPower in Australia, a certified green-power plan elsewhere), where you have it, lowers your purchased-electricity figure, and the same netting applies to electricity an EV draws from the grid; no offsets are subtracted anywhere.',
     ],
   },
@@ -441,8 +457,9 @@ export const METHOD = {
         items: [
           'Accommodation other than hotels (short-stay rentals, hostels, staying with friends). Hotel nights are counted, but at a country-average factor, not the specific place.',
           'Financial and professional services, and any spending the screening factors above do not cover. The goods estimate is a screening tool, so it catches the shape of the basket, not every dollar.',
-          'Still queued, because the numbers could not be verified to this page’s standard in this edition: household waste to landfill, pets (dog and cat food), the embodied emissions of building or buying a car, mains water supply, an Australian spend-based factor set to replace the US one, and a published Australian rail figure to replace the UK proxy. Each stays out rather than ship an unchecked number, and is recorded in the research trail for the next refresh. (Two items queued here previously shipped once their sources were obtained and read: the garment-count clothing option, and the home-embodied line for a new build; both are optional and their factors are in the tables below.)',
-          'Queued for the US and NZ audits specifically: state-level US electricity factors from the eGRID workbook (the audit prices at the national average until each state cell can be read from the primary file); cell-level verification of the NZ grid factor and its separate transmission-loss factor against the MfE catalogue; gas fuel-cycle factors for both countries; a published NZ per-room-night hotel figure (the Australian figure stands in, stated); and US-specific rideshare and public-transport per-kilometre figures (the existing stated proxies apply meanwhile). The environment this edition was built in could not reach the primary workbooks, so each of these ships as a stated proxy or stays out rather than carry an unchecked number.',
+          'Still queued, because the numbers could not be verified to this page’s standard in this edition: household waste to landfill, pets (dog and cat food), the embodied emissions of building or buying a car, mains water supply, an Australian spend-based factor set to replace the US one, and published Australian rail and bus figures to replace the UK proxies. Each stays out rather than ship an unchecked number, and is recorded in the research trail for the next refresh. (Several items queued here previously shipped once their sources were obtained and read: the garment-count clothing option, the home-embodied line for a new build, and now the whole 2026 factor refresh below.)',
+          'Closed in this edition, having previously been queued: state-level US electricity, now read from the eGRID2023 workbook for all fifty states, the District of Columbia and Puerto Rico; the New Zealand grid factor and its separate transmission-loss factor, now read from the MfE catalogue; New Zealand gas and road-fuel combustion factors, which no longer borrow Australia\'s; a New Zealand per-room-night hotel figure, which the UK table lists but leaves blank and the New Zealand catalogue publishes; and a bus factor, so public transport is no longer priced entirely as rail.',
+          'What is still a stated proxy, and where each one bites: the fuel-cycle (scope 3) side of New Zealand petrol and diesel uses Australian well-to-tank factors, because no New Zealand equivalent is published. US gas fuel-cycle is not counted at all, so that line understates. Rideshare and public transport outside Australia keep the Australian and UK per-kilometre figures. The Australian electricity, gas and fuel factors are checked against published summaries of the 2025 National Greenhouse Accounts rather than read from the workbook, which is the largest single verification gap left on this page.',
         ],
       },
     ],

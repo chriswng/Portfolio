@@ -97,13 +97,14 @@ export default function Method() {
           <FTable
             caption="Electricity, New Zealand · kg CO₂-e per kWh (national grid)"
             head={['Region', 'Scope 2', 'Scope 3']}
-            rows={[[ELECTRICITY.NZ.label + ' · ' + ELECTRICITY.NZ.grid, ELECTRICITY.NZ.s2.toFixed(3), 'not counted (loss factor queued)']]}
+            rows={[[ELECTRICITY.NZ.label + ' · ' + ELECTRICITY.NZ.grid, ELECTRICITY.NZ.s2.toFixed(4), ELECTRICITY.NZ.s3.toFixed(4)]]}
             source={ELECTRICITY_SOURCE_NZ}
           />
           <FTable
-            caption="Electricity, United States · kg CO₂-e per kWh (national average; state factors queued)"
-            head={['Region', 'Scope 2', 'Scope 3']}
-            rows={[[ELECTRICITY.US.label + ' · ' + ELECTRICITY.US.grid, ELECTRICITY.US.s2.toFixed(2), ELECTRICITY.US.s3.toFixed(2) + ' (T&D losses ~5%)']]}
+            caption="Electricity, United States · kg CO₂-e per kWh, every state from its own eGRID row"
+            head={['State / region', 'Scope 2', 'Scope 3']}
+            rows={Object.values(ELECTRICITY).filter((r) => r.country === 'US')
+              .map((r) => [r.label, r.s2.toFixed(4), r.s3.toFixed(4)])}
             source={ELECTRICITY_SOURCE_US}
           />
           <FTable
@@ -128,13 +129,13 @@ export default function Method() {
             caption="Natural gas, New Zealand · kg CO₂-e per MJ (bills in kWh convert at 3.6 MJ per kWh)"
             head={['Component', 'Factor']}
             rows={[
-              ['Scope 1 combustion (stated proxy)', GAS_INTL.NZ.s1_per_MJ.toFixed(5)],
-              ['Scope 3 fuel-cycle', 'not counted (queued); understates slightly'],
+              ['Scope 1 combustion', GAS_INTL.NZ.s1_per_MJ.toFixed(5)],
+              ['Scope 3 network losses', GAS_INTL.NZ.s3_per_MJ.toFixed(5)],
             ]}
             source={GAS_SOURCE_NZ}
           />
           <FTable
-            caption="Road, Australia and New Zealand · fuels per litre, modes per passenger-km (NZ uses these factors as a stated proxy)"
+            caption="Road, Australia · fuels per litre, modes per passenger-km (the per-passenger modes apply in every country)"
             head={['Item', 'Scope 1', 'Scope 3', 'Basis']}
             rows={[
               ['Petrol (per L)', ROAD_FUELS.petrol.s1_per_L.toFixed(2), ROAD_FUELS.petrol.s3_per_L.toFixed(2), 'NGA 2025 Table 9'],
@@ -142,7 +143,8 @@ export default function Method() {
               ['Diesel (per L)', ROAD_FUELS.diesel.s1_per_L.toFixed(2), ROAD_FUELS.diesel.s3_per_L.toFixed(2), 'NGA 2025 Table 9'],
               ['EV (per km)', '0', 'grid factors', ROAD_FUELS.ev.kWhPerKm + ' kWh/km at the home grid electricity factors'],
               ['Rideshare / taxi (per km)', 'n/a', ROAD_MODES.rideshare.perKm.toFixed(3), ROAD_MODES.rideshare.source],
-              ['Public transport (per km)', 'n/a', ROAD_MODES.pt.perKm.toFixed(3), ROAD_MODES.pt.source],
+              ['Public transport, rail (per km)', 'n/a', ROAD_MODES.pt.perKm.toFixed(3), ROAD_MODES.pt.source],
+              ['Public transport, bus (per km)', 'n/a', ROAD_MODES.bus.perKm.toFixed(3), ROAD_MODES.bus.source],
             ]}
             source={ROAD_SOURCE}
           />
@@ -157,16 +159,24 @@ export default function Method() {
             ]}
             source={ROAD_SOURCE_US}
           />
-          <p className="fp-note">
-            New Zealand road fuels: {ROAD_SOURCE_NZ.name}. {ROAD_SOURCE_NZ.detail}{' '}
-            <a href={ROAD_SOURCE_NZ.url} target="_blank" rel="noopener noreferrer">Source</a>
-          </p>
           <FTable
-            caption={'Flights · kg CO₂-e per passenger-km, radiative forcing included (×' + FLIGHT_RF_MULTIPLIER + '); divide by ' + FLIGHT_RF_MULTIPLIER + ' for the without-RF view'}
-            head={['Band', 'Economy', 'Premium', 'Business', 'First']}
+            caption="Road, New Zealand · fuels per litre (combustion read from the MfE catalogue; the fuel-cycle line stays an Australian proxy)"
+            head={['Item', 'Scope 1', 'Scope 3', 'Basis']}
+            rows={[
+              ['Petrol (per L)', ROAD_FUELS_INTL.NZ.petrol.s1_per_L.toFixed(5), ROAD_FUELS_INTL.NZ.petrol.s3_per_L.toFixed(2), 'MfE 2026 Table 3.3, regular petrol; scope 3 is the NGA fuel-cycle proxy'],
+              ['Hybrid (per L)', ROAD_FUELS_INTL.NZ.hybrid.s1_per_L.toFixed(5), ROAD_FUELS_INTL.NZ.hybrid.s3_per_L.toFixed(2), 'Petrol factors at ' + ROAD_FUELS_INTL.NZ.hybrid.defaultL100km + ' L/100km default consumption'],
+              ['Diesel (per L)', ROAD_FUELS_INTL.NZ.diesel.s1_per_L.toFixed(5), ROAD_FUELS_INTL.NZ.diesel.s3_per_L.toFixed(2), 'MfE 2026 Table 3.3; scope 3 is the NGA fuel-cycle proxy'],
+              ['EV (per km)', '0', 'grid factors', ROAD_FUELS_INTL.NZ.ev.kWhPerKm + ' kWh/km at the NZ grid factors'],
+            ]}
+            source={ROAD_SOURCE_NZ}
+          />
+          <FTable
+            caption={'Flights · kg CO₂-e per passenger-km, with radiative forcing (the ×' + FLIGHT_RF_MULTIPLIER + ' uplift lands on the CO₂ component alone). Economy without RF is shown beside it, as published'}
+            head={['Band', 'Economy', 'Premium', 'Business', 'First', 'Economy, no RF']}
             rows={Object.values(FLIGHT_FACTORS).map((b) => [
               b.label + (b.noCabinSplit ? ' (average passenger, no cabin split)' : ''),
               n3(b.withRF.economy), n3(b.withRF.premium), n3(b.withRF.business), n3(b.withRF.first),
+              n3(b.withoutRF.economy),
             ])}
             source={FLIGHT_SOURCE}
           />
