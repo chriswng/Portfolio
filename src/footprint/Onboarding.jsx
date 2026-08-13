@@ -417,6 +417,30 @@ function Chips({ label, options, value, onChange, note, icon }) {
   );
 }
 
+// Chips stop working as a picker somewhere past a dozen options: fifty-three
+// US states wrap into a wall nobody scans. Past the threshold the same
+// question becomes a native select, which is searchable by typing and stays
+// one control on a phone.
+const CHIP_LIMIT = 12;
+
+function RegionPicker({ label, options, value, onChange, note, icon }) {
+  if (options.length <= CHIP_LIMIT) {
+    return <Chips icon={icon} label={label} options={options} value={value} onChange={onChange} note={note} />;
+  }
+  return (
+    <div className="ob-field">
+      <span className="ob-label">{icon && <Icon name={icon} size={30} className="ob-label-i" />}{label}</span>
+      <label className="ob-fl-field ob-regionsel">
+        <span className="sr-only">{label}</span>
+        <select value={value} onChange={(e) => onChange(e.target.value)}>
+          {options.map((o) => <option key={String(o.value)} value={o.value}>{o.label}</option>)}
+        </select>
+      </label>
+      {note && <span className="ob-note">{note}</span>}
+    </div>
+  );
+}
+
 function Stepper({ label, value, onChange, min = 0, max = 99, step = 1, icon, compact }) {
   const clamp = (v) => Math.min(max, Math.max(min, v));
   // Typing needs a transient state (empty, or the first digit of a bigger
@@ -792,7 +816,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         note={a.country === 'US' ? ONBOARD.you.usGridNote : undefined}
       />
       {regionsForCountry(a.country).length > 1 && (
-        <Chips
+        <RegionPicker
           icon="pin"
           label={COUNTRIES[a.country].regionQuestion || ONBOARD.you.state}
           options={regionsForCountry(a.country).map(([k, v]) => ({ value: k, label: v.label }))}
@@ -1157,7 +1181,7 @@ export default function Onboarding({ onDone, onBuilt, onCancel }) {
         value={a.country} onChange={setCountry}
       />
       {regionsForCountry(a.country).length > 1 && (
-        <Chips
+        <RegionPicker
           icon="pin"
           label={COUNTRIES[a.country].regionQuestion || ONBOARD.you.state}
           options={regionsForCountry(a.country).map(([k, v]) => ({ value: k, label: v.label }))}
