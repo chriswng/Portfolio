@@ -86,7 +86,7 @@ export const UI = {
       { key: 'assessable', label: 'publish enough verified data to be checked against their own claimed line' },
       { key: 'behind', label: 'of the companies that can be checked are behind their own line' },
     ],
-    note: 'A company can only be checked when it has stated an absolute path and a verified emissions year beyond its base year exists to hold against it. Most of the fifty fail that test before any judgement about performance starts, and that gap between announcing and evidencing is the first finding of this page.',
+    note: 'A company can only be checked when it has stated an absolute path and a verified emissions year beyond its base year exists to hold against it. Most of the fifty fail that test before any judgement about performance starts.',
   },
   ledger: {
     tag: 'The ledger',
@@ -2515,7 +2515,7 @@ export const SPOTLIGHTS = {
     {
       id: 'csl',
       head: 'No net zero date, and a real target anyway',
-      body: 'CSL is one of the few companies here with no net zero year at all. What it has instead is an SBTi validated 42 per cent cut by FY2030 and a published series, which sat above the base year for three straight years before a renewable power deal pulled FY2025 down to about 12 per cent below it. A dated absolute cut with tonnage behind it says more than a distant zero without either. This card is the argument.',
+      body: 'CSL is one of the few companies here with no net zero year at all. What it has instead is an SBTi validated 42 per cent cut by FY2030 and a published series, which sat above the base year for three straight years before a renewable power deal pulled FY2025 down to about 12 per cent below it. A dated absolute cut with a published series behind it is a far more testable thing than a distant zero with neither.',
     },
   ],
 };
@@ -2544,7 +2544,7 @@ export const SUMMARY = {
       'Five companies have no net zero commitment this page could find at all, and one of them, CAR Group, says in its own reporting that it has chosen not to set one while calling its operations carbon neutral on purchased offsets.',
     ],
   },
-  close: 'None of this is an accusation. A company can be behind its own line for defensible reasons and still be doing more than a company comfortably ahead of a soft one. What the page insists on is that the claim and the record be shown at the same size, on the same axis, with the date on both. Check the date at the top. If it has not moved, do not trust the lines.',
+  close: 'None of this is an accusation. A company can be behind its own line for defensible reasons and still be doing more than a company sitting comfortably ahead of a soft one. What the page insists on is that the claim and the record be shown at the same size, on the same axis, with the date on both.',
 };
 
 // Common sources. Per company sources live on each company object and are
@@ -2582,7 +2582,7 @@ export const METHOD = {
       paras: [
         'The companies are the constituents of the S&P/ASX 50 as at the June 2026 quarterly rebalance, which brought ALS in for Pro Medicus, following the March 2026 review that added Light and Wonder and PLS Group for Seek and TechnologyOne. Index membership shifts quarterly, so the tail of the list is checked at each review and the make up is stated here rather than assumed.',
         'Every figure was compiled from the company\'s own disclosures, its annual, sustainability, climate or transition reports, and cross checked against published summaries, regulator data and independent registers. Where a number could not be confirmed back to the company\'s own reporting it was left out, and the company is marked partial or unverified rather than padded with a plausible figure. A series that rests on a chart label rather than a table is marked partial as well, because a printed label is rounded and a table is not.',
-        'More than half the ledger fails some part of that test. Showing that plainly, rather than quietly filling the gaps, is the point of the status chip on every card.',
+        'More than half the ledger fails some part of that test, which is what the status chip on every card records.',
       ],
     },
     {

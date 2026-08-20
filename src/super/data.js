@@ -389,7 +389,7 @@ export const COPY = {
     title: ['What your default', 'super option holds'],
     paras: [
       'Most Australians have never seen what their default super option actually holds. You are placed in a MySuper default when you start a job, and it quietly invests a large share of your retirement money for decades. This tool puts one thing next to another: the holdings picture of a fund\'s default option, and that same fund\'s own sustainability marketing, in the fund\'s own words.',
-      'It is not an accusation. The point is legibility. Pick a fund, read what it says about climate and responsibility, then look at what the default option holds, and make up your own mind. Where marketing and holdings sit apart, the gap speaks for itself.',
+      'It is not an accusation. The point is legibility. Pick a fund, read what it says about climate and responsibility, then look at what the default option holds, and make up your own mind.',
     ],
     chips: ['MySuper defaults', 'Holdings next to marketing', 'Every figure sourced or marked pending', 'Neutral, not a ranking'],
     pick: 'Pick a fund',
@@ -508,7 +508,7 @@ export const METHOD = {
     title: 'Corrections',
     paras: [
       'This is the tool most likely to draw a correction request from a fund, and that is welcome. If you work at a fund and something here is wrong, a holding that is not held, a weighting that is off, a sustainability line that misreads your position, reach me through the LinkedIn link on my profile page. Tell me what is wrong and point me to the disclosure or page that shows it.',
-      'Corrections ship with the change noted in the change log below, dated. I would rather fix an error in the open than defend it. The aim of this page is legibility, not a gotcha, and an accurate page serves that better than a clever one.',
+      'Corrections ship with the change noted in the change log below, dated. I would rather fix an error in the open than defend it.',
     ],
   },
   limitationsTitle: 'Named limitations',

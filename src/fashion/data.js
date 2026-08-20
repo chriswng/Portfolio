@@ -1794,7 +1794,7 @@ export const COPY = {
     kicker: 'Fashion brand transparency',
     headA: 'Look up the brands',
     headB: 'you actually wear',
-    stand: 'Before you buy, see what a fashion brand is willing to tell you. Search any major label to find who really owns it, how much it discloses, and what still needs checking. Cost Per Wear tracks transparency, not virtue. A brand can disclose a lot and still weigh heavily on the world.',
+    stand: 'Before you buy, see what a fashion brand is willing to tell you. Search any major label to find who really owns it, how much it discloses, and what still needs checking. What comes back is a disclosure record, not a verdict on the brand.',
     searchLabel: 'Search a fashion brand',
     searchPlaceholder: 'Try Nike, Zara, Gucci, Kmart, Uniqlo…',
     examplesLabel: 'Popular lookups',
@@ -1869,7 +1869,7 @@ export const COPY = {
     ownershipLine: 'Verified: {p}.',
     ownershipFallback: 'Verified owner: {p}.',
     summaryTemplate: 'Of the {n} signals behind what you care about, {open} can be checked, {parent} only through the parent, {dark} are not published, and {unverified} have not been verified by this tool yet.',
-    note: 'This is not a score. A brand can publish a lot and still weigh heavily on the world. But a dark signal means you are being asked to trust, not check.',
+    note: 'A dark signal is not evidence of bad practice. It means the brand has not put the information anywhere you can test it, so whatever you believe about it there rests on trust.',
   },
 
   directory: {
@@ -1894,14 +1894,19 @@ export const COPY = {
     },
     sortLabel: 'Sort',
     resultTemplate: '{n} shown',
-    groupsLede: 'Ten owners hold most of the brands on this page. This is the fact the label never tells you. Tap a brand to open it.',
+    groupsLede: 'Every tracked company grouped under its owner, largest holding first. Tap a brand to open it.',
     groupBrandsTemplate: '{n} brands on file',
     groupAvgLabel: 'Mean FTI of scored brands',
   },
 
   spotlight: {
-    stat: 'Ten owners',
-    line: 'hold most of the brands on this page. The name on the label is rarely the company making the calls on climate, suppliers or wages. If you want the real numbers, read the parent.',
+    // {n}, {covered} and {total} are filled from the brand set at render time,
+    // so this claim cannot drift as brands are added. An earlier version read
+    // "Ten owners hold most of the brands on this page", which the data never
+    // supported: the ten largest cover 38 of 258, and the map note directly
+    // below already reported the 182 standalone labels that contradict it.
+    stat: '{n} owners',
+    line: 'hold more than one label each, covering {covered} of the {total} brands tracked here. Where a brand sits under one of them, the group sets the climate targets and the supplier standards.',
     sub: 'Which is why Cost Per Wear shows you the owner first',
     mapLede: 'Every owner of more than one brand on this page, sized by how many labels it holds. Tap an owner to open its group in the directory.',
     mapNote: 'Tile size is the number of brands on file under that owner. The number after each name is its brand count.',
@@ -1965,14 +1970,14 @@ export const COPY = {
       airLabel: 'By air',
       stageLabel: 'Stage',
       hotspotNote: 'The dye house is the hotspot: heating water to fix colour spends more energy than any other step in the making.',
-      airWarnTemplate: 'Air freight multiplies the transport stream by roughly {n}×. Nothing else you choose moves the number this hard, this fast.',
+      airWarnTemplate: 'Air freight multiplies the transport stream by roughly {n}×, which on most garments is enough to outweigh the fibre choice entirely.',
     },
     loop: {
       idx: '08',
       icon: 'loop',
       title: 'Circularity scorecard',
       sub: 'Design its second life',
-      lede: 'Eight years from now this garment is worn. Whether its loop closes, jams or snaps was decided today, at the bench. Score the design you built above, then change it.',
+      lede: 'Most of what decides whether a garment can be repaired, resold or recycled is fixed at the design stage, long before anyone wears it. Score the one you built above, then change a choice and watch the score move.',
       choicesLabel: 'Design choices',
       scoreLabel: 'Circularity score',
       rubricNote: 'A transparent design heuristic scored out of 100, not a certification. Every point is explained, and half of them were earned or lost back in the estimator.',
@@ -2023,7 +2028,7 @@ export const COPY = {
   materials: {
     title: 'Materials',
     sub: 'What the fabric is telling you',
-    lede: 'Half of a garment’s story is the fibre it is cut from. This is a plain read of the common ones, and their trade-offs. It is not a ranking, on purpose.',
+    lede: 'Half of a garment’s story is the fibre it is cut from. This is a plain read of the common ones and what each of them trades away. The caveat below explains why they are not ordered best to worst.',
     kindLabel: 'Type',
     goodLabel: 'In its favour',
     watchLabel: 'What to watch',
@@ -2035,7 +2040,7 @@ export const COPY = {
     idx: '10',
     icon: 'list',
     title: 'What the signals mean',
-    sub: 'Disclosure is not the same as doing well',
+    sub: 'What the labels do and do not tell you',
     lede: 'Cost Per Wear measures what a brand tells the public, not whether the brand is good. Read these before you draw a conclusion.',
     cards: [
       {
@@ -2055,7 +2060,7 @@ export const COPY = {
         b: 'You will see Disclosed, Not found, Parent-level only, and Needs research. You will not see "good", "bad", "ethical" or "sustainable" attached to a brand, because those words hide the working. This tool tracks what can be found publicly, and hands you the sources to judge for yourself.',
       },
     ],
-    disclaimer: 'Transparency is not the same as performance. A brand can disclose a lot and still have significant impacts. This tool tracks what can be found publicly, not a moral ranking. The score it carries is the Fashion Transparency Index 2023, the final edition of that index; its successor, What Fuels Fashion, is linked from every brand card.',
+    disclaimer: 'Fashion Revolution retired the Transparency Index after the 2023 edition, so the scores here have a fixed vintage and will not move again. Its successor, What Fuels Fashion, is linked from each brand card until those scores can be read in from the primary report.',
   },
 
   backlog: {
@@ -2065,7 +2070,7 @@ export const COPY = {
     sub: 'What still needs a human',
     lede: 'This tool is honest about its gaps. Structural facts, parent, segment, headquarters, are verified. Quantified disclosure fields are being filled in over time. Anything marked "Needs research" below is waiting for a checked source. Next on the list: verified What Fuels Fashion 2024 scores, read from the primary report, to succeed the retired Transparency Index.',
     logTitle: 'Change log',
-    logLede: 'Freshness is a discipline, not a stamp. Every change to the dataset or the method, dated.',
+    logLede: 'Every change to the dataset or the method, dated, newest first.',
     fileNote: 'The editable tracker lives in the repository at',
     filePath: 'public/data/fashion-brands.csv',
     fileHref: 'https://github.com/itschriswang/portfolio/blob/main/public/data/fashion-brands.csv',

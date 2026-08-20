@@ -18,7 +18,7 @@ export const META = {
   navLabel: 'Progress',
   // Single source of truth for the last-updated stamp, rendered top and bottom.
   updated: '13 August 2026',
-  cadence: 'Reviewed quarterly, as the national inventory and the market data refresh. A stale tracker is worse than none, so the date above is the honest test of it.',
+  cadence: 'Reviewed quarterly, as the national inventory and the market data refresh. Check the date above before you rely on anything below it.',
   live: {
     label: 'On the grid right now',
     building: 'Reading the live grid mix',
@@ -34,7 +34,7 @@ export const INTRO = {
   tag: 'The tracker',
   kicker: 'Australia · climate transition',
   title: ['What is actually', 'changing'],
-  sub: 'Doom is easy and cheerleading is worse. This is the middle path: a handful of real numbers on Australia\'s energy transition, each one shown against where it was and where the target needs it to be. The gap is stated plainly. Where the number is genuinely moving, that is the hope. Where it is not, the page says so.',
+  sub: 'Doom is easy and cheerleading is worse. This is a handful of real numbers on Australia\'s energy transition, each shown against where it was and against what the target needs, with the distance between the two stated plainly in whichever direction it runs.',
   read: 'Each chapter reads the same way. First the reference point, quietly: what it was, or what the target needs. Then the number as it stands now. Then one sentence on the gap between them.',
   scroll: 'Scroll',
 };
@@ -139,7 +139,7 @@ export const CHAPTERS = [
       big: 'A first',
       label: 'September 2025 was the first month ever in which renewables out-generated coal across the NEM.',
     },
-    gap: 'Coal is still the single largest fuel over a full year, but its quarterly output hit an all-time low in the December 2025 quarter, down about 5 per cent on the year before. The direction is real. The fleet is not gone.',
+    gap: 'Coal is still the single largest fuel over a full year, but its quarterly output hit an all-time low in the December 2025 quarter, down about 5 per cent on the year before. The fleet itself is largely still standing, and most of the closure dates that would retire it fall well after 2030.',
     period: 'Month and quarter to December 2025',
     status: 'sourced',
     sources: ['openelectricity', 'aemo_qed', 'aes_2020'],
@@ -199,7 +199,7 @@ export const CHAPTERS = [
       label: 'renewable capacity added in 2025, large and small scale combined: 2.6 GW of rooftop solar and 3.3 GW of large-scale generation commissioned',
       sub: 'The rooftop half fell, from 3,167 MW in 2024 to 2,616 MW in 2025, the first year since 2020 under 300,000 installations. The Clean Energy Council reads that as the rooftop peak passing, with household demand moving to batteries. No verified figure exists here for large-scale capacity commissioned in 2024, so the two years are not compared as a whole.',
     },
-    gap: 'Not closing the gap, and on the rooftop side it is easing off. AEMO\'s final 2026 Integrated System Plan puts the 2030 requirement at about 38 GW of new grid-scale wind and solar against 28.3 GW in the pipeline, leaving wind 8.9 GW short and renewables as a whole 10.1 GW short. Storage runs the other way, 14.7 GW above what 2030 needs, and AEMO is clear that storage alone cannot substitute for generation. Investment is turning: the Clean Energy Regulator counted about 2.4 GW of final investment decisions in the year to March 2026, above the 2.1 GW for all of 2025. The build still has to lift, not just hold.',
+    gap: 'Not closing the gap, and on the rooftop side it is easing off. AEMO\'s final 2026 Integrated System Plan puts the 2030 requirement at about 38 GW of new grid-scale wind and solar against 28.3 GW in the pipeline, leaving wind 8.9 GW short and renewables as a whole 10.1 GW short. Storage runs the other way, 14.7 GW above what 2030 needs, and AEMO is clear that storage alone cannot substitute for generation. Investment is turning: the Clean Energy Regulator counted about 2.4 GW of final investment decisions in the year to March 2026, above the 2.1 GW for all of 2025. Even sustained, the current rate leaves the 2030 requirement unmet.',
     period: 'Calendar year 2025, rooftop back to 2024; the 2026 ISP, June 2026',
     status: 'derived',
     sources: ['cec_rooftop', 'cer_lgc', 'aemo_isp26'],
@@ -239,7 +239,7 @@ export const CHAPTERS = [
       label: 'of rooftop solar installed by the end of 2025, across about 4.3 million homes and small businesses',
       sub: 'On the Clean Energy Council\'s read, rooftop is projected to pass its 2029/30 benchmark by about 1 GW. That benchmark is AEMO\'s 2024 ISP projection of 36.1 GW of distributed solar in the NEM, a modelled capacity requirement rather than a government target.',
     },
-    gap: 'This is the metric that is genuinely ahead. Households built it faster than any policy asked them to, and it now carries a real share of daytime demand: rooftop alone was 14.2 per cent of generation in the second half of 2025. Not everything is behind. This one is not.',
+    gap: 'This is the metric that is genuinely ahead. Households built it faster than any policy asked them to, and it now carries a real share of daytime demand: rooftop alone was 14.2 per cent of generation in the second half of 2025. It is the only line on this page running ahead of what was modelled for it.',
     period: 'To end of 2025',
     status: 'sourced',
     sources: ['cec_rooftop'],
@@ -251,7 +251,7 @@ export const SUMMARY = {
   tag: 'The honest read',
   kicker: 'Progress and shortfall, together',
   title: ['Moving, and', 'not fast enough'],
-  lead: 'Both things are true at once, and the point of this page is to hold them together rather than pick one.',
+  lead: 'Both columns below are true at the same time. Picking one of them is where most coverage of this subject goes wrong.',
   moving: {
     head: 'What is genuinely moving',
     items: [
@@ -271,7 +271,7 @@ export const SUMMARY = {
       'Coal is smaller, but it is not gone, and the last stretch of its retirement is the hardest.',
     ],
   },
-  close: 'None of that is doom and none of it is a victory lap. The numbers are moving in the right direction and they are not moving fast enough to hit the stated targets on current settings. The hope in this page comes from the figures themselves, not from how they are framed. Come back next quarter and check the date at the top. If it has not changed, do not trust the numbers.',
+  close: 'The numbers are moving in the right direction and they are not moving fast enough to hit the stated targets on current settings. Both halves of that sentence come from the figures themselves, which is why every one of them carries its source. Come back next quarter; if the date at the top has not moved, this page has fallen behind the data and should be read that way.',
 };
 
 // In-page basis of preparation, in the footprint method style.
