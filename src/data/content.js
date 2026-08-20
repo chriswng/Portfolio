@@ -183,7 +183,7 @@ export const TOOLS = [
   {
     n: '07', icon: 'globe', color: 'var(--lime)',
     name: "Australia's Climate Progress", spec: 'progress', span: 4, href: 'progress/',
-    what: 'Six national numbers on the energy transition, each shown against where it was and where the target needs it to be. The gap gets stated plainly, in both directions.',
+    what: 'Six national numbers on the energy transition. Each is drawn against its own reference point and the 2030 target, with the shortfall named wherever there is one.',
     proves: 'Keeping sourced, derived and estimated figures apart, and refusing to blend a live grid snapshot into an annual inventory because the two are different quantities.',
     tags: ['NGER and AEMO data', 'Live NEM feed', 'Target gap'],
     scope: '6 indicators · reviewed quarterly, date on the page',

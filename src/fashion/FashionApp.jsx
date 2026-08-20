@@ -151,7 +151,7 @@ function beforeYouBuy(brand, family) {
     items.push('No verified transparency score yet. Open its latest report yourself and note the date on it.');
   }
   items.push('Look for a dated climate target, and whether it reports Scope 3, the supply-chain emissions where most of fashion’s footprint sits.');
-  items.push('See if it publishes a supplier factory list. A brand that will not name its factories is choosing what you can check.');
+  items.push('See if it publishes a supplier factory list, and how far down the tiers it reaches. Most that publish one stop at final assembly.');
   items.push('Get a second opinion in Dig deeper below: Good On You for a consumer rating, Baptist World Aid for an Australian read.');
   items.push('The lowest-impact option is usually the one you already own, bought secondhand, or repaired.');
   return items;
@@ -1120,11 +1120,18 @@ function OwnershipMap({ onOpenGroup }) {
 }
 
 function Spotlight({ onOpenGroup }) {
+  // Both figures read off the brand set, so the concentration claim stays true
+  // as brands are added rather than being a hand-typed number that rots.
+  const covered = MULTI_GROUPS.reduce((n, g) => n + g.count, 0);
+  const fillStat = (s) => s
+    .replace('{n}', MULTI_GROUPS.length)
+    .replace('{covered}', covered)
+    .replace('{total}', BRANDS.length);
   return (
     <aside className="ow-spotlight ow-dark" aria-label="Ownership concentration">
       <div className="ow-wrap">
         <p className="ow-spotlight-line">
-          <b>{COPY.spotlight.stat}</b> {COPY.spotlight.line}
+          <b>{fillStat(COPY.spotlight.stat)}</b> {fillStat(COPY.spotlight.line)}
         </p>
         <p className="ow-spotlight-sub">{COPY.spotlight.sub}</p>
         <OwnershipMap onOpenGroup={onOpenGroup} />

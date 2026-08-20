@@ -15,7 +15,7 @@ export const WORK_NARRATIVE = {
   title: 'One engagement, start to finish',
   paras: [
     'Every engagement starts in the same place. Confirm the boundary, grade the data, and name the gaps instead of hiding them. The first finding is almost always identical: the overwhelming majority of emissions sit in the value chain, outside direct operational control. That single number sets the whole playbook.',
-    'From there the work is a sequence. Turn a long-list of initiatives into quantified options, screen them with stakeholders, and sequence them into a roadmap with CAPEX by year. Model the pathway so every lever traces to a published source and a non-specialist can interrogate it. Then hand it over, documented, so the internal team runs the next cycle without calling the consultant back in.',
+    'From there the work runs in a fixed order. Options get quantified before any pathway is modelled, because a pathway is only as good as the levers underneath it. Targets come after the pathway rather than before it, so the interim numbers are ones the roadmap can actually deliver.',
     'The four frameworks below are the machinery behind that arc, each shown as a live working example. The case study at the end walks one engagement through all of them, baseline to boardroom.',
   ],
 };
@@ -76,7 +76,7 @@ export const BASELINE_SECTORS = {
     s3b: 'Purchased goods and services (Cat 1), transport and distribution (Cat 4), and downstream leased assets (Cat 13). Reduction requires design choices and supplier collaboration.',
     sk: [11.5, 5.8, 82.7, 42.5, 20.4, 19.9],
     tiles: [
-      { h: '83% of emissions sit outside direct control', b: 'Reduction requires design choices and supplier collaboration, not operations management alone. The playbook is different.' },
+      { h: '83% of emissions sit outside direct control', b: 'Cutting this line means changing what gets specified and who supplies it, which sits with design teams and procurement. An operational efficiency programme barely touches it.' },
       { h: 'Purchased goods are the dominant driver', b: 'Category 1 (subcontracted goods and services) is the largest line. Supplier engagement and SBTi-aligned procurement carry most of the reduction.' },
       { h: 'Fleet and plant electrification lead Scope 1', b: 'A diesel fleet and mobile plant drive direct emissions. Electrification pace, tracking the grid, is the key near-term variable.' },
     ],
@@ -273,8 +273,8 @@ export const LCA = {
 export const CASE_INTRO = 'How one engagement moves from raw fuel invoices to a board-presented pathway. Scroll through the four phases: the figure tracks where the work happens.';
 
 export const CASE_STEPS = [
-  { num: '01', title: 'Establish the baseline.', body: 'Scope 1-3 boundaries confirmed, data confidence graded, gaps named rather than hidden. The first finding is usually the same: the overwhelming majority of emissions sit in the value chain, outside direct operational control. That single number decides the whole playbook.', src: 'GHG Protocol · NGER · documented for external assurance' },
-  { num: '02', title: 'Build the roadmap.', body: 'Before any pathway can be modelled, the options have to exist. A long-list of initiatives is developed across Scope 1-3, each quantified for abatement, cost, and timing, then screened with stakeholders through multi-criteria analysis and sequenced into a roadmap with CAPEX implications by year.', src: 'MCA framework · marginal abatement cost · capital planning alignment' },
+  { num: '01', title: 'Establish the baseline.', body: 'Fuel invoices, meter reads and subcontractor spend all arrive at different quality, so the first job is grading them: metered, estimated, or missing entirely. Boundaries then get set under operational control and the Scope 3 categories screened for materiality. Whatever falls out is written down with the reason attached, because an exclusion nobody documented is the thing an assurer finds first.', src: 'GHG Protocol · NGER · documented for external assurance' },
+  { num: '02', title: 'Build the roadmap.', body: 'A long-list runs to dozens of initiatives, most of which will not survive contact with a cost. Each one gets an abatement figure, a cost, and the year it becomes feasible. Stakeholders weight the criteria, the multi-criteria screen ranks what is left, and the survivors are sequenced against the capital plan so the CAPEX lands where the business can carry it.', src: 'MCA framework · marginal abatement cost · capital planning alignment' },
   { num: '03', title: 'Model the pathway.', body: "A toggle-based scenario model where every lever assumption traces to a published source: grid trajectory, fleet transition, plant electrification. Built so a non-specialist can interrogate it, and presented to the board by senior leadership as the Group's climate reference tool.", src: 'DCCEEW 2025 · NVES Act 2024 · CSIRO Net Zero Pathways' },
   { num: '04', title: 'Hand it over.', body: 'The engagement ends; the infrastructure stays. Automated tooling cut inventory preparation time by roughly 40%, and every model ships with documented logic so the internal team runs the next reporting cycle without calling the consultant back in.', src: 'Excel · Python · Envizi · operable without advisory dependency' },
 ];

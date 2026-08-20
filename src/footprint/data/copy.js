@@ -470,7 +470,7 @@ export const METHOD = {
 export const METHOD_LINK = {
   tag: '04 / How it works',
   title: ['How the', 'calculator works'],
-  body: 'A plain explanation of what this calculator counts, where the numbers come from, and how to read the result. It lives on its own page, with the exact factor tables it prices from.',
+  body: 'The boundary, the factor sources, the arithmetic behind each line, and what the total leaves out. It lives on its own page, with the full factor tables the calculator prices from.',
   cta: 'See how it works',
   factorLine: 'Australian factors (DCCEEW) for energy and fuel, with US (EPA / EIA) and NZ (MfE) sets for audits based there; UK Government (DESNZ / DEFRA) factors for flights and freight.',
 };
