@@ -1417,7 +1417,7 @@ export const COMPANIES = [
         accessed: '27 July 2026'
       }
     ],
-    note: "ASX targeted net zero Scope 1 and 2 in FY2025, reached 100% renewable electricity for offices where it chooses the retailer, and expects to cancel the unavoidable residual of under 1% with Australian Carbon Credit Units. No year by year tonnage could be corroborated at source, so nothing is charted. The SBTi register, at its 6 August 2026 export, records ASX's near-term and net zero commitments as removed for expiry, on a register record last updated 12 May 2022. The narrow Scope 1 and 2 boundary is the point to read: ASX's headline net zero says nothing about the emissions of the market it operates."
+    note: "ASX targeted net zero Scope 1 and 2 in FY2025, reached 100% renewable electricity for offices where it chooses the retailer, and expects to cancel the unavoidable residual of under 1% with Australian Carbon Credit Units. No year by year tonnage could be corroborated at source, so nothing is charted. The SBTi register, at its 6 August 2026 export, records ASX's near-term and net zero commitments as removed for expiry, on a register record last updated 12 May 2022. Read the boundary rather than the headline: a Scope 1 and 2 net zero says nothing about the emissions of the market ASX operates."
   },
   {
     id: 'qbe',

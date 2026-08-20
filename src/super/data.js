@@ -389,7 +389,7 @@ export const COPY = {
     title: ['What your default', 'super option holds'],
     paras: [
       'Most Australians have never seen what their default super option actually holds. You are placed in a MySuper default when you start a job, and it quietly invests a large share of your retirement money for decades. This tool puts one thing next to another: the holdings picture of a fund\'s default option, and that same fund\'s own sustainability marketing, in the fund\'s own words.',
-      'It is not an accusation. The point is legibility. Pick a fund, read what it says about climate and responsibility, then look at what the default option holds, and make up your own mind.',
+      'It is not an accusation. Pick a fund, read what it says about climate and responsibility, then look at what the default option holds, and make up your own mind.',
     ],
     chips: ['MySuper defaults', 'Holdings next to marketing', 'Every figure sourced or marked pending', 'Neutral, not a ranking'],
     pick: 'Pick a fund',
@@ -467,7 +467,7 @@ export const METHOD = {
   boundary: {
     title: 'Boundary: default options only',
     paras: [
-      'This tool looks at one thing per fund: the default MySuper option, the one you are placed in when you start a job and never choose an option yourself. That is deliberate. The default is where most people\'s money actually sits, most of them without ever picking it, so it is the option that describes what the fund does with a typical member\'s retirement savings.',
+      'This tool looks at one thing per fund: the default MySuper option, the one you are placed in when you start a job and never choose an option yourself. The default is where most people\'s money actually sits, most of them without ever picking it, so it is the option that describes what the fund does with a typical member\'s retirement savings.',
       'Most funds also offer a screened, sustainable or ethical option. Those are a member\'s active choice, they hold different things, and they are not shown here. Judging a fund\'s default by its sustainable option, or the reverse, would be misleading, so the two are kept apart. Where a fund\'s default is a lifecycle strategy that shifts with age, the tool describes the growth-stage settings a younger member sits in, and says so.',
       'The tool reads the option level, not the whole fund. A large fund runs many options; a holding can be heavy in one and absent from another. Reporting a whole-of-fund number against a single option would overstate or understate it. The unit here is the option.',
     ],
@@ -479,7 +479,7 @@ export const METHOD = {
       'The honest limit, stated plainly. In this build the disclosure CSV and PDF files could not be opened directly. So the holdings picture here was assembled from fund websites and investment guides, Market Forces fund analysis, and news coverage, and verified through web search on 21 July 2026. That is why individual holding weightings are marked pending rather than stated: naming a holding is well supported, but pricing its exact weight in the option needs the CSV, and inventing a decimal would be the one thing this page must never do. Reading those files and replacing every pending figure is the top item in the backlog.',
       'PDS, TMD and investment guides, for the strategic asset allocation and the option\'s design. These give the growth and defensive split and the broad asset-class mix. The figures here are shown as indicative ranges from those documents, because the exact split moves between cycles and the point figure sits in the fund\'s own current disclosure.',
       'Fund sustainability and climate pages, for the marketing language. Each quote states the fund\'s own published position on climate and responsible investment, attributed with the page and the access date. Because the live pages could not be captured verbatim in this build, the marketing text is a close statement of position rather than a guaranteed word-for-word quote, and is flagged that way; capturing exact wording with a saved snapshot is queued.',
-      'Market Forces, for fossil fuel holdings analysis, and its per-fund profiles, used where a company-level shareholding or a change in a stake is cited. APRA MySuper statistics and product dashboards for context on option design. Performance is deliberately left out: this tool is about what an option holds and what the fund says, not whether it beat a benchmark, and mixing the two would muddy the point.',
+      'Market Forces, for fossil fuel holdings analysis, and its per-fund profiles, used where a company-level shareholding or a change in a stake is cited. APRA MySuper statistics and product dashboards for context on option design. Performance is deliberately left out: this tool is about what an option holds and what the fund says, not whether it beat a benchmark, and mixing the two would blur both.',
     ],
   },
   reading: {

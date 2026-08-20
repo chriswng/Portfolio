@@ -231,7 +231,7 @@ export const GUESS_POOL = [
     id: 'flight-perth', item: 'A return flight to Perth', short: 'Sydney to Perth return',
     kg: flightReturnKg('SYD-PER'), unit: 'One seat, economy, Sydney to Perth and back',
     source: SITE.flight, estimate: false,
-    note: 'Domestic, but the longest domestic hop there is: about 1.6 tonnes per seat return. Distance is the whole story with flying, so a coast-to-coast domestic beats plenty of short international trips.',
+    note: 'Domestic, but the longest domestic hop there is: about 1.6 tonnes per seat return. Distance drives this far more than the domestic or international label does, so a coast-to-coast hop beats plenty of short international trips.',
   },
   {
     id: 'rice-kg', item: 'A kilo of rice', short: '1 kg of rice',
@@ -261,7 +261,7 @@ export const GUESS_POOL = [
     id: 'beer', item: 'A pint of beer', short: 'One beer',
     kg: 0.5, unit: 'A pint, roughly 570 ml, in glass; a packaging-dependent estimate',
     source: SRC.poore, estimate: true,
-    note: 'Around half a kilo, and most of that is the packaging and refrigeration rather than the brew itself. Published figures range widely with the packaging: the same beer in a returnable keg is several times lighter than in single-use glass, which is the honest lever here.',
+    note: 'Around half a kilo, and most of that is the packaging and refrigeration rather than the brew itself. Published figures range widely with the packaging: the same beer in a returnable keg is several times lighter than in single-use glass, so the container moves this more than the brew does.',
   },
   {
     id: 'dryer-load', item: 'One tumble-dryer load', short: 'A dryer load',
@@ -667,7 +667,7 @@ export const METHOD = {
       icon: 'chart',
       title: 'Guess the Footprint: the scoring',
       paras: [
-        'You are scored on how many times off you are, not on the raw difference, because these numbers span four orders of magnitude. Take the ratio between your guess and the answer, whichever way round. Within one and a half times scores three, the top mark. Within three times scores two. Within ten times scores one. More than ten times off scores zero. Guessing on a log scale is the honest way to think about a quantity that runs from a gram to ten tonnes.',
+        'You are scored on how many times off you are, not on the raw difference, because these numbers span four orders of magnitude. Take the ratio between your guess and the answer, whichever way round. Within one and a half times scores three, the top mark. Within three times scores two. Within ten times scores one. More than ten times off scores zero.',
       ],
     },
     {
@@ -683,7 +683,7 @@ export const METHOD = {
       title: 'The daily rotation',
       paras: [
         'One puzzle per calendar day, in Australia/Melbourne time, the same for everyone. The day index counts days from a fixed launch date, and the day\'s puzzle is item number (day index modulo pool size) in each frozen pool. Once you play, the result locks for the day: no do-overs, and the next puzzle unlocks at midnight Melbourne time.',
-        'Streaks count consecutive days played and scored; miss a day and the streak resets to zero. Each card also shows the last 28 days as a grid, filled by how each day scored, so the streak number has the run behind it in view. Your streaks, your best runs, your play counts and that history (the last 120 days, as a day number and a score, nothing else) are stored in this browser\'s local storage under versioned keys, and never sent anywhere. Clear your browser data and they are gone, which is the honest trade for keeping everything private to your device.',
+        'Streaks count consecutive days played and scored; miss a day and the streak resets to zero. Each card also shows the last 28 days as a grid, filled by how each day scored, so the streak number has the run behind it in view. Your streaks, your best runs, your play counts and that history (the last 120 days, as a day number and a score, nothing else) are stored in this browser\'s local storage under versioned keys, and never sent anywhere. Clear your browser data and they are gone, which is the trade for keeping all of it on your device.',
       ],
     },
   ],

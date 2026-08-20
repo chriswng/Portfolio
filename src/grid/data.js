@@ -245,7 +245,7 @@ export const EXPLORER_COPY = {
       return `Your location-based factor stays ${s2.toFixed(2)} because it describes the wires, not your contract. With nothing under contract yet, your market-based figure sits on the residual mix, the grid with everyone else's renewables already claimed and stripped out. Cover some consumption below and watch only the market-based side move.`;
     }
     if (cov >= 100) {
-      return `Your location-based factor stays ${s2.toFixed(2)} because it describes the wires, not your contract. Cover every kilowatt-hour with surrendered certificates and your market-based figure falls to zero, even though the physical electricity reaching you is unchanged. That gap is the whole point of the two methods.`;
+      return `Your location-based factor stays ${s2.toFixed(2)} because it describes the wires, not your contract. Cover every kilowatt-hour with surrendered certificates and your market-based figure falls to zero, even though the physical electricity reaching you is unchanged. Both numbers get reported, which is how a company can show a falling market-based figure and a flat location-based one in the same disclosure.`;
     }
     return `Your location-based factor stays ${s2.toFixed(2)} because it describes the wires, not your contract. You have covered ${cov}% with surrendered certificates, so your market-based figure is that share of the residual mix removed. The location-based side never moves, no matter what you buy.`;
   },
