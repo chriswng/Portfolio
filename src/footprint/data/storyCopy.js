@@ -273,7 +273,7 @@ export const BENCH_ST = {
   },
   line: {
     example: 'Under the Australian average, but still well over the 1.5°C lifestyle benchmark of 2.5 tonnes a person. Cutting the flights is how I close that gap.',
-    own: 'The 1.5°C lifestyle benchmark of 2.5 tonnes a person is the line that matters. The next section is how you move toward it.',
+    own: 'Of the three, the 2.5 tonne benchmark is the only one that is a target rather than a description. The next section is how you move toward it.',
   },
   // What the 2.5 t line means, in plain English: a sustainable level to sit
   // under right now, not a future deadline. Kept short on purpose; the
