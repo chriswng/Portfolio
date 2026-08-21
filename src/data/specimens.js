@@ -54,7 +54,7 @@ export const SPECIMENS = {
       { label: 'Scope 3', pct: 82.7 },
     ],
     caption: 'Infrastructure services: where the emissions sit',
-    basis: 'Illustrative portfolio, not client data',
+    basis: 'Illustrative portfolio, built for this page',
   },
 
   // From src/fashion/data.js → BRANDS, counting the Fashion Transparency Index
@@ -73,7 +73,7 @@ export const SPECIMENS = {
     ],
     median: 24,
     caption: 'How much 248 brands disclose',
-    basis: 'Fashion Transparency Index 2023 · disclosure, not performance',
+    basis: 'Fashion Transparency Index 2023 · a disclosure score',
   },
 
   // From src/super/data.js → FUNDS, counting entries in each fund's `flagged`

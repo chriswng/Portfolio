@@ -29,7 +29,7 @@ export const HERO = {
 };
 
 export const BIO_PARAS = [
-  'Looking for sustainability leadership in fashion, consumer goods, or technology, where supply chain transparency and decarbonisation are primary workstreams, not obligations.',
+  'Looking for sustainability leadership in fashion, consumer goods, or technology, where supply chain transparency and decarbonisation are primary workstreams.',
   'I build the data infrastructure that makes sustainability commitments defensible: GHG inventories with documented methodology, Scope 1-3 baselines that survive external assurance, decarbonisation models with traceable lever assumptions, and reporting systems that internal teams can operate after I leave the engagement.',
   'Four years in sustainability advisory across WSP and Downer EDI: GHG accounting, regulatory disclosure, decarbonisation modelling, supply chain emissions. Six years prior in built environment and infrastructure, including project delivery at the Department of Defence.',
 ];
@@ -68,7 +68,7 @@ export const PIPELINE = [
   },
   {
     step: 'strategy', n: '04', label: 'Strategy', icon: 'target', color: 'var(--step-strategy)',
-    desc: 'Scenario-driven decarbonisation models with traceable lever assumptions drawn from published sources, structured for non-specialist interrogation and owned internally, not dependent on the analyst who built them.',
+    desc: 'Scenario-driven decarbonisation models with traceable lever assumptions drawn from published sources, structured for non-specialist interrogation and owned internally by the team that runs them.',
     examples: [
       { title: 'Net Zero Pathway Model: Board Presentation', body: "Toggle-based net zero pathway model incorporating DCCEEW 2025 grid emission factor projections, NVES Act 2024 fleet trajectories, and BU-level pathway curves. Built for internal operation without ongoing advisory support. Presented to the board by senior leadership as part of the Group's climate strategy, and became the internal reference tool for tracking BU abatement progress.", outcome: 'Outcome: board-level presentation; ongoing internal reference tool, Downer EDI' },
       { title: 'Scope 1-3 Baselines and Decarbonisation Roadmaps', body: 'Delivered across infrastructure and built environment portfolios for government and private sector clients. Each roadmap includes lever-level abatement pathways, revenue-indexed gross emissions forecasting, and documented methodology for independent operation.', outcome: 'Applied across infrastructure, government, and commercial property portfolios, WSP in Australia' },
@@ -86,9 +86,9 @@ export const PIPELINE = [
 ];
 
 export const PRINCIPLES = [
-  { num: '01', icon: 'list', title: 'Data integrity precedes narrative.', body: 'Every net zero commitment is a claim. Its credibility depends on what sits behind it: a defensible, independently verifiable inventory documented before the narrative, not after.' },
+  { num: '01', icon: 'list', title: 'Data integrity precedes narrative.', body: 'Every net zero commitment is a claim. Its credibility depends on what sits behind it: a defensible, independently verifiable inventory, documented before anyone writes the narrative.' },
   { num: '02', icon: 'spark', title: 'Reusable infrastructure compounds value.', body: "Advisory that lives in a consultant's head has a short shelf life. I build models and processes designed to be owned internally, so the team can run the next reporting cycle without calling back in." },
-  { num: '03', icon: 'target', title: 'Ambition grounded in evidence, with gaps named.', body: 'The science sets the pace. Pathway models need lever assumptions grounded in published data, with uncertainty disclosed alongside figures. Carbon credits belong on residual hard-to-abate emissions, not as a substitute for near-term reduction.' },
+  { num: '03', icon: 'target', title: 'Ambition grounded in evidence, with gaps named.', body: 'The science sets the pace. Pathway models need lever assumptions grounded in published data, with uncertainty disclosed alongside figures. Carbon credits belong on residual hard-to-abate emissions only, once near-term reduction has been done.' },
 ];
 
 // ---------------------------------------------------------------------------
@@ -110,8 +110,8 @@ export const TOOLS_INTRO = {
   idx: '03 / ',
   title: ['Built,', 'not claimed'],
   paras: [
-    'Eight tools, built in my own time and maintained since. Each one takes a question a sustainability team actually has to answer and answers it in public, with sourced numbers, a stated method, and the gaps named rather than smoothed over.',
-    'They run on the same discipline I bring to a reporting cycle. If a figure cannot be traced to a citation and an access date, it does not go on the page. Where a number is an estimate, the page says so beside the number, not in a footnote at the bottom.',
+    'Eight tools, built in my own time and maintained since. Each one takes a question a sustainability team actually has to answer and answers it in public, with sourced numbers, a stated method, and the gaps named.',
+    'They run on the same discipline I bring to a reporting cycle. If a figure cannot be traced to a citation and an access date, it does not go on the page. Where a number is an estimate, the page says so beside the number.',
     'The chart on each card is drawn from that tool\'s own data, and says underneath it what stands behind the numbers.',
   ],
   rules: [
@@ -125,7 +125,7 @@ export const TOOLS_INTRO = {
     },
     {
       icon: 'loop', head: 'Built to be handed over',
-      body: 'Data, copy and methodology live in one place per tool, so refreshing a factor moves the whole page instead of one hard-coded number.',
+      body: 'Data, copy and methodology live in one place per tool, so refreshing a factor moves every place it appears.',
     },
   ],
   note: 'The decarbonisation model above is the ninth, built the same way.',
@@ -154,7 +154,7 @@ export const TOOLS = [
     what: 'A transparency lookup across 258 fashion brands: who owns them, what they disclose, and what you still cannot find out. A garment studio sits alongside it for footprint, fabric and supply chain.',
     proves: 'Supply chain transparency work in the sector I am aiming at, built on a disclosure vocabulary that reports status and never grades a brand good or bad.',
     tags: ['Supply chain', 'Fashion Transparency Index', 'Ownership mapping'],
-    scope: '258 brands · disclosure status, never a ranking',
+    scope: '258 brands · disclosure status, field by field',
   },
   {
     n: '04', icon: 'coins', color: 'var(--sage-2)',
@@ -170,7 +170,7 @@ export const TOOLS = [
     what: 'Reads the live National Electricity Market fuel mix and answers one question: run it now, or wait. Then explains the factor a business would actually report against.',
     proves: 'Scope 2 accounting taught properly, location-based against market-based, with GreenPower, PPAs and LGC surrender all in the toggle.',
     tags: ['Live AEMO data', 'Scope 2', 'Market vs location'],
-    scope: '5 NEM regions live · WA and NT named as out of scope, not invented',
+    scope: '5 NEM regions live · WA and NT named as out of scope',
   },
   {
     n: '06', icon: 'house', color: 'var(--matcha)',
