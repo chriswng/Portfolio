@@ -81,7 +81,7 @@ export function buildSeedProfile() {
     E({ id: 'seed-fr2', quality: 'estimated', date: '2026-06-30', category: 'freight', label: 'Domestic parcels (about 40 deliveries)', period_months: 12, meta: { parcels: 40 }, notes: 'Counted off order history at the indicative per-parcel factor.' }),
 
     // Diet: typical week scaled to the year. Coarse by design.
-    E({ id: 'seed-di1', quality: 'estimated', date: '2026-06-30', category: 'diet', label: 'Medium-meat diet, typical week scaled to the year', period_months: 12, meta: { dietType: 'medMeat', days: 365 }, notes: 'A year of transactions says 268 restaurant meals and 192 takeaways. Medium meat is the honest label.' }),
+    E({ id: 'seed-di1', quality: 'estimated', date: '2026-06-30', category: 'diet', label: 'Medium-meat diet, typical week scaled to the year', period_months: 12, meta: { dietType: 'medMeat', days: 365 }, notes: 'A year of transactions says 268 restaurant meals and 192 takeaways, which puts it at medium meat.' }),
 
     // Goods and services: the optional detail, from coarse monthly spend off a
     // year of transactions. Spend-based screening estimates, and labelled: no

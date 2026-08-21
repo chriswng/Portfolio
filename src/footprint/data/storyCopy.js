@@ -98,7 +98,7 @@ export const GUESS = {
   refs: [
     { id: 'home', unit: 't a person', note: 'per person, all greenhouse gases' },
     { id: 'global', label: 'World average', unit: 't a person', note: 'per person, all greenhouse gases' },
-    { id: 'budget', label: '1.5°C lifestyle benchmark', unit: 't a person', note: 'a sustainable level to aim under, not a future target' },
+    { id: 'budget', label: '1.5°C lifestyle benchmark', unit: 't a person', note: 'a level to sit under now' },
   ],
   cont: 'See where I land',
   contOwn: 'Take a guess',
@@ -273,14 +273,14 @@ export const BENCH_ST = {
   },
   line: {
     example: 'Under the Australian average, but still well over the 1.5°C lifestyle benchmark of 2.5 tonnes a person. Cutting the flights is how I close that gap.',
-    own: 'The 1.5°C lifestyle benchmark of 2.5 tonnes a person is the line that matters. The next section is how you move toward it.',
+    own: 'Of the three, the 2.5 tonne benchmark is the one to aim under. The next section is how you move toward it.',
   },
   // What the 2.5 t line means, in plain English: a sustainable level to sit
   // under right now, not a future deadline. Kept short on purpose; the
   // tooltip and label variants below say the same thing in fewer words for
   // the row name and the tile.
   benchNote: 'The 2.5 t line marks a sustainable, fair share of carbon for one person, worked out from what it takes to keep warming near 1.5°C. It is not a future deadline: the goal is to already be under it, today. The further above the line a year sits, the more it adds to a hotter, harsher climate.',
-  benchNoteTooltip: 'The level a year should already sit under, not something to reach later.',
+  benchNoteTooltip: 'The level a year should already sit under, today.',
   benchNoteLabel: 'Aim to stay under this line',
   // Personal overshoot day: the date the 2.5 t budget ran out at this pace.
   overshoot: {
@@ -294,7 +294,7 @@ export const BENCH_ST = {
       own: 'You stayed inside the 2.5 t benchmark all year. That almost never happens.',
     },
   },
-  caveat: 'The national and world averages count a wider basket than the core survey does. The optional detail step adds some of it back (clothes, gadgets, services), and hotel nights ride along with your trips; even then a few things stay out, so the real gap is if anything bigger, not smaller.',
+  caveat: 'The national and world averages count a wider basket than the core survey does. The optional detail step adds some of it back (clothes, gadgets, services), and hotel nights ride along with your trips; even then a few things stay out, so the real gap is if anything bigger.',
 };
 
 export const NEEDLE = {
@@ -302,8 +302,8 @@ export const NEEDLE = {
   headline: 'How could I have cut my carbon this year?',
   headlineOwn: 'How could you cut your carbon this year?',
   sub: {
-    example: 'The three changes that would have cut the biggest share of my actual year, not of a national average. Tap them on and off and watch the year rebuild.',
-    own: 'The three changes that would cut the biggest share of your actual year, not of a national average. Tap them on and off and watch your year rebuild.',
+    example: 'The three changes that would have cut the biggest share of my own audited year. Tap them on and off and watch the year rebuild.',
+    own: 'The three changes that would cut the biggest share of your own audited year. Tap them on and off and watch your year rebuild.',
   },
   ofYear: 'of the year',
   perYear: 't / yr',
@@ -314,7 +314,7 @@ export const NEEDLE = {
     label: { example: 'My year, rebuilt', own: 'Your year, rebuilt' },
     none: 'All three are off. Tap a card and watch the number fall.',
     cut: '{cut} t off · down {pct}%',
-    note: 'Changes overlap, so together they are priced as a sequence, never a straight sum.',
+    note: 'Changes overlap, so together they are priced as a sequence and counted once.',
     benchTick: '2.5 t benchmark',
     on: 'On',
     off: 'Off',
@@ -444,7 +444,7 @@ export const CHARACTER_ST = {
   // move together with the thresholds on a benchmark refresh.
   matrixRows: { feather: 'Under {g} t', middle: '{g} to {h} t', heavy: 'Over {h} t' },
   matrixAria: 'The twelve results as a grid: three size rows by four pattern columns. Yours is {name}.',
-  othersNote: 'A bit of fun, worked out from the numbers, not a quiz. The exact cut-offs are on the how-it-works page.',
+  othersNote: 'A bit of fun, worked out from your numbers. The exact cut-offs are on the how-it-works page.',
   yoursFlag: 'you',
 };
 
@@ -462,7 +462,7 @@ export const OB = {
   intro: 'About three minutes: five short steps, then an optional sixth. Rough answers now, real bills whenever you like. Everything stays in this browser, and we keep the final total for the reveal.',
   // Neutral, spoiler-free footer line. The running total is deliberately not
   // shown: seeing it here would spoil the reveal that follows.
-  keepForReveal: 'We add it all up at the reveal, not here',
+  keepForReveal: 'The total waits for the reveal',
   stepOf: 'Step {n} of {total}',
   // Gentle per-step confirmations, no tonnes: progress, never a total.
   progress: {
