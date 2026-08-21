@@ -14,8 +14,8 @@ export const WORK_NARRATIVE = {
   tag: 'The through-line',
   title: 'One engagement, start to finish',
   paras: [
-    'Every engagement starts in the same place. Confirm the boundary, grade the data, and name the gaps instead of hiding them. The first finding is almost always identical: the overwhelming majority of emissions sit in the value chain, outside direct operational control. Everything downstream follows from it, starting with whether the levers worth modelling sit inside the business or across its suppliers.',
-    'From there the work runs in a fixed order. Options get quantified before any pathway is modelled, because a pathway is only as good as the levers underneath it. Targets come after the pathway rather than before it, so the interim numbers are ones the roadmap can actually deliver.',
+    'Every engagement starts in the same place. Confirm the boundary, grade the data, and name the gaps. The first finding is almost always identical: the overwhelming majority of emissions sit in the value chain, outside direct operational control. Everything downstream follows from it, starting with whether the levers worth modelling sit inside the business or across its suppliers.',
+    'From there the work runs in a fixed order. Options get quantified before any pathway is modelled, because a pathway is only as good as the levers underneath it. Targets come last, once the pathway exists, so the interim numbers are ones the roadmap can actually deliver.',
     'The four frameworks below are the machinery behind that arc, each shown as a live working example. The case study at the end walks one engagement through all of them, baseline to boardroom.',
   ],
 };
@@ -210,7 +210,7 @@ export const LCA = {
   ],
   legend: [
     { cls: 'act', text: 'In scope (A1-A5)' },
-    { cls: 'not', text: 'Module D: noted, not included in total' },
+    { cls: 'not', text: 'Module D: noted, outside the total' },
     { cls: 'oot', text: 'Out of scope for this assessment' },
   ],
   methodHead: 'Method: Upfront Carbon Reduction credit, Green Star Buildings v1.1',
@@ -264,9 +264,9 @@ export const LCA = {
     ],
   },
   tiles: [
-    { h: 'Embodied carbon is front-loaded', b: '65% of the lifecycle carbon footprint is locked in before practical completion. Procurement and specification decisions, not operational management, determine the outcome.' },
+    { h: 'Embodied carbon is front-loaded', b: '65% of the lifecycle carbon footprint is locked in before practical completion. Procurement and specification decisions determine the outcome.' },
     { h: 'Operational carbon is addressable', b: 'All-electric design paired with a grid decarbonisation trajectory can drive use-phase Scope 2 emissions to near-zero by the mid-2030s. This is the primary lever for buildings with long asset lives.' },
-    { h: 'Removals are counted separately, not netted off', b: 'Carbon offsets, carbon-neutral certified products and stored biogenic carbon no longer reduce a project upfront carbon. Under v1.1 they are reported on their own in the Upfront Carbon Compensation credit, so A1-A5 hotspots have to be designed out, not bought back.' },
+    { h: 'Removals are reported on their own', b: 'Carbon offsets, carbon-neutral certified products and stored biogenic carbon no longer reduce a project upfront carbon. Under v1.1 they are reported on their own in the Upfront Carbon Compensation credit, so A1-A5 hotspots have to be designed out.' },
   ],
 };
 

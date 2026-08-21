@@ -243,7 +243,7 @@ export const CHARACTERS = [
     id: 'season-ticket', name: 'The Season Ticket', hex: '#B56A00', stencil: S.turnstile,
     weight: 'middle', shape: 'specialist', rhythm: 'steady',
     tagline: 'The same seat, every single week.',
-    line: 'One category on subscription: the commute, the meter, the standing order. The total is built by attendance, never by events.',
+    line: 'One category on subscription: the commute, the meter, the standing order. The total is built by attendance, one ordinary day at a time.',
   },
   {
     id: 'festival-season', name: 'The Festival Season', hex: '#C7274A', stencil: S.flare,

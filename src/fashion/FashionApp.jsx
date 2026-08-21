@@ -141,7 +141,7 @@ function beforeYouBuy(brand, family) {
   const parentClean = brand.parent.replace(/\.$/, '');
   items.push(family.length
     ? `Owned by ${parentClean}, which runs ${family.length} other label${family.length > 1 ? 's' : ''} on this page. Its group targets can differ from what the brand says.`
-    : `Owned by ${parentClean}. Read the parent's reporting, not just the brand's marketing.`);
+    : `Owned by ${parentClean}. Read the parent's reporting alongside the brand's marketing.`);
   if (brand.fti != null) {
     const band = (brand.ftiBand || ftiBand(brand.fti));
     items.push(`Its transparency score is ${brand.fti}/100 (${band ? band.label.toLowerCase() : 'disclosure'}). Publishing a lot is not the same as low impact.`);

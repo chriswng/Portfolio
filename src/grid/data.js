@@ -43,7 +43,7 @@ export const INTRO = {
   title: ['When is the grid', 'clean enough'],
   lead:
     'Run the dishwasher now, or wait two hours. This reads the live National Electricity Market fuel mix and gives you one answer for your state, then explains the factor a business would actually report against.',
-  chips: ['Live NEM data', 'Estimate, not settlement-grade', 'Location vs market-based'],
+  chips: ['Live NEM data', 'Generation-mix estimate', 'Location vs market-based'],
   note: 'Two views, one data source. Live for the timing call, Explorer for the accounting.',
 };
 
@@ -89,7 +89,7 @@ export const TYPICAL_CURVES = {
 };
 
 export const TYPICAL_LABEL =
-  'Typical pattern, indicative estimate. The live feed could not be reached, so this is a hand-built daily shape for the region, not measured data.';
+  'Typical pattern, indicative estimate. The live feed could not be reached, so this is a hand-built daily shape for the region.';
 
 // ---------------------------------------------------------------------------
 // Live view: status bands, verdicts and narrative templates.
@@ -239,15 +239,15 @@ export const EXPLORER_COPY = {
   explain: (s2, covered, lgcOn) => {
     const cov = Math.round(covered * 100);
     if (!lgcOn) {
-      return `Your location-based factor stays ${s2.toFixed(2)} because it describes the wires, not your contract. And your market-based figure is back up at the full residual mix, because certificates that are never surrendered do not count. A green plan you cannot show was cancelled buys you no reduction on paper.`;
+      return `Your location-based factor stays ${s2.toFixed(2)} because it describes the wires around you. And your market-based figure is back up at the full residual mix, because certificates that are never surrendered do not count. A green plan you cannot show was cancelled buys you no reduction on paper.`;
     }
     if (cov === 0) {
-      return `Your location-based factor stays ${s2.toFixed(2)} because it describes the wires, not your contract. With nothing under contract yet, your market-based figure sits on the residual mix, the grid with everyone else's renewables already claimed and stripped out. Cover some consumption below and watch only the market-based side move.`;
+      return `Your location-based factor stays ${s2.toFixed(2)} because it describes the wires around you. With nothing under contract yet, your market-based figure sits on the residual mix, the grid with everyone else's renewables already claimed and stripped out. Cover some consumption below and watch only the market-based side move.`;
     }
     if (cov >= 100) {
-      return `Your location-based factor stays ${s2.toFixed(2)} because it describes the wires, not your contract. Cover every kilowatt-hour with surrendered certificates and your market-based figure falls to zero, even though the physical electricity reaching you is unchanged. Both numbers get reported, which is how a company can show a falling market-based figure and a flat location-based one in the same disclosure.`;
+      return `Your location-based factor stays ${s2.toFixed(2)} because it describes the wires around you. Cover every kilowatt-hour with surrendered certificates and your market-based figure falls to zero, even though the physical electricity reaching you is unchanged. Both numbers get reported, which is how a company can show a falling market-based figure and a flat location-based one in the same disclosure.`;
     }
-    return `Your location-based factor stays ${s2.toFixed(2)} because it describes the wires, not your contract. You have covered ${cov}% with surrendered certificates, so your market-based figure is that share of the residual mix removed. The location-based side never moves, no matter what you buy.`;
+    return `Your location-based factor stays ${s2.toFixed(2)} because it describes the wires around you. You have covered ${cov}% with surrendered certificates, so your market-based figure is that share of the residual mix removed. The location-based side never moves, no matter what you buy.`;
   },
   mathTitle: 'The market-based sum',
   mathLine:
@@ -268,7 +268,7 @@ export const METHOD = {
       title: 'What the live number is',
       paras: [
         'The Live view reads the current fuel mix for each NEM region from the AEMO dispatch data that OpenNEM (OpenElectricity) republishes, then derives a generation-weighted emissions intensity from it using indicative technology-average factors, one per fuel type.',
-        'That makes it an estimate of how clean the electricity being generated is at this moment, in grams of CO2e per kilowatt-hour. It is not a metered, settlement-grade figure, and it does not include network losses. It is a timing signal, not an accounting number.',
+        'That makes it an estimate of how clean the electricity being generated is at this moment, in grams of CO2e per kilowatt-hour. It covers generation only, before network losses, and it is not a metered, settlement-grade figure. Use it to time a load; the Explorer factors are the ones to report against.',
       ],
     },
     {
@@ -292,7 +292,7 @@ export const METHOD = {
       icon: 'clock',
       title: 'How often it updates',
       paras: [
-        'The live feed refreshes every few minutes at the source, and this page re-reads it about every five minutes while the tab is open and visible. The "as of" time is the timestamp of the most recent interval the feed returned, not the moment you loaded the page.',
+        'The live feed refreshes every few minutes at the source, and this page re-reads it about every five minutes while the tab is open and visible. The "as of" time is the timestamp of the most recent interval the feed returned.',
         'The reporting factors update once a year. The National Greenhouse Accounts workbook is published around August, and the residual mix factor follows the reporting year it is calculated from, in the market-based guideline reissued for that year. The edition read here is the July 2026 guideline, for 2025-26, which still cites the 2025 workbook for how the factor is calculated. This page was last checked against those sources on ' + LAST_UPDATED + '.',
       ],
     },
@@ -302,10 +302,10 @@ export const METHOD = {
       wide: true,
       exclusions: [
         'Western Australia (SWIS) and the Northern Territory (DKIS) are not in the National Electricity Market, so there is no live figure for them from this feed. Their annual reporting factors are still shown in the Explorer view.',
-        'Behind-the-meter generation and consumption, most of all rooftop solar you use on site, is only partly captured. The mix reflects grid-scale dispatch plus the rooftop solar the market operator estimates, not your own panels.',
+        'Behind-the-meter generation and consumption, most of all rooftop solar you use on site, is only partly captured. The mix reflects grid-scale dispatch plus the rooftop solar the market operator estimates.',
         'The live intensity covers generation only. It excludes network losses, embodied emissions in the plant and fuel supply chains, and any Scope 3 electricity factor. The Explorer factors are the ones to use for reporting.',
         'Bioenergy is counted at zero combustion CO2e in the live estimate, which understates its full life-cycle figure. It is a rounding-level share of NEM generation.',
-        'Only the current reporting edition is shown in the Explorer. Earlier years are left out rather than shipped from memory.',
+        'Only the current reporting edition is shown in the Explorer. Earlier years are left out until their figures can be read from the published workbook.',
       ],
     },
   ],

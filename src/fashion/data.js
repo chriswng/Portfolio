@@ -527,7 +527,7 @@ const RAW_BRANDS = [
   { name: 'Big W', aliases: ['big w', 'bigw'], parent: 'Woolworths Group', segment: 'department', country: 'Australia', au: true, recognition: 'high', knownFor: 'Value apparel and general merchandise', fti: null, reportUrl: 'https://www.woolworthsgroup.com.au/au/en/sustainability.html' },
   { name: 'Cotton On', aliases: ['cotton on', 'cottonon'], parent: 'Cotton On Group', segment: 'fastfashion', country: 'Australia', au: true, recognition: 'high', knownFor: 'Value fashion basics', fti: null, reportUrl: 'https://cottonon.com/AU/good-business/' },
   { name: 'Country Road', aliases: ['country road'], parent: 'Country Road Group', group: 'Country Road Group (Woolworths Holdings, South Africa)', segment: 'department', country: 'Australia', au: true, recognition: 'high', knownFor: 'Mid-market apparel and lifestyle', fti: null, reportUrl: 'https://www.countryroad.com.au/sustainability' },
-  { name: 'The Iconic', aliases: ['the iconic', 'iconic'], parent: 'Global Fashion Group', segment: 'online', country: 'Australia', au: true, recognition: 'high', knownFor: 'Online fashion retailer', fti: null, ftiScope: 'outside', ftiNote: 'Not assessed by the Fashion Transparency Index. It is a multi-brand marketplace, not a single label.', reportUrl: 'https://www.theiconic.com.au/considered/' },
+  { name: 'The Iconic', aliases: ['the iconic', 'iconic'], parent: 'Global Fashion Group', segment: 'online', country: 'Australia', au: true, recognition: 'high', knownFor: 'Online fashion retailer', fti: null, ftiScope: 'outside', ftiNote: 'Not assessed by the Fashion Transparency Index. It is a multi-brand marketplace.', reportUrl: 'https://www.theiconic.com.au/considered/' },
   { name: 'R.M. Williams', aliases: ['rm williams', 'r.m. williams', 'rmwilliams'], parent: 'Tattarang', group: 'Tattarang (Andrew and Nicola Forrest)', segment: 'footwear', country: 'Australia', au: true, recognition: 'high', knownFor: 'Heritage leather boots', fti: null, reportUrl: null, notes: 'Certified B Corporation (2024). Australian-owned since Tattarang acquired it in 2020.' },
   { name: 'Zimmermann', aliases: ['zimmermann', 'zimmerman'], parent: 'Advent International', group: 'Advent International (majority, with the Zimmermann family)', segment: 'luxury', country: 'Australia', au: true, recognition: 'high', knownFor: 'Resort and occasion wear', fti: null, reportUrl: null, notes: 'Majority sold to private-equity firm Advent International in 2023.' },
   { name: 'Camilla', aliases: ['camilla', 'camilla franks'], parent: 'Camilla (private)', segment: 'luxury', country: 'Australia', au: true, recognition: 'medium', knownFor: 'Prints and resort wear', fti: null, reportUrl: null, notes: 'Certified B Corporation (2024).' },
@@ -1178,7 +1178,7 @@ export function segmentCount(id) {
 export const COMMITMENT_INFO = {
   fashionPact: {
     label: 'The Fashion Pact', former: 'Left the Fashion Pact',
-    help: 'Signed the CEO-led coalition on climate, biodiversity and oceans. A commitment, not a result.',
+    help: 'Signed the CEO-led coalition on climate, biodiversity and oceans. A commitment to act.',
     url: 'https://www.thefashionpact.org/',
   },
   bCorp: {
@@ -1215,12 +1215,12 @@ export function commitmentCounts() {
 // ---------------------------------------------------------------------------
 export const FIBRES = [
   { name: 'Conventional cotton', kind: 'Natural', good: 'Breathable, durable, biodegradable.', watch: 'Thirsty crop; heavy irrigation and pesticide use where rain-fed farming is not used.' },
-  { name: 'Organic cotton', kind: 'Natural', good: 'Grown without synthetic pesticides; look for GOTS certification.', watch: 'Still water-intensive; certification covers the field, not the dye house.' },
+  { name: 'Organic cotton', kind: 'Natural', good: 'Grown without synthetic pesticides; look for GOTS certification.', watch: 'Still water-intensive; certification covers the field and stops at the dye house.' },
   { name: 'Linen', kind: 'Natural', good: 'Flax needs little water or pesticide; long-lasting and biodegradable.', watch: 'Creases readily; some processing uses chemical retting.' },
   { name: 'Hemp', kind: 'Natural', good: 'Low water and input; improves soil and lasts for years.', watch: 'Coarser hand feel; softer blends can add synthetics.' },
   { name: 'Wool', kind: 'Natural', good: 'Warm, long-lived, biodegradable, needs fewer washes.', watch: 'Higher on-farm emissions (methane); mulesing and animal-welfare questions.' },
   { name: 'Polyester', kind: 'Synthetic', good: 'Cheap, strong, low water to make; recyclable in theory.', watch: 'Fossil-derived; sheds microplastics in the wash and effectively never breaks down.' },
-  { name: 'Recycled polyester (rPET)', kind: 'Synthetic', good: 'Roughly half the carbon of virgin polyester; look for GRS certification.', watch: 'Still sheds microplastics; mostly made from bottles, not old clothes, and recycles once.' },
+  { name: 'Recycled polyester (rPET)', kind: 'Synthetic', good: 'Roughly half the carbon of virgin polyester; look for GRS certification.', watch: 'Still sheds microplastics; mostly made from drink bottles, and it recycles once.' },
   { name: 'Nylon', kind: 'Synthetic', good: 'Strong and elastic; recycled versions (e.g. ECONYL) exist.', watch: 'Fossil-derived, energy-intensive, sheds microplastics.' },
   { name: 'Viscose / rayon', kind: 'Regenerated', good: 'Soft, breathable, plant-derived from wood pulp.', watch: 'Can drive deforestation and use harsh solvents unless responsibly sourced.' },
   { name: 'Lyocell (Tencel)', kind: 'Regenerated', good: 'Wood pulp spun in a closed-loop solvent system; look for FSC pulp.', watch: 'Genuinely lower-impact only when the pulp is responsibly sourced.' },
@@ -1234,12 +1234,12 @@ export const FIBRES = [
 // Knowing its edge is how you avoid reading it as a blanket "this is good".
 // ---------------------------------------------------------------------------
 export const CERTS = [
-  { name: 'GOTS', verifies: 'Organic fibre content and processing standards for textiles, including some chemical and social criteria.', edge: 'Covers the certified product’s supply chain, not a whole brand.' },
-  { name: 'GRS', verifies: 'Recycled content and chain of custody, plus some social and environmental criteria at certified facilities.', edge: 'Proves the recycled percentage, not that the garment is low-impact overall.' },
-  { name: 'OEKO-TEX Standard 100', verifies: 'That the tested article is free of certain harmful substances above set limits.', edge: 'A chemical-safety test for the buyer, not a measure of environmental footprint.' },
-  { name: 'B Corp', verifies: 'Independently assessed overall social and environmental performance and accountability of the company.', edge: 'A company-wide score, not a guarantee about any single product.' },
-  { name: 'The Fashion Pact', verifies: 'That a CEO signed up to shared climate, biodiversity and ocean goals.', edge: 'A commitment to act, not evidence of results.' },
-  { name: 'Fashion Transparency Index', verifies: 'How much a brand discloses publicly, scored 0 to 100.', edge: 'Measures disclosure, not performance. The signal this tool leans on, with that caveat.' },
+  { name: 'GOTS', verifies: 'Organic fibre content and processing standards for textiles, including some chemical and social criteria.', edge: 'Covers the certified product’s supply chain only.' },
+  { name: 'GRS', verifies: 'Recycled content and chain of custody, plus some social and environmental criteria at certified facilities.', edge: 'Proves the recycled percentage, and stops there.' },
+  { name: 'OEKO-TEX Standard 100', verifies: 'That the tested article is free of certain harmful substances above set limits.', edge: 'A chemical-safety test for the wearer.' },
+  { name: 'B Corp', verifies: 'Independently assessed overall social and environmental performance and accountability of the company.', edge: 'A company-wide score, awarded to the business.' },
+  { name: 'The Fashion Pact', verifies: 'That a CEO signed up to shared climate, biodiversity and ocean goals.', edge: 'A commitment to act, made at CEO level.' },
+  { name: 'Fashion Transparency Index', verifies: 'How much a brand discloses publicly, scored 0 to 100.', edge: 'Measures disclosure. The signal this tool leans on, with that caveat.' },
 ];
 
 // ---------------------------------------------------------------------------
@@ -1434,7 +1434,7 @@ export const QUALIFIER_TERMS = [
   { re: /\borganic\b/gi, term: 'organic', demand: 'Certified to which scheme, and what share of the fibre?' },
   { re: /\brenewable\b/gi, term: 'renewable', demand: 'What share of energy, contracted how, over what period?' },
   { re: /\bplastic[- ]free\b/gi, term: 'plastic-free', demand: 'Product, packaging or both? Polyester is plastic.' },
-  { re: /\bup to\b/gi, term: 'up to', demand: 'Up to includes zero. State the typical figure, not the ceiling.' },
+  { re: /\bup to\b/gi, term: 'up to', demand: 'Up to includes zero. State the typical figure.' },
   { re: /\bplant[- ]based\b/gi, term: 'plant-based', demand: 'What share is plant-derived, and what carries the rest?' },
   { re: /\bwe plant a tree\b/gi, term: 'tree planting', demand: 'Survival rate, land tenure, and is it additional to what would grow anyway?' },
 ];
@@ -1525,7 +1525,7 @@ export const STUDIO_FIBRES = [
     read: 'Thirsty in the field, honest at end of life. Irrigation is the swing factor.' },
   { id: 'orgcotton', name: 'Organic cotton', kind: 'natural, certified growing',
     ef: 3.2, waterL: 5500, microMg: 10, wearsMod: 1.0, decayYr: 0.6, loop: 'mono',
-    read: 'Lower-input growing, similar thirst. The certificate is about the field, not the factory.' },
+    read: 'Lower-input growing, similar thirst. The certificate is about the field.' },
   { id: 'linen', name: 'Linen', kind: 'natural, bast fibre',
     ef: 2.1, waterL: 650, microMg: 6, wearsMod: 1.15, decayYr: 0.4, loop: 'mono',
     read: 'Rain-fed flax, small footprint, creases with pride and outlives trends.' },
@@ -1732,7 +1732,7 @@ export const LOOP_CHOICES = [
   { id: 'takeback', label: 'Take-back programme',
     blurb: 'The maker collects it at end of life and has somewhere real to send it.' },
   { id: 'resale', label: 'Built for resale',
-    blurb: 'Construction and cloth chosen to survive a second owner, not just a season.' },
+    blurb: 'Construction and cloth chosen to survive a second owner.' },
 ];
 
 export function scoreCircularity(g, choices) {
@@ -1767,7 +1767,7 @@ export function scoreCircularity(g, choices) {
   const spares = choices.includes('spares') ? 8 : 0;
   const seams = choices.includes('seams') ? 7 : 0;
   rows.push({ id: 'repair', label: 'Repair and disassembly', pts: spares + seams, max: 15,
-    why: spares + seams ? 'Designed to be fixed and taken apart, not just worn out.' : 'No repair spares, no unpickable seams. Repair is left to the owner’s stubbornness.' });
+    why: spares + seams ? 'Designed to be fixed and taken apart.' : 'No repair spares, no unpickable seams. Repair is left to the owner’s stubbornness.' });
 
   rows.push({ id: 'takeback', label: 'Take-back', pts: choices.includes('takeback') ? 10 : 0, max: 10,
     why: choices.includes('takeback') ? 'Collection with a real destination beats a bin at the door.' : 'No take-back programme. The bin at the store is a bin.' });
@@ -1794,7 +1794,7 @@ export const COPY = {
     kicker: 'Fashion brand transparency',
     headA: 'Look up the brands',
     headB: 'you actually wear',
-    stand: 'Before you buy, see what a fashion brand is willing to tell you. Search any major label to find who really owns it, how much it discloses, and what still needs checking. What comes back is a disclosure record, not a verdict on the brand.',
+    stand: 'Before you buy, see what a fashion brand is willing to tell you. Search any major label to find who really owns it, how much it discloses, and what still needs checking. What comes back is a disclosure record.',
     searchLabel: 'Search a fashion brand',
     searchPlaceholder: 'Try Nike, Zara, Gucci, Kmart, Uniqlo…',
     examplesLabel: 'Popular lookups',
@@ -1839,7 +1839,7 @@ export const COPY = {
     checklistLabel: 'Before you buy',
     checklistHint: 'A quick, practical read for this brand, built from what is on file.',
     commitmentsLabel: 'Commitments and memberships',
-    commitmentsHint: 'Industry pledges this brand has signed. A commitment, not a result.',
+    commitmentsHint: 'Industry pledges this brand has signed.',
     commitmentsNone: 'No memberships confirmed on file yet.',
     provenanceLabel: 'Ownership',
     freshnessTemplate: 'Ownership and memberships verified as of {d}. Transparency score: Fashion Transparency Index 2023, the final edition of that index.',
@@ -1924,7 +1924,7 @@ export const COPY = {
       title: 'Carbon footprint estimator',
       sub: 'Build a garment, watch it cost',
       lede: 'Pick the cut, the size, the cloth and where it is made. Carbon dioxide equivalent gathers around the garment as you work: fibre, dyeing, assembly and transport each emit their own stream.',
-      disclaimer: 'Figures are indicative estimates from published life cycle assessment factors, rounded and simplified so they move live. They support intuition, not audits.',
+      disclaimer: 'Figures are indicative estimates from published life cycle assessment factors, rounded and simplified so they move live. They are built for intuition.',
       typeLabel: 'The cut',
       sizeLabel: 'Size',
       gsmLabel: 'Cloth weight',
@@ -1980,7 +1980,7 @@ export const COPY = {
       lede: 'Most of what decides whether a garment can be repaired, resold or recycled is fixed at the design stage, long before anyone wears it. Score the one you built above, then change a choice and watch the score move.',
       choicesLabel: 'Design choices',
       scoreLabel: 'Circularity score',
-      rubricNote: 'A transparent design heuristic scored out of 100, not a certification. Every point is explained, and half of them were earned or lost back in the estimator.',
+      rubricNote: 'A transparent design heuristic scored out of 100. Every point is explained, and half of them were earned or lost back in the estimator.',
       maxLabel: 'of {n}',
     },
   },
@@ -2022,7 +2022,7 @@ export const COPY = {
     flaggedQualifier: 'Terms that need a qualifier',
     evidenceLabel: 'Evidence signals found',
     emptyResult: 'Type a claim above to check it.',
-    disclaimer: 'This is an educational aid, not legal advice. It reflects the direction of the ACCC guidance, and the EU, UK and US equivalents, not a specific ruling.',
+    disclaimer: 'This is an educational aid and not legal advice. It reflects the general direction of the ACCC guidance and its EU, UK and US equivalents.',
   },
 
   materials: {
@@ -2041,23 +2041,23 @@ export const COPY = {
     icon: 'list',
     title: 'What the signals mean',
     sub: 'What the labels do and do not tell you',
-    lede: 'Cost Per Wear measures what a brand tells the public, not whether the brand is good. Read these before you draw a conclusion.',
+    lede: 'Cost Per Wear measures what a brand tells the public. Read these before you draw a conclusion.',
     cards: [
       {
         h: 'Transparency is not performance',
-        b: 'A high Fashion Transparency Index score means a brand publishes a lot: policies, supplier lists, audit results. It does not mean the brand has a small footprint. Some of the most transparent brands are also some of the largest producers. Disclosure is the price of being checkable, not proof of being clean.',
+        b: 'A high Fashion Transparency Index score means a brand publishes a lot: policies, supplier lists, audit results. It does not mean the brand has a small footprint. Some of the most transparent brands are also some of the largest producers. Disclosure is the price of being checkable.',
       },
       {
         h: 'The parent company matters',
-        b: 'The label on the garment is rarely the company making the decisions. Gucci reports through Kering. Uniqlo reports through Fast Retailing. The North Face, Vans and Timberland all sit inside VF Corporation. If you want the real climate targets and supplier data, you often have to read the parent, not the brand.',
+        b: 'The label on the garment is rarely the company making the decisions. Gucci reports through Kering. Uniqlo reports through Fast Retailing. The North Face, Vans and Timberland all sit inside VF Corporation. If you want the real climate targets and supplier data, you often have to read the parent.',
       },
       {
         h: 'Scope 3 is where the weight sits',
-        b: 'For almost every fashion company, the large majority of emissions are Scope 3: the farms, mills, dye houses and factories in the supply chain, not the head office. A brand that reports Scope 1 and 2 but stays quiet on Scope 3 is disclosing the small part and leaving out the big one.',
+        b: 'For almost every fashion company, the large majority of emissions are Scope 3: the farms, mills, dye houses and factories in the supply chain. A brand that reports Scope 1 and 2 but stays quiet on Scope 3 is disclosing the small part and leaving out the big one.',
       },
       {
-        h: 'We label, we do not rank',
-        b: 'You will see Disclosed, Not found, Parent-level only, and Needs research. You will not see "good", "bad", "ethical" or "sustainable" attached to a brand, because those words hide the working. This tool tracks what can be found publicly, and hands you the sources to judge for yourself.',
+        h: 'What the four labels mean',
+        b: 'The vocabulary is Disclosed, Not found, Parent-level only, and Needs research. Every one of those describes where a piece of information sits, so you can go and check it. Words like "ethical" and "sustainable" hide the working, so this tool hands you the sources and leaves the verdict to you.',
       },
     ],
     disclaimer: 'Fashion Revolution retired the Transparency Index after the 2023 edition, so the scores here have a fixed vintage and will not move again. Its successor, What Fuels Fashion, is linked from each brand card until those scores can be read in from the primary report.',
