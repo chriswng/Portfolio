@@ -60,7 +60,7 @@ export default function Baseline() {
         <div className="sankey-band-inner">
           <div className="sk-kicker">Fig. A · Emissions flow · FY25 baseline</div>
           <h2 className="sk-head">Where the footprint <em>flows</em>.</h2>
-          <p className="sk-sub">Scope 1-3 distribution and the Scope 3 category breakdown for the selected organisation type. The value chain dominates, which is why the reduction playbook starts with suppliers and design choices, not the boiler room.</p>
+          <p className="sk-sub">Scope 1-3 distribution and the Scope 3 category breakdown for the selected organisation type. The value chain dominates, which is why the reduction playbook starts with suppliers and design choices.</p>
           <SankeyFigure key={sector} sk={d.sk} />
         </div>
       </div>

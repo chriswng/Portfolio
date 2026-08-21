@@ -14,7 +14,7 @@
 export const FACTOR_SET = {
   id: 'nga2025-ukghg2026-intl2',
   updated: 'August 2026',
-  note: 'Australian electricity, gas and transport fuels use the DCCEEW National Greenhouse Accounts Factors (2025), which remain search-verified rather than read from the workbook: no 2025 or 2026 edition could be obtained, and the 2024 workbook is a different vintage, so the shipped values are left as they stand rather than being replaced by older ones. Flights, freight, hotel nights, rail and bus use the UK Government conversion factors (2026 edition), published by DESNZ and still widely known as the DEFRA factors, read cell for cell. United States electricity is priced per state from EPA eGRID2023 rev2, with gas and motor fuels from the EPA GHG Emission Factors Hub. New Zealand electricity, gas, transport fuels and hotel nights come from the MfE Measuring Emissions Catalogue 2026; only the NZ fuel-cycle line still rides an Australian proxy. Updated when new editions are published and verified against the source workbook.',
+  note: 'Australian electricity, gas and transport fuels use the DCCEEW National Greenhouse Accounts Factors (2025), which remain search-verified only, read from the workbook: no 2025 or 2026 edition could be obtained, and the 2024 workbook is a different vintage, so the shipped values are left as they stand rather than being replaced by older ones. Flights, freight, hotel nights, rail and bus use the UK Government conversion factors (2026 edition), published by DESNZ and still widely known as the DEFRA factors, read cell for cell. United States electricity is priced per state from EPA eGRID2023 rev2, with gas and motor fuels from the EPA GHG Emission Factors Hub. New Zealand electricity, gas, transport fuels and hotel nights come from the MfE Measuring Emissions Catalogue 2026; only the NZ fuel-cycle line still rides an Australian proxy. Updated when new editions are published and verified against the source workbook.',
 };
 
 // ---------------------------------------------------------------------------
@@ -104,7 +104,7 @@ export const ELECTRICITY_SOURCE_NZ = {
 
 export const ELECTRICITY_SOURCE_US = {
   name: 'US EPA eGRID2023 (rev2, 12 June 2025), state annual CO2-equivalent total output emission rates',
-  detail: 'Every state, the District of Columbia and Puerto Rico priced from its own eGRID row (sheet ST23), read cell for cell and converted from lb CO2e/MWh at 0.45359237/1000. The national average row is eGRID\'s own US figure (770.884 lb CO2e/MWh, 0.3497 kg CO2e/kWh) and applies until a state is chosen. Scope 3 is the eGRID grid gross loss factor of 4.2% (sheet GGL23), grossed up rather than taken as a flat share, because a kWh consumed needs 1/(1-0.042) generated behind it; upstream fuel-cycle is not counted, so that side still understates. The spread is the point: Vermont reads 0.0237 and West Virginia 0.8931, a factor of 38, so a national average was never a fair answer for an individual. eGRID2024 was scheduled for January 2026 but has not been published, so rev2 of the 2023 edition remains current.',
+  detail: 'Every state, the District of Columbia and Puerto Rico priced from its own eGRID row (sheet ST23), read cell for cell and converted from lb CO2e/MWh at 0.45359237/1000. The national average row is eGRID\'s own US figure (770.884 lb CO2e/MWh, 0.3497 kg CO2e/kWh) and applies until a state is chosen. Scope 3 is the eGRID grid gross loss factor of 4.2% (sheet GGL23), grossed up, because a kWh consumed needs 1/(1-0.042) generated behind it; upstream fuel-cycle is not counted, so that side still understates. Vermont reads 0.0237 and West Virginia 0.8931, a factor of 38, so a national average was never a fair answer for an individual. eGRID2024 was scheduled for January 2026 but has not been published, so rev2 of the 2023 edition remains current.',
   url: 'https://www.epa.gov/egrid/download-data',
 };
 
@@ -648,7 +648,7 @@ export const FREIGHT_MODES = {
 // ---------------------------------------------------------------------------
 export const DIET_SOURCE = {
   name: 'Scarborough et al. 2014, Climatic Change 125:179-192 (per-day gradient), cross-checked against Australian work',
-  detail: 'Diet is an estimate, not a precise figure. Per-day values by diet type come from a large UK study (n = 55,504) standardised to 2,000 kcal, chosen because it separates high-meat, medium-meat, low-meat, pescetarian, vegetarian and vegan cleanly. The size and direction hold up in later work, including Australian studies: CSIRO (Hendrie et al. 2014, Nutrients) and Ridoutt et al. find the same gradient, with meat and dairy dominating. Treat the diet line as the right order of magnitude, not a measured number.',
+  detail: 'Diet is a coarse estimate. Per-day values by diet type come from a large UK study (n = 55,504) standardised to 2,000 kcal, chosen because it separates high-meat, medium-meat, low-meat, pescetarian, vegetarian and vegan cleanly. The size and direction hold up in later work, including Australian studies: CSIRO (Hendrie et al. 2014, Nutrients) and Ridoutt et al. find the same gradient, with meat and dairy dominating. Treat the diet line as the right order of magnitude, not a measured number.',
   url: 'https://doi.org/10.1007/s10584-014-1169-1',
 };
 
@@ -922,7 +922,7 @@ export const dwellingPerM2 = (dwelling) =>
 // ---------------------------------------------------------------------------
 export const QUALITY_SOURCE = {
   name: 'GHG Protocol, Quantitative Inventory Uncertainty guidance; IPCC 2006 Guidelines Vol 1 Ch 3',
-  detail: 'Tier framework per the published guidance (measured data carries materially less uncertainty than proxies or extrapolation). The band widths themselves are stated assumptions of this method, not published values: they size the range, never the central estimate.',
+  detail: 'Tier framework per the published guidance (measured data carries materially less uncertainty than proxies or extrapolation). The band widths themselves are assumptions stated by this method: they size the range, never the central estimate.',
   url: 'https://ghgprotocol.org/sites/default/files/2023-03/ghg-uncertainty.pdf',
 };
 

@@ -42,12 +42,12 @@ export const READING = {
     {
       key: 'claimed',
       label: 'Dashed line',
-      body: 'The claimed path. It runs from the company\'s stated base year and baseline, through any absolute interim target, down to zero in its net zero year. It is drawn straight between those points because that is all the company has committed to, not because anyone expects the real path to be straight.',
+      body: 'The claimed path. It runs from the company\'s stated base year and baseline, through any absolute interim target, down to zero in its net zero year. It is drawn straight between those points because those points are all the company has committed to. Nobody expects the real path to be straight.',
     },
     {
       key: 'reported',
       label: 'Solid line with dots',
-      body: 'Reported Scope 1 and 2 emissions, one dot per reporting year, taken from the company\'s own disclosures. Years that could not be verified are left out rather than filled in, so a gap in the line is a gap in the record.',
+      body: 'Reported Scope 1 and 2 emissions, one dot per reporting year, taken from the company\'s own disclosures. Years that could not be verified are left out, so a gap in the line is a gap in the record.',
     },
     {
       key: 'now',
@@ -82,11 +82,11 @@ export const UI = {
     lead: 'Four counts, taken across every company on this page. Each company counts once, whatever its size, so this is a count of commitments and not a measure of tonnes.',
     items: [
       { key: 'netZero', label: 'have committed to a dated net zero year' },
-      { key: 'interim', label: 'back it with an absolute 2030 era interim target, not an intensity ratio' },
+      { key: 'interim', label: 'back it with an absolute tonnage target for the 2030 era' },
       { key: 'assessable', label: 'publish enough verified data to be checked against their own claimed line' },
       { key: 'behind', label: 'of the companies that can be checked are behind their own line' },
     ],
-    note: 'A company can only be checked when it has stated an absolute path and a verified emissions year beyond its base year exists to hold against it. Most of the fifty fail that test before any judgement about performance starts, and that gap between announcing and evidencing is the first finding of this page.',
+    note: 'A company can only be checked when it has stated an absolute path and a verified emissions year beyond its base year exists to hold against it. Most of the fifty fail that test before any judgement about performance starts.',
   },
   ledger: {
     tag: 'The ledger',
@@ -1417,7 +1417,7 @@ export const COMPANIES = [
         accessed: '27 July 2026'
       }
     ],
-    note: "ASX targeted net zero Scope 1 and 2 in FY2025, reached 100% renewable electricity for offices where it chooses the retailer, and expects to cancel the unavoidable residual of under 1% with Australian Carbon Credit Units. No year by year tonnage could be corroborated at source, so nothing is charted. The SBTi register, at its 6 August 2026 export, records ASX's near-term and net zero commitments as removed for expiry, on a register record last updated 12 May 2022. The narrow Scope 1 and 2 boundary is the point to read: ASX's headline net zero says nothing about the emissions of the market it operates."
+    note: "ASX targeted net zero Scope 1 and 2 in FY2025, reached 100% renewable electricity for offices where it chooses the retailer, and expects to cancel the unavoidable residual of under 1% with Australian Carbon Credit Units. No year by year tonnage could be corroborated at source, so nothing is charted. The SBTi register, at its 6 August 2026 export, records ASX's near-term and net zero commitments as removed for expiry, on a register record last updated 12 May 2022. The boundary is the thing to read here: a Scope 1 and 2 net zero says nothing about the emissions of the market ASX operates."
   },
   {
     id: 'qbe',
@@ -1663,7 +1663,7 @@ export const COMPANIES = [
     reported: [ { y: 2023, mt: 1.94 }, { y: 2024, mt: 1.84 } ],
     boundaryNote: 'The F23 figure of 1,941,581 tCO2e is the stated operational base year for the SBTi-validated target; the F24 figure of 1,841,031 tCO2e comes from third-party aggregation of the F24 report and the Scope 2 basis (market or location) is not stated in the sources checked. A location-based F23 total of 1,985,174 tCO2e is also published, so the two years may not be on an identical Scope 2 basis.',
     status: 'partial',
-    note: 'Woolworths moved its headline base year from 2015 to F23 when SBTi validated the targets in F24. The replacement is a deeper absolute cut, not a weaker one: 80% below the F23 level lands well below where 63% off the 2015 level would have landed. Reported Scope 1+2 were 22.9% below the F23 base in F25, the year Woolworths reached 100% renewable electricity in Australia and New Zealand. The Endeavour Group demerger in 2021 breaks comparability with pre-F22 series.',
+    note: 'Woolworths moved its headline base year from 2015 to F23 when SBTi validated the targets in F24. The replacement is a deeper absolute cut: 80% below the F23 level lands well below where 63% off the 2015 level would have landed. Reported Scope 1+2 were 22.9% below the F23 base in F25, the year Woolworths reached 100% renewable electricity in Australia and New Zealand. The Endeavour Group demerger in 2021 breaks comparability with pre-F22 series.',
     verified: '27 July 2026',
     sources: [
       {
@@ -2500,7 +2500,7 @@ export const SPOTLIGHTS = {
   tag: 'Worth a second look',
   kicker: 'Three cases',
   title: ['Where the gap', 'is a decision'],
-  lead: 'Most of the distance between a claimed line and a reported one is not a measurement problem. It is a choice about what the company will do first, what it will buy instead of doing, and what it will leave until the target year is close.',
+  lead: 'Most of the distance between a claimed line and a reported one is not a measurement problem. It is a choice about what the company will do first, what it will buy to cover the rest, and what it will leave until the target year is close.',
   items: [
     {
       id: 'wds',
@@ -2515,7 +2515,7 @@ export const SPOTLIGHTS = {
     {
       id: 'csl',
       head: 'No net zero date, and a real target anyway',
-      body: 'CSL is one of the few companies here with no net zero year at all. What it has instead is an SBTi validated 42 per cent cut by FY2030 and a published series, which sat above the base year for three straight years before a renewable power deal pulled FY2025 down to about 12 per cent below it. A dated absolute cut with tonnage behind it says more than a distant zero without either. This card is the argument.',
+      body: 'CSL is one of the few companies here with no net zero year at all. What it has instead is an SBTi validated 42 per cent cut by FY2030 and a published series, which sat above the base year for three straight years before a renewable power deal pulled FY2025 down to about 12 per cent below it. A dated absolute cut with a published series behind it is a far more testable thing than a distant zero with neither.',
     },
   ],
 };
@@ -2529,8 +2529,8 @@ export const SUMMARY = {
   moving: {
     head: 'What is genuinely there',
     items: [
-      '42 of the 50 carry a dated net zero commitment, and 32 back it with an absolute 2030 era interim target rather than an intensity ratio. Five years ago neither count would have been close.',
-      'Some targets got harder, not softer. Telstra lifted its 2030 cut from 50 to 70 per cent as it walked away from offset backed neutrality claims, and Woolworths replaced its old target with a deeper SBTi validated one.',
+      '42 of the 50 carry a dated net zero commitment, and 32 back it with an absolute tonnage target for the 2030 era. Five years ago neither count would have been close.',
+      'Some targets got harder. Telstra lifted its 2030 cut from 50 to 70 per cent as it walked away from offset backed neutrality claims, and Woolworths replaced its old target with a deeper SBTi validated one.',
       'Suncorp pulled its operational net zero date forward by twenty years, and Transurban passed its 2030 halving seven years early on renewable electricity contracts.',
       'The best disclosers leave nothing to reconstruct. BHP publishes a restated baseline and a clean series, and sits about 25 per cent below its own claimed line without counting a single credit.',
     ],
@@ -2544,7 +2544,7 @@ export const SUMMARY = {
       'Five companies have no net zero commitment this page could find at all, and one of them, CAR Group, says in its own reporting that it has chosen not to set one while calling its operations carbon neutral on purchased offsets.',
     ],
   },
-  close: 'None of this is an accusation. A company can be behind its own line for defensible reasons and still be doing more than a company comfortably ahead of a soft one. What the page insists on is that the claim and the record be shown at the same size, on the same axis, with the date on both. Check the date at the top. If it has not moved, do not trust the lines.',
+  close: 'None of this is an accusation. A company can be behind its own line for defensible reasons and still be doing more than a company sitting comfortably ahead of a soft one. What the page insists on is that the claim and the record be shown at the same size, on the same axis, with the date on both.',
 };
 
 // Common sources. Per company sources live on each company object and are
@@ -2564,7 +2564,7 @@ export const SOURCES = {
   },
   sbti: {
     name: 'Science Based Targets initiative, Companies Taking Action export, snapshot of 6 August 2026',
-    detail: 'The public register of commitments and validated targets, read as the full companies export rather than the web dashboard, and used only to set the validated and exited flags, to confirm target years and to record a commitment the register shows as removed. The export states no publication date of its own, so it is dated by its latest updated record and its file timestamps, both 6 August 2026.',
+    detail: 'The public register of commitments and validated targets, read as the full companies export, and used only to set the validated and exited flags, to confirm target years and to record a commitment the register shows as removed. The export states no publication date of its own, so it is dated by its latest updated record and its file timestamps, both 6 August 2026.',
     url: 'https://sciencebasedtargets.org/companies-taking-action',
     accessed: '13 August 2026',
   },
@@ -2580,9 +2580,9 @@ export const METHOD = {
       icon: 'people',
       title: 'The fifty, and how they were compiled',
       paras: [
-        'The companies are the constituents of the S&P/ASX 50 as at the June 2026 quarterly rebalance, which brought ALS in for Pro Medicus, following the March 2026 review that added Light and Wonder and PLS Group for Seek and TechnologyOne. Index membership shifts quarterly, so the tail of the list is checked at each review and the make up is stated here rather than assumed.',
-        'Every figure was compiled from the company\'s own disclosures, its annual, sustainability, climate or transition reports, and cross checked against published summaries, regulator data and independent registers. Where a number could not be confirmed back to the company\'s own reporting it was left out, and the company is marked partial or unverified rather than padded with a plausible figure. A series that rests on a chart label rather than a table is marked partial as well, because a printed label is rounded and a table is not.',
-        'More than half the ledger fails some part of that test. Showing that plainly, rather than quietly filling the gaps, is the point of the status chip on every card.',
+        'The companies are the constituents of the S&P/ASX 50 as at the June 2026 quarterly rebalance, which brought ALS in for Pro Medicus, following the March 2026 review that added Light and Wonder and PLS Group for Seek and TechnologyOne. Index membership shifts quarterly, so the tail of the list is checked at each review and the make up is stated here.',
+        'Every figure was compiled from the company\'s own disclosures, its annual, sustainability, climate or transition reports, and cross checked against published summaries, regulator data and independent registers. Where a number could not be confirmed back to the company\'s own reporting it was left out, and the company is marked partial or unverified. A series read off a chart label is marked partial as well, because a printed label carries rounding a table would not.',
+        'More than half the ledger fails some part of that test, which is what the status chip on every card records.',
       ],
     },
     {
@@ -2591,7 +2591,7 @@ export const METHOD = {
       paras: [
         'Every figure charted is Scope 1 and 2 emissions on the company\'s own reporting basis, in Mt CO2e. Scope 2 is market based where the company discloses it, and where only a location based figure exists that is noted on the card.',
         'Financial years are labelled by the year they end in. A company that reports on a calendar year is labelled CY and its years are not shifted to line up with anyone else\'s. Several companies end their year in March, September or January; each card\'s boundary note says so.',
-        'Where the reported series and the target sit on different boundaries, for example equity share against operational control, the card says so rather than quietly reconciling them. One company, Origin Energy, is charted on a Scope 1, 2 and 3 boundary because that is the boundary its own headline target is set on; its card states this.',
+        'Where the reported series and the target sit on different boundaries, for example equity share against operational control, the card says so. One company, Origin Energy, is charted on a Scope 1, 2 and 3 boundary because that is the boundary its own headline target is set on; its card states this.',
       ],
     },
     {
@@ -2600,7 +2600,7 @@ export const METHOD = {
       paras: [
         'The line starts at the company\'s stated base year and baseline level, passes through any absolute interim target, and ends at zero in the stated net zero year. It is straight between those anchors because those anchors are all the company has committed to. A company with an absolute interim target but no net zero year gets a line that ends at its last interim and never reaches zero, which is exactly what it has committed to.',
         'Intensity targets are not drawn. An intensity target says nothing about a tonnage on its own, and converting one into tonnes would require a production forecast this page does not have. Where a company\'s only interim target is an intensity one, the chart shows the reported line alone and says so.',
-        'An interim target cut from a base year other than the one the baseline is held on is skipped rather than estimated, because pricing it would need that other year\'s level.',
+        'An interim target cut from a base year other than the one the baseline is held on is skipped, because pricing it would need that other year\'s level.',
         'A company with no verifiable baseline, or with neither an absolute interim target nor a net zero year, gets no claimed line at all.',
       ],
     },
@@ -2609,7 +2609,7 @@ export const METHOD = {
       title: 'What the tracking labels mean',
       paras: [
         'The label compares one number against one number: the latest reported year against the claimed line interpolated to that same year. Inside five per cent either way reads as on the line, below reads as ahead, above reads as behind.',
-        'The five per cent band is a judgement, not a standard. It exists because a single reporting year is a noisy way to judge a path that runs to 2050, and a company should not be labelled behind for a rounding difference.',
+        'The five per cent band is a judgement. It exists because a single reporting year is a noisy way to judge a path that runs to 2050, and a company should not be labelled behind for a rounding difference.',
         'Not assessable means exactly that: no claimed line, no reported year, or a reported year that falls outside the claimed line\'s range. It is not a judgement about the company.',
       ],
     },
@@ -2617,9 +2617,9 @@ export const METHOD = {
       icon: 'book',
       title: 'Sources and verification',
       paras: [
-        'Company reports come first: the annual report, the sustainability or climate report, and the climate transition action plan where one exists. Clean Energy Regulator NGER data and independent registers are used to cross check, never as the origin of a figure.',
-        'The August 2026 review read seven of those reports directly rather than through summaries, and each of those cards names the file and the page the table sits on: the Aristocrat FY25 Sustainability Report (p37), the James Hardie FY2025 Sustainability Report (p39), the Brambles Sustainability Review 2025 (p21 table and p20 chart), the Evolution Mining Integrated Sustainability Report 2025 (p90), the NAB Climate Report 2025 (p48 and p49) with the 2023 report (p61), the APA FY25 Sustainability Data Book (p42 and p43) with the 2025 Climate Transition Plan (p13), and the Santos Climate Strategy Update 2025 (p4 and p5). Seven cards that had no series before now carry one, which is why the assessable count moved.',
-        'Climate Action 100+ and the Science Based Targets initiative register are used only to corroborate scope coverage and to set the validated, weakened and alliance flags. The register is read as the Companies Taking Action export, snapshot of 6 August 2026. Where that record and a company\'s own wording disagree about a target year the register is followed and the card says so, which is why Computershare now shows FY2033 and Xero FY2034 rather than 2030. A commitment the register shows as removed is recorded as removed, with the date and the reason, because a lapsed commitment is a different fact from a target that was never submitted. A handful of single year figures rest on third party compilations of company reporting; every card that leans on one says so in its boundary note.',
+        'Company reports come first: the annual report, the sustainability or climate report, and the climate transition action plan where one exists. Clean Energy Regulator NGER data and independent registers are used to cross check a figure that already came from the company.',
+        'The August 2026 review read seven of those reports directly, and each of those cards names the file and the page the table sits on: the Aristocrat FY25 Sustainability Report (p37), the James Hardie FY2025 Sustainability Report (p39), the Brambles Sustainability Review 2025 (p21 table and p20 chart), the Evolution Mining Integrated Sustainability Report 2025 (p90), the NAB Climate Report 2025 (p48 and p49) with the 2023 report (p61), the APA FY25 Sustainability Data Book (p42 and p43) with the 2025 Climate Transition Plan (p13), and the Santos Climate Strategy Update 2025 (p4 and p5). Seven cards that had no series before now carry one, which is why the assessable count moved.',
+        'Climate Action 100+ and the Science Based Targets initiative register are used only to corroborate scope coverage and to set the validated, weakened and alliance flags. The register is read as the Companies Taking Action export, snapshot of 6 August 2026. Where that record and a company\'s own wording disagree about a target year the register is followed and the card says so, which is why Computershare now shows FY2033 and Xero FY2034, both moved from the 2030 shown previously. A commitment the register shows as removed is recorded as removed, with the date and the reason, because a lapsed commitment is a different fact from a target that was never submitted. A handful of single year figures rest on third party compilations of company reporting; every card that leans on one says so in its boundary note.',
         'Where two sources conflict, the company\'s most recent report is used and the conflict is named on the card, and where it could not be resolved at all no number is shown. Where a series has been restated, the restated basis is used consistently across all years, and three companies with restatements in flight are flagged as such.',
       ],
     },
@@ -2637,7 +2637,7 @@ export const METHOD = {
       paras: [
         'This is not a ranking and there is no score. Two companies with the same distance from their own line can have set targets of wildly different ambition, and the page will not pretend otherwise.',
         'It is not a forecast. Nothing here predicts whether a target will be met; it only shows the distance between the claim and the record so far.',
-        'The scoreboard counts companies, not tonnes. One large emitter behind its line matters far more for the atmosphere than several small ones ahead of theirs, and a count cannot show that.',
+        'The scoreboard counts companies. One large emitter behind its line matters far more for the atmosphere than several small ones ahead of theirs, and a count cannot show that.',
         'Scope 3 is outside the charts. For the energy companies and the banks on this list that is where most of the emissions are, and the cards say so in words because the numbers are not comparable enough to plot.',
       ],
     },
