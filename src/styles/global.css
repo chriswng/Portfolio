@@ -7,7 +7,13 @@
    old cool-blue hex values — the green lean is deliberate.
    ============================================================================ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; overflow-x: clip; }
+/* color-scheme is declared even though the site is light-only: without it a
+   visitor whose OS is in dark mode gets browser-painted UI (scrollbars, native
+   <select> popups and their <option> rows, date pickers, autofill chrome) drawn
+   from the dark palette on top of our light surfaces. Windows/Chromium is the
+   worst of it — dark <option> text on a light select. Saying "light" once here
+   settles every native control on every page. */
+html { scroll-behavior: smooth; overflow-x: clip; color-scheme: light; }
 
 :root {
   /* Corporate Vibrant — SaaS Design System */
@@ -83,6 +89,14 @@ html { scroll-behavior: smooth; overflow-x: clip; }
   --unsw:#E5B80B;
   /* Editorial structure */
   --gut:6vw;
+  /* The sticky nav's own height: 52px of .nav-inner plus its 1px bottom rule.
+     Everything that has to clear the bar — anchor landings, focus scrolling —
+     measures from this one number rather than re-guessing it.
+     useStickyNavHeight (Chrome.jsx) overwrites this with the bar's real height
+     on mount and on resize, because it is not 53px everywhere: the nine nav
+     links do not fit one row between about 680px and 860px, where the bar
+     becomes 104px. The value here is the pre-measurement fallback. */
+  --nav-h:53px;
   /* Z-index scale */
   --z-nav:40;
   --z-progress:45;
@@ -99,6 +113,54 @@ body {
 
 a { color:inherit; }
 img { max-width:100%; }
+
+/* ----------------------------------------------------------------------------
+   TOUCH BEHAVIOUR — every control on every page.
+   `touch-action:manipulation` drops the ~300ms double-tap-to-zoom wait a mobile
+   browser otherwise holds before firing a tap, without disabling pinch zoom
+   (which stays available everywhere; the viewport meta never sets
+   maximum-scale). The tap highlight is the brand's matcha at low alpha rather
+   than the platform default blue-grey slab, which reads as a foreign colour on
+   a lime-and-forest page.
+   ---------------------------------------------------------------------------- */
+a, button, summary, label, select, [role="button"], [role="tab"], [role="radio"], [role="option"]{
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:rgba(181,196,43,0.24);
+}
+
+/* ----------------------------------------------------------------------------
+   STICKY-NAV HEADROOM
+   .nav is sticky at top:0 on every page, so anything the browser scrolls to the
+   top of the viewport lands underneath it. This is the ONE place that headroom
+   is expressed. Four routes all rely on it and now agree: a nav click (which
+   calls scrollIntoView rather than doing its own offset maths, see Nav.onClick
+   in Chrome.jsx), a hash typed or shared directly (itschriswang.com/#tools), the
+   cross-page anchors in every sub-page's nav and footer (/work/ links back to
+   ../#scenario, resolved by useHashLanding), and the browser scrolling a focused
+   element into view when tabbing upward. --nav-h is measured live, so this holds
+   at the widths where the bar wraps to two rows as well.
+   The story's moments are excluded: they are full-viewport scroll-snap panes
+   with their own headroom, and they run without the site nav.
+   ---------------------------------------------------------------------------- */
+section[id]:not(.st-moment), [id]:target:not(.st-moment){
+  scroll-margin-top:calc(var(--nav-h) + 0.75rem);
+}
+a[href], button, input, select, textarea, summary, [tabindex]{
+  scroll-margin-top:calc(var(--nav-h) + 0.75rem);
+  scroll-margin-bottom:1.5rem;
+}
+
+/* ----------------------------------------------------------------------------
+   MOBILE FORM CONTROLS
+   iOS Safari zooms the page in on focus whenever a text control's font-size is
+   under 16px, and it does not zoom back out. The site's controls are typed
+   small on purpose (10-14px mono and sans, to sit beside their labels), so each
+   one that is under the threshold is raised to exactly 16px on touch and narrow
+   viewports. The rules live beside the controls they correct, in each page's own
+   stylesheet, searchable by this comment's heading. The alternative fix —
+   maximum-scale=1 on the viewport meta — is not used: it would take pinch zoom
+   away from everyone to save a handful of controls.
+   ---------------------------------------------------------------------------- */
 
 /* External-link marker — any link opening in a new tab gets this arrow from
    CSS, so link labels don't hand-type "↗" per instance. .footer-cta-btn and
@@ -366,7 +428,7 @@ section { position:relative; }
 .pipe-n{ font-family:var(--mono); font-size:10px; letter-spacing:0.08em; font-weight:700; color:color-mix(in srgb, var(--pc,var(--matcha)) 72%, var(--slate)); background:color-mix(in srgb, var(--pc,var(--matcha)) 14%, var(--white)); border-radius:var(--r-pill); padding:0.3rem 0.6rem; flex-shrink:0; }
 .pipe-label{ font-family:var(--mono); font-size:0.82rem; letter-spacing:0.08em; text-transform:uppercase; font-weight:600; color:var(--pc,var(--slate)); }
 .pipe-step-right{ display:flex; align-items:center; gap:0.6rem; margin-left:auto; flex-shrink:0; }
-.pipe-badge{ font-family:var(--mono); font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:var(--mid); background:var(--band); border:1px solid var(--rule-dk); padding:0.25rem 0.7rem; border-radius:var(--r-pill); white-space:nowrap; transition:all 0.2s; }
+.pipe-badge{ font-family:var(--mono); font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:var(--mid); background:var(--band); border:1px solid var(--rule-dk); padding:0.25rem 0.7rem; border-radius:var(--r-pill); white-space:nowrap; transition:background 0.2s,color 0.2s,border-color 0.2s; }
 .pipe-step:hover .pipe-badge, .pipe-step.open .pipe-badge{ background:rgba(181,196,43,0.14); color:var(--accent-ink); border-color:rgba(181,196,43,0.35); }
 .pipe-chevron{ font-size:0.7rem; color:var(--subtle); transition:transform 0.32s var(--ease),color 0.2s; line-height:1; }
 .pipe-step.open .pipe-chevron{ transform:rotate(180deg); color:var(--matcha); }

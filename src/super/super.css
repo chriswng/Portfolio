@@ -160,7 +160,9 @@
 .sf-lim li::before{ content:'›'; position:absolute; left:0; color:var(--matcha); font-weight:700; }
 
 /* ---- Source table (method) ---- */
-.sf-scroll-x{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+/* overscroll-behavior-x keeps a swipe that runs off the end of the table inside
+   the table rather than triggering the browser's back navigation. */
+.sf-scroll-x{ overflow-x:auto; overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch; }
 .sf-table{ width:100%; border-collapse:collapse; font-size:0.8rem; min-width:640px; }
 .sf-table thead tr{ background:#E2E8F0; }
 .sf-table thead th{ font-family:var(--mono); font-size:9.5px; letter-spacing:0.08em; text-transform:uppercase; color:var(--slate); padding:0.55rem 0.8rem; text-align:left; font-weight:600; white-space:nowrap; }
