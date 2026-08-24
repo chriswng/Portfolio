@@ -35,12 +35,12 @@ npm run preview  # preview the production build
 
 ## Public pages and drafts
 
-Public: `/`, `/work/`, `/footprint/` (with `/footprint/method/`), `/daily/` and
-`/progress/`. These are in `sitemap.xml`, indexed by the home page's Tools
-section (`TOOLS` in `src/data/content.js`), and linked from the nav and footer.
+Public: `/`, `/work/` and `/footprint/` (with `/footprint/method/`). These are
+in `sitemap.xml`, indexed by the home page's Tools section (`TOOLS` in
+`src/data/content.js`), and linked from the nav and footer.
 
-Drafts: `/targets/`, `/fashion/`, `/super/` (with `/super/method/`) and
-`/grid/`, indexed only by `/lab/`. They are built and deployed like any other
+Drafts: `/targets/`, `/fashion/`, `/super/` (with `/super/method/`), `/grid/`,
+`/progress/` and `/daily/`, indexed only by `/lab/`. They are built and deployed like any other
 page, but nothing public links to them, they are out of `sitemap.xml`, they
 carry `noindex, nofollow`, and each asks for a passphrase before it renders
 (`src/components/Gate.jsx`). Their entries live in `PRIVATE_TOOLS` in

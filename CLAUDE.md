@@ -11,14 +11,14 @@ built as a React + Vite multi-page app and deployed to GitHub Pages.
 - Public pages: the main profile (`index.html` → `src/main.jsx` → `App.jsx`), a
   standalone work-samples page (`work/index.html` → `src/work/main.jsx`) at
   `/work/`, the Life Footprint dashboard (`footprint/index.html` →
-  `src/footprint/main.jsx`) at `/footprint/`, its basis of preparation
+  `src/footprint/main.jsx`) at `/footprint/`, and its basis of preparation
   (`footprint/method/index.html` → `src/footprint/method/main.jsx`) at
-  `/footprint/method/`, Sustainability Daily at `/daily/` and Australia's
-  Climate Progress at `/progress/`.
+  `/footprint/method/`.
 - Drafts, unlisted and behind a passphrase (see **The drafts** below): Target
   Tracker at `/targets/`, Cost Per Wear at `/fashion/`, Super Fund Holdings at
-  `/super/` (methodology at `/super/method/`) and Grid Intensity at `/grid/`,
-  indexed only by `/lab/`.
+  `/super/` (methodology at `/super/method/`), Grid Intensity at `/grid/`,
+  Australia's Climate Progress at `/progress/` and Sustainability Daily at
+  `/daily/`, indexed only by `/lab/`.
 - Every page has its entry html at the repo root and its source under
   `src/<page>/`.
 
@@ -26,7 +26,7 @@ built as a React + Vite multi-page app and deployed to GitHub Pages.
 
 | Path | What lives here |
 |---|---|
-| `src/components/` | Main-page sections (Hero, Bio, Principles, Ticker, Scenario, Tools + its `ToolSpecimen` charts, Experience, Contact) plus the shared SiteFooter (big lime card with signup + link columns, used by the home and work pages), shared Chrome (nav, grain, scroll progress, skip link), the shared hand-drawn `Icons` set (round line art, one matcha accent shape per glyph, used beside sec-tags on every page), and the `Aurora` (WebGL) + `ContourField` (canvas) hero backdrops, mounted on the home, work, footprint and fashion intros. `ToolNav.jsx` carries the shared nav + compact footer for the standalone tool pages (`/daily/`, `/progress/`, and the drafts `/grid/`, `/super/`, `/targets/`, `/fashion/`). `ToolCard.jsx` is the one tool tile, used by the home page's Tools band and by the drafts index. `Gate.jsx` is the passphrase screen in front of the drafts. Two shared controls sit alongside them: `Range.jsx` (every slider on the site, see the convention below) and `CopyButton.jsx` (every copy-to-clipboard action). |
+| `src/components/` | Main-page sections (Hero, Bio, Principles, Ticker, Scenario, Tools + its `ToolSpecimen` charts, Experience, Contact) plus the shared SiteFooter (big lime card with signup + link columns, used by the home and work pages), shared Chrome (nav, grain, scroll progress, skip link), the shared hand-drawn `Icons` set (round line art, one matcha accent shape per glyph, used beside sec-tags on every page), and the `Aurora` (WebGL) + `ContourField` (canvas) hero backdrops, mounted on the home, work, footprint and fashion intros. `ToolNav.jsx` carries the shared nav + compact footer for the standalone tool pages, all of them drafts now (`/grid/`, `/super/`, `/targets/`, `/fashion/`, `/progress/`, `/daily/`). `ToolCard.jsx` is the one tool tile, used by the home page's Tools band and by the drafts index. `Gate.jsx` is the passphrase screen in front of the drafts. Two shared controls sit alongside them: `Range.jsx` (every slider on the site, see the convention below) and `CopyButton.jsx` (every copy-to-clipboard action). |
 | `src/work/` | Work-samples page: `WorkApp`, `Baseline`, `CaseStudy`, data in `workData.js`, styles in `work.css`. |
 | `src/footprint/` | Life Footprint page: calculation engine and factor data in `lib/` and `data/` (keep rigorous; every factor cites its source), the Wrapped-style reveal in `story/` (WebGL carbon field, carbon characters, share cards), guided audit in `Onboarding.jsx`, dashboard sections alongside. Copy lives in `data/copy.js` and `data/storyCopy.js`. |
 | `src/footprint/method/` | The basis of preparation page (`/footprint/method/`): the written method plus the live factor tables, rendered from the same factor set the engine prices from. |
@@ -36,7 +36,7 @@ built as a React + Vite multi-page app and deployed to GitHub Pages.
 | `src/super/` | Super Fund Holdings (`/super/`): default (MySuper) option holdings and sector exposure next to each fund's own sustainability marketing, with flagged holdings named under stated criteria and a per-fund "last verified" date. Methodology on its own route (`/super/method/`, from the same data). All fund data and copy in `data.js`, styles in `super.css` (`sf-` prefix). |
 | `src/progress/` | Australia's Climate Progress (`/progress/`): scroll-driven reveal of national numbers (grid mix, EV sales, capacity additions, emissions vs target), each with a reference point, ending on a progress-and-shortfall summary. Reviewed quarterly; the last-updated date renders from one field in `data.js`. Styles in `progress.css` (`pr-` prefix). |
 | `src/targets/` | Target Tracker (`/targets/`): ASX50 net zero commitments plotted against reported Scope 1 and 2 emissions. Each company card draws the claimed path (baseline through absolute interim targets to the net zero year) as an SVG chart with the reported series overlaid, and carries a verification status (`sourced`/`partial`/`unverified`), flags (offsets, intensity, weakened, alliance exits) and per-company sources. Trajectory maths in `lib.js`; all company data and copy in `data.js`; in-page basis of preparation; last-updated date from one field in `data.js`. Styles in `targets.css` (`tt-` prefix). |
-| `src/lab/` | The drafts index (`/lab/`): the four unpublished tools as the same `ToolCard` tiles the home page uses, behind `Gate`. Copy in `data.js`, page frame in `lab.css`; the tools themselves are `PRIVATE_TOOLS` in `src/data/content.js`. Unlisted, and nothing public links to it. |
+| `src/lab/` | The drafts index (`/lab/`): the six unpublished tools as the same `ToolCard` tiles the home page uses, behind `Gate`. Copy in `data.js`, page frame in `lab.css`; the tools themselves are `PRIVATE_TOOLS` in `src/data/content.js`. Unlisted, and nothing public links to it. |
 | `src/lib/` | `opennem.js` — the one shared OpenNEM/AEMO client both `/grid/` and `/progress/` read (live NEM data with honest `{ live: false }` failure; callers must label fallbacks as estimates). `gate.js` — the passphrase check behind `/lab/` and the drafts, and the written record of what that gate is and is not. |
 | `src/data/` | Content and model inputs: `content.js` (all editorial copy, including footer links, the public `TOOLS` index, the unlisted `PRIVATE_TOOLS` index and the gate's copy), `scenario.js` (decarbonisation model), `specimens.js` (the small slices of each tool's real data that the tool-card charts are drawn from). |
 | `src/hooks/` | `useMagnetic` — cursor-follow interaction. |
@@ -95,13 +95,18 @@ built as a React + Vite multi-page app and deployed to GitHub Pages.
   real data (50 ASX50 companies, 258 fashion brands, 10 super funds, and so on),
   so adding a subpage means adding a card, and growing a tool's data set means
   updating its count in the same change. Each list's spans are written to fill
-  its rows across the six-column grid (4-2 then 2-4), so moving a tool between
-  the lists means renumbering `n` and repicking `span` in both. The accent
+  its rows across the six-column grid (3-3 for the public pair; 4-2, 2-4, 3-3
+  for the drafts), so moving a tool between the lists means renumbering `n` and
+  repicking `span` in both. The footer's link columns follow the same rule from
+  the other side: `FOOTER.columns.length` drives the grid through
+  `--footer-col-n`, so a column emptied by a page moving behind the gate closes
+  up rather than leaving a hole. The accent
   colours are chosen to clear contrast on the forest band, which is why
   `--indigo` is absent there.
 - **The drafts are unlisted, not secured.** Target Tracker, Cost Per Wear, Super
-  Fund Holdings and Grid Intensity are not finished enough to show, so they are
-  kept out of `public/sitemap.xml` and `public/404.html`, carry
+  Fund Holdings, Grid Intensity, Australia's Climate Progress and Sustainability
+  Daily are not finished enough to show, so they are kept out of
+  `public/sitemap.xml` and `public/404.html`, carry
   `<meta name="robots" content="noindex, nofollow">`, are absent from `NAV_LINKS`
   and `FOOTER`, and wrap their app in `Gate` in `src/<tool>/main.jsx`. They still
   build and deploy. The passphrase and the limits of the arrangement are written

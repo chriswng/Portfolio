@@ -4,13 +4,12 @@ import { resolve } from 'path';
 
 // Relative base so the build works whether served from a domain root
 // (itschriswang.github.io) or a project sub-path (/portfolio/).
-// Multi-page. Public: the main profile at /, work samples at /work/, the
+// Multi-page. Public: the main profile at /, work samples at /work/, and the
 // life-footprint dashboard at /footprint/ (basis of preparation at
-// /footprint/method/), Sustainability Daily at /daily/ and Australia's Climate
-// Progress at /progress/. Unlisted: the drafts index at /lab/ and the four
-// tools it gates, /targets/, /fashion/, /super/ (methodology at
-// /super/method/) and /grid/. The drafts are built and deployed like any other
-// page; nothing public links to them and each asks for a passphrase.
+// /footprint/method/). Unlisted: the drafts index at /lab/ and the six tools it
+// gates, /targets/, /fashion/, /super/ (methodology at /super/method/),
+// /grid/, /progress/ and /daily/. The drafts are built and deployed like any
+// other page; nothing public links to them and each asks for a passphrase.
 export default defineConfig({
   base: './',
   plugins: [react()],
