@@ -583,7 +583,9 @@
 }
 @keyframes st-sheet-in { from { opacity: 0; } to { opacity: 1; } }
 .st-sheet {
-  width: min(440px, 100%); max-height: 92vh; overflow-y: auto;
+  /* Modal: scrolling to the end of the sheet stays in the sheet rather than
+     chaining into the story behind it. */
+  width: min(440px, 100%); max-height: 92vh; overflow-y: auto; overscroll-behavior: contain;
   /* iOS: dvh tracks the visible viewport under the collapsing URL bar. */
   max-height: 92dvh;
   background: var(--st-dark); color: var(--st-dark-ink);
@@ -688,6 +690,8 @@
   display: flex; gap: 0.9rem; overflow-x: auto; margin: 2rem 0 1.6rem;
   padding: 0.4rem 0.2rem 1rem; scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
+  /* A swipe past the last card stays in the gallery instead of navigating back. */
+  overscroll-behavior-x: contain;
 }
 .st-gallery-card {
   flex: 0 0 auto; scroll-snap-align: start;

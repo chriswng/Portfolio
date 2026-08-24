@@ -4,17 +4,27 @@
 // tool footer. `home` is the relative path back to the root from wherever
 // the page sits ('../' for a top-level tool, '../../' for a sub-page).
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NAV_LINKS } from '../data/content';
+import { useStickyNavHeight } from './Chrome';
 import Mark from './Mark';
 
 export function ToolNav({ home = '../' }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  // Publishes --nav-h, which the tool pages' own in-page anchors clear.
+  useStickyNavHeight();
+  // Escape closes the open mobile menu, matching the home and footprint navs.
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+    const onKey = (e) => { if (e.key === 'Escape') setMenuOpen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [menuOpen]);
   return (
     <nav className="nav" aria-label="Primary">
       <div className="nav-inner canvas">
         <a href={home} className="nav-logo"><Mark label="Chris Wang, home" /></a>
-        <div className={`nav-links${menuOpen ? ' open' : ''}`}>
+        <div className={`nav-links${menuOpen ? ' open' : ''}`} id="nav-links">
           {NAV_LINKS.map((l) => (
             <a key={l.label} href={home + l.href}>{l.label}</a>
           ))}
@@ -23,6 +33,7 @@ export function ToolNav({ home = '../' }) {
           className={`nav-hamburger${menuOpen ? ' open' : ''}`}
           aria-label={menuOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={menuOpen}
+          aria-controls="nav-links"
           onClick={() => setMenuOpen((v) => !v)}
         >
           <span /><span /><span />

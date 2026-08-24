@@ -194,6 +194,12 @@
 .gi-src-meta a { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.04em; color: var(--accent-ink); font-weight: 700; }
 .gi-src-acc { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mid); }
 
+/* ---- Mobile form controls: 16px so iOS Safari does not zoom the page in on
+   focus (see MOBILE FORM CONTROLS in global.css). ---- */
+@media (pointer: coarse), (max-width: 680px) {
+  .gi-field select { font-size: 16px; }
+}
+
 /* ---- Motion preferences ---- */
 @media (prefers-reduced-motion: reduce) {
   .gi-range .rng-input::-webkit-slider-thumb, .gi-disclose summary::before, .gi-pairnum-mkt .gi-pair-v { transition: none; }

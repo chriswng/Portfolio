@@ -75,7 +75,7 @@
 .sk-head{ font-family:var(--disp); font-size:clamp(1.8rem,5vw,3.4rem); font-weight:800; letter-spacing:-0.03em; line-height:0.95; color:var(--slate); margin-bottom:0.9rem; }
 .sk-head em{ font-style:normal; color:#75821D; }
 .sk-sub{ font-size:0.85rem; font-weight:400; color:#475569; line-height:1.7; max-width:560px; margin-bottom:1.5rem; }
-.sankey-wrap{ margin-top:1rem; overflow-x:auto; }
+.sankey-wrap{ margin-top:1rem; overflow-x:auto; overscroll-behavior-x:contain; }
 .sankey-wrap svg{ clip-path:inset(0 100% 0 0); }
 .sankey-wrap.sk-on svg{ clip-path:inset(0 0 0 0); transition:clip-path 1.2s var(--ease); }
 
@@ -104,7 +104,9 @@
 .stage-note{ font-size:0.72rem; color:var(--mid); line-height:1.5; border-top:1px solid var(--rule-lt); padding-top:0.6rem; margin-top:auto; }
 
 /* ---- Tables ---- */
-.scroll-x{ overflow-x:auto; -webkit-overflow-scrolling:touch; border:1px solid var(--rule-dk); border-radius:var(--r-lg); box-shadow:var(--shadow-soft); }
+/* overscroll-behavior-x keeps a swipe that runs off the end of the table inside
+   the table rather than triggering the browser's back navigation. */
+.scroll-x{ overflow-x:auto; overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch; border:1px solid var(--rule-dk); border-radius:var(--r-lg); box-shadow:var(--shadow-soft); }
 .c-table{ width:100%; border-collapse:collapse; font-size:0.82rem; }
 /* Flat forest header — the green-to-grey gradient read as noise at this height.
    A single solid band with lime type is calmer and holds contrast cleanly. */

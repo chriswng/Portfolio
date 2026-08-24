@@ -134,9 +134,34 @@ built as a React + Vite multi-page app and deployed to GitHub Pages.
   `prefersReducedMotion()` and cursor-only interactions on `canHover()` (both
   from `src/utils/media.js`). Canvas/WebGL loops must pause off-screen via
   `IntersectionObserver` and clean up on unmount.
+- **One place for the sticky nav's headroom.** `.nav` is sticky at `top:0` on
+  every page, so anything scrolled to the top of the viewport lands under it.
+  That clearance is expressed once, as `scroll-margin-top:calc(var(--nav-h) +
+  0.75rem)` in `global.css`, and `--nav-h` is measured from the live bar by
+  `useStickyNavHeight()` (`Chrome.jsx`) rather than hardcoded, because the nine
+  nav links wrap to two rows between about 680px and 860px and the bar is 104px
+  there. Every route that lands on a section goes through it: a nav click calls
+  `scrollIntoView` instead of doing its own offset maths, and `useHashLanding()`
+  covers a hash that arrives before React has rendered the target (a shared
+  link, or the cross-page `../#scenario` anchors in every sub-page's nav and
+  footer) while leaving Back/Forward scroll restoration alone. Do not
+  reintroduce a per-call offset calculation.
+- **Native form controls reach 16px on touch.** iOS Safari zooms the page in,
+  irreversibly, when a focused text control is under 16px, and the site's
+  controls are typed small on purpose. Each page's stylesheet carries a
+  `@media (pointer: coarse), (max-width: 680px)` block raising its own inputs
+  and selects to 16px, filed under the heading `MOBILE FORM CONTROLS` (the
+  rationale lives once, in `global.css`). Add a control under 16px, add it
+  there. Never fix this with `maximum-scale=1`: pinch zoom stays available.
 - **Accessibility:** keep the skip link first, `aria-current` on the active nav
   link, decorative canvases `aria-hidden`, and purely visual motion (e.g. the
   cycling role text) hidden from assistive tech with a static `.sr-only` label.
+  A tab strip is the full WAI-ARIA contract or it is not a tab strip: roving
+  `tabIndex`, arrow keys, `aria-controls` and a matching `role="tabpanel"` (see
+  `FieldGuide` in `src/fashion/FashionApp.jsx` for the reference shape). Roles
+  without the keyboard behaviour behind them are worse than plain buttons.
+  Prefer explicit transition property lists over `transition:all`, which
+  animates layout properties by accident.
 
 ## Develop
 
