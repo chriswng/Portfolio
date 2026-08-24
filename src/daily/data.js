@@ -674,7 +674,7 @@ export const METHOD = {
       icon: 'list',
       title: 'Greenwash or Not: the rules',
       paras: [
-        'Each claim is judged against the ACCC\'s eight principles for environmental claims, reused word for word from the Cost Per Wear claim-check research elsewhere on this site, plus the Australian Consumer Law (sections 18 and 29) and, for financial and super claims, ASIC\'s greenwashing guidance. The reasoning names the specific rule a claim exploits. A legitimate claim is one that is specific, substantiated and qualified: a named standard, a real number, a stated baseline.',
+        'Each claim is judged against the ACCC\'s eight principles for environmental claims, plus the Australian Consumer Law (sections 18 and 29) and, for financial and super claims, ASIC\'s greenwashing guidance. The reasoning names the specific rule a claim exploits. A legitimate claim is one that is specific, substantiated and qualified: a named standard, a real number, a stated baseline.',
         'Every claim is a generic composite, invented to illustrate a pattern. None is attributed to a real named company, ever. Where the reasoning refers to enforcement, it points at the real regulatory pattern (the ASIC super-fund cases, the ACCC recycled-plastic case) without pinning any invented words on a real brand.',
       ],
     },

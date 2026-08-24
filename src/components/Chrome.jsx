@@ -20,30 +20,52 @@ export function SkipLink() {
 //
 // Measured rather than hardcoded, for the same reason the footer's tab notch is
 // (see useEquidistantNotch in SiteFooter.jsx): a constant goes stale. The bar is
-// 53px at most widths, but the nine nav links do not fit one row between about
-// 680px and 860px and it becomes 104px there, and any future label change moves
-// that band. A ResizeObserver on the bar itself is right at every width without
-// anyone having to remember to re-measure. The CSS keeps 53px as the value
-// before this runs.
-export function useStickyNavHeight() {
+// 53px at most widths, but the eight nav links do not fit one row between about
+// 680px and 750px, where it goes to 71px and then 104px, and any future label
+// change moves that band. A ResizeObserver on the bar itself is right at every
+// width without anyone having to remember to re-measure. The CSS keeps 53px as
+// the value before this runs.
+//
+// The same measurement serves anything pinned at the top of a page, so it is
+// written once here. More than one bar can share top:0 and overlap (the
+// footprint page pins its mode bar under the site nav), so `selectors` takes
+// all of them and the headroom is the tallest: a bar the stylesheet has left
+// static at this breakpoint counts as nothing, because it scrolls away with
+// the page rather than standing over it. `holdWhile` names a descendant whose
+// presence means the height on show is a transient one to ignore, and `watch`
+// is any value that changes when a bar mounts or unmounts.
+export function useStickyBarHeight(selectors, prop, { holdWhile, watch } = {}) {
+  const list = Array.isArray(selectors) ? selectors.join(',') : selectors;
   useEffect(() => {
-    const bar = document.querySelector('.nav');
-    if (!bar) return undefined;
+    const bars = [...document.querySelectorAll(list)];
+    const set = (h) => document.documentElement.style.setProperty(prop, h + 'px');
+    if (!bars.length) { set(0); return undefined; }
     const sync = () => {
-      // An open mobile menu makes the bar as tall as the stacked link list.
-      // That is not headroom anything needs to clear: the menu closes the
-      // moment a link in it is chosen, so the closed height is what a landing
-      // arrives under. Hold the last closed measurement while it is open.
-      if (bar.querySelector('.nav-links.open')) return;
-      const h = Math.round(bar.getBoundingClientRect().height);
-      if (h > 0) document.documentElement.style.setProperty('--nav-h', h + 'px');
+      if (holdWhile && bars.some((b) => b.querySelector(holdWhile))) return;
+      const h = bars.reduce((tallest, b) => (
+        getComputedStyle(b).position === 'sticky'
+          ? Math.max(tallest, Math.round(b.getBoundingClientRect().height))
+          : tallest
+      ), 0);
+      set(h);
     };
     sync();
     const ro = new ResizeObserver(sync);
-    ro.observe(bar);
+    bars.forEach((b) => ro.observe(b));
+    // Crossing the breakpoint that unpins a bar need not change its size, so
+    // the observer alone can miss it.
+    window.addEventListener('resize', sync);
     document.fonts?.ready?.then(sync).catch(() => {});
-    return () => ro.disconnect();
-  }, []);
+    return () => { ro.disconnect(); window.removeEventListener('resize', sync); };
+  }, [list, prop, holdWhile, watch]);
+}
+
+export function useStickyNavHeight() {
+  // An open mobile menu makes the bar as tall as the stacked link list. That is
+  // not headroom anything needs to clear: the menu closes the moment a link in
+  // it is chosen, so the closed height is what a landing arrives under. Hold
+  // the last closed measurement while it is open.
+  useStickyBarHeight('.nav', '--nav-h', { holdWhile: '.nav-links.open' });
 }
 
 // Land on the section a hash names, on a cold load.

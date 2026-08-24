@@ -14,8 +14,8 @@
 // State (selected brand + compare set) is deep-linked into the URL hash, so
 // any lookup is shareable and the back button works.
 //
-// Chrome is the site's own: the shared nav (NAV_LINKS + Mark), grain and
-// design tokens come from global.css, exactly as the footprint pages do.
+// Chrome is the site's own: the shared ToolNav, grain and design tokens come
+// from global.css, exactly as the footprint pages do.
 // ============================================================================
 import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import {
@@ -26,9 +26,7 @@ import {
   LENS_CONCERNS, LENS_READING, CHANGELOG,
   deriveMonogram, segmentStyle, logoUrl, GROUP_DOMAIN,
 } from './data';
-import { NAV_LINKS } from '../data/content';
 import { Grain } from '../components/Chrome';
-import Mark from '../components/Mark';
 import Icon from '../components/Icons';
 import CopyButton from '../components/CopyButton';
 import { copyText } from '../utils/clipboard';
@@ -37,6 +35,7 @@ import ContourField from '../components/ContourField';
 import Studio from './Studio';
 import { prefersReducedMotion } from '../utils/media';
 import SiteFooter from '../components/SiteFooter';
+import { ToolNav } from '../components/ToolNav';
 
 const MAX_COMPARE = 3;
 const RECENT_KEY = 'ow-recent-v1';
@@ -210,44 +209,6 @@ function BrandLogo({ brand, name, segment, domain, size = 'md', className = '' }
         />
       )}
     </span>
-  );
-}
-
-// =========================================================================
-// Chrome — the site's own nav, as on the footprint pages, so Cost Per Wear sits
-// inside the portfolio rather than beside it.
-// =========================================================================
-function FashionNav() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  return (
-    <nav className="nav" aria-label="Primary">
-      <div className="nav-inner canvas">
-        <a href="../" className="nav-logo"><Mark label="Chris Wang, home" /></a>
-        <div className={`nav-links${menuOpen ? ' open' : ''}`}>
-          {NAV_LINKS.map((l) => {
-            const self = l.href === 'fashion/';
-            return (
-              <a
-                key={l.label}
-                href={self ? './' : `../${l.href}`}
-                className={self ? 'active' : undefined}
-                aria-current={self ? 'true' : undefined}
-              >
-                {l.label}
-              </a>
-            );
-          })}
-        </div>
-        <button
-          className={`nav-hamburger${menuOpen ? ' open' : ''}`}
-          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-          aria-expanded={menuOpen}
-          onClick={() => setMenuOpen((v) => !v)}
-        >
-          <span /><span /><span />
-        </button>
-      </div>
-    </nav>
   );
 }
 
@@ -1630,7 +1591,7 @@ export default function FashionApp() {
       <a className="skip-link" href="#lookup">Skip to the brand lookup</a>
       <Grain />
       <ScrollProgress />
-      <FashionNav />
+      <ToolNav />
       <SectionRail />
       <main className="ow-main" ref={heroSearchRef}>
         <Hero onSelect={select} recent={recent} />
