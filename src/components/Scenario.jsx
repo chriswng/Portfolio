@@ -5,6 +5,7 @@ import { Chart, LineController, LineElement, PointElement, LinearScale, Category
 // controller, scale, and plugin and roughly doubles the chart bundle.
 Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale, Filler, Tooltip);
 import { runModel, chartLabels, LEVER_LABELS, SECTOR_OPTIONS, resolveSector } from '../data/scenario';
+import { SCENARIO_UI } from '../data/content';
 import SplitText from './SplitText';
 import Icon from './Icons';
 import { prefersReducedMotion } from '../utils/media';
@@ -164,7 +165,20 @@ export default function Scenario() {
         <div className="sec-tag" data-idx="02 / "><Icon name="target" size={30} />Decarbonisation Scenario Model</div>
         <p className="tool-decl" style={{ marginTop: '1.5rem' }}>Every lever has a source. <strong>Set the levers, then read the story.</strong></p>
         <p className="tool-sub">{labels.sub}</p>
-        <span className="tool-disc">Illustrative model · stylised numbers · not client data · FY30 used as the interim target year</span>
+        {/* The state of the data, said before the data: a basis of preparation
+            compressed to one paragraph, the same thing every tool page on this
+            site carries. Deliberately not the "locked, approved, available for
+            reporting" banner enterprise platforms run across a dataset. That one
+            states who may still edit a figure, which says nothing about whether
+            the figure was measured or modelled, and over a projection it reads
+            as though approval had made the number true. This sentence used to
+            sit under the sub-heading in 11px grey mono, far too quiet for the
+            governing fact about every number below. */}
+        <div className="basis-strip" role="note">
+          <span className="basis-badge"><Icon name="book" size={18} />{SCENARIO_UI.basis.label}</span>
+          <p className="basis-text">{SCENARIO_UI.basis.text}</p>
+          <span className="basis-meta">{SCENARIO_UI.basis.meta}</span>
+        </div>
 
         <div className="scn-grid">
           <div className="scn-controls">
@@ -213,11 +227,35 @@ export default function Scenario() {
                 {result.takeaway.head}<em>{result.takeaway.value}</em>{result.takeaway.tail}
                 <span className="tk-note">{result.takeaway.note}</span>
               </p>
+              {/* What produced the numbers. On a wide screen the levers sit
+                  alongside; on anything narrower they are several screens back,
+                  and a result panel that does not restate its own settings
+                  makes you go and find them. */}
+              <div className="scn-frame">
+                <span className="scn-frame-lead">{SCENARIO_UI.frameLead}</span>
+                <span className="scn-frame-chip scn-frame-profile">{result.frame.profile}</span>
+                {result.frame.levers.map((l) => (
+                  <span className="scn-frame-chip" key={l.name}>{l.name}<b>{l.set}</b></span>
+                ))}
+                <span className="scn-frame-chip">{SCENARIO_UI.frameGrowth}<b>{result.frame.growth}</b></span>
+              </div>
+              {/* Each tile carries its comparator and its change rather than a
+                  bare value. The change is signed, so its direction survives
+                  without the colour. */}
               <div className="kpi-strip">
-                <div className="kpi"><div className="kpi-l">FY20 Baseline</div><div className="kpi-v">{result.kpiBase}</div></div>
-                <div className="kpi"><div className="kpi-l">FY26 Actuals</div><div className="kpi-v">{result.kpiFy26}</div></div>
-                <div className="kpi live"><div className="kpi-l">FY30 Net</div><div className="kpi-v">{result.kpiNet}</div></div>
-                <div className="kpi live"><div className="kpi-l">FY30 vs FY20</div><div className="kpi-v">{result.kpiPct}</div></div>
+                {result.kpis.map((k) => (
+                  <div className={'kpi' + (k.live ? ' live' : '')} key={k.key}>
+                    <div className="kpi-l">{k.label}</div>
+                    <div className="kpi-v">{k.value}</div>
+                    {k.base && <div className="kpi-base">{k.base}</div>}
+                    {k.change && (
+                      <div className={'kpi-chg kpi-chg-' + k.dir}>
+                        {k.change.map((c) => <span key={c}>{c}</span>)}
+                      </div>
+                    )}
+                    {k.note && <div className="kpi-note">{k.note}</div>}
+                  </div>
+                ))}
               </div>
               <div className="chart-card">
                 <div className="chart-head"><div className="chart-title">{result.chartTitle}</div></div>
