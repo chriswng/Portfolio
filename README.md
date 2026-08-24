@@ -33,6 +33,30 @@ npm run preview  # preview the production build
 - `public/` — shared static assets: logos, favicon, social og-image, robots.txt, sitemap.xml
 - `docs/` — non-app material (skill reference, career record); not built or deployed
 
+## Public pages and drafts
+
+Public: `/`, `/work/`, `/footprint/` (with `/footprint/method/`), `/daily/` and
+`/progress/`. These are in `sitemap.xml`, indexed by the home page's Tools
+section (`TOOLS` in `src/data/content.js`), and linked from the nav and footer.
+
+Drafts: `/targets/`, `/fashion/`, `/super/` (with `/super/method/`) and
+`/grid/`, indexed only by `/lab/`. They are built and deployed like any other
+page, but nothing public links to them, they are out of `sitemap.xml`, they
+carry `noindex, nofollow`, and each asks for a passphrase before it renders
+(`src/components/Gate.jsx`). Their entries live in `PRIVATE_TOOLS` in
+`src/data/content.js`.
+
+The passphrase and what the gate is worth are both documented at the top of
+`src/lib/gate.js`. In short: it hides the drafts from visitors and search
+engines, and it is not security. This is a static build with no server to check
+anything, and the repository behind it is public.
+
+To publish a draft: move its entry from `PRIVATE_TOOLS` to `TOOLS` (renumbering
+`n` and repicking `span` so both grids still fill their rows), drop the `Gate`
+wrapper from its `src/<tool>/main.jsx`, remove the `noindex` meta from its
+`index.html`, put its URL back in `public/sitemap.xml` and `public/404.html`,
+and restore its footer link in `FOOTER`.
+
 ## Deployment
 
 GitHub Actions (`.github/workflows/deploy.yml`) builds and publishes `dist/`

@@ -4,11 +4,13 @@ import { resolve } from 'path';
 
 // Relative base so the build works whether served from a domain root
 // (itschriswang.github.io) or a project sub-path (/portfolio/).
-// Multi-page: the main profile at /, work samples at /work/, the
+// Multi-page. Public: the main profile at /, work samples at /work/, the
 // life-footprint dashboard at /footprint/ (basis of preparation at
-// /footprint/method/), Cost Per Wear at /fashion/, and the four tools:
-// /grid/, /daily/, /super/ (methodology at /super/method/), /progress/ and
-// /targets/.
+// /footprint/method/), Sustainability Daily at /daily/ and Australia's Climate
+// Progress at /progress/. Unlisted: the drafts index at /lab/ and the four
+// tools it gates, /targets/, /fashion/, /super/ (methodology at
+// /super/method/) and /grid/. The drafts are built and deployed like any other
+// page; nothing public links to them and each asks for a passphrase.
 export default defineConfig({
   base: './',
   plugins: [react()],
@@ -28,6 +30,7 @@ export default defineConfig({
         superMethod: resolve(__dirname, 'super/method/index.html'),
         progress: resolve(__dirname, 'progress/index.html'),
         targets: resolve(__dirname, 'targets/index.html'),
+        lab: resolve(__dirname, 'lab/index.html'),
       },
       output: {
         // Stable vendor chunks: both pages share react/framer-motion, and the
