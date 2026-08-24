@@ -165,11 +165,15 @@ export default function Scenario() {
         <div className="sec-tag" data-idx="02 / "><Icon name="target" size={30} />Decarbonisation Scenario Model</div>
         <p className="tool-decl" style={{ marginTop: '1.5rem' }}>Every lever has a source. <strong>Set the levers, then read the story.</strong></p>
         <p className="tool-sub">{labels.sub}</p>
-        {/* The state of the data, said before the data. Reporting platforms
-            band a provisional or locked dataset at the top of the view so
-            nobody reads a figure without knowing what it is; the same sentence
-            used to sit under this sub-heading in 11px grey mono, which is far
-            too quiet for the governing fact about every number below. */}
+        {/* The state of the data, said before the data: a basis of preparation
+            compressed to one paragraph, the same thing every tool page on this
+            site carries. Deliberately not the "locked, approved, available for
+            reporting" banner enterprise platforms run across a dataset. That one
+            states who may still edit a figure, which says nothing about whether
+            the figure was measured or modelled, and over a projection it reads
+            as though approval had made the number true. This sentence used to
+            sit under the sub-heading in 11px grey mono, far too quiet for the
+            governing fact about every number below. */}
         <div className="basis-strip" role="note">
           <span className="basis-badge"><Icon name="book" size={18} />{SCENARIO_UI.basis.label}</span>
           <p className="basis-text">{SCENARIO_UI.basis.text}</p>
