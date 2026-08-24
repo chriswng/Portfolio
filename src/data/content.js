@@ -109,7 +109,7 @@ export const TOOLS_INTRO = {
   idx: '03 / ',
   title: ['Built,', 'not claimed'],
   paras: [
-    'Four tools, built in my own time and maintained since. Each one takes a question a sustainability team actually has to answer and answers it in public, with sourced numbers, a stated method, and the gaps named.',
+    'Two tools, built in my own time and maintained since. Each one takes a question a sustainability team actually has to answer and answers it in public, with sourced numbers, a stated method, and the gaps named.',
     'They run on the same discipline I bring to a reporting cycle. If a figure cannot be traced to a citation and an access date, it does not go on the page. Where a number is an estimate, the page says so beside the number.',
     'The chart on each card is drawn from that tool\'s own data, and says underneath it what stands behind the numbers.',
   ],
@@ -127,24 +127,25 @@ export const TOOLS_INTRO = {
       body: 'Data, copy and methodology live in one place per tool, so refreshing a factor moves every place it appears.',
     },
   ],
-  note: 'The decarbonisation model above is the fifth, built the same way.',
+  note: 'The decarbonisation model above is the third, built the same way.',
 };
 
 // The public tool index, one card per page the site links to. Each carries what
 // the tool does, the capability it demonstrates, a scope line whose figures are
 // hand-counted from the real data, a spec (its chart, see ToolSpecimen.jsx) and
 // a span (its width in the bento grid). Spans are chosen so the rows fill:
-// 4-2 then 2-4 across the six-column grid.
+// 3-3 across the six-column grid.
 //
-// Four of the eight tools are not here. Target Tracker, Cost Per Wear, Super
-// Fund Holdings and Grid Intensity are drafts rather than finished work, so
-// they sit behind the passphrase at /lab/ in PRIVATE_TOOLS below and nothing
-// public links to them. Moving one back is moving its entry between the two
-// lists, restoring its footer link, and putting its URL back in the sitemap.
+// Most of the tools are not here. Target Tracker, Cost Per Wear, Super Fund
+// Holdings, Grid Intensity, Australia's Climate Progress and Sustainability
+// Daily are drafts rather than finished work, so they sit behind the passphrase
+// at /lab/ in PRIVATE_TOOLS below and nothing public links to them. Moving one
+// back is moving its entry between the two lists, restoring its footer link,
+// and putting its URL back in the sitemap.
 export const TOOLS = [
   {
     n: '01', icon: 'chart', color: 'var(--lime)',
-    name: 'Work Samples', spec: 'work', span: 4, href: 'work/',
+    name: 'Work Samples', spec: 'work', span: 3, href: 'work/',
     what: 'Four client-side frameworks as live working examples: emissions baseline, decarbonisation roadmap, multi-criteria prioritisation, and lifecycle carbon. One case study runs through all four.',
     proves: 'The engagement arc I run end to end: boundary and data grading, quantified options, stakeholder-weighted screening, then a sequenced roadmap with CAPEX by year.',
     tags: ['Scope 1-3 baseline', 'MCA framework', 'A1-A5 lifecycle'],
@@ -152,32 +153,17 @@ export const TOOLS = [
   },
   {
     n: '02', icon: 'house', color: 'var(--matcha)',
-    name: 'Life Footprint', spec: 'footprint', span: 2, href: 'footprint/',
+    name: 'Life Footprint', spec: 'footprint', span: 3, href: 'footprint/',
     what: 'A full personal emissions model across ten categories, with a guided audit, an abatement planner, a forecast pathway and a reveal at the end that makes the year legible.',
     proves: 'The whole inventory arc in miniature: boundary, cited factor set, calculation, abatement pathway, and a basis of preparation kept in sync with the engine.',
     tags: ['Cited factor set', 'Abatement planner', 'Basis of preparation'],
     scope: '10 categories · every factor cites its source',
   },
-  {
-    n: '03', icon: 'globe', color: 'var(--lime)',
-    name: "Australia's Climate Progress", spec: 'progress', span: 2, href: 'progress/',
-    what: 'Six national numbers on the energy transition. Each is drawn against its own reference point and the 2030 target, with the shortfall named wherever there is one.',
-    proves: 'Keeping sourced, derived and estimated figures apart, and refusing to blend a live grid snapshot into an annual inventory because the two are different quantities.',
-    tags: ['NGER and AEMO data', 'Live NEM feed', 'Target gap'],
-    scope: '6 indicators · reviewed quarterly, date on the page',
-  },
-  {
-    n: '04', icon: 'spark', color: 'var(--amber)',
-    name: 'Sustainability Daily', spec: 'daily', span: 4, href: 'daily/',
-    what: 'Two daily puzzles: guess the footprint, and call the greenwash. Both rotate deterministically by date, and streaks stay in your browser.',
-    proves: 'Making a factor set legible to a non-specialist, and applying the ACCC greenwashing principles consistently enough to survive being graded every day.',
-    tags: ['ACCC principles', 'Shared factor set', 'No server'],
-    scope: '33 footprint items · 30 claims · figures derived from the footprint model',
-  },
 ];
 
 // The drafts. Same shape as TOOLS, indexed only by /lab/, which is why the
-// hrefs climb out of that directory first.
+// hrefs climb out of that directory first. Spans run 4-2, 2-4, 3-3 so the three
+// rows fill.
 export const PRIVATE_TOOLS = [
   {
     n: '01', icon: 'target', color: 'var(--berry)',
@@ -210,6 +196,22 @@ export const PRIVATE_TOOLS = [
     proves: 'Scope 2 accounting taught properly, location-based against market-based, with GreenPower, PPAs and LGC surrender all in the toggle.',
     tags: ['Live AEMO data', 'Scope 2', 'Market vs location'],
     scope: '5 NEM regions live · WA and NT named as out of scope',
+  },
+  {
+    n: '05', icon: 'globe', color: 'var(--lime)',
+    name: "Australia's Climate Progress", spec: 'progress', span: 3, href: '../progress/',
+    what: 'Six national numbers on the energy transition. Each is drawn against its own reference point and the 2030 target, with the shortfall named wherever there is one.',
+    proves: 'Keeping sourced, derived and estimated figures apart, and refusing to blend a live grid snapshot into an annual inventory because the two are different quantities.',
+    tags: ['NGER and AEMO data', 'Live NEM feed', 'Target gap'],
+    scope: '6 indicators · reviewed quarterly, date on the page',
+  },
+  {
+    n: '06', icon: 'spark', color: 'var(--amber)',
+    name: 'Sustainability Daily', spec: 'daily', span: 3, href: '../daily/',
+    what: 'Two daily puzzles: guess the footprint, and call the greenwash. Both rotate deterministically by date, and streaks stay in your browser.',
+    proves: 'Making a factor set legible to a non-specialist, and applying the ACCC greenwashing principles consistently enough to survive being graded every day.',
+    tags: ['ACCC principles', 'Shared factor set', 'No server'],
+    scope: '33 footprint items · 30 claims · figures derived from the footprint model',
   },
 ];
 
@@ -309,6 +311,8 @@ export const FOOTER = {
   tagline: 'Sustainability advisor · Melbourne, Australia',
   // Link columns. hrefs beginning with '#' or a sub-path are prefixed with the
   // page base at render time so the footer works from the root and /work/.
+  // How many there are drives the grid (see --footer-col-n in SiteFooter.jsx),
+  // so moving a page behind the gate can empty a column without leaving a gap.
   columns: [
     {
       head: 'Profile', icon: 'people',
@@ -325,13 +329,6 @@ export const FOOTER = {
         { label: 'Decarb Model', href: '#scenario' },
         { label: 'Work Samples', href: 'work/' },
         { label: 'Carbon Footprint', href: 'footprint/' },
-      ],
-    },
-    {
-      head: 'Tools', icon: 'spark',
-      links: [
-        { label: 'Climate Progress', href: 'progress/' },
-        { label: 'Sustainability Daily', href: 'daily/' },
       ],
     },
   ],

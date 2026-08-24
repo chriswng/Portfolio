@@ -950,8 +950,18 @@ a.footer-cta-btn[target="_blank"]::after{ content:none; }
 
 .footer-legal{ font-family:var(--mono); font-size:11px; letter-spacing:0.05em; color:var(--forest-2); }
 
+/* Two columns on narrow screens whatever the data holds; above 620px one
+   column per entry in FOOTER.columns, published as --footer-col-n by
+   SiteFooter.jsx. The width follows the count at the same 240px per column the
+   three-column layout was drawn at, so removing a column narrows the block
+   instead of stretching what is left across the same span. */
 .footer-cols{ display:grid; grid-template-columns:repeat(2,1fr); gap:1.8rem 1.2rem; margin-top:clamp(1.8rem,4vw,2.6rem); }
-@media(min-width:620px){ .footer-cols{ grid-template-columns:repeat(3,1fr); max-width:720px; } }
+@media(min-width:620px){
+  .footer-cols{
+    grid-template-columns:repeat(var(--footer-col-n,3),1fr);
+    max-width:calc(var(--footer-col-n,3) * 240px);
+  }
+}
 .footer-col-head{ font-family:var(--mono); font-size:11px; letter-spacing:0.14em; text-transform:uppercase; font-weight:700; color:var(--forest); margin-bottom:0.9rem; }
 .footer-col-list{ list-style:none; display:flex; flex-direction:column; gap:0.55rem; }
 .footer-col-list a{
