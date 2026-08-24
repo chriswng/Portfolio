@@ -72,6 +72,22 @@ export const F = {
 
 export const REV = { flat: 1.000, moderate: 1.015, high: 1.030 };
 
+// Plain-text forms of the control settings, for the run summary the result
+// panel carries. The model owns these rather than the component, because the
+// summary has to say exactly what was fed into the maths.
+const OPT_TEXT = { base: 'Base', faster: 'Faster', slower: 'Slower', off: 'Off' };
+const REV_TEXT = { flat: 'flat', moderate: '+1.5%/yr', high: '+3.0%/yr' };
+
+// Number formatting for the KPI tiles. `kt` matches the thousand-tonne form
+// the chart and contribution bars already use; `signed` and `pct1` carry an
+// explicit direction so a change never has to be inferred from context.
+const kt = (v) => Math.round(v / 1000) + 'k\u00a0t';
+const signed = (v) => (v > 0 ? '+' : v < 0 ? '\u2212' : '') + kt(Math.abs(v));
+const pct1 = (v) => (v > 0 ? '+' : v < 0 ? '\u2212' : '') + Math.abs(v).toFixed(1) + '%';
+// A rounding-width deadband, so a change smaller than the tile can show is
+// called flat rather than dressed up as movement.
+const dirOf = (v, base) => (v / base < -0.001 ? 'down' : v / base > 0.001 ? 'up' : 'flat');
+
 // Textile-specific lever curves (illustrative). Distinct decay shapes so the
 // boutique-textile scenario produces a visibly different pathway.
 export const F_TEXTILE = (() => {
@@ -172,6 +188,7 @@ export function resolveSector(sectorKey) {
     SH: prof.SH,
     HIST: HIST_BASE.map((h) => Math.round(h * scale)),
     desc: prof.desc,
+    label: prof.label,
   };
 }
 
@@ -179,7 +196,7 @@ export function resolveSector(sectorKey) {
 // KPI values, the dynamic takeaway, and per-lever FY30 contribution bars.
 export function runModel(scn) {
   const { grid: gk, lv: lk, hv: hk, plant: pk, rev: rk } = scn;
-  const { mode, levers, FY20, FY25, SH, HIST } = resolveSector(scn.sector);
+  const { mode, levers, FY20, FY25, FY26, SH, HIST, label } = resolveSector(scn.sector);
   const FT = mode === 'textile' ? F_TEXTILE : F;
   const currentYear = new Date().getFullYear();
 
@@ -225,8 +242,50 @@ export function runModel(scn) {
     }
   }
 
-  const kpiNet = Math.round(net30 / 1000) + 'k t';
-  const kpiPct = ((FY20 - net30) / FY20 * 100).toFixed(1) + '% ↓';
+  // KPI tiles. Enterprise climate-reporting UI pins every metric to its
+  // baseline and states the change in the same tile, absolute and relative
+  // both. That convention is worth taking: a bare number is a fact the reader
+  // then has to go and look up, and the four unpaired figures this strip used
+  // to carry made them do the arithmetic by eye. Each tile now brings its own
+  // comparator and a signed change.
+  const d26 = FY26 - FY20;
+  const d30 = net30 - FY20;
+  const avoided30 = Math.max(0, bau30 - net30);
+  const anchor = 'Baseline FY20 \u00b7 ' + kt(FY20);
+  const kpis = [
+    {
+      key: 'base',
+      label: 'FY20 Baseline',
+      value: kt(FY20),
+      note: 'Reported \u00b7 the anchor every change below is measured against',
+    },
+    {
+      key: 'fy26',
+      label: 'FY26 Actuals',
+      value: kt(FY26),
+      base: anchor,
+      change: [signed(d26), pct1(d26 / FY20 * 100)],
+      dir: dirOf(d26, FY20),
+    },
+    {
+      key: 'net',
+      label: 'FY30 Net',
+      value: kt(net30),
+      base: anchor,
+      change: [signed(d30), pct1(d30 / FY20 * 100)],
+      dir: dirOf(d30, FY20),
+      live: true,
+    },
+    {
+      key: 'abated',
+      label: 'FY30 Abatement',
+      value: kt(avoided30),
+      base: 'Business as usual \u00b7 ' + kt(bau30),
+      change: [pct1(-avoided30 / bau30 * 100) + ' vs BAU'],
+      dir: dirOf(-avoided30, bau30),
+      live: true,
+    },
+  ];
 
   // Dynamic takeaway — the headline a board slide would carry.
   const pct = (FY20 - net30) / FY20 * 100;
@@ -253,12 +312,27 @@ export function runModel(scn) {
   const maxSv = Math.max(sv_g, sv_lv, sv_hv, sv_pl, 1);
   const bar = (s) => ({ width: Math.max(0, s / maxSv * 100), label: s > 0 ? Math.round(s / 1000) + 'k t' : '0' });
 
+  // The run summary. A results panel that does not restate its own settings
+  // makes the reader scroll back to the levers to find out what they are
+  // looking at, so the panel carries the profile, the growth assumption and
+  // every lever position alongside the numbers they produced. The horizon is
+  // not here because it is not a control: the basis strip states it once.
+  const cb = LEVER_LABELS[levers].cbar;
+  const frame = {
+    profile: label,
+    growth: REV_TEXT[rk],
+    levers: [
+      { name: cb.grid, set: OPT_TEXT[gk] },
+      { name: cb.lv, set: OPT_TEXT[lk] },
+      { name: cb.hv, set: OPT_TEXT[hk] },
+      { name: cb.plant, set: OPT_TEXT[pk] },
+    ],
+  };
+
   return {
     mode, leverKey: levers,
     series: { net, gridLayer, lvLayer, hvLayer, plantLayer, bau, actuals },
-    kpiNet, kpiPct,
-    kpiBase: Math.round(FY20 / 1000) + 'k t',
-    kpiFy26: Math.round(resolveSector(scn.sector).FY26 / 1000) + 'k t',
+    kpis, frame,
     takeaway,
     contrib: { grid: bar(sv_g), lv: bar(sv_lv), hv: bar(sv_hv), plant: bar(sv_pl) },
     chartTitle: mode === 'textile' ? 'Value chain footprint pathway to FY50' : 'Scope 1 & 2 emissions pathway to FY50',

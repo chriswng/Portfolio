@@ -92,6 +92,25 @@ export const PRINCIPLES = [
 ];
 
 // ---------------------------------------------------------------------------
+// SCENARIO MODEL (#scenario). The section's own words.
+//
+// The basis strip governs how every figure the model produces should be read,
+// so it is stated before the numbers and at their weight. It used to sit under
+// the sub-heading as one line of 11px grey mono, which is the wrong weight for
+// the most important sentence in the section.
+// ---------------------------------------------------------------------------
+export const SCENARIO_UI = {
+  basis: {
+    label: 'Illustrative',
+    text: 'Nothing in this model is client data. The operating profiles are scaled to published peer disclosures and every lever traces to a public source, but no figure here belongs to an organisation I have worked for. Read it as a demonstration of method rather than as a result.',
+    meta: 'FY30 interim target year \u00b7 FY50 endpoint \u00b7 tCO\u2082-e per year',
+  },
+  // Labels for the run summary that captions the result panel.
+  frameLead: 'This run',
+  frameGrowth: 'Growth',
+};
+
+// ---------------------------------------------------------------------------
 // TOOLS — the standalone subpages, gathered on the home page as evidence.
 //
 // Framing note (deliberate, do not soften): this section exists to answer a
