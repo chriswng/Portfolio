@@ -20,11 +20,11 @@ export function SkipLink() {
 //
 // Measured rather than hardcoded, for the same reason the footer's tab notch is
 // (see useEquidistantNotch in SiteFooter.jsx): a constant goes stale. The bar is
-// 53px at most widths, but the nine nav links do not fit one row between about
-// 680px and 860px and it becomes 104px there, and any future label change moves
-// that band. A ResizeObserver on the bar itself is right at every width without
-// anyone having to remember to re-measure. The CSS keeps 53px as the value
-// before this runs.
+// 53px at most widths, but the eight nav links do not fit one row between about
+// 680px and 750px, where it goes to 71px and then 104px, and any future label
+// change moves that band. A ResizeObserver on the bar itself is right at every
+// width without anyone having to remember to re-measure. The CSS keeps 53px as
+// the value before this runs.
 //
 // The same measurement serves anything pinned at the top of a page, so it is
 // written once here. More than one bar can share top:0 and overlap (the

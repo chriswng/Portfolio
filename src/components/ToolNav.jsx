@@ -1,5 +1,7 @@
-// Shared chrome for the standalone tool pages (/grid/, /daily/, /super/,
-// /progress/, /targets/). Same pattern as the footprint pages' Nav: the site-wide
+// Shared chrome for the standalone tool pages: the public /daily/ and
+// /progress/, and the drafts at /grid/, /super/, /targets/ and /fashion/, which
+// keep the site's chrome behind their gate so they read as part of the
+// portfolio. Same pattern as the footprint pages' Nav: the site-wide
 // NAV_LINKS with hrefs prefixed back to the site root, plus the compact
 // tool footer. `home` is the relative path back to the root from wherever
 // the page sits ('../' for a top-level tool, '../../' for a sub-page).
