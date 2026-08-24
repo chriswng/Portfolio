@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Grain, ScrollProgress, SkipLink } from '../components/Chrome';
+import { Grain, ScrollProgress, SkipLink, useHashLanding, useStickyNavHeight } from '../components/Chrome';
 import SplitText from '../components/SplitText';
 import { NAV_LINKS } from '../data/content';
 import {
@@ -18,12 +18,24 @@ import ContourField from '../components/ContourField';
 
 function WorkNav() {
   const [menuOpen, setMenuOpen] = useState(false);
+  // Height first, then the landing: the landing clears whatever the bar measures.
+  useStickyNavHeight();
+  useHashLanding();
+  // Escape closes the open mobile menu, matching every other nav on the site.
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+    const onKey = (e) => { if (e.key === 'Escape') setMenuOpen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [menuOpen]);
 
   return (
     <nav className="nav" aria-label="Primary">
       <div className="nav-inner canvas">
         <a href="../" className="nav-logo"><Mark label="Chris Wang, home" /></a>
-        <div className={`nav-links${menuOpen ? ' open' : ''}`} role="navigation">
+        {/* No role here: this sits inside <nav aria-label="Primary">, and a
+            second role="navigation" published a duplicate, unnamed landmark. */}
+        <div className={`nav-links${menuOpen ? ' open' : ''}`} id="nav-links">
           {NAV_LINKS.map((l) => {
             // Self-link stays './'; every other target (anchors on the main
             // page, sibling sub-pages) is reached via the parent directory.
@@ -36,6 +48,7 @@ function WorkNav() {
           className={`nav-hamburger${menuOpen ? ' open' : ''}`}
           aria-label={menuOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={menuOpen}
+          aria-controls="nav-links"
           onClick={() => setMenuOpen((v) => !v)}
         >
           <span />
@@ -179,6 +192,16 @@ export default function WorkApp() {
   const [tab, setTab] = useState('baseline');
   const Panel = PANELS[tab];
 
+  // Roving tabindex with arrow-key movement, per the ARIA tabs pattern.
+  const onTabKey = (e) => {
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    e.preventDefault();
+    const idx = TABS.findIndex((t) => t.id === tab);
+    const next = TABS[(idx + (e.key === 'ArrowRight' ? 1 : TABS.length - 1)) % TABS.length];
+    setTab(next.id);
+    document.getElementById(`work-tab-${next.id}`)?.focus();
+  };
+
   return (
     <>
       <SkipLink />
@@ -216,22 +239,33 @@ export default function WorkApp() {
 
       <section id="work-samples">
         <div className="canvas">
-          <div className="tabs" role="tablist">
+          {/* Four samples, one panel at a time: the ARIA tabs contract in full.
+              Roving tabindex makes the strip a single tab stop and the arrows
+              move within it, and each tab names the panel it swaps in. The
+              roles were here before the keyboard behaviour was, which promised
+              assistive tech arrow keys that did nothing. */}
+          <div className="tabs" role="tablist" aria-label="Work samples" onKeyDown={onTabKey}>
             {TABS.map((t) => (
               <button
                 key={t.id}
+                id={`work-tab-${t.id}`}
                 className={'tab' + (tab === t.id ? ' on' : '')}
                 role="tab"
                 aria-selected={tab === t.id}
+                aria-controls="work-tabpanel"
+                tabIndex={tab === t.id ? 0 : -1}
                 onClick={() => setTab(t.id)}
               >
-                {t.icon && <Icon name={t.icon} size={30} className="fpi-lead" />}<span className="tab-lt">{t.letter}&nbsp;</span>{t.label}
+                {t.icon && <Icon name={t.icon} size={30} className="fpi-lead" aria-hidden="true" />}<span className="tab-lt">{t.letter}&nbsp;</span>{t.label}
               </button>
             ))}
           </div>
           <AnimatePresence mode="wait">
             <motion.div
               key={tab}
+              id="work-tabpanel"
+              role="tabpanel"
+              aria-labelledby={`work-tab-${tab}`}
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}

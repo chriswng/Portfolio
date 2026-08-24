@@ -121,6 +121,9 @@ a { text-decoration: none; }
   position: absolute; left: 0; right: 0; top: calc(100% + 8px); z-index: 40;
   background: var(--white); border: 1px solid var(--rule-dk); border-radius: var(--r-lg);
   box-shadow: var(--shadow-card); max-height: 340px; overflow-y: auto; overflow-x: hidden;
+  /* Reaching the end of the suggestion list must not hand the rest of the
+     scroll to the page underneath and carry the box off screen mid-choice. */
+  overscroll-behavior: contain;
 }
 .ow-ac-item {
   display: flex; align-items: center; justify-content: space-between; gap: 0.8rem;
@@ -141,7 +144,7 @@ a { text-decoration: none; }
 .ow-chip {
   font-family: var(--sans); font-size: 0.8rem; font-weight: 600; color: var(--slate);
   padding: 0.4rem 0.85rem; border: 1px solid var(--rule-dk); border-radius: var(--r-pill);
-  background: var(--white); transition: all 0.2s var(--ease);
+  background: var(--white); transition: background 0.2s var(--ease), color 0.2s var(--ease), border-color 0.2s var(--ease), transform 0.2s var(--ease);
 }
 .ow-chip:hover { border-color: var(--matcha); transform: translateY(-1px); }
 .ow-chip[aria-pressed='true'] { border-color: var(--matcha); background: var(--matcha); color: var(--slate); }
@@ -413,10 +416,10 @@ a { text-decoration: none; }
 .ow-rail-progress { display: block; text-align: right; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; color: var(--slate); font-weight: 600; margin-bottom: 0.7rem; padding-right: 2px; }
 .ow-rail-progress i { color: var(--subtle); font-style: normal; }
 .ow-rail a { display: flex; align-items: center; justify-content: flex-end; gap: 0.5rem; padding: 0.26rem 0; }
-.ow-rail .num { font-family: var(--mono); font-size: 9px; letter-spacing: 0.06em; color: var(--mid); opacity: 0; transform: translateX(6px); transition: all 0.2s var(--ease); }
-.ow-rail .dot { width: 8px; height: 8px; border: 1px solid var(--subtle); border-radius: 50%; transition: all 0.2s var(--ease); flex: none; }
+.ow-rail .num { font-family: var(--mono); font-size: 9px; letter-spacing: 0.06em; color: var(--mid); opacity: 0; transform: translateX(6px); transition: opacity 0.2s var(--ease), transform 0.2s var(--ease); }
+.ow-rail .dot { width: 8px; height: 8px; border: 1px solid var(--subtle); border-radius: 50%; transition: background 0.2s var(--ease), border-color 0.2s var(--ease), transform 0.2s var(--ease); flex: none; }
 /* Labels carry their own backdrop so they stay legible over card edges. */
-.ow-rail .lbl { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); background: rgba(248, 250, 246, 0.92); border-radius: var(--r-pill); padding: 0.1rem 0.4rem; opacity: 0; transform: translateX(6px); transition: all 0.2s var(--ease); }
+.ow-rail .lbl { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); background: rgba(248, 250, 246, 0.92); border-radius: var(--r-pill); padding: 0.1rem 0.4rem; opacity: 0; transform: translateX(6px); transition: opacity 0.2s var(--ease), transform 0.2s var(--ease), color 0.2s var(--ease); }
 .ow-rail .num { background: rgba(248, 250, 246, 0.92); border-radius: var(--r-pill); padding: 0.1rem 0.25rem; }
 .ow-rail a:hover .lbl, .ow-rail a:hover .num { opacity: 1; transform: none; }
 .ow-rail a.on .dot { background: var(--matcha); border-color: var(--matcha); transform: scale(1.25); }
@@ -475,7 +478,7 @@ a { text-decoration: none; }
 .ow-family-h { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate); font-weight: 700; margin-bottom: 0.7rem; }
 .ow-family-h span { color: var(--mid); text-transform: none; letter-spacing: 0.02em; font-weight: 400; }
 .ow-family-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-.ow-familychip { display: inline-flex; align-items: center; gap: 0.45rem; border: 1px solid var(--rule-dk); border-radius: var(--r-pill); background: var(--white); padding: 0.32rem 0.45rem 0.32rem 0.38rem; font-size: 0.85rem; font-weight: 600; color: var(--slate); transition: all 0.2s var(--ease); }
+.ow-familychip { display: inline-flex; align-items: center; gap: 0.45rem; border: 1px solid var(--rule-dk); border-radius: var(--r-pill); background: var(--white); padding: 0.32rem 0.45rem 0.32rem 0.38rem; font-size: 0.85rem; font-weight: 600; color: var(--slate); transition: border-color 0.2s var(--ease), transform 0.2s var(--ease); }
 .ow-familychip:hover { border-color: var(--forest-ink); transform: translateY(-1px); }
 .ow-familychip .s { font-family: var(--mono); font-size: 10px; font-weight: 600; background: var(--lime-soft); border-radius: var(--r-pill); padding: 0.12rem 0.45rem; color: #5F6A17; }
 
@@ -485,7 +488,11 @@ a { text-decoration: none; }
 .ow-parentlink .ct { font-family: var(--mono); font-size: 0.75em; color: var(--mid); font-weight: 400; }
 
 /* -------------------------------------------------------- compare table --- */
-.ow-ctable-scroll { overflow-x: auto; border: 1px solid var(--rule-dk); border-radius: var(--r-xl); box-shadow: var(--shadow-soft); background: var(--white); }
+/* overscroll-behavior-x keeps a swipe that runs off the end of the table inside
+   the table: without it the same gesture triggers the browser's back
+   navigation, and the visitor loses the page mid-comparison. Every horizontal
+   scroller on the site carries this. */
+.ow-ctable-scroll { overflow-x: auto; overscroll-behavior-x: contain; border: 1px solid var(--rule-dk); border-radius: var(--r-xl); box-shadow: var(--shadow-soft); background: var(--white); }
 .ow-ctable { display: grid; min-width: 480px; }
 .ow-ct-corner { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); font-weight: 600; padding: 1rem 1rem 0.8rem; border-bottom: 1px solid var(--rule-dk); display: flex; align-items: flex-end; }
 .ow-ct-head { position: relative; padding: 1rem 1rem 0.8rem; border-bottom: 1px solid var(--rule-dk); border-left: 1px solid var(--rule-lt); }
@@ -518,7 +525,7 @@ a { text-decoration: none; }
 .ow-group-avg .n { font-family: var(--disp); font-weight: 700; font-size: 1.5rem; line-height: 1; color: var(--forest); display: block; }
 .ow-group-avg .l { font-size: 9px; font-family: var(--mono); letter-spacing: 0.05em; text-transform: uppercase; color: var(--mid); }
 .ow-group-brands { display: flex; flex-wrap: wrap; gap: 0.45rem; }
-.ow-groupchip { display: inline-flex; align-items: center; gap: 0.4rem; border: 1px solid var(--rule-dk); border-radius: var(--r-pill); background: var(--white); padding: 0.28rem 0.35rem; font-size: 0.85rem; font-weight: 600; color: var(--slate); transition: all 0.2s var(--ease); }
+.ow-groupchip { display: inline-flex; align-items: center; gap: 0.4rem; border: 1px solid var(--rule-dk); border-radius: var(--r-pill); background: var(--white); padding: 0.28rem 0.35rem; font-size: 0.85rem; font-weight: 600; color: var(--slate); transition: border-color 0.2s var(--ease), transform 0.2s var(--ease); }
 .ow-groupchip:hover { border-color: var(--forest-ink); transform: translateY(-1px); }
 .ow-groupchip .bs { font-family: var(--mono); font-size: 10px; font-weight: 700; background: var(--forest); color: var(--lime-bright); border-radius: var(--r-pill); padding: 0.12rem 0.45rem; }
 .ow-groupchip .bs.na { background: var(--bg); color: var(--mid); border: 1px solid var(--rule-dk); }
@@ -553,7 +560,7 @@ a { text-decoration: none; }
 /* -------------------------------------------------------------- dig deeper */
 .ow-dig { padding: 0 1.6rem 0.4rem; }
 .ow-dig-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.6rem; }
-.ow-diglink { display: block; border: 1px solid var(--rule-dk); border-radius: var(--r-md); background: var(--bg); padding: 0.75rem 0.9rem; transition: all 0.2s var(--ease); }
+.ow-diglink { display: block; border: 1px solid var(--rule-dk); border-radius: var(--r-md); background: var(--bg); padding: 0.75rem 0.9rem; transition: background 0.2s var(--ease), border-color 0.2s var(--ease), box-shadow 0.2s var(--ease), transform 0.2s var(--ease); }
 a.ow-diglink[target="_blank"]::after { content: none; }
 .ow-diglink:hover { border-color: var(--forest-ink); transform: translateY(-1px); box-shadow: var(--shadow-soft); background: var(--white); }
 .ow-diglink .dl-name { display: block; font-weight: 600; font-size: 0.88rem; color: var(--slate); }
@@ -700,7 +707,7 @@ a.ow-badge:hover { transform: translateY(-1px); }
 .ow-pillbtn {
   font-family: var(--sans); font-size: 0.82rem; font-weight: 600; color: var(--slate);
   background: var(--white); border: 1px solid var(--rule-dk); border-radius: var(--r-pill);
-  padding: 0.5rem 0.95rem; transition: all 0.2s var(--ease);
+  padding: 0.5rem 0.95rem; transition: background 0.2s var(--ease), color 0.2s var(--ease), border-color 0.2s var(--ease), transform 0.2s var(--ease);
 }
 .ow-pillbtn.sm { padding: 0.4rem 0.8rem; font-size: 0.78rem; }
 .ow-pillbtn:hover:not(.on) { border-color: var(--matcha); transform: translateY(-1px); }
@@ -824,13 +831,13 @@ a.ow-badge:hover { transform: translateY(-1px); }
 .ow-choices { display: grid; gap: 0.7rem; }
 .ow-choice {
   text-align: left; border: 1px solid var(--rule-dk); border-radius: var(--r-lg); background: var(--white);
-  padding: 0.95rem 1.1rem; transition: all 0.2s var(--ease); display: grid; gap: 0.25rem;
+  padding: 0.95rem 1.1rem; transition: background 0.2s var(--ease), border-color 0.2s var(--ease), transform 0.2s var(--ease); display: grid; gap: 0.25rem;
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 }
 .ow-choice:hover { border-color: var(--matcha); transform: translateY(-1px); }
 .ow-choice.on { background: rgba(181, 196, 43, 0.1); border-color: var(--forest-ink); }
 .ow-choice .cl { font-weight: 700; font-size: 0.9rem; color: var(--slate); display: inline-flex; align-items: center; gap: 0.5rem; }
-.ow-choice .cl::before { content: ''; width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid var(--subtle); transition: all 0.2s var(--ease); flex: none; }
+.ow-choice .cl::before { content: ''; width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid var(--subtle); transition: background 0.2s var(--ease), border-color 0.2s var(--ease); flex: none; }
 .ow-choice.on .cl::before { background: var(--matcha); border-color: var(--forest-ink); }
 .ow-choice .cb { font-size: 0.8rem; color: #475569; line-height: 1.55; }
 
@@ -855,4 +862,18 @@ a.ow-badge:hover { transform: translateY(-1px); }
 /* Studio motion under reduced-motion preferences. */
 @media (prefers-reduced-motion: reduce) {
   .ow-pillbtn, .ow-choice, .owm-route { transition: none !important; animation: none !important; }
+}
+
+/* ------------------------------------------------- mobile form controls ----
+   16px so iOS Safari does not zoom the page in on focus (see MOBILE FORM
+   CONTROLS in global.css). The brand lookup is the page's first control and the
+   one most likely to be tapped on a phone; the hero clamp bottoms out at
+   0.95rem (15.2px), a fifth of a pixel under the threshold, which is enough to
+   trigger it. The claim textarea and the studio sliders are already over.
+   ---------------------------------------------------------------------------- */
+@media (pointer: coarse), (max-width: 680px) {
+  .ow-search-box input,
+  .ow-dirsearch input,
+  .ow-select,
+  .ow-field select { font-size: 16px; }
 }
