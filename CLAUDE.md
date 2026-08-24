@@ -8,24 +8,25 @@ built as a React + Vite multi-page app and deployed to GitHub Pages.
 - React 18 + Vite 5, `framer-motion` for motion, `chart.js` for the scenario
   model, `ogl` for the hero aurora (WebGL), plus a hand-written canvas renderer
   (contour field).
-- Pages: the main profile (`index.html` → `src/main.jsx` → `App.jsx`), a
+- Public pages: the main profile (`index.html` → `src/main.jsx` → `App.jsx`), a
   standalone work-samples page (`work/index.html` → `src/work/main.jsx`) at
   `/work/`, the Life Footprint dashboard (`footprint/index.html` →
-  `src/footprint/main.jsx`) at `/footprint/`, its basis of preparation
+  `src/footprint/main.jsx`) at `/footprint/`, and its basis of preparation
   (`footprint/method/index.html` → `src/footprint/method/main.jsx`) at
-  `/footprint/method/`, Cost Per Wear, the fashion brand transparency lookup
-  (`fashion/index.html` → `src/fashion/main.jsx`) at `/fashion/`, and five
-  standalone tools: Grid Intensity at `/grid/`, Sustainability Daily at
-  `/daily/`, Super Fund Holdings at `/super/` (methodology at
-  `/super/method/`), Australia's Climate Progress at `/progress/`, and the
-  Target Tracker at `/targets/`, each with its entry html at the repo root
-  and its source under `src/<tool>/`.
+  `/footprint/method/`.
+- Drafts, unlisted and behind a passphrase (see **The drafts** below): Target
+  Tracker at `/targets/`, Cost Per Wear at `/fashion/`, Super Fund Holdings at
+  `/super/` (methodology at `/super/method/`), Grid Intensity at `/grid/`,
+  Australia's Climate Progress at `/progress/` and Sustainability Daily at
+  `/daily/`, indexed only by `/lab/`.
+- Every page has its entry html at the repo root and its source under
+  `src/<page>/`.
 
 ## Layout
 
 | Path | What lives here |
 |---|---|
-| `src/components/` | Main-page sections (Hero, Bio, Principles, Ticker, Scenario, Tools + its `ToolSpecimen` charts, Experience, Contact) plus the shared SiteFooter (big lime card with signup + link columns, used by the home and work pages), shared Chrome (nav, grain, scroll progress, skip link), the shared hand-drawn `Icons` set (round line art, one matcha accent shape per glyph, used beside sec-tags on every page), and the `Aurora` (WebGL) + `ContourField` (canvas) hero backdrops, mounted on the home, work, footprint and fashion intros. `ToolNav.jsx` carries the shared nav + compact footer for the standalone tool pages (`/grid/`, `/daily/`, `/super/`, `/progress/`, `/targets/`). Two shared controls sit alongside them: `Range.jsx` (every slider on the site, see the convention below) and `CopyButton.jsx` (every copy-to-clipboard action). |
+| `src/components/` | Main-page sections (Hero, Bio, Principles, Ticker, Scenario, Tools + its `ToolSpecimen` charts, Experience, Contact) plus the shared SiteFooter (big lime card with signup + link columns, used by the home and work pages), shared Chrome (nav, grain, scroll progress, skip link), the shared hand-drawn `Icons` set (round line art, one matcha accent shape per glyph, used beside sec-tags on every page), and the `Aurora` (WebGL) + `ContourField` (canvas) hero backdrops, mounted on the home, work, footprint and fashion intros. `ToolNav.jsx` carries the shared nav + compact footer for the standalone tool pages, all of them drafts now (`/grid/`, `/super/`, `/targets/`, `/fashion/`, `/progress/`, `/daily/`). `ToolCard.jsx` is the one tool tile, used by the home page's Tools band and by the drafts index. `Gate.jsx` is the passphrase screen in front of the drafts. Two shared controls sit alongside them: `Range.jsx` (every slider on the site, see the convention below) and `CopyButton.jsx` (every copy-to-clipboard action). |
 | `src/work/` | Work-samples page: `WorkApp`, `Baseline`, `CaseStudy`, data in `workData.js`, styles in `work.css`. |
 | `src/footprint/` | Life Footprint page: calculation engine and factor data in `lib/` and `data/` (keep rigorous; every factor cites its source), the Wrapped-style reveal in `story/` (WebGL carbon field, carbon characters, share cards), guided audit in `Onboarding.jsx`, dashboard sections alongside. Copy lives in `data/copy.js` and `data/storyCopy.js`. |
 | `src/footprint/method/` | The basis of preparation page (`/footprint/method/`): the written method plus the live factor tables, rendered from the same factor set the engine prices from. |
@@ -35,8 +36,9 @@ built as a React + Vite multi-page app and deployed to GitHub Pages.
 | `src/super/` | Super Fund Holdings (`/super/`): default (MySuper) option holdings and sector exposure next to each fund's own sustainability marketing, with flagged holdings named under stated criteria and a per-fund "last verified" date. Methodology on its own route (`/super/method/`, from the same data). All fund data and copy in `data.js`, styles in `super.css` (`sf-` prefix). |
 | `src/progress/` | Australia's Climate Progress (`/progress/`): scroll-driven reveal of national numbers (grid mix, EV sales, capacity additions, emissions vs target), each with a reference point, ending on a progress-and-shortfall summary. Reviewed quarterly; the last-updated date renders from one field in `data.js`. Styles in `progress.css` (`pr-` prefix). |
 | `src/targets/` | Target Tracker (`/targets/`): ASX50 net zero commitments plotted against reported Scope 1 and 2 emissions. Each company card draws the claimed path (baseline through absolute interim targets to the net zero year) as an SVG chart with the reported series overlaid, and carries a verification status (`sourced`/`partial`/`unverified`), flags (offsets, intensity, weakened, alliance exits) and per-company sources. Trajectory maths in `lib.js`; all company data and copy in `data.js`; in-page basis of preparation; last-updated date from one field in `data.js`. Styles in `targets.css` (`tt-` prefix). |
-| `src/lib/` | `opennem.js` — the one shared OpenNEM/AEMO client both `/grid/` and `/progress/` read (live NEM data with honest `{ live: false }` failure; callers must label fallbacks as estimates). |
-| `src/data/` | Content and model inputs: `content.js` (all editorial copy, including footer links), `scenario.js` (decarbonisation model), `specimens.js` (the small slices of each tool's real data that the home page's tool-card charts are drawn from). |
+| `src/lab/` | The drafts index (`/lab/`): the six unpublished tools as the same `ToolCard` tiles the home page uses, behind `Gate`. Copy in `data.js`, page frame in `lab.css`; the tools themselves are `PRIVATE_TOOLS` in `src/data/content.js`. Unlisted, and nothing public links to it. |
+| `src/lib/` | `opennem.js` — the one shared OpenNEM/AEMO client both `/grid/` and `/progress/` read (live NEM data with honest `{ live: false }` failure; callers must label fallbacks as estimates). `gate.js` — the passphrase check behind `/lab/` and the drafts, and the written record of what that gate is and is not. |
+| `src/data/` | Content and model inputs: `content.js` (all editorial copy, including footer links, the public `TOOLS` index, the unlisted `PRIVATE_TOOLS` index and the gate's copy), `scenario.js` (decarbonisation model), `specimens.js` (the small slices of each tool's real data that the tool-card charts are drawn from). |
 | `src/hooks/` | `useMagnetic` — cursor-follow interaction. |
 | `src/utils/` | `media.js` — `prefersReducedMotion()` / `canHover()` guards. `clipboard.js` — the one `copyText()` helper, with the hidden-textarea fallback. |
 | `src/styles/global.css` | Design tokens + all main-page styles. |
@@ -75,7 +77,7 @@ built as a React + Vite multi-page app and deployed to GitHub Pages.
   entry only for a house whose established lettermark differs from the plain
   initials (e.g. Gucci `GG`, Saint Laurent `YSL`). `LOGO_SOURCES` is the single
   swap-point for the logo providers.
-- **Every tool states its basis.** Each of the four tool pages carries its own
+- **Every tool states its basis.** Each tool page, public or draft, carries its own
   methodology section (Super Fund Holdings has a whole route,
   `/super/method/`) in the footprint-method pattern: sources with URLs and
   access dates, calculation logic, exclusions named, update cadence, and
@@ -83,15 +85,36 @@ built as a React + Vite multi-page app and deployed to GitHub Pages.
   or logic updates its methodology in the same change. On `/super/` every
   fund shows its "last verified" date; on `/progress/` the last-updated date
   renders from a single field in `data.js`.
-- **The home page's Tools section indexes every subpage.** `TOOLS` in
+- **Every subpage is indexed, publicly or privately.** `TOOLS` in
   `src/data/content.js` (rendered by `src/components/Tools.jsx` into the `#tools`
-  band) carries one card per standalone page, each with what the tool does, the
+  band) carries one card per public page; `PRIVATE_TOOLS`, right beside it,
+  carries one per draft and is rendered by `src/lab/LabApp.jsx` at `/lab/`. Both
+  use `ToolCard.jsx`, and an entry in either carries what the tool does, the
   capability it demonstrates, a `scope` line, a `spec` (its chart) and a `span`
   (its width in the bento grid). Those scope figures are hand-typed counts of the
   real data (50 ASX50 companies, 258 fashion brands, 10 super funds, and so on),
   so adding a subpage means adding a card, and growing a tool's data set means
-  updating its count in the same change. The accent colours are chosen to clear
-  contrast on the forest band, which is why `--indigo` is absent there.
+  updating its count in the same change. Each list's spans are written to fill
+  its rows across the six-column grid (3-3 for the public pair; 4-2, 2-4, 3-3
+  for the drafts), so moving a tool between the lists means renumbering `n` and
+  repicking `span` in both. The footer's link columns follow the same rule from
+  the other side: `FOOTER.columns.length` drives the grid through
+  `--footer-col-n`, so a column emptied by a page moving behind the gate closes
+  up rather than leaving a hole. The accent
+  colours are chosen to clear contrast on the forest band, which is why
+  `--indigo` is absent there.
+- **The drafts are unlisted, not secured.** Target Tracker, Cost Per Wear, Super
+  Fund Holdings, Grid Intensity, Australia's Climate Progress and Sustainability
+  Daily are not finished enough to show, so they are kept out of
+  `public/sitemap.xml` and `public/404.html`, carry
+  `<meta name="robots" content="noindex, nofollow">`, are absent from `NAV_LINKS`
+  and `FOOTER`, and wrap their app in `Gate` in `src/<tool>/main.jsx`. They still
+  build and deploy. The passphrase and the limits of the arrangement are written
+  at the top of `src/lib/gate.js`: the site is a static build with no server and
+  the repository is public, so the gate hides the drafts from visitors and search
+  engines and is not security. Never describe it as more than that, and never put
+  anything genuinely confidential behind it. Publishing a draft is the reverse of
+  the list above, plus moving its entry from `PRIVATE_TOOLS` to `TOOLS`.
 - **Every tool card draws a chart from that tool's real data.** The specimens
   (`src/components/ToolSpecimen.jsx`, data in `src/data/specimens.js`) are small
   SVG charts: a claimed-versus-reported trajectory, a disclosure histogram, a
@@ -120,7 +143,9 @@ built as a React + Vite multi-page app and deployed to GitHub Pages.
   headline must say what the page is (the card markets the page), all copy
   follows the writing rules below, and a card never shows personal numbers.
   Home (`/`) and Work (`/work/`) intentionally keep the profile card
-  `og-image.png`; method pages reuse their parent page's card.
+  `og-image.png`; method pages reuse their parent page's card. The drafts keep
+  the cards they already have, so publishing one needs no new artwork; `/lab/`
+  has no card, because nothing should be previewing it.
 - **One slider, one copy button.** Every `<input type="range">` on the site
   goes through `src/components/Range.jsx`, and every copy-to-clipboard action
   through `src/components/CopyButton.jsx`. Both stay native controls underneath
@@ -138,9 +163,14 @@ built as a React + Vite multi-page app and deployed to GitHub Pages.
   every page, so anything scrolled to the top of the viewport lands under it.
   That clearance is expressed once, as `scroll-margin-top:calc(var(--nav-h) +
   0.75rem)` in `global.css`, and `--nav-h` is measured from the live bar by
-  `useStickyNavHeight()` (`Chrome.jsx`) rather than hardcoded, because the nine
-  nav links wrap to two rows between about 680px and 860px and the bar is 104px
-  there. Every route that lands on a section goes through it: a nav click calls
+  `useStickyNavHeight()` (`Chrome.jsx`) rather than hardcoded, because the eight
+  nav links wrap to two rows between about 680px and 750px and the bar is 71px
+  then 104px there. Anything else pinned at the top of a page is measured the
+  same way, by `useStickyBarHeight()` in the same file: it takes the bars that
+  share `top:0`, publishes the tallest as a custom property, and treats a bar the
+  stylesheet has left static at that breakpoint as no headroom at all. That is
+  how the footprint planner's readout knows where to pin under the mode bar and
+  the nav (`--fp-chrome-h`). Every route that lands on a section goes through it: a nav click calls
   `scrollIntoView` instead of doing its own offset maths, and `useHashLanding()`
   covers a hash that arrives before React has rendered the target (a shared
   link, or the cross-page `../#scenario` anchors in every sub-page's nav and

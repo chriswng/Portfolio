@@ -97,9 +97,10 @@ html { scroll-behavior: smooth; overflow-x: clip; color-scheme: light; }
      Everything that has to clear the bar — anchor landings, focus scrolling —
      measures from this one number rather than re-guessing it.
      useStickyNavHeight (Chrome.jsx) overwrites this with the bar's real height
-     on mount and on resize, because it is not 53px everywhere: the nine nav
-     links do not fit one row between about 680px and 860px, where the bar
-     becomes 104px. The value here is the pre-measurement fallback. */
+     on mount and on resize, because it is not 53px everywhere: the eight nav
+     links do not fit one row between about 680px and 750px, where the bar
+     becomes 71px and then 104px. The value here is the pre-measurement
+     fallback. */
   --nav-h:53px;
   /* Z-index scale */
   --z-nav:40;
@@ -656,7 +657,7 @@ section { position:relative; }
    Every colour below is checked against the forest band, which is why the
    indigo used elsewhere on this page never appears here: it fails on dark.
    ============================================================================ */
-#tools{
+#tools, .tools-band{
   background:
     radial-gradient(ellipse 70% 55% at 12% 0%,rgba(193,224,67,0.10) 0%,transparent 60%),
     radial-gradient(ellipse 60% 50% at 92% 100%,rgba(181,196,43,0.08) 0%,transparent 62%),
@@ -666,7 +667,7 @@ section { position:relative; }
 }
 /* The section label and index sit on dark here, so they take the lime pair
    rather than the page-wide ink (see PAGE-SCOPED ELEVATION at the foot). */
-#tools .sec-tag{ color:var(--sage-2); }
+#tools .sec-tag, .tools-band .sec-tag{ color:var(--sage-2); }
 .page-home #tools .sec-tag::before{ color:var(--lime); }
 
 .tools-head{ display:grid; gap:clamp(1.4rem,3vw,2.5rem); margin-top:1.2rem; align-items:start; }
@@ -696,24 +697,23 @@ section { position:relative; }
 .tools-rule-head .fpi-fill{ fill:var(--lime-bright); }
 .tools-rule-body{ font-size:0.82rem; line-height:1.7; color:var(--sage-2); }
 
-/* Bento rather than a checkerboard. Spans come from `span` in the TOOLS data
-   so the rhythm is editorial (4-2, 2-4, 3-3, 4-2) and the reading order stays
-   in hiring-relevance order. Below the six-column grid the spans collapse:
-   the wide cards go full width and everything else pairs up. */
+/* Bento rather than a checkerboard. Spans come from `span` in the TOOLS and
+   PRIVATE_TOOLS data so the rhythm is editorial (4-2 then 2-4) and the reading
+   order stays in hiring-relevance order. Each list is written to fill its rows
+   across the six columns, so no card is left holding half a row; keep that true
+   when a tool is added or moved between the lists. Below the six-column grid
+   the spans collapse: the wide cards go full width and everything else pairs
+   up. */
 .tools-grid{ display:grid; grid-template-columns:1fr; gap:1rem; margin-top:clamp(1.5rem,3.5vw,2rem); }
 @media(min-width:760px){
   .tools-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:1.1rem; }
   .tool-card[data-span="4"]{ grid-column:span 2; }
-  /* Seven cards pair off after the wide ones, which leaves one orphan holding
-     half a row. It takes the full width instead of sitting in a gap. */
-  .tool-card:last-child{ grid-column:span 2; }
 }
 @media(min-width:1100px){
   .tools-grid{ grid-template-columns:repeat(6,minmax(0,1fr)); gap:1.15rem; }
   .tool-card[data-span="2"]{ grid-column:span 2; }
   .tool-card[data-span="3"]{ grid-column:span 3; }
   .tool-card[data-span="4"]{ grid-column:span 4; }
-  .tool-card:last-child{ grid-column:span 2; }
 }
 
 /* One anchor per card, so the whole tile is a single tab stop. */
@@ -982,8 +982,18 @@ a.footer-cta-btn[target="_blank"]::after{ content:none; }
 
 .footer-legal{ font-family:var(--mono); font-size:11px; letter-spacing:0.05em; color:var(--forest-2); }
 
+/* Two columns on narrow screens whatever the data holds; above 620px one
+   column per entry in FOOTER.columns, published as --footer-col-n by
+   SiteFooter.jsx. The width follows the count at the same 240px per column the
+   three-column layout was drawn at, so removing a column narrows the block
+   instead of stretching what is left across the same span. */
 .footer-cols{ display:grid; grid-template-columns:repeat(2,1fr); gap:1.8rem 1.2rem; margin-top:clamp(1.8rem,4vw,2.6rem); }
-@media(min-width:620px){ .footer-cols{ grid-template-columns:repeat(3,1fr); max-width:720px; } }
+@media(min-width:620px){
+  .footer-cols{
+    grid-template-columns:repeat(var(--footer-col-n,3),1fr);
+    max-width:calc(var(--footer-col-n,3) * 240px);
+  }
+}
 .footer-col-head{ font-family:var(--mono); font-size:11px; letter-spacing:0.14em; text-transform:uppercase; font-weight:700; color:var(--forest); margin-bottom:0.9rem; }
 .footer-col-list{ list-style:none; display:flex; flex-direction:column; gap:0.55rem; }
 .footer-col-list a{
@@ -1142,3 +1152,60 @@ a.footer-cta-btn[target="_blank"]::after{ content:none; }
    needs the readable ink rather than the fill-only matcha the dark story/
    footprint contexts use. */
 .page-home .sec-tag::before{ color:var(--accent-ink); }
+
+/* ============================================================================
+   PASSPHRASE GATE — the screen in front of the drafts at /lab/ and the tool
+   pages it indexes (Gate.jsx). It stands on its own with no nav and no footer:
+   there is nothing on the page to navigate yet, and the one link out goes back
+   to the site. Dark, so it reads as a different room rather than a broken page.
+   ============================================================================ */
+.gate{
+  min-height:100svh; display:flex; align-items:center; justify-content:center;
+  padding:clamp(1.5rem,6vw,4rem) 1.25rem;
+  background:
+    radial-gradient(ellipse 70% 55% at 12% 0%,rgba(193,224,67,0.10) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 50% at 92% 100%,rgba(181,196,43,0.08) 0%,transparent 62%),
+    linear-gradient(170deg,var(--forest) 0%,#1A2A0B 60%,var(--forest) 100%);
+}
+.gate-card{
+  width:100%; max-width:430px;
+  background:rgba(255,255,255,0.045); border:1px solid rgba(210,223,206,0.18);
+  border-radius:var(--r-xl); padding:clamp(1.6rem,4vw,2.2rem);
+}
+.gate-mark{ display:inline-flex; color:var(--lime); width:30px; height:30px; }
+.gate-mark svg{ width:100%; height:100%; }
+.gate-eyebrow{
+  font-family:var(--mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase;
+  font-weight:700; color:var(--lime); margin-top:1.1rem;
+}
+.gate-title{ font-size:clamp(1.8rem,5vw,2.5rem); letter-spacing:-0.04em; color:var(--lime-soft); margin:0.5rem 0 0.9rem; }
+.gate-body{ font-size:0.85rem; line-height:1.75; color:var(--sage); }
+.gate-form{ margin-top:1.5rem; }
+.gate-label{
+  display:block; font-family:var(--mono); font-size:10px; letter-spacing:0.1em;
+  text-transform:uppercase; font-weight:700; color:var(--sage-2); margin-bottom:0.45rem;
+}
+.gate-row{ display:flex; gap:0.5rem; flex-wrap:wrap; }
+.gate-input{
+  flex:1 1 12ch; min-width:0; font-family:var(--mono); font-size:13px; color:var(--sage);
+  background:rgba(0,0,0,0.25); border:1px solid rgba(210,223,206,0.28);
+  border-radius:var(--r-lg); padding:0.7rem 0.85rem; min-height:44px;
+  transition:border-color 0.2s var(--ease);
+}
+.gate-input:focus-visible{ outline:2px solid var(--lime-bright); outline-offset:2px; border-color:var(--lime-bright); }
+.gate-btn{ border-radius:var(--r-lg); flex:0 0 auto; }
+.gate-btn:disabled{ opacity:0.5; cursor:not-allowed; }
+/* Reserved whether or not it has anything to say, so submitting a wrong
+   passphrase does not shift the button out from under the cursor. */
+.gate-error{ min-height:1.4em; margin-top:0.6rem; font-family:var(--mono); font-size:11px; line-height:1.4; color:#FFB3C2; }
+.gate-back{
+  display:inline-block; margin-top:1.4rem; font-family:var(--mono); font-size:11px;
+  letter-spacing:0.06em; color:var(--sage-2); text-decoration:none;
+}
+.gate-back:hover{ color:var(--lime-bright); }
+
+/* MOBILE FORM CONTROLS — the passphrase field is 13px mono, under the 16px
+   iOS Safari zooms at. */
+@media (pointer: coarse), (max-width:680px){
+  .gate-input{ font-size:16px; }
+}

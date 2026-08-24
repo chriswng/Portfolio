@@ -1,0 +1,25 @@
+/* The drafts index at /lab/. It borrows the home page's forest band and tool
+   cards wholesale (.tools-band, .tools-grid, .tool-card in global.css), so
+   what is left here is the page's own frame and its foot. */
+
+.lab{ min-height:100svh; padding:clamp(3rem,8vw,6rem) 0 clamp(3rem,7vw,5rem); }
+.lab .tools-head{ margin-top:1.2rem; }
+
+.lab-foot{
+  display:flex; align-items:center; justify-content:space-between; gap:1rem 1.5rem;
+  flex-wrap:wrap; margin-top:clamp(2.5rem,6vw,4rem);
+  padding-top:1.4rem; border-top:1px solid rgba(210,223,206,0.16);
+  font-family:var(--mono); font-size:11px; letter-spacing:0.06em;
+}
+.lab-back{ color:var(--sage-2); text-decoration:none; }
+.lab-back:hover{ color:var(--lime-bright); }
+.lab-name{ color:var(--sage-2); opacity:0.7; }
+.lab-lock{
+  font-family:var(--mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase;
+  font-weight:700; color:var(--sage-2); background:transparent;
+  border:1px solid rgba(210,223,206,0.28); border-radius:var(--r-pill);
+  padding:0.45rem 0.9rem; min-height:36px; cursor:pointer;
+  transition:color 0.2s var(--ease),border-color 0.2s var(--ease);
+}
+.lab-lock:hover{ color:var(--lime-bright); border-color:var(--lime-bright); }
+.lab-lock:focus-visible{ outline:2px solid var(--lime-bright); outline-offset:2px; }
