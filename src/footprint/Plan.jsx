@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import SplitText from '../components/SplitText';
 import { categoryById } from './data/factors';
 import { BUDGET_2030 } from './data/benchmarks';
-import { PLAN, EFFORT_LABELS, fmtT } from './data/copy';
+import { PLAN, EFFORT_LABELS, fmtT, listOf } from './data/copy';
 import { fill } from './data/storyCopy';
 import { prefersReducedMotion } from '../utils/media';
 import { PathwayChart, MaccChart, PATHWAY_COLORS } from './charts';
@@ -51,7 +51,7 @@ function OptionCard({ r, on, baseline, onToggle }) {
   );
 }
 
-export default function Plan({ macc, pathway, plan, onToggle }) {
+export default function Plan({ macc, pathway, plan, onToggle, dwellingNudge, onDwellingAnswer }) {
   const trackRef = useRef(null);
   const plannerRef = useRef(null);
   const impactRef = useRef(null);
@@ -140,6 +140,36 @@ export default function Plan({ macc, pathway, plan, onToggle }) {
           <div className="fp-card fp-planner-cards">
             <div className="fp-card-head">{PLAN.tableTitle}</div>
             <div className="fp-card-sub">{PLAN.tableSub}</div>
+            {/* The quick path never asked where you live, so two whole-home
+                measures sit greyed out on an assumption. The correction lands
+                here, beside the cards it unlocks, rather than costing every
+                visitor a question in a one-minute flow. */}
+            {dwellingNudge && (
+              <div className="fp-dwelling-nudge">
+                <span className="fp-dwelling-k">
+                  {fill(PLAN.dwellingNudge.kicker, {
+                    n: PLAN.dwellingNudge.counts[dwellingNudge.actions.length] || dwellingNudge.actions.length,
+                    verb: dwellingNudge.actions.length > 1 ? 'are' : 'is',
+                  })}
+                </span>
+                <p className="fp-dwelling-body">
+                  {/* The card names keep their own casing, so the sentence
+                      points at labels the visitor can find right below it. */}
+                  {fill(PLAN.dwellingNudge.body, {
+                    list: listOf(dwellingNudge.actions),
+                    verb: dwellingNudge.actions.length > 1 ? 'are' : 'is',
+                  })}
+                </p>
+                <div className="fp-ctrl-row">
+                  <button type="button" className="btn btn-primary fp-btn" onClick={() => onDwellingAnswer(true)}>
+                    {PLAN.dwellingNudge.cta}
+                  </button>
+                  <button type="button" className="fp-linkbtn" onClick={() => onDwellingAnswer(false)}>
+                    {PLAN.dwellingNudge.dismiss}
+                  </button>
+                </div>
+              </div>
+            )}
             <div className="fp-carousel">
               <button type="button" className="fp-car-btn prev" aria-label={PLAN.prev} onClick={() => nudge(-1)}>‹</button>
               <ul className="fp-car-track" ref={trackRef} aria-label={PLAN.carouselLabel}>

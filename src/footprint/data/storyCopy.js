@@ -31,6 +31,7 @@ export const CHAPTERS = [
   { id: 'st-equiv', label: 'In real things' },
   { id: 'st-scopes', label: 'Where it comes from' },
   { id: 'st-hotspots', label: 'Hotspots' },
+  { id: 'st-grid', label: 'Your grid' },
   { id: 'st-months', label: 'Worst month' },
   { id: 'st-character', label: 'Your result' },
   { id: 'st-needle', label: 'Cut it down' },
@@ -297,7 +298,42 @@ export const BENCH_ST = {
   caveat: 'The national and world averages count a wider basket than the core survey does. The optional detail step adds some of it back (clothes, gadgets, services), and hotel nights ride along with your trips; even then a few things stay out, so the real gap is if anything bigger.',
 };
 
+// The grid swap. United States audits only, and only when the swing is worth a
+// screen of its own: the American grid runs about 38 times from the lightest
+// state to the heaviest, which makes the wire into the house one of the
+// largest numbers in the year and the only one nobody chose. Australian and
+// New Zealand audits never reach it, so their chapter count is unchanged.
+export const GRID_ST = {
+  tag: 'Where you plug in',
+  headline: 'Same year, different grid',
+  sub: 'Every line below is your year exactly as you logged it. The only thing that moves is which power stations sit on the other end of your wire.',
+  rows: {
+    clean: 'On {name}\u2019s grid',
+    here: 'Where you live, {name}',
+    dirty: 'On {name}\u2019s grid',
+  },
+  scaleLabel: 'Every state grid, lightest to heaviest',
+  scaleAria: 'State electricity factors run from {clean} at {cleanV} to {dirty} at {dirtyV} kilograms of CO\u2082-e per kilowatt-hour. Your grid, {here}, sits at {hereV}.',
+  yours: 'Yours',
+  punchUnit: '\u00d7',
+  punch: 'between the lightest state grid and the heaviest',
+  swing: {
+    line: 'Moving between those two states and changing nothing else moves your year by {swing} t. You did not choose the wire, and it is worth more than most of the choices you did make.',
+  },
+  note: 'Your electricity re-priced on each state\u2019s own factor from the EPA eGRID workbook, with every other line in the year held as you logged it. A renewable plan, where you have one, still nets off the same way it does above.',
+};
+
 export const NEEDLE = {
+  // The other half of the public-transport factor split: a bus runs about four
+  // times a train per passenger-kilometre, so which one a fare buys is worth
+  // saying out loud. Priced from the visitor's own kilometres, and shown only
+  // when they logged some.
+  modeSwap: {
+    kicker: 'Worth knowing',
+    bus: 'Your {km} km on the bus cost {asIs} t. The same kilometres by train would cost {swapped} t.',
+    rail: 'Your {km} km by train cost {asIs} t. The same kilometres on the bus would cost {swapped} t.',
+    tail: 'A bus carries about {x} times the carbon of a train per passenger-kilometre, so which one a fare buys matters more than most people think.',
+  },
   tag: 'The needle',
   headline: 'How could I have cut my carbon this year?',
   headlineOwn: 'How could you cut your carbon this year?',
