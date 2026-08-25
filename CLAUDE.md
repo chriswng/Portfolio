@@ -228,8 +228,8 @@ publishing from `main`.
 
 GitHub Actions (`.github/workflows/deploy.yml`) tests, builds and publishes
 `dist/` to GitHub Pages on push to `main`; `.github/workflows/ci.yml` runs the
-same two steps on every other branch and pull request, so the gate fires before
-a merge rather than after it. `base: './'` in `vite.config.js` keeps asset
+same two steps on every pull request, so the gate fires before a merge rather
+than after it. `base: './'` in `vite.config.js` keeps asset
 paths relative so both the domain root and a `/Portfolio/` sub-path work.
 
 ## Writing rules (for any site copy)

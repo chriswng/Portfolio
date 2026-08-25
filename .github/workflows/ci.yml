@@ -4,21 +4,21 @@ name: CI
 # fires after a merge; this one runs on the branch, so a broken engine or a
 # figure that no longer matches its source is caught before it lands.
 
+# Pull requests only. A push trigger alongside this one fires a second run for
+# the same commit, and cancelling the duplicate is worse than not starting it:
+# GitHub counts a cancelled check as non-passing, so the pull request sits at
+# "unstable" and reads amber even with the real run green. Nothing reaches main
+# except through a pull request, and deploy.yml runs the same two steps again
+# before publishing, so this covers every commit that can actually ship.
 on:
   pull_request:
-  push:
-    branches-ignore: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
 
-# Keyed on the branch name rather than the ref, so the push run and the pull
-# request run for the same branch land in one group and the earlier of the two
-# is cancelled. Both triggers are wanted (a branch with no pull request open
-# still gets checked), but the same commit only needs checking once.
 concurrency:
-  group: ci-${{ github.event.pull_request.head.ref || github.ref_name }}
+  group: ci-${{ github.event.pull_request.number || github.ref_name }}
   cancel-in-progress: true
 
 jobs:

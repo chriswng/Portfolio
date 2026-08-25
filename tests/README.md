@@ -1,7 +1,7 @@
 # Tests
 
 The calculation engine is the site's core asset, so it is the thing under test.
-`npm test` runs them; CI runs the same command on every branch and pull request
+`npm test` runs them; CI runs the same command on every pull request
 (`.github/workflows/ci.yml`) and again before the deploy build on main.
 
 ```bash
