@@ -1,0 +1,757 @@
+<title>Sustainability Role Register</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap">
+
+<style>
+:root{
+  --ground:oklch(0.984 0.006 118);
+  --surface:#FFFFFF;
+  --surface-2:oklch(0.968 0.008 118);
+  --ink:oklch(0.207 0.022 118);
+  --ink-2:oklch(0.505 0.022 118);
+  --ink-3:oklch(0.63 0.018 118);
+  --rule:oklch(0.912 0.008 118);
+  --rule-2:oklch(0.845 0.013 118);
+  --accent:#6A7614;
+  --accent-fill:#B5C42B;
+  --accent-wash:#F1F7D8;
+
+  --alt:#5C5A86;
+  --alt-wash:oklch(0.945 0.018 285);
+
+  --live-fg:#2E4211;
+  --live-bg:#E4EFC0;
+  --check-fg:#8A5100;
+  --check-bg:#FCEBD2;
+  --check-dot:#D08400;
+  --shut-fg:#9B1F38;
+  --shut-bg:#FBE0E6;
+
+  --shadow:0 1px 2px rgba(33,48,15,.05), 0 8px 24px rgba(33,48,15,.05);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:oklch(0.185 0.016 118);
+    --surface:oklch(0.232 0.018 118);
+    --surface-2:oklch(0.268 0.02 118);
+    --ink:oklch(0.955 0.008 118);
+    --ink-2:oklch(0.775 0.016 118);
+    --ink-3:oklch(0.645 0.016 118);
+    --rule:oklch(0.315 0.02 118);
+    --rule-2:oklch(0.385 0.022 118);
+    --accent:#C6E64B;
+    --accent-fill:#B5C42B;
+    --accent-wash:oklch(0.285 0.045 118);
+    --alt:#B3AEE4;
+    --alt-wash:oklch(0.29 0.045 285);
+    --live-fg:#CFE68A;
+    --live-bg:oklch(0.315 0.055 122);
+    --check-fg:#F0C078;
+    --check-bg:oklch(0.325 0.05 70);
+    --check-dot:#E0A040;
+    --shut-fg:#F5A3B4;
+    --shut-bg:oklch(0.315 0.055 12);
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.22);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:oklch(0.185 0.016 118);
+  --surface:oklch(0.232 0.018 118);
+  --surface-2:oklch(0.268 0.02 118);
+  --ink:oklch(0.955 0.008 118);
+  --ink-2:oklch(0.775 0.016 118);
+  --ink-3:oklch(0.645 0.016 118);
+  --rule:oklch(0.315 0.02 118);
+  --rule-2:oklch(0.385 0.022 118);
+  --accent:#C6E64B;
+  --accent-fill:#B5C42B;
+  --accent-wash:oklch(0.285 0.045 118);
+  --alt:#B3AEE4;
+  --alt-wash:oklch(0.29 0.045 285);
+  --live-fg:#CFE68A;
+  --live-bg:oklch(0.315 0.055 122);
+  --check-fg:#F0C078;
+  --check-bg:oklch(0.325 0.05 70);
+  --check-dot:#E0A040;
+  --shut-fg:#F5A3B4;
+  --shut-bg:oklch(0.315 0.055 12);
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.22);
+}
+
+*,*::before,*::after{box-sizing:border-box;}
+body{
+  background:var(--ground);
+  color:var(--ink);
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:clamp(28px,5vw,64px) clamp(18px,4vw,40px) 96px;}
+
+.mast{border-bottom:2px solid var(--ink);padding-bottom:22px;}
+.eyebrow{
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
+  display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+}
+.eyebrow .sep{color:var(--ink-3);}
+h1{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;
+  font-size:clamp(30px,5.2vw,50px);line-height:1.04;letter-spacing:-.022em;
+  margin:14px 0 0;text-wrap:balance;
+}
+.standfirst{margin:14px 0 0;max-width:63ch;color:var(--ink-2);font-size:16px;}
+
+.profile{
+  margin-top:30px;background:var(--surface);border:1px solid var(--rule);
+  border-radius:14px;padding:22px 24px;box-shadow:var(--shadow);
+}
+.profile h2{
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin:0 0 14px;
+}
+.pgrid{display:grid;gap:20px;grid-template-columns:1fr;}
+@media(min-width:780px){.pgrid{grid-template-columns:1fr 1fr;}}
+.pgrid h3{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;margin:0 0 8px;letter-spacing:-.01em;}
+.pgrid ul{margin:0;padding-left:17px;color:var(--ink-2);font-size:14px;}
+.pgrid li{margin-bottom:5px;}
+.pgrid li::marker{color:var(--accent-fill);}
+
+/* ---------- split board: two literal columns ---------- */
+.board{margin-top:34px;display:grid;gap:16px;grid-template-columns:1fr;}
+@media(min-width:820px){.board{grid-template-columns:1.05fr 1fr;}}
+.col{
+  background:var(--surface);border:1px solid var(--rule);border-radius:14px;
+  overflow:hidden;box-shadow:var(--shadow);
+}
+.col > header{padding:16px 18px 14px;border-bottom:1px solid var(--rule);}
+.col.inhouse > header{background:var(--accent-wash);}
+.col.consult > header{background:var(--alt-wash);}
+.col h2{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600;margin:0;letter-spacing:-.015em;}
+.col .sub{
+  font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.08em;
+  text-transform:uppercase;margin-top:5px;
+}
+.col.inhouse .sub{color:var(--accent);}
+.col.consult .sub{color:var(--alt);}
+.col .note{font-size:12.5px;color:var(--ink-2);margin:8px 0 0;line-height:1.5;}
+.col ol{list-style:none;margin:0;padding:6px 0;}
+.col li{display:flex;gap:10px;align-items:baseline;padding:7px 18px;font-size:13.5px;}
+.col li + li{border-top:1px solid var(--rule);}
+.col li .n{
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-3);
+  font-variant-numeric:tabular-nums;flex:none;width:22px;
+}
+.col li .nm{flex:1;min-width:0;}
+.col li .nm b{font-weight:600;}
+.col li .nm em{font-style:normal;color:var(--ink-2);}
+.col li .f{
+  font-family:'JetBrains Mono',monospace;font-size:11px;flex:none;
+  color:var(--ink-3);font-variant-numeric:tabular-nums;
+}
+.col li.dim .nm{color:var(--ink-3);text-decoration:line-through;text-decoration-color:var(--ink-3);}
+.col li a{color:inherit;text-decoration:none;}
+.col li a:hover .nm b{text-decoration:underline;}
+.col li a:focus-visible{outline:2px solid var(--accent-fill);outline-offset:3px;border-radius:3px;}
+
+.tally{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0 0;}
+.tally .t{flex:1 1 130px;background:var(--surface);border:1px solid var(--rule);border-radius:11px;padding:13px 15px;}
+.tally .n{font-family:'Space Grotesk',sans-serif;font-size:27px;font-weight:700;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums;}
+.tally .l{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-top:6px;}
+
+.caveat{
+  margin:16px 0 0;padding:13px 16px;border-left:3px solid var(--check-dot);
+  background:var(--surface-2);border-radius:0 8px 8px 0;font-size:13.5px;color:var(--ink-2);
+}
+.caveat b{color:var(--ink);font-weight:600;}
+
+.filters{
+  display:flex;flex-wrap:wrap;gap:8px;margin:32px 0 0;
+  position:sticky;top:0;background:var(--ground);padding:14px 0;z-index:5;
+  border-bottom:1px solid var(--rule);
+}
+.filters button{
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;
+  letter-spacing:.07em;text-transform:uppercase;padding:7px 14px;border-radius:999px;
+  cursor:pointer;background:var(--surface);color:var(--ink-2);border:1px solid var(--rule-2);
+  transition:background .15s,color .15s,border-color .15s;
+}
+.filters button:hover{border-color:var(--accent-fill);color:var(--ink);}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink);}
+.filters button:focus-visible{outline:2px solid var(--accent-fill);outline-offset:2px;}
+
+.track{margin-top:46px;}
+.track > .thead{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  padding-bottom:12px;border-bottom:2px solid var(--ink);
+}
+.track h2{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;letter-spacing:-.02em;margin:0;}
+.track .tcount{
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3);
+}
+.track > .tintro{margin:14px 0 0;font-size:14px;color:var(--ink-2);max-width:72ch;}
+
+.tier{margin-top:30px;}
+.tier h3{
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3);
+  margin:0 0 4px;
+}
+.tier .tnote{font-size:13px;color:var(--ink-2);margin:0 0 16px;max-width:70ch;}
+
+.role{
+  background:var(--surface);border:1px solid var(--rule);border-radius:14px;
+  padding:20px 22px;margin-bottom:14px;box-shadow:var(--shadow);
+}
+.role.is-hidden{display:none;}
+.rhead{display:flex;gap:14px;align-items:flex-start;}
+.rank{
+  font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;
+  color:var(--accent);background:var(--accent-wash);
+  min-width:38px;height:26px;display:grid;place-items:center;border-radius:7px;
+  font-variant-numeric:tabular-nums;flex:none;margin-top:2px;
+}
+.role[data-track="consult"] .rank{color:var(--alt);background:var(--alt-wash);}
+.rtitle{flex:1;min-width:0;}
+.rtitle h4{font-family:'Space Grotesk',sans-serif;font-size:17.5px;font-weight:600;margin:0;letter-spacing:-.012em;line-height:1.3;text-wrap:balance;}
+.org{font-size:14px;color:var(--ink-2);margin-top:2px;}
+.org b{color:var(--ink);font-weight:600;}
+
+.chip{
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;
+  letter-spacing:.08em;text-transform:uppercase;padding:5px 10px 5px 8px;
+  border-radius:999px;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;flex:none;
+}
+.chip::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;}
+.chip.live{background:var(--live-bg);color:var(--live-fg);}
+.chip.check{background:var(--check-bg);color:var(--check-fg);}
+.chip.shut{background:var(--shut-bg);color:var(--shut-fg);}
+
+.meta{
+  display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:14px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-3);letter-spacing:.02em;
+}
+.meta span b{color:var(--ink-2);font-weight:500;}
+.meta .warn{color:var(--check-fg);font-weight:500;}
+
+.fit{display:flex;align-items:center;gap:9px;margin-top:13px;}
+.fit .bars{display:flex;gap:3px;}
+.fit i{width:22px;height:5px;border-radius:2px;background:var(--rule-2);display:block;}
+.fit i.on{background:var(--accent-fill);}
+.role[data-track="consult"] .fit i.on{background:var(--alt);}
+.fit .flabel{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);}
+
+.panels{
+  display:grid;gap:1px;background:var(--rule);margin-top:18px;
+  border:1px solid var(--rule);border-radius:10px;overflow:hidden;grid-template-columns:1fr;
+}
+@media(min-width:720px){.panels{grid-template-columns:1fr 1fr;}}
+.panel{background:var(--surface);padding:14px 16px;}
+.panel h5{
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;
+  letter-spacing:.11em;text-transform:uppercase;margin:0 0 7px;color:var(--ink-3);
+}
+.panel.have h5{color:var(--live-fg);}
+.panel.gap h5{color:var(--check-fg);}
+.panel.why h5{color:var(--accent);}
+.role[data-track="consult"] .panel.why h5{color:var(--alt);}
+.panel p{margin:0;font-size:13.5px;color:var(--ink-2);line-height:1.58;}
+
+.act{margin-top:16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
+.act a{
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;
+  letter-spacing:.06em;text-transform:uppercase;text-decoration:none;
+  padding:9px 15px;border-radius:8px;background:var(--ink);color:var(--ground);
+  border:1px solid var(--ink);transition:opacity .15s;
+}
+.act a:hover{opacity:.85;}
+.act a:focus-visible{outline:2px solid var(--accent-fill);outline-offset:2px;}
+.act .src{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--ink-3);}
+
+footer.foot{margin-top:56px;padding-top:22px;border-top:1px solid var(--rule);font-size:13px;color:var(--ink-3);}
+footer.foot p{margin:0 0 8px;max-width:74ch;}
+@media (prefers-reduced-motion: reduce){*{transition:none !important;}}
+</style>
+
+<div class="wrap">
+
+<header class="mast">
+  <div class="eyebrow">
+    <span>Melbourne</span><span class="sep">/</span>
+    <span>28 roles assessed</span><span class="sep">/</span>
+    <span>Checked 24 Aug 2026</span>
+  </div>
+  <h1>Sustainability Role Register</h1>
+  <p class="standfirst">Every role flagged by the automated watch, re-checked for whether it is still open and ranked against what you actually bring. Split into in-house roles, which is where you want to be, and consulting, kept separately as the fallback track.</p>
+</header>
+
+<section class="profile">
+  <h2>What you're pitching</h2>
+  <div class="pgrid">
+    <div>
+      <h3>The record</h3>
+      <ul>
+        <li><b>Senior Sustainability Advisor</b>, Downer EDI — Group Environment, Sustainability &amp; Reporting (contract to Mar 2027)</li>
+        <li><b>WSP</b> Sustainability &amp; Climate Change Advisory, Feb 2022 – Feb 2026, Consultant through to Project Consultant</li>
+        <li><b>Dept of Defence</b>, Capital Facilities &amp; Infrastructure, 2020–22</li>
+        <li>BEng (Civil with Architecture), Honours Class 1, UNSW</li>
+        <li>~4.5 years sustainability advisory, ~6.5 years built environment</li>
+      </ul>
+    </div>
+    <div>
+      <h3>The evidence that travels</h3>
+      <ul>
+        <li>Scope 1–3 inventories, NGER boundaries, operational control determinations</li>
+        <li>ASRS / AASB S2 disclosure, ESG Impact Report, Workiva</li>
+        <li>Assurance readiness under PwC — emission factor governance, independent recalculation</li>
+        <li>Board-ready net zero pathway model to FY2050; toggle-based scenario tooling</li>
+        <li>CDP Supply Chain build: Python pipeline, $3.2B spend, 13,391 suppliers screened</li>
+        <li>GRESB Infrastructure: +35% score in year one, full cycle then handover</li>
+        <li>LCA A1–A5, hospital and commercial fitouts; Python/Excel automation; Envizi</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="board">
+  <div class="col inhouse">
+    <header>
+      <h2>In-house</h2>
+      <div class="sub">18 roles · your focus</div>
+      <p class="note">Sustainability sits inside the business. You own the data, the disclosure and the internal relationships rather than selling advice on them.</p>
+    </header>
+    <ol id="boardIn"></ol>
+  </div>
+  <div class="col consult">
+    <header>
+      <h2>Consulting &amp; advisory</h2>
+      <div class="sub">10 roles · fallback track</div>
+      <p class="note">Client-side delivery at consultancies and advisory practices. Kept on the register because two of them are the strongest requirement matches on the list, not because they are the goal.</p>
+    </header>
+    <ol id="boardCon"></ol>
+  </div>
+</div>
+
+<div class="tally">
+  <div class="t"><div class="n">14</div><div class="l">Live</div></div>
+  <div class="t"><div class="n">8</div><div class="l">Needs checking</div></div>
+  <div class="t"><div class="n">3</div><div class="l">Closed or barred</div></div>
+  <div class="t"><div class="n">3</div><div class="l">New this check</div></div>
+</div>
+
+<p class="caveat"><b>How solid these statuses are.</b> Indeed job pages and most employer career portals block direct fetching from here, so "live" means the role still surfaced in a fresh search today, not that a listing page confirmed it is accepting applications. Closing dates are shown only where an employer actually published one — most corporate roles publish none and close when filled. Treat every date and status as a prompt to check, not a guarantee. Fit ratings are my assessment against your record, not the employer's.</p>
+
+<nav class="filters" aria-label="Filter roles">
+  <button type="button" data-f="all" aria-pressed="true">All 28</button>
+  <button type="button" data-f="inhouse" aria-pressed="false">In-house only</button>
+  <button type="button" data-f="consult" aria-pressed="false">Consulting only</button>
+  <button type="button" data-f="live" aria-pressed="false">Live</button>
+  <button type="button" data-f="check" aria-pressed="false">Needs checking</button>
+  <button type="button" data-f="shut" aria-pressed="false">Closed</button>
+  <button type="button" data-f="new" aria-pressed="false">New</button>
+</nav>
+
+<div id="reg"></div>
+
+<footer class="foot">
+  <p><b>Three corrections to the earlier list.</b> The VIDA <i>Advisor, Sustainability</i> role previously ranked first is both closed (12 Aug) and a designated position for Aboriginal and Torres Strait Islander applicants only. The Suncorp <i>Advisor Sustainability</i> role is probably Brisbane or Sydney based, not Melbourne. And three ERM and Coles roles surfaced during this check that the watch had not flagged.</p>
+  <p>Compiled from the Indeed connector, employer career portals and site-restricted web search. Sources named on each entry. Source file kept at <code>docs/job-search/role-register.html</code>; not part of the site build.</p>
+</footer>
+
+</div>
+
+<script>
+const ROLES = [
+/* ============ IN-HOUSE ============ */
+{
+ track:"inhouse", tier:1, rank:1, status:"live", isNew:false, fit:5,
+ title:"Sustainability Advisor", org:"AGIG (Australian Gas Infrastructure Group)",
+ loc:"Melbourne — also open to Adelaide, Brisbane, Perth", type:"Permanent",
+ close:"No closing date published", posted:"",
+ ask:"Sustainability, ESG or climate reporting experience, ideally in energy, infrastructure or consulting. Knowledge of GRI, GRESB, TCFD and ASRS. Strong analytical and numerical skills interpreting, validating and reporting sustainability data. Excellent written communication for Executive, Committee and Board papers. Stakeholder engagement across diverse teams under competing priorities.",
+ have:"This reads like it was written off your CV. GRESB you have led end to end, not just contributed to. ASRS is your live workstream. Data validation to assurance standard is exactly the emission factor governance and independent recalculation work you built for PwC. Energy and infrastructure is your whole sector history — an energy distributor at WSP, Downer now.",
+ gap:"GRI does not appear anywhere in your record, and TCFD only obliquely through ASRS and climate risk. No gas sector exposure. You have built board-ready material and briefed a Deputy CFO, but no Board paper with your name on it — worth framing the pathway model and exec briefs as the equivalent.",
+ why:"The closest requirement-for-requirement match on this list, at exactly your title and level, and in-house. Four-city flexibility means Melbourne is a supported base rather than a concession you have to negotiate.",
+ link:"https://careers.agig.com.au/job/Melbourne-Sustainability-Advisor-VIC-3000/1365160266/", src:"AGIG careers portal"
+},
+{
+ track:"inhouse", tier:1, rank:2, status:"live", isNew:false, fit:5,
+ title:"Manager, Climate  ·  and Climate Advisor", org:"APA Group",
+ loc:"Melbourne (hybrid) — Manager role also Sydney, Brisbane", type:"Manager: permanent full-time. Advisor: contract",
+ close:"No closing date published", posted:"",
+ ask:"Reporting to the Head of Climate: lead preparation of APA's annual climate disclosures in line with AASB S2 and emerging global standards, uplift systems and processes to meet new regulatory requirements, and embed physical and transition risk assessments across the business. An experienced climate professional in climate risk, reporting and disclosure.",
+ have:"AASB S2 reporting is what you are doing right now. \"Uplift systems and processes\" is the single most consistent theme in your record — subcontractor templates with embedded logic, the rebuilt Scope 3 pipeline, the recalculation module, the emission factor review workbook. You have done regulatory-deadline work under penalty (the POFRA Section 13E response to DCCEEW).",
+ gap:"Physical and transition risk assessment is the real gap. Your weight is on inventory, disclosure and abatement rather than scenario-based risk. Read APA's Climate Transition Plan before any interview and be ready to talk about how you would build the risk assessment rather than claim you have.",
+ why:"Two doors at one ASX-listed energy infrastructure company, one of them a step up in title. The systems-and-process uplift framing is the exact pitch in your bio — repeatable, auditable, owned by the team after you leave.",
+ link:"https://www.apa.com.au/careers", src:"APA careers · onestopesg listing"
+},
+{
+ track:"inhouse", tier:1, rank:3, status:"live", isNew:false, fit:4,
+ title:"Sustainability Program Manager", org:"Coles Group",
+ loc:"Hawthorn East, Melbourne", type:"Full-time, hybrid · Req 38627",
+ close:"No closing date published", posted:"",
+ ask:"Manage and support the ongoing development and implementation of the Coles Environment and Climate Change strategy. Coles is concurrently hiring across the same team for climate strategy, circularity, and sustainability performance measurement and reporting.",
+ have:"Running 12+ concurrent workstreams from month one is precisely programme management, and you have the climate strategy content to go with it — pathway modelling, abatement initiative review, disclosure. The CDP Supply Chain build shows you can take a programme from scoping to active phase against a hard deadline.",
+ gap:"No retail or consumer goods experience, which is the sector you say you want — this is the chicken-and-egg role that fixes that. Programme management at Coles scale is a different order of stakeholder count. The performance measurement and circularity roles in the same team may fit your data work better than this one.",
+ why:"Your stated target sector, at an ASX-listed employer, in Melbourne. Because the team is hiring several roles at once, one application puts you in front of a function with multiple openings — look at all of them before choosing.",
+ link:"https://work180.com/en-au/for-women/employer/coles-supermarkets/job/431704/sustainability-program-manager", src:"WORK180 · Coles careers"
+},
+{
+ track:"inhouse", tier:1, rank:4, status:"live", isNew:false, fit:4,
+ title:"Sustainability Specialist", org:"Cleanaway",
+ loc:"Melbourne", type:"Permanent", close:"No closing date published", posted:"Posted 20 Aug 2026 — freshly listed",
+ ask:"Full position description was not retrievable through search. Cleanaway's sustainability function centres on resource recovery, circularity, emissions reporting and the sustainability claims attached to its waste streams.",
+ have:"Exact title at your level. Scope 1–3 inventory work, NGER boundaries, assurance-grade data governance and the automation to make it repeatable. Infrastructure and heavy-operations context throughout your career, which is Cleanaway's world.",
+ gap:"You are working blind on the actual requirements — pull the position description before you write anything. Circular economy and waste-stream specifics are not in your record, and Cleanaway's sustainability story is built on them.",
+ why:"ASX-listed, permanent, Melbourne headquartered, and posted four days ago so the field is still wide open. Of everything here it is the freshest genuine title match.",
+ link:"https://to.indeed.com/aar4nbjptpg9", src:"Indeed"
+},
+{
+ track:"inhouse", tier:1, rank:5, status:"live", isNew:false, fit:4,
+ title:"Senior Analyst — Sustainability", org:"CSL",
+ loc:"Melbourne CBD", type:"Permanent, hybrid", close:"No closing date published", posted:"",
+ ask:"Reports to the Director of Sustainability Disclosure. Own data requirements across CSL's Annual Report, AASB S2 report, CSRD, EU Taxonomy and website. Act as technical expert for sustainability data, collect environmental data across functions, manage the annual audit programme. Bachelor in accounting, finance, sustainability or related; advanced degree or CPA, CFA or GRI certification preferred; 7+ years relevant experience, preferably financial services or Big 4.",
+ have:"The actual job is what you do daily: owning disclosure data, being the technical authority on it, and running it through external audit. Your PwC assurance preparation, emission factor governance and cross-BU data collection map straight onto the responsibilities.",
+ gap:"The paper bar overshoots you on three counts — 7+ years against your ~4.5, no CPA, CA, CFA or GRI credential, and no financial services or Big 4 background. CSRD and EU Taxonomy are also outside your experience. Apply anyway, but lead hard on the audit programme and data ownership evidence, because that is where you close the distance.",
+ why:"ASX top-ten, and reporting to a Director of Sustainability Disclosure means a defined ladder rather than a lone sustainability seat. If you land it, the credential gap stops mattering.",
+ link:"https://netzerojobs.com.au/industry/executive-strategic-management/job/28650628/sustainability-senior-analyst", src:"Net Zero Jobs · CSL careers"
+},
+{
+ track:"inhouse", tier:2, rank:6, status:"live", isNew:false, fit:4,
+ title:"Senior Manager, Sustainability", org:"Orica",
+ loc:"East Melbourne", type:"Full-time", close:"No closing date published", posted:"",
+ ask:"Lead sustainability strategy and priorities for the global business. Influence senior leaders. Drive sustainability disclosure including investor engagement and ESG matters. Implement sustainability goals and establish external partnerships.",
+ have:"Influencing senior leaders is evidenced: you ran an ESG Impact Report workshop with a General Manager and ten managers, and your fuel cost exposure analysis went from Deputy CFO to CFO into investor communications. External partnership management you have through Learn Awesome, PwC and CDP.",
+ gap:"A real jump. No line management in your record, global scope against your Australia and New Zealand experience, and strategy ownership rather than strategy delivery. Investor engagement you have touched once, indirectly.",
+ why:"The biggest step up available to you at an ASX-listed global manufacturer, ten minutes from the CBD. Even an unsuccessful process here is a useful read on how far off Senior Manager you currently are.",
+ link:"https://www.seek.com.au/Orica-jobs/in-All-Melbourne-VIC", src:"SEEK · LinkedIn · Orica careers"
+},
+{
+ track:"inhouse", tier:2, rank:7, status:"live", isNew:false, fit:3,
+ title:"Social Sustainability Manager", org:"Transurban",
+ loc:"Melbourne CBD and inner suburbs", type:"Permanent", close:"No closing date published", posted:"",
+ ask:"Manage programs of work under the social sustainability strategy, creating stakeholder impact and organisational trust. Demonstrated understanding of sustainability and ESG and emerging trends, experience executing complex strategic initiatives, strong project management, analytical and communication skills. 16 weeks paid parental leave regardless of gender or carer status.",
+ have:"Complex strategic initiatives and project management are well evidenced, and your ESG trend literacy is current. Infrastructure sector fit is exact.",
+ gap:"This is the social half of sustainability — community, human rights, social licence — and your record is almost entirely environmental and quantitative. The CDP supplier programme is your nearest social-adjacent evidence, and it is a stretch to call it that.",
+ why:"ASX-listed infrastructure major in Melbourne with a manager title, and it would broaden you into the S of ESG, which currently reads as a genuine hole in your profile.",
+ link:"https://careers.transurban.com/opportunities", src:"Transurban careers · Talentify"
+},
+{
+ track:"inhouse", tier:2, rank:8, status:"check", isNew:true, fit:3,
+ title:"Ethical Sourcing Operations and Governance Manager", org:"Coles Group",
+ loc:"Hawthorn East, Melbourne", type:"Full-time", close:"No closing date published", posted:"Posted 5 Aug 2026",
+ ask:"Requirements not retrievable through search. Ethical sourcing operations and governance covers supplier due diligence, modern slavery compliance and supply chain governance.",
+ have:"The CDP Supply Chain programme is directly relevant: supplier segmentation across 13,391 entities, structured exclusion frameworks with documented rationale, DUNS and parent company enrichment, confidence-audited assignments. That is supplier due diligence infrastructure by another name.",
+ gap:"Modern slavery and human rights frameworks are not in your record, and they are the spine of ethical sourcing. This is governance of a social risk, not an environmental one.",
+ why:"Newly surfaced. Consumer goods sector, ASX-listed, and it uses your supply chain data work while filling the social and human rights gap that keeps appearing against you.",
+ link:"https://to.indeed.com/aacj4xqz2m9h", src:"Indeed · new this check"
+},
+{
+ track:"inhouse", tier:3, rank:9, status:"check", isNew:false, fit:3,
+ title:"Advisor Sustainability", org:"Suncorp Group",
+ loc:"Location unconfirmed — Suncorp's sustainability roles appear to be Brisbane and Sydney based", type:"Not stated",
+ close:"No closing date published", posted:"",
+ ask:"Develop and deliver sustainability communications including annual reporting and external disclosures. Engage industry bodies and internal governance forums. Monitor legislation and advise on business implications. Coordinate CDP and DJSI submissions and the annual Climate Related Disclosures Report. Knowledge of human rights or modern slavery frameworks. Senior Advisor variants ask five years in corporate affairs or corporate responsibility.",
+ have:"CDP submission experience directly, disclosure reporting as your core, and regulatory monitoring evidenced by the POFRA statutory response.",
+ gap:"Human rights and modern slavery frameworks are absent from your record and appear explicitly in the requirements. But the bigger issue is location — flagged as Melbourne earlier and the evidence now points to Brisbane or Sydney. Confirm before spending time on it.",
+ why:"Financial services disclosure experience would diversify you beyond infrastructure and manufacturing. Only pursue if the Melbourne or remote option is real.",
+ link:"https://careers.pageuppeople.com/346/cdw/en/job/673910/advisor-sustainability", src:"PageUp · Suncorp careers"
+},
+{
+ track:"inhouse", tier:3, rank:10, status:"live", isNew:false, fit:2,
+ title:"Environmental Advisor", org:"Acciona",
+ loc:"Melbourne", type:"Not stated", close:"No closing date published", posted:"Posted 6 Aug 2026",
+ ask:"Requirements not retrievable through search. Environmental advisory on renewables and infrastructure delivery — site environmental management, compliance and approvals on major projects.",
+ have:"Infrastructure delivery background from Defence and WSP, environmental compliance literacy, and a renewables-adjacent client history.",
+ gap:"Environmental site management is a different discipline from corporate sustainability and carbon. Taking it would read as a lateral move away from the disclosure and emissions specialism that is your market value.",
+ why:"Renewables sector exposure at a major international contractor, if you wanted to move toward project delivery rather than corporate reporting.",
+ link:"https://to.indeed.com/aaxy8jhdqsrs", src:"Indeed"
+},
+{
+ track:"inhouse", tier:3, rank:11, status:"live", isNew:false, fit:2,
+ title:"ESG Project Co-Ordinator", org:"AGL",
+ loc:"Melbourne Corporate", type:"Full-time · R-0019667", close:"No closing date published", posted:"",
+ ask:"Full description not retrievable — AGL's Workday portal blocks fetching. Coordination of ESG project delivery within a corporate ESG function.",
+ have:"Comfortably more than the role needs — multi-workstream coordination is a daily part of your current job.",
+ gap:"Coordinator sits below advisor level. You would be taking a title cut to join an ASX-listed energy company.",
+ why:"Only relevant as a way into AGL's ESG function if something more senior opens there later. Not worth a step down on its own terms.",
+ link:"https://agl.wd3.myworkdayjobs.com/en-GB/AGL_Recruitment/job/Melbourne-Corporate/ESG-Project-Co-Ordinator_R-0019667-1", src:"AGL Workday"
+},
+{
+ track:"inhouse", tier:3, rank:12, status:"live", isNew:false, fit:2,
+ title:"Investment Stewardship Analyst", org:"Northern Trust Asset Management",
+ loc:"Melbourne", type:"Full-time · R155177", close:"No closing date published", posted:"",
+ ask:"Support and execute active ownership on corporate governance and sustainability topics affecting investment outcomes across Australia and APAC. Lead company engagements, conduct company research, monitor engagement milestones, analyse shareholder meeting agendas. At least five years in investment stewardship, corporate governance or ESG research; Bachelor's degree; ESG certification or training ideally.",
+ have:"ESG research literacy and analytical depth. You read corporate climate disclosures critically for a living, which is half of what a stewardship analyst does to a company.",
+ gap:"Five years in stewardship, governance or ESG research specifically — yours is corporate practitioner experience, not investor-side. No proxy voting, no shareholder engagement, no ESG certification. This is a finance-sector specialism you would be entering from outside.",
+ why:"A genuine pivot option into investor-side ESG if you ever want to leave corporate practice. Melbourne is one of only four global offices for this team, so the seat is rare.",
+ link:"https://ntrs.wd1.myworkdayjobs.com/en-US/northerntrust/job/Investment-Stewardship-Analyst_R155177", src:"Northern Trust Workday"
+},
+{
+ track:"inhouse", tier:3, rank:13, status:"live", isNew:false, fit:2,
+ title:"Associate Director, Procurement Enablement — ESG, Governance, Training &amp; Development", org:"CSL",
+ loc:"Melbourne", type:"Full-time", close:"No closing date published", posted:"Posted 18 Jun 2026 — open over two months",
+ ask:"Full description not retrievable. ESG, governance and capability building within a procurement enablement function rather than a sustainability team.",
+ have:"Supplier ESG programme building through CDP Supply Chain, and genuine training and development experience through the all-employee climate eLearning module you co-developed and launched.",
+ gap:"It is a procurement role with an ESG component, not a sustainability role. Associate Director is well above your current grade, and procurement operations are not your field.",
+ why:"The training and development element is an unusual match for the eLearning work, and CSL is ASX top-ten. But the centre of gravity is procurement, not sustainability.",
+ link:"https://to.indeed.com/aasksjkhmtt4", src:"Indeed"
+},
+{
+ track:"inhouse", tier:3, rank:14, status:"live", isNew:false, fit:2,
+ title:"Safety &amp; Sustainability Advisor", org:"DuluxGroup",
+ loc:"Bayswater, VIC", type:"Permanent", close:"No closing date published", posted:"Posted 22 Jul 2026",
+ ask:"Full description not retrievable. A combined safety and sustainability advisory role at a manufacturing site.",
+ have:"The sustainability half is straightforward for you, and manufacturing operations are familiar territory from Downer's business units.",
+ gap:"The safety half is at least equal weight and entirely absent from your record — no WHS qualification, no incident or hazard management. Bayswater is an outer-eastern commute.",
+ why:"Consumer goods manufacturing, which is adjacent to your stated target sector. But a split safety and sustainability seat would slow the specialisation you have been building.",
+ link:"https://to.indeed.com/aafwrm9hx49p", src:"Indeed"
+},
+{
+ track:"inhouse", tier:3, rank:15, status:"check", isNew:false, fit:2,
+ title:"RRP Sourcing Sustainability Manager", org:"JTI (Japan Tobacco International)",
+ loc:"Research, VIC — global listing also shows Geneva", type:"Not stated", close:"No closing date published", posted:"Posted 27 May 2026",
+ ask:"Demonstrable depth in voluntary standards and industry best practice for responsible sourcing and supply chain sustainability. Minimum five years on the environmental side of sustainability including LCA, GHG emissions estimation and management, responsible sourcing, and environmental due diligence of electronics or consumer goods manufacturing.",
+ have:"LCA delivered, GHG estimation and management is your core, and responsible sourcing has a real analogue in the CDP supplier programme.",
+ gap:"Five years against your ~4.5, no electronics or consumer goods manufacturing due diligence, and no responsible sourcing standards work. The Melbourne location is also unclear — the live listings point to Geneva.",
+ why:"Requirements otherwise line up well. The decision here is not about fit, it is whether you want a tobacco company on your CV in a field where that follows you.",
+ link:"https://jobs.jti.com/", src:"JTI careers · Indeed"
+},
+{
+ track:"inhouse", tier:4, rank:16, status:"shut", isNew:false, fit:0,
+ title:"Advisor, Sustainability", org:"Victorian Infrastructure Delivery Authority — Health",
+ loc:"Melbourne", type:"Full-time · Position 77104", close:"CLOSED — applications closed 11:59pm Wed 12 Aug 2026", posted:"Posted 29 Jul 2026",
+ ask:"Support sustainability initiatives across Victoria's public health system, work with Aboriginal Community Controlled Health Organisations, coordinate energy efficiency and solar project delivery, contributing to Victoria's net zero by 2045 commitment.",
+ have:"On subject matter this was the closest title match on the whole register, and public health infrastructure sits squarely in your capital projects background.",
+ gap:"Two hard blocks. It closed twelve days ago, and it is a designated position under Section 12 of the Equal Opportunity Act 2010, open only to Aboriginal and Torres Strait Islander applicants, with identity confirmed during recruitment.",
+ why:"No longer actionable. Recorded here because it was ranked first previously and that was wrong on both counts — worth knowing VIDA Health has an Environmental Sustainability team that hires at this level, for when a general-entry role opens.",
+ link:"https://www.careers.vic.gov.au/job/advisor-sustainability-77104", src:"Careers Vic"
+},
+{
+ track:"inhouse", tier:4, rank:17, status:"shut", isNew:false, fit:0,
+ title:"Head of ESG", org:"Vocus",
+ loc:"Melbourne", type:"Permanent", close:"Likely filled — no longer surfacing", posted:"Posted 30 Jul 2026",
+ ask:"Head of ESG for an ASX-listed telecommunications and infrastructure business.",
+ have:"On subject matter it was strong, though the seniority was well beyond your current grade.",
+ gap:"A fresh search across Vocus's Melbourne listings returned ten live roles and no ESG position, where it appeared consistently until 21 August. That pattern usually means filled or withdrawn.",
+ why:"Not actionable. Worth a direct look at Vocus's own careers page before writing it off, since a single search absence is suggestive rather than conclusive.",
+ link:"https://www.vocus.com.au/about-us/careers", src:"Indeed — absent from current listings"
+},
+{
+ track:"inhouse", tier:4, rank:18, status:"shut", isNew:false, fit:0,
+ title:"Farm Sustainability Specialist", org:"Saputo",
+ loc:"Melbourne", type:"12-month fixed term", close:"Likely filled — no longer surfacing", posted:"",
+ ask:"Lead development and delivery of on-farm sustainability programmes supporting dairy suppliers with emissions reduction and environmental improvement.",
+ have:"Supplier emissions programme design is genuinely transferable from the CDP Supply Chain work.",
+ gap:"Absent from two separate checks of Saputo's current Melbourne listings. Agricultural and on-farm emissions is also a narrow specialism outside your record, and it was a fixed-term contract.",
+ why:"Not actionable, and it was a niche fit even when live.",
+ link:"https://saputo.wd5.myworkdayjobs.com/en-US/Saputo_External_Careers", src:"Workday — absent from current listings"
+},
+
+/* ============ CONSULTING ============ */
+{
+ track:"consult", tier:1, rank:1, status:"live", isNew:false, fit:5,
+ title:"Managing Consultant — Carbon and Climate", org:"ERM",
+ loc:"Melbourne", type:"Full-time", close:"No closing date published", posted:"Posted 17 Jun 2026",
+ ask:"At least 3–5 years working with the quantitative side of sustainability: climate risk assessment, carbon accounting, lifecycle assessment. Senior consulting delivery within ERM's carbon and climate practice.",
+ have:"You sit right in the stated band at ~4.5 years, and you have all three named areas. Carbon accounting is your core. LCA you have actually delivered — A1–A5 boundary analysis on hospital and commercial fitouts against IStructE and GBCA benchmarks. Four years of billable consulting at WSP means the delivery model needs no explaining.",
+ gap:"Climate risk assessment is the thinnest of the three named areas. Managing Consultant will carry project P&amp;L and team leadership expectations; your record shows workstream ownership and cross-BU coordination but no direct reports.",
+ why:"The cleanest match to a stated experience bar anywhere on this register, and a title step up from Project Consultant. If the in-house track stalls, this is the one to take.",
+ link:"https://to.indeed.com/aapjdrgc76pr", src:"Indeed"
+},
+{
+ track:"consult", tier:1, rank:2, status:"check", isNew:true, fit:4,
+ title:"Principal Consultant — Emissions and Climate", org:"ERM",
+ loc:"Melbourne", type:"Full-time", close:"No closing date published", posted:"Posted 18 Jun 2026",
+ ask:"Requirements not retrievable through search. As a Principal-grade role in ERM's emissions and climate practice, expect client ownership, technical authority on emissions methodology, and a business development component.",
+ have:"Emissions is the centre of your record — inventory, factor governance, recalculation, abatement review, pathway modelling. On technical depth you are credible at Principal grade.",
+ gap:"Principal usually means selling work as well as delivering it, plus team leadership. Neither appears in your record. Between this and Managing Consultant at the same firm, Managing Consultant is the realistic entry and this is the stretch.",
+ why:"Newly surfaced — the watch had not caught it. Applying to two ERM roles signals seriousness about the practice rather than scattergun interest.",
+ link:"https://to.indeed.com/aacrgp6d486g", src:"Indeed · new this check"
+},
+{
+ track:"consult", tier:2, rank:3, status:"live", isNew:false, fit:4,
+ title:"Principal Consultant — Sustainability Strategy, Implementation &amp; Disclosure", org:"ERM",
+ loc:"Melbourne", type:"Full-time", close:"No closing date published", posted:"Posted 4 Jun 2026",
+ ask:"Requirements not retrievable through search. Principal grade across the strategy, implementation and disclosure practice — client-facing ownership of sustainability strategy engagements through to disclosure delivery.",
+ have:"Disclosure and implementation are your two strongest suits, and your habit of building tools clients can operate after handover is precisely what consultancies struggle to staff.",
+ gap:"Same Principal-grade issue as the emissions role: business development and team leadership are unevidenced. Strategy formulation is lighter in your record than strategy execution.",
+ why:"Broadest of the ERM roles, and disclosure is where the Australian market is short of people right now with ASRS bedding in.",
+ link:"https://to.indeed.com/aan6bbggphkb", src:"Indeed"
+},
+{
+ track:"consult", tier:2, rank:4, status:"live", isNew:false, fit:4,
+ title:"Senior Analyst — Sustainability &amp; Climate Change", org:"Deloitte",
+ loc:"Melbourne", type:"Full-time", close:"No closing date published", posted:"Posted 25 May 2026",
+ ask:"Degree in sustainability, environment, science, finance or accounting. Foundational experience in consulting, assurance or a complex corporate environment. Exposure to GHG emissions accounting, climate-related financial disclosures, or sustainability data and controls. Familiarity with ISSB, ASRS, CSRD, TCFD, TNFD, GRI, SASB or NGER. Strong analytical skills and stakeholder collaboration.",
+ have:"Everything on the list, and mostly beyond the stated depth. Four years consulting, GHG accounting as a specialism, NGER and ASRS in production, and data controls work that has already survived a Big 4 audit — with PwC on the other side of the table.",
+ gap:"Nothing material against the bar. The risk runs the other way: \"foundational experience\" suggests they are pitching below your level, so check the grade and salary band before investing, or push to be considered a rung higher.",
+ why:"A Big 4 badge closes the exact credential gap that in-house roles like CSL flag against you. One year here would widen the in-house options considerably.",
+ link:"https://to.indeed.com/aatls4bhfxq9", src:"Indeed · Deloitte careers"
+},
+{
+ track:"consult", tier:2, rank:5, status:"live", isNew:false, fit:4,
+ title:"Principal Consultant — Strategy, Transformation &amp; Reporting", org:"Anthesis Group",
+ loc:"Melbourne", type:"Permanent", close:"No closing date published", posted:"Listed since Mar 2026 — long-running, verify it is still active",
+ ask:"Requirements not retrievable through search. Anthesis is a specialist sustainability consultancy; this role spans strategy, transformation and reporting delivery at Principal grade.",
+ have:"Reporting is your strongest line, and transformation maps onto the process rebuilds you have run at Downer. Anthesis publishes heavily on ASRS and AASB S2, which is your current territory.",
+ gap:"Principal grade again implies BD and team leadership. The listing has been up since March, which usually means either a hard-to-fill specification or a stale post.",
+ why:"A pure-play sustainability consultancy where the whole business is your discipline, not a service line inside something larger.",
+ link:"https://to.indeed.com/aaqhr7jcg7fc", src:"Indeed"
+},
+{
+ track:"consult", tier:3, rank:6, status:"live", isNew:false, fit:3,
+ title:"Analyst — Sustainability and Climate, Assurance", org:"Deloitte",
+ loc:"Melbourne", type:"Full-time", close:"No closing date published", posted:"Posted 31 Jul 2026",
+ ask:"Perform assurance procedures over sustainability and climate disclosures including GHG emissions data, climate risk reporting and broader ESG metrics. Evaluate client reporting against ISSB, ASRS, CSRD, NGER and GRI. Same qualification family as the Senior Analyst role.",
+ have:"You have spent the last six months preparing exactly this evidence for a Big 4 assurance team — the emission factor workbook, the independent recalculation, the operational control filter, the auditor-facing methodology decks. You know what assurers ask for because you have answered them.",
+ gap:"Nothing on capability. This is simply below your level — Analyst is a rung under where you are and two under where you are heading.",
+ why:"Only worth it as a deliberate route into Big 4 assurance, and only if the Senior Analyst role is unavailable. Otherwise a step backwards in title.",
+ link:"https://to.indeed.com/aad2g97pltyy", src:"Indeed · Deloitte careers"
+},
+{
+ track:"consult", tier:3, rank:7, status:"live", isNew:false, fit:3,
+ title:"Environmental Planning Consultant", org:"ERM",
+ loc:"Melbourne", type:"Full-time", close:"No closing date published", posted:"Posted 2 Aug 2026",
+ ask:"Requirements not retrievable through search. Environmental planning consulting — impact assessment, approvals and planning advisory rather than carbon and disclosure.",
+ have:"Civil and architecture engineering degree, built environment delivery at Defence, and environmental planning exposure through WSP infrastructure projects. Your capstone covered Green Star, NABERS and Envision.",
+ gap:"A sideways move into planning and approvals, away from the emissions and disclosure specialism you have spent four years building. Statutory planning experience specifically is not in your record.",
+ why:"A door into ERM at a lower bar than the Principal roles, but at the cost of drifting off your specialism. Take it only if the carbon and climate route closes.",
+ link:"https://to.indeed.com/aa2k2pv289w7", src:"Indeed"
+},
+{
+ track:"consult", tier:3, rank:8, status:"live", isNew:false, fit:3,
+ title:"Senior Analyst, ESG Risk", org:"JLL",
+ loc:"Melbourne", type:"Full-time · REQ399246", close:"No closing date published", posted:"",
+ ask:"Support the Head of ESG Risk Advisory across Asia Pacific in the Global Risk Advisory practice. Value analysis for commercial real estate assets with a sustainability lens, complex financial modelling in Excel, risk assessment and value analysis reports, sustainable real estate strategy, mentoring junior team members. Bachelor in finance, economics, real estate or related; Master's preferred.",
+ have:"Advanced Excel modelling is a genuine strength, and built environment is your background. Sustainable building frameworks you know from the WSP fitout and Green Star work.",
+ gap:"The qualification ask is finance, economics or real estate with a Master's preferred — you have engineering and no Master's. Commercial real estate valuation and asset-level financial modelling are not in your record. This is a property finance role wearing an ESG label.",
+ why:"Asia Pacific scope and a mentoring component, which would be your first formal step toward people leadership. But the fit is narrower than the title suggests.",
+ link:"https://jll.wd1.myworkdayjobs.com/en-US/jllcareers/job/Melbourne-VIC/Senior-Analyst--ESG-Risk_REQ399246", src:"JLL Workday"
+},
+{
+ track:"consult", tier:3, rank:9, status:"check", isNew:true, fit:2,
+ title:"Senior Assessor, Responsible Mining", org:"ERM",
+ loc:"Melbourne", type:"Full-time", close:"No closing date published", posted:"Posted 30 Jul 2026",
+ ask:"Requirements not retrievable through search. Responsible mining assessment against standards such as IRMA or the Copper Mark — site-level auditing of mining operations on environmental and social performance.",
+ have:"Independent assessment is something you have done well — your Group Reviewer work recalculating fifteen decarbonisation initiatives from first principles and finding five material issues is exactly an assessor's instinct.",
+ gap:"No mining sector experience, no responsible mining standards, and the role is likely site-audit heavy with travel. The social performance component is outside your record.",
+ why:"Newly surfaced. Listed for completeness rather than as a recommendation — your assessment instincts fit, the sector and subject matter do not.",
+ link:"https://to.indeed.com/aa4nwks7ytg6", src:"Indeed · new this check"
+},
+{
+ track:"consult", tier:3, rank:10, status:"check", isNew:false, fit:2,
+ title:"GEDSI &amp; Climate Resilience Consultant — Australian Water Partnership", org:"Agriteam Canada Consulting",
+ loc:"Melbourne", type:"Contract", close:"No closing date published", posted:"Posted 24 Aug 2026 — listed yesterday",
+ ask:"Gender equality, disability and social inclusion combined with climate resilience advisory on an Australian Water Partnership development programme.",
+ have:"Climate resilience concepts and stakeholder-facing advisory delivery.",
+ gap:"GEDSI is a specialist international development discipline you have no exposure to, and it appears first in the title for a reason. Contract engagement, development sector rather than corporate.",
+ why:"Genuine climate advisory work with a public good mandate, if the development sector appeals. Too new to have verified anything beyond the listing.",
+ link:"https://to.indeed.com/aacplxjrlfcs", src:"Indeed"
+}
+];
+
+const TRACKS = [
+  {key:"inhouse", h:"In-house roles", intro:"Sustainability owned inside the organisation. Ranked by how well the employer's stated requirements match evidence you can actually point to, with your stated preference for consumer goods and technology weighted in."},
+  {key:"consult", h:"Consulting &amp; advisory", intro:"Client-side delivery. Ranked the same way, but held as a second track — worth knowing that the ERM Managing Consultant role is the single cleanest requirement match on the register, if the in-house search runs cold."}
+];
+
+const TIERS = {
+  1:{h:"Apply to these", note:"Strongest matches between what the employer asks for and what you can evidence. At or near your level, in Melbourne."},
+  2:{h:"Worth a serious look", note:"Good roles with one real friction — a level stretch, an unfamiliar sector, or a requirement you would be arguing around."},
+  3:{h:"Adjacent or a stretch", note:"Real sustainability work, but each moves you off the emissions and disclosure specialism, drops a level, or asks for a discipline you do not have."},
+  4:{h:"Closed or not available", note:"Kept on the record so the watch does not re-flag them, and so you can see what the market has already absorbed."}
+};
+
+const STATUS_LABEL = {live:"Live", check:"Needs checking", shut:"Closed"};
+
+function card(r){
+  const bars = Array.from({length:5},(_,i)=>`<i class="${i<r.fit?'on':''}"></i>`).join('');
+  const fitRow = r.fit ? `<div class="fit"><span class="flabel">Fit</span><span class="bars">${bars}</span><span class="flabel">${r.fit}/5</span></div>` : '';
+  const closeCls = /CLOSED|Likely filled/i.test(r.close) ? 'warn' : '';
+  const pre = r.track==='consult' ? 'C' : '';
+  return `
+  <article class="role" id="${r.track}-${r.rank}" data-track="${r.track}" data-status="${r.status}" data-new="${r.isNew}">
+    <div class="rhead">
+      <div class="rank">${pre}${String(r.rank).padStart(2,'0')}</div>
+      <div class="rtitle">
+        <h4>${r.title}</h4>
+        <div class="org"><b>${r.org}</b></div>
+      </div>
+      <span class="chip ${r.status}">${STATUS_LABEL[r.status]}</span>
+    </div>
+    <div class="meta">
+      <span><b>${r.loc}</b></span>
+      <span>${r.type}</span>
+      <span class="${closeCls}">${r.close}</span>
+      ${r.posted?`<span>${r.posted}</span>`:''}
+      ${r.isNew?`<span class="warn">New this check</span>`:''}
+    </div>
+    ${fitRow}
+    <div class="panels">
+      <div class="panel ask"><h5>What they ask for</h5><p>${r.ask}</p></div>
+      <div class="panel have"><h5>What you have going for it</h5><p>${r.have}</p></div>
+      <div class="panel gap"><h5>What you lack</h5><p>${r.gap}</p></div>
+      <div class="panel why"><h5>What's in it for you</h5><p>${r.why}</p></div>
+    </div>
+    <div class="act">
+      <a href="${r.link}" target="_blank" rel="noopener">Open listing</a>
+      <span class="src">Source: ${r.src}</span>
+    </div>
+  </article>`;
+}
+
+/* split board */
+function boardRows(track){
+  return ROLES.filter(r=>r.track===track).map(r=>{
+    const dim = r.status==='shut' ? ' dim' : '';
+    const pre = track==='consult' ? 'C' : '';
+    return `<li class="${dim.trim()}"><a href="#${r.track}-${r.rank}">
+      <span class="n">${pre}${String(r.rank).padStart(2,'0')}</span>
+      </a><span class="nm"><a href="#${r.track}-${r.rank}"><b>${r.title.replace(/\s+·.*$/,'')}</b> <em>· ${r.org.replace(/\s*\(.*\)/,'')}</em></a></span>
+      <span class="f">${r.fit?r.fit+'/5':'—'}</span></li>`;
+  }).join('');
+}
+document.getElementById('boardIn').innerHTML = boardRows('inhouse');
+document.getElementById('boardCon').innerHTML = boardRows('consult');
+
+/* detail */
+document.getElementById('reg').innerHTML = TRACKS.map(t=>{
+  const rs = ROLES.filter(r=>r.track===t.key);
+  const tiers = [1,2,3,4].map(n=>{
+    const inTier = rs.filter(r=>r.tier===n);
+    if(!inTier.length) return '';
+    return `<section class="tier" data-tier="${n}">
+      <h3>${TIERS[n].h}</h3>
+      <p class="tnote">${TIERS[n].note}</p>
+      ${inTier.map(card).join('')}
+    </section>`;
+  }).join('');
+  return `<section class="track" data-track="${t.key}">
+    <div class="thead"><h2>${t.h}</h2><span class="tcount">${rs.length} roles</span></div>
+    <p class="tintro">${t.intro}</p>
+    ${tiers}
+  </section>`;
+}).join('');
+
+const btns = document.querySelectorAll('.filters button');
+btns.forEach(b=>b.addEventListener('click',()=>{
+  const f = b.dataset.f;
+  btns.forEach(x=>x.setAttribute('aria-pressed', String(x===b)));
+  document.querySelectorAll('.role').forEach(el=>{
+    let show;
+    if(f==='all') show = true;
+    else if(f==='inhouse'||f==='consult') show = el.dataset.track===f;
+    else if(f==='new') show = el.dataset.new==='true';
+    else show = el.dataset.status===f;
+    el.classList.toggle('is-hidden', !show);
+  });
+  document.querySelectorAll('.tier').forEach(t=>{
+    t.style.display = t.querySelectorAll('.role:not(.is-hidden)').length ? '' : 'none';
+  });
+  document.querySelectorAll('.track').forEach(t=>{
+    t.style.display = t.querySelectorAll('.role:not(.is-hidden)').length ? '' : 'none';
+  });
+}));
+</script>
