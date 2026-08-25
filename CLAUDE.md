@@ -44,7 +44,7 @@ built as a React + Vite multi-page app and deployed to GitHub Pages.
 | `src/styles/global.css` | Design tokens + all main-page styles. |
 | `public/` | Shared static assets (logos, favicon, `robots.txt`, `sitemap.xml`, and the Open Graph share cards: the profile card `og-image.png` plus one generated per-page card, `og-<page>.png`), plus `404.html` — hand-written, self-contained and outside the build, because GitHub Pages serves it for any unresolved path at any depth so it cannot use the relative asset paths the built pages rely on. Its tokens are a deliberate copy of the `:root` block in `global.css`. |
 | `scripts/og/` | Share-thumbnail generator. `cards.mjs` (per-page copy and motifs), `draw.js` (the shared canvas renderer), `generate.mjs` (headless-Chromium harness). `npm run og:cards` writes the `og-*.png` cards into `public/`. Not part of the site build. |
-| `docs/` | Non-app material: `skill-reference/` and `career-record/`. Not built or deployed. |
+| `docs/` | Non-app material: `skill-reference/` and research source data. Not built or deployed. No personal or career material — see Career record below. |
 
 ## Conventions
 
@@ -217,6 +217,8 @@ voice. Written in Chris's voice.
 
 ## Career record
 
-Chris's separate career-achievement record and its DOCX rebuild notes live in
-`docs/career-record/` — that is a personal document workflow, unrelated to the
-website build. Leave it out of anything that ships in `dist/`.
+Chris's career-achievement record, job-search material and DOCX rebuild notes live
+in the separate private `itschriswang/Career_Achievement_Record` repository, not
+here. This repository is public. Personal career material, application drafts and
+anything naming colleagues or internal employer data does not belong in it, in
+`docs/` or anywhere else.
