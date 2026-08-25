@@ -12,7 +12,7 @@ export const BENCHMARKS = [
     short: '1.5°C lifestyle benchmark',
     kind: 'lifestyle',
     tco2e: 2.5,
-    basis: 'A 1.5°C-aligned lifestyle benchmark, not a national target: where an average person\'s footprint needs to be by 2030 to hold warming near 1.5°C. From 1.5-Degree Lifestyles (IGES, Aalto University and D-mat, 2019; Hot or Cool Institute 2021 update): 2.5 t a person by 2030, 1.4 t by 2040, 0.7 t by 2050. It is a consumption-based lifestyle figure, the same kind this calculator estimates.',
+    basis: 'A 1.5°C-aligned lifestyle benchmark: where an average person\'s footprint needs to be by 2030 to hold warming near 1.5°C. From 1.5-Degree Lifestyles (IGES, Aalto University and D-mat, 2019; Hot or Cool Institute 2021 update): 2.5 t a person by 2030, 1.4 t by 2040, 0.7 t by 2050. It is a consumption-based lifestyle figure, the same kind this calculator estimates.',
     url: 'https://hotorcool.org/1-5-degree-lifestyles-report/',
   },
   {

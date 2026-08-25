@@ -14,8 +14,8 @@
 // State (selected brand + compare set) is deep-linked into the URL hash, so
 // any lookup is shareable and the back button works.
 //
-// Chrome is the site's own: the shared nav (NAV_LINKS + Mark), grain and
-// design tokens come from global.css, exactly as the footprint pages do.
+// Chrome is the site's own: the shared ToolNav, grain and design tokens come
+// from global.css, exactly as the footprint pages do.
 // ============================================================================
 import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import {
@@ -26,9 +26,7 @@ import {
   LENS_CONCERNS, LENS_READING, CHANGELOG,
   deriveMonogram, segmentStyle, logoUrl, GROUP_DOMAIN,
 } from './data';
-import { NAV_LINKS } from '../data/content';
 import { Grain } from '../components/Chrome';
-import Mark from '../components/Mark';
 import Icon from '../components/Icons';
 import CopyButton from '../components/CopyButton';
 import { copyText } from '../utils/clipboard';
@@ -37,6 +35,7 @@ import ContourField from '../components/ContourField';
 import Studio from './Studio';
 import { prefersReducedMotion } from '../utils/media';
 import SiteFooter from '../components/SiteFooter';
+import { ToolNav } from '../components/ToolNav';
 
 const MAX_COMPARE = 3;
 const RECENT_KEY = 'ow-recent-v1';
@@ -141,7 +140,7 @@ function beforeYouBuy(brand, family) {
   const parentClean = brand.parent.replace(/\.$/, '');
   items.push(family.length
     ? `Owned by ${parentClean}, which runs ${family.length} other label${family.length > 1 ? 's' : ''} on this page. Its group targets can differ from what the brand says.`
-    : `Owned by ${parentClean}. Read the parent's reporting, not just the brand's marketing.`);
+    : `Owned by ${parentClean}. Read the parent's reporting alongside the brand's marketing.`);
   if (brand.fti != null) {
     const band = (brand.ftiBand || ftiBand(brand.fti));
     items.push(`Its transparency score is ${brand.fti}/100 (${band ? band.label.toLowerCase() : 'disclosure'}). Publishing a lot is not the same as low impact.`);
@@ -151,7 +150,7 @@ function beforeYouBuy(brand, family) {
     items.push('No verified transparency score yet. Open its latest report yourself and note the date on it.');
   }
   items.push('Look for a dated climate target, and whether it reports Scope 3, the supply-chain emissions where most of fashion’s footprint sits.');
-  items.push('See if it publishes a supplier factory list. A brand that will not name its factories is choosing what you can check.');
+  items.push('See if it publishes a supplier factory list, and how far down the tiers it reaches. Most that publish one stop at final assembly.');
   items.push('Get a second opinion in Dig deeper below: Good On You for a consumer rating, Baptist World Aid for an Australian read.');
   items.push('The lowest-impact option is usually the one you already own, bought secondhand, or repaired.');
   return items;
@@ -210,44 +209,6 @@ function BrandLogo({ brand, name, segment, domain, size = 'md', className = '' }
         />
       )}
     </span>
-  );
-}
-
-// =========================================================================
-// Chrome — the site's own nav, as on the footprint pages, so Cost Per Wear sits
-// inside the portfolio rather than beside it.
-// =========================================================================
-function FashionNav() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  return (
-    <nav className="nav" aria-label="Primary">
-      <div className="nav-inner canvas">
-        <a href="../" className="nav-logo"><Mark label="Chris Wang, home" /></a>
-        <div className={`nav-links${menuOpen ? ' open' : ''}`}>
-          {NAV_LINKS.map((l) => {
-            const self = l.href === 'fashion/';
-            return (
-              <a
-                key={l.label}
-                href={self ? './' : `../${l.href}`}
-                className={self ? 'active' : undefined}
-                aria-current={self ? 'true' : undefined}
-              >
-                {l.label}
-              </a>
-            );
-          })}
-        </div>
-        <button
-          className={`nav-hamburger${menuOpen ? ' open' : ''}`}
-          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-          aria-expanded={menuOpen}
-          onClick={() => setMenuOpen((v) => !v)}
-        >
-          <span /><span /><span />
-        </button>
-      </div>
-    </nav>
   );
 }
 
@@ -905,6 +866,13 @@ function GroupCard({ group, focus, onSelect, cardRef }) {
   );
 }
 
+// The directory's two views, as tab data so the tablist and its key handler
+// read from one list rather than two hand-written buttons.
+const DIR_VIEWS = [
+  { id: 'brands', labelKey: 'viewBrands' },
+  { id: 'groups', labelKey: 'viewGroups' },
+];
+
 function Directory({ onSelect, view, setView, focusGroup }) {
   const [seg, setSeg] = useState('all');
   const [auOnly, setAuOnly] = useState(false);
@@ -914,6 +882,17 @@ function Directory({ onSelect, view, setView, focusGroup }) {
   const [text, setText] = useState('');
   const [sort, setSort] = useState('name');
   const focusRef = useRef(null);
+
+  // Roving tabindex with arrow-key movement, per the ARIA tabs pattern — the
+  // same handler shape as FieldGuide's.
+  const onViewKey = (e) => {
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    e.preventDefault();
+    const idx = DIR_VIEWS.findIndex((v) => v.id === view);
+    const next = DIR_VIEWS[(idx + (e.key === 'ArrowRight' ? 1 : DIR_VIEWS.length - 1)) % DIR_VIEWS.length];
+    setView(next.id);
+    document.getElementById(`ow-dirtab-${next.id}`)?.focus();
+  };
 
   const list = useMemo(() => {
     let out = BRANDS.slice();
@@ -947,13 +926,30 @@ function Directory({ onSelect, view, setView, focusGroup }) {
         <SecHead c={COPY.directory} />
         <p className="ow-lede">{view === 'groups' ? COPY.directory.groupsLede : COPY.directory.lede}</p>
 
-        <div className="ow-viewtoggle" role="tablist" aria-label="Directory view">
-          <button role="tab" aria-selected={view === 'brands'} className={view === 'brands' ? 'on' : ''} onClick={() => setView('brands')}>{COPY.directory.viewBrands}</button>
-          <button role="tab" aria-selected={view === 'groups'} className={view === 'groups' ? 'on' : ''} onClick={() => setView('groups')}>{COPY.directory.viewGroups}</button>
+        {/* Tabs, so the same roving-tabindex + arrow-key behaviour the field
+            guide has (see FieldGuide below): the two buttons are one tab stop
+            and the arrows move between them. Before this they carried tab roles
+            without the keyboard contract behind them, which told assistive tech
+            to expect arrow keys that did nothing. */}
+        <div className="ow-viewtoggle" role="tablist" aria-label="Directory view" onKeyDown={onViewKey}>
+          {DIR_VIEWS.map((v) => (
+            <button
+              key={v.id}
+              id={`ow-dirtab-${v.id}`}
+              role="tab"
+              aria-selected={view === v.id}
+              aria-controls={`ow-dirpanel-${v.id}`}
+              tabIndex={view === v.id ? 0 : -1}
+              className={view === v.id ? 'on' : ''}
+              onClick={() => setView(v.id)}
+            >
+              {COPY.directory[v.labelKey]}
+            </button>
+          ))}
         </div>
 
         {view === 'brands' ? (
-          <>
+          <div id="ow-dirpanel-brands" role="tabpanel" aria-labelledby="ow-dirtab-brands">
             <div className="ow-toolbar">
               <div className="ow-dirsearch">
                 <SearchIcon />
@@ -987,9 +983,9 @@ function Directory({ onSelect, view, setView, focusGroup }) {
             {list.length === 0
               ? <div className="ow-empty"><p>No brands match those filters.</p></div>
               : <div className="ow-dir-grid">{list.map((b) => <DirTag key={b.id} brand={b} onSelect={onSelect} />)}</div>}
-          </>
+          </div>
         ) : (
-          <>
+          <div id="ow-dirpanel-groups" role="tabpanel" aria-labelledby="ow-dirtab-groups">
             <div className="ow-groups">
               {MULTI_GROUPS.map((g) => (
                 <GroupCard
@@ -1002,7 +998,7 @@ function Directory({ onSelect, view, setView, focusGroup }) {
               ))}
             </div>
             <p className="ow-count">Plus {standalone} standalone labels that own no other brand on file.</p>
-          </>
+          </div>
         )}
       </div>
     </section>
@@ -1120,11 +1116,18 @@ function OwnershipMap({ onOpenGroup }) {
 }
 
 function Spotlight({ onOpenGroup }) {
+  // Both figures read off the brand set, so the concentration claim stays true
+  // as brands are added rather than being a hand-typed number that rots.
+  const covered = MULTI_GROUPS.reduce((n, g) => n + g.count, 0);
+  const fillStat = (s) => s
+    .replace('{n}', MULTI_GROUPS.length)
+    .replace('{covered}', covered)
+    .replace('{total}', BRANDS.length);
   return (
     <aside className="ow-spotlight ow-dark" aria-label="Ownership concentration">
       <div className="ow-wrap">
         <p className="ow-spotlight-line">
-          <b>{COPY.spotlight.stat}</b> {COPY.spotlight.line}
+          <b>{fillStat(COPY.spotlight.stat)}</b> {fillStat(COPY.spotlight.line)}
         </p>
         <p className="ow-spotlight-sub">{COPY.spotlight.sub}</p>
         <OwnershipMap onOpenGroup={onOpenGroup} />
@@ -1588,7 +1591,7 @@ export default function FashionApp() {
       <a className="skip-link" href="#lookup">Skip to the brand lookup</a>
       <Grain />
       <ScrollProgress />
-      <FashionNav />
+      <ToolNav />
       <SectionRail />
       <main className="ow-main" ref={heroSearchRef}>
         <Hero onSelect={select} recent={recent} />

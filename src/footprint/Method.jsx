@@ -202,13 +202,13 @@ export default function Method() {
             source={DIET_SOURCE}
           />
           <FTable
-            caption="Reference: per-kg food factors (context for the diet bands, not used in pricing)"
+            caption="Reference: per-kg food factors (context for the diet bands, shown for reference)"
             head={['Food', 'kg CO₂-e per kg']}
             rows={FOOD_PER_KG.rows.map(([f, v]) => [f, v.toFixed(1)])}
             source={{ name: FOOD_PER_KG.source, detail: '' }}
           />
           <FTable
-            caption="Everyday equivalences · kg CO₂-e per item (display only, never used in pricing)"
+            caption="Everyday equivalences · kg CO₂-e per item (display only)"
             head={['Item', 'kg CO₂-e each', 'Basis']}
             rows={EQUIVALENCES.map((e) => [e.label, e.kg < 0.05 ? e.kg.toFixed(3) : e.kg.toFixed(2), e.basis])}
             source={EQUIV_SOURCE}

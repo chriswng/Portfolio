@@ -39,8 +39,8 @@ export const CONFIDENCE = {
     note: 'The holding is named, but its weighting in the option could not be verified against the 31 December 2025 disclosure file and is not stated. A number will be added once the file is read.',
   },
   quote: {
-    label: 'Position, not verbatim',
-    note: 'A close statement of the fund\'s own published sustainability position, not a word-for-word quotation. Read against the linked page; treat it as the fund\'s stated position, dated to access.',
+    label: 'Stated position',
+    note: 'A paraphrase of the fund\'s own published sustainability position. Read against the linked page; treat it as the fund\'s stated position, dated to access.',
   },
 };
 
@@ -80,11 +80,11 @@ export const CRITERIA = {
 export const NOT_FLAGGED = [
   {
     head: 'Metallurgical (coking) coal inside a diversified miner',
-    body: 'BHP and Rio Tinto sit near the top of almost every default option through the Australian shares sleeve. They produce metallurgical coal for steelmaking, which has no ready substitute at scale today, alongside iron ore, copper and other minerals. We do not flag a diversified miner on its coking coal. We would flag a company whose core business is thermal coal mining. The line is business model, not perfection.',
+    body: 'BHP and Rio Tinto sit near the top of almost every default option through the Australian shares sleeve. They produce metallurgical coal for steelmaking, which has no ready substitute at scale today, alongside iron ore, copper and other minerals. We do not flag a diversified miner on its coking coal. We would flag a company whose core business is thermal coal mining. The line is drawn on business model.',
   },
   {
     head: 'Banks and insurers that finance or underwrite fossil fuels',
-    body: 'The big four banks are top holdings in every diversified default. Their lending books include fossil fuel exposure. Financed emissions are real, but they are a step removed from the company\'s own operations and are measured on a different basis. We flag producers and expanders directly, not their financiers. That is a stated scope choice, not a view that financing does not matter.',
+    body: 'The big four banks are top holdings in every diversified default. Their lending books include fossil fuel exposure. Financed emissions are real, but they are a step removed from the company\'s own operations and are measured on a different basis. We flag producers and expanders directly. Financiers sit outside this boundary, which is a scope choice, stated here so you can weigh it yourself.',
   },
   {
     head: 'High-emitting companies that are not expanding',
@@ -349,7 +349,7 @@ export const FUNDS = [
       { company: 'Santos', criterion: 'oilGas', conf: 'reported', basis: 'Held at broad-index weight through the Australian shares component. Santos is an oil and gas producer with expansion plans.', source: SRC_MF_FFX, weighting: 'not verified this cycle' },
     ],
     marketing: [
-      { quote: 'The default Lifecycle option is a low-cost, broad-index option. Vanguard markets it on simplicity and cost rather than a distinct climate exclusion; a separate ESG-screened choice is offered for members who want screening.', attribution: 'Vanguard Super, investment options pages', url: 'https://www.vanguard.com.au/super/choose-your-super/investment-options', accessed: VERIFIED },
+      { quote: 'The default Lifecycle option is a low-cost, broad-index option. Vanguard markets it on simplicity and cost; a separate ESG-screened choice is offered for members who want screening.', attribution: 'Vanguard Super, investment options pages', url: 'https://www.vanguard.com.au/super/choose-your-super/investment-options', accessed: VERIFIED },
     ],
     disclosure: { doc: 'Vanguard Super portfolio holdings disclosure', url: 'https://www.vanguard.com.au/super/help-and-resources/forms-and-documents', asOf: '31 December 2025' },
   },
@@ -376,7 +376,7 @@ export const FUNDS = [
       { company: 'Santos', criterion: 'oilGas', conf: 'reported', basis: 'Held through the Australian shares sleeve. Santos is an oil and gas producer with expansion plans.', source: SRC_MF_FFX, weighting: 'not verified this cycle' },
     ],
     marketing: [
-      { quote: 'CFS describes a responsible investment and stewardship approach across the fund; the default FirstChoice Lifestage option is a mainstream diversified option rather than a screened sustainable one.', attribution: 'Colonial First State, responsible investment pages', url: 'https://www.cfs.com.au/personal/resources/responsible-investments.html', accessed: VERIFIED },
+      { quote: 'CFS describes a responsible investment and stewardship approach across the fund; the default FirstChoice Lifestage option is a mainstream diversified option.', attribution: 'Colonial First State, responsible investment pages', url: 'https://www.cfs.com.au/personal/resources/responsible-investments.html', accessed: VERIFIED },
     ],
     disclosure: { doc: 'Colonial First State portfolio holdings disclosure', url: 'https://www.cfs.com.au/personal/resources/funds-and-performance/portfolio-holdings.html', asOf: '31 December 2025' },
   },
@@ -389,9 +389,9 @@ export const COPY = {
     title: ['What your default', 'super option holds'],
     paras: [
       'Most Australians have never seen what their default super option actually holds. You are placed in a MySuper default when you start a job, and it quietly invests a large share of your retirement money for decades. This tool puts one thing next to another: the holdings picture of a fund\'s default option, and that same fund\'s own sustainability marketing, in the fund\'s own words.',
-      'It is not an accusation. The point is legibility. Pick a fund, read what it says about climate and responsibility, then look at what the default option holds, and make up your own mind. Where marketing and holdings sit apart, the gap speaks for itself.',
+      'It is not an accusation. Pick a fund, read what it says about climate and responsibility, then look at what the default option holds, and make up your own mind.',
     ],
-    chips: ['MySuper defaults', 'Holdings next to marketing', 'Every figure sourced or marked pending', 'Neutral, not a ranking'],
+    chips: ['MySuper defaults', 'Holdings next to marketing', 'Every figure sourced or marked pending', 'Neutral and factual'],
     pick: 'Pick a fund',
     pickAria: 'Choose a super fund to view its default option',
   },
@@ -411,7 +411,7 @@ export const COPY = {
     optionLabel: 'Default option',
     typeLabel: 'How the default works',
     saaHead: 'What the option holds, by asset class',
-    saaSub: 'Indicative strategic allocation from the fund\'s published investment guide. Ranges, not point figures, because the exact split moves between cycles and sits in the fund\'s own disclosure.',
+    saaSub: 'Indicative strategic allocation from the fund\'s published investment guide. Shown as ranges, because the exact split moves between cycles and sits in the fund\'s own disclosure.',
     growthLabel: 'Growth and defensive split',
     topHead: 'Top listed shareholdings',
     flaggedHead: 'Flagged holdings',
@@ -436,12 +436,12 @@ export const COPY = {
     tag: 'Backlog and changes',
     title: ['What is queued,', 'and what changed'],
     sub: 'This tool is deliberately unfinished in the open. The most valuable next step is reading the actual disclosure CSVs to replace pending weightings with verified figures. Below is what is queued and a dated record of changes.',
-    queuedHead: 'Queued, not shipped',
+    queuedHead: 'Still queued',
     queued: [
       'Read each fund\'s 31 December 2025 disclosure CSV directly and replace every pending weighting with a verified figure, distinguishing the weight in the whole option from the weight in the Australian shares sleeve (they are very different numbers).',
-      'Add the whole-of-option percentage in flagged companies, not just the company-level shareholding, once the CSV is read.',
+      'Add the whole-of-option percentage in flagged companies, alongside the company-level shareholding, once the CSV is read.',
       'Add funds where the default could not yet be sourced to this standard: AMP, HUB24, Brighter Super, Spirit Super, NGS Super, Australian Ethical (as a screened contrast).',
-      'Capture each fund\'s marketing quote verbatim from the live page with a saved snapshot, so the wording is exact rather than a close statement of position.',
+      'Capture each fund\'s marketing quote verbatim from the live page with a saved snapshot, so the wording is exact.',
       'Cross-check the indicative asset allocations against the current investment guide PDFs when they can be opened, and replace ranges with the published point figures.',
     ],
     changelogHead: 'Change log',
@@ -467,19 +467,19 @@ export const METHOD = {
   boundary: {
     title: 'Boundary: default options only',
     paras: [
-      'This tool looks at one thing per fund: the default MySuper option, the one you are placed in when you start a job and never choose an option yourself. That is deliberate. The default is where most people\'s money actually sits, most of them without ever picking it, so it is the option that describes what the fund does with a typical member\'s retirement savings.',
+      'This tool looks at one thing per fund: the default MySuper option, the one you are placed in when you start a job and never choose an option yourself. The default is where most people\'s money actually sits, most of them without ever picking it, so it is the option that describes what the fund does with a typical member\'s retirement savings.',
       'Most funds also offer a screened, sustainable or ethical option. Those are a member\'s active choice, they hold different things, and they are not shown here. Judging a fund\'s default by its sustainable option, or the reverse, would be misleading, so the two are kept apart. Where a fund\'s default is a lifecycle strategy that shifts with age, the tool describes the growth-stage settings a younger member sits in, and says so.',
-      'The tool reads the option level, not the whole fund. A large fund runs many options; a holding can be heavy in one and absent from another. Reporting a whole-of-fund number against a single option would overstate or understate it. The unit here is the option.',
+      'The tool reads the option level. A large fund runs many options; a holding can be heavy in one and absent from another. Reporting a whole-of-fund number against a single option would overstate or understate it. The unit here is the option.',
     ],
   },
   sources: {
     title: 'Sources',
     paras: [
       'Portfolio holdings disclosure. Since an amendment to the Corporations Act (section 1017BB), every superannuation fund must publish the holdings of each investment option every six months, as a CSV or PDF, within 90 days of 31 December and 30 June. The most recent cycle is holdings as at 31 December 2025, published by around the end of March 2026. This is the primary source for what an option holds.',
-      'The honest limit, stated plainly. In this build the disclosure CSV and PDF files could not be opened directly. So the holdings picture here was assembled from fund websites and investment guides, Market Forces fund analysis, and news coverage, and verified through web search on 21 July 2026. That is why individual holding weightings are marked pending rather than stated: naming a holding is well supported, but pricing its exact weight in the option needs the CSV, and inventing a decimal would be the one thing this page must never do. Reading those files and replacing every pending figure is the top item in the backlog.',
+      'The honest limit, stated plainly. In this build the disclosure CSV and PDF files could not be opened directly. So the holdings picture here was assembled from fund websites and investment guides, Market Forces fund analysis, and news coverage, and verified through web search on 21 July 2026. That is why individual holding weightings are marked pending: naming a holding is well supported, but pricing its exact weight in the option needs the CSV, and inventing a decimal would be the one thing this page must never do. Reading those files and replacing every pending figure is the top item in the backlog.',
       'PDS, TMD and investment guides, for the strategic asset allocation and the option\'s design. These give the growth and defensive split and the broad asset-class mix. The figures here are shown as indicative ranges from those documents, because the exact split moves between cycles and the point figure sits in the fund\'s own current disclosure.',
-      'Fund sustainability and climate pages, for the marketing language. Each quote states the fund\'s own published position on climate and responsible investment, attributed with the page and the access date. Because the live pages could not be captured verbatim in this build, the marketing text is a close statement of position rather than a guaranteed word-for-word quote, and is flagged that way; capturing exact wording with a saved snapshot is queued.',
-      'Market Forces, for fossil fuel holdings analysis, and its per-fund profiles, used where a company-level shareholding or a change in a stake is cited. APRA MySuper statistics and product dashboards for context on option design. Performance is deliberately left out: this tool is about what an option holds and what the fund says, not whether it beat a benchmark, and mixing the two would muddy the point.',
+      'Fund sustainability and climate pages, for the marketing language. Each quote states the fund\'s own published position on climate and responsible investment, attributed with the page and the access date. Because the live pages could not be captured verbatim in this build, the marketing text is a paraphrase of each fund\'s stated position, and is flagged that way; capturing exact wording with a saved snapshot is queued.',
+      'Market Forces, for fossil fuel holdings analysis, and its per-fund profiles, used where a company-level shareholding or a change in a stake is cited. APRA MySuper statistics and product dashboards for context on option design. Performance is deliberately left out: this tool is about what an option holds and what the fund says. Returns are a separate question, and mixing the two would blur both.',
     ],
   },
   reading: {
@@ -487,12 +487,12 @@ export const METHOD = {
     paras: [
       'As-at dates matter. A disclosure is a photograph on one day. A fund can trade the next day, and the tool cannot see that, so every fund carries the as-at date of the cycle it reads from and a last-verified date for this tool\'s own check.',
       'Look-through has limits. A default option holds listed shares directly, but also pooled funds, unlisted infrastructure, property and private equity where the underlying names are reported at a coarser grain or a quarter later. Named listed shareholdings are the clearest part of the picture; the unlisted sleeves are the haziest, and a large unlisted allocation (Hostplus and Cbus, for example) means the listed names shown are a smaller share of the whole than the list alone suggests.',
-      'Option level, not the sleeve and not the whole fund. A number like "8 per cent Commonwealth Bank" is usually the weight in the Australian shares sleeve, not in the whole option; across the whole option the same holding is a few per cent. This tool names the top listed holdings but marks their weightings pending precisely to avoid publishing a sleeve number as if it were an option number. When the CSVs are read, the two will be reported separately.',
+      'The sleeve and the whole option are different denominators. A number like "8 per cent Commonwealth Bank" is usually the weight in the Australian shares sleeve; across the whole option the same holding is a few per cent. This tool names the top listed holdings but marks their weightings pending precisely to avoid publishing a sleeve number as if it were an option number. When the CSVs are read, the two will be reported separately.',
     ],
   },
   flags: {
     title: 'The flag criteria, in full',
-    intro: 'A flag is factual and narrow. It records that a named company in the option meets one stated criterion, with a public basis. It is not a rating of the fund, not a measure of how much of the option is affected (that weighting is pending), and not advice. The criteria are:',
+    intro: 'A flag is factual and narrow. It records that a named company in the option meets one stated criterion, with a public basis. It says nothing about the fund\'s overall quality, nothing about the share of the option affected (that weighting is pending), and nothing about whether to invest. The criteria are:',
     notFlaggedHead: 'What does not get flagged, and why',
     noteHead: 'What a flag is not',
     note: 'A flag is a company against a criterion, nothing more. It does not say the fund is bad, does not net off the fund\'s renewable or climate-positive holdings, and does not weigh the flagged company against the rest of the portfolio. A fund can carry a flagged name and still run a serious climate program; both facts can be true, and the tool shows the holding and the fund\'s own words side by side so a reader can hold them together.',
@@ -500,26 +500,26 @@ export const METHOD = {
   cadence: {
     title: 'Update cadence',
     paras: [
-      'The disclosure cycle is six-monthly: holdings as at 31 December and 30 June, each published within 90 days. This tool aims to refresh against each cycle, replacing pending weightings with verified figures as the CSVs are read. Every fund entry carries its own last-verified date, so a reader can see how fresh each one is rather than trusting a single site-wide date.',
-      'The current build is verified as at 21 July 2026, reading the 31 December 2025 cycle. Where a fund had not published, or the figure could not be verified, the entry says so rather than carrying an unchecked number forward.',
+      'The disclosure cycle is six-monthly: holdings as at 31 December and 30 June, each published within 90 days. This tool aims to refresh against each cycle, replacing pending weightings with verified figures as the CSVs are read. Every fund entry carries its own last-verified date, so a reader can see how fresh each one is.',
+      'The current build is verified as at 21 July 2026, reading the 31 December 2025 cycle. Where a fund had not published, or the figure could not be verified, the entry says so.',
     ],
   },
   corrections: {
     title: 'Corrections',
     paras: [
       'This is the tool most likely to draw a correction request from a fund, and that is welcome. If you work at a fund and something here is wrong, a holding that is not held, a weighting that is off, a sustainability line that misreads your position, reach me through the LinkedIn link on my profile page. Tell me what is wrong and point me to the disclosure or page that shows it.',
-      'Corrections ship with the change noted in the change log below, dated. I would rather fix an error in the open than defend it. The aim of this page is legibility, not a gotcha, and an accurate page serves that better than a clever one.',
+      'Corrections ship with the change noted in the change log below, dated. I would rather fix an error in the open than defend it.',
     ],
   },
   limitationsTitle: 'Named limitations',
   limitations: [
     'Individual holding weightings are pending: named, but not priced to this cycle\'s CSV. This is the biggest single gap.',
-    'Strategic asset allocations are indicative ranges from published guides, not the exact current split, which sits in each fund\'s disclosure.',
-    'Marketing quotes are close statements of each fund\'s published position, not guaranteed verbatim text, until captured with a saved snapshot.',
+    'Strategic asset allocations are indicative ranges from published guides; the exact current split sits in each fund\'s disclosure.',
+    'Marketing quotes are paraphrases of each fund\'s published position, until captured verbatim with a saved snapshot.',
     'Unlisted assets (infrastructure, property, private equity) are reported at a coarser grain than listed shares, so the flagged-holdings view is strongest for listed companies and weakest inside the unlisted sleeves.',
     'Lifecycle defaults shift with member age; the tool describes the growth-stage settings and does not model every age step.',
-    'Performance and fees are out of scope on purpose. This tool is about holdings and marketing, not returns.',
-    'Ten funds are covered. Several major defaults (AMP, HUB24, and others) are queued rather than shipped, because their default could not yet be sourced to this standard.',
+    'Performance and fees are out of scope on purpose. This tool is about holdings and marketing.',
+    'Ten funds are covered. Several major defaults (AMP, HUB24, and others) are still queued, because their default could not yet be sourced to this standard.',
   ],
   sourceTableTitle: 'The funds and their sources',
   sourceTableSub: 'Every fund in the tool, its default option, the disclosure cycle it reads from, and the fund pages used. Rendered from the same data the tool uses, so this table cannot drift from it.',

@@ -10,7 +10,6 @@ export const NAV_LINKS = [
   { href: '#tools', label: 'Tools' },
   { href: 'work/', label: 'Work Samples', external: true },
   { href: 'footprint/', label: 'Footprint', external: true },
-  { href: 'fashion/', label: 'Cost Per Wear', external: true },
 ];
 
 export const HERO = {
@@ -29,7 +28,7 @@ export const HERO = {
 };
 
 export const BIO_PARAS = [
-  'Looking for sustainability leadership in fashion, consumer goods, or technology, where supply chain transparency and decarbonisation are primary workstreams, not obligations.',
+  'Looking for sustainability leadership in fashion, consumer goods, or technology, where supply chain transparency and decarbonisation are primary workstreams.',
   'I build the data infrastructure that makes sustainability commitments defensible: GHG inventories with documented methodology, Scope 1-3 baselines that survive external assurance, decarbonisation models with traceable lever assumptions, and reporting systems that internal teams can operate after I leave the engagement.',
   'Four years in sustainability advisory across WSP and Downer EDI: GHG accounting, regulatory disclosure, decarbonisation modelling, supply chain emissions. Six years prior in built environment and infrastructure, including project delivery at the Department of Defence.',
 ];
@@ -68,7 +67,7 @@ export const PIPELINE = [
   },
   {
     step: 'strategy', n: '04', label: 'Strategy', icon: 'target', color: 'var(--step-strategy)',
-    desc: 'Scenario-driven decarbonisation models with traceable lever assumptions drawn from published sources, structured for non-specialist interrogation and owned internally, not dependent on the analyst who built them.',
+    desc: 'Scenario-driven decarbonisation models with traceable lever assumptions drawn from published sources, structured for non-specialist interrogation and owned internally by the team that runs them.',
     examples: [
       { title: 'Net Zero Pathway Model: Board Presentation', body: "Toggle-based net zero pathway model incorporating DCCEEW 2025 grid emission factor projections, NVES Act 2024 fleet trajectories, and BU-level pathway curves. Built for internal operation without ongoing advisory support. Presented to the board by senior leadership as part of the Group's climate strategy, and became the internal reference tool for tracking BU abatement progress.", outcome: 'Outcome: board-level presentation; ongoing internal reference tool, Downer EDI' },
       { title: 'Scope 1-3 Baselines and Decarbonisation Roadmaps', body: 'Delivered across infrastructure and built environment portfolios for government and private sector clients. Each roadmap includes lever-level abatement pathways, revenue-indexed gross emissions forecasting, and documented methodology for independent operation.', outcome: 'Applied across infrastructure, government, and commercial property portfolios, WSP in Australia' },
@@ -86,10 +85,29 @@ export const PIPELINE = [
 ];
 
 export const PRINCIPLES = [
-  { num: '01', icon: 'list', title: 'Data integrity precedes narrative.', body: 'Every net zero commitment is a claim. Its credibility depends on what sits behind it: a defensible, independently verifiable inventory documented before the narrative, not after.' },
+  { num: '01', icon: 'list', title: 'Data integrity precedes narrative.', body: 'Every net zero commitment is a claim. Its credibility depends on what sits behind it: a defensible, independently verifiable inventory, documented before anyone writes the narrative.' },
   { num: '02', icon: 'spark', title: 'Reusable infrastructure compounds value.', body: "Advisory that lives in a consultant's head has a short shelf life. I build models and processes designed to be owned internally, so the team can run the next reporting cycle without calling back in." },
-  { num: '03', icon: 'target', title: 'Ambition grounded in evidence, with gaps named.', body: 'The science sets the pace. Pathway models need lever assumptions grounded in published data, with uncertainty disclosed alongside figures. Carbon credits belong on residual hard-to-abate emissions, not as a substitute for near-term reduction.' },
+  { num: '03', icon: 'target', title: 'Ambition grounded in evidence, with gaps named.', body: 'The science sets the pace. Pathway models need lever assumptions grounded in published data, with uncertainty disclosed alongside figures. Carbon credits belong on residual hard-to-abate emissions only, once near-term reduction has been done.' },
 ];
+
+// ---------------------------------------------------------------------------
+// SCENARIO MODEL (#scenario). The section's own words.
+//
+// The basis strip governs how every figure the model produces should be read,
+// so it is stated before the numbers and at their weight. It used to sit under
+// the sub-heading as one line of 11px grey mono, which is the wrong weight for
+// the most important sentence in the section.
+// ---------------------------------------------------------------------------
+export const SCENARIO_UI = {
+  basis: {
+    label: 'Illustrative',
+    text: 'Nothing in this model is client data. The operating profiles are scaled to published peer disclosures and every lever traces to a public source, but no figure here belongs to an organisation I have worked for. Read it as a demonstration of method rather than as a result.',
+    meta: 'FY30 interim target year \u00b7 FY50 endpoint \u00b7 tCO\u2082-e per year',
+  },
+  // Labels for the run summary that captions the result panel.
+  frameLead: 'This run',
+  frameGrowth: 'Growth',
+};
 
 // ---------------------------------------------------------------------------
 // TOOLS — the standalone subpages, gathered on the home page as evidence.
@@ -110,8 +128,8 @@ export const TOOLS_INTRO = {
   idx: '03 / ',
   title: ['Built,', 'not claimed'],
   paras: [
-    'Eight tools, built in my own time and maintained since. Each one takes a question a sustainability team actually has to answer and answers it in public, with sourced numbers, a stated method, and the gaps named rather than smoothed over.',
-    'They run on the same discipline I bring to a reporting cycle. If a figure cannot be traced to a citation and an access date, it does not go on the page. Where a number is an estimate, the page says so beside the number, not in a footnote at the bottom.',
+    'Two tools, built in my own time and maintained since. Each one takes a question a sustainability team actually has to answer and answers it in public, with sourced numbers, a stated method, and the gaps named.',
+    'They run on the same discipline I bring to a reporting cycle. If a figure cannot be traced to a citation and an access date, it does not go on the page. Where a number is an estimate, the page says so beside the number.',
     'The chart on each card is drawn from that tool\'s own data, and says underneath it what stands behind the numbers.',
   ],
   rules: [
@@ -125,78 +143,111 @@ export const TOOLS_INTRO = {
     },
     {
       icon: 'loop', head: 'Built to be handed over',
-      body: 'Data, copy and methodology live in one place per tool, so refreshing a factor moves the whole page instead of one hard-coded number.',
+      body: 'Data, copy and methodology live in one place per tool, so refreshing a factor moves every place it appears.',
     },
   ],
-  note: 'The decarbonisation model above is the ninth, built the same way.',
+  note: 'The decarbonisation model above is the third, built the same way.',
 };
 
+// The public tool index, one card per page the site links to. Each carries what
+// the tool does, the capability it demonstrates, a scope line whose figures are
+// hand-counted from the real data, a spec (its chart, see ToolSpecimen.jsx) and
+// a span (its width in the bento grid). Spans are chosen so the rows fill:
+// 3-3 across the six-column grid.
+//
+// Most of the tools are not here. Target Tracker, Cost Per Wear, Super Fund
+// Holdings, Grid Intensity, Australia's Climate Progress and Sustainability
+// Daily are drafts rather than finished work, so they sit behind the passphrase
+// at /lab/ in PRIVATE_TOOLS below and nothing public links to them. Moving one
+// back is moving its entry between the two lists, restoring its footer link,
+// and putting its URL back in the sitemap.
 export const TOOLS = [
   {
-    n: '01', icon: 'target', color: 'var(--berry)',
-    name: 'Target Tracker', spec: 'targets', span: 4, href: 'targets/',
-    what: 'Every ASX50 net zero claim drawn as the trajectory the company itself stated, from base year through interim targets, with its reported Scope 1 and 2 emissions plotted on top.',
-    proves: 'Reading corporate disclosure at scale, then holding a claimed pathway against reported data with no adjective attached.',
-    tags: ['Corporate disclosure', 'Trajectory maths', 'Verification status'],
-    scope: '50 companies · each flagged sourced, partial or unverified',
-  },
-  {
-    n: '02', icon: 'chart', color: 'var(--lime)',
-    name: 'Work Samples', spec: 'work', span: 2, href: 'work/',
+    n: '01', icon: 'chart', color: 'var(--lime)',
+    name: 'Work Samples', spec: 'work', span: 3, href: 'work/',
     what: 'Four client-side frameworks as live working examples: emissions baseline, decarbonisation roadmap, multi-criteria prioritisation, and lifecycle carbon. One case study runs through all four.',
     proves: 'The engagement arc I run end to end: boundary and data grading, quantified options, stakeholder-weighted screening, then a sequenced roadmap with CAPEX by year.',
     tags: ['Scope 1-3 baseline', 'MCA framework', 'A1-A5 lifecycle'],
     scope: '4 frameworks · one engagement, start to finish',
   },
   {
-    n: '03', icon: 'shirt', color: 'var(--amber)',
-    name: 'Cost Per Wear', spec: 'fashion', span: 2, href: 'fashion/',
-    what: 'A transparency lookup across 258 fashion brands: who owns them, what they disclose, and what you still cannot find out. A garment studio sits alongside it for footprint, fabric and supply chain.',
-    proves: 'Supply chain transparency work in the sector I am aiming at, built on a disclosure vocabulary that reports status and never grades a brand good or bad.',
-    tags: ['Supply chain', 'Fashion Transparency Index', 'Ownership mapping'],
-    scope: '258 brands · disclosure status, never a ranking',
-  },
-  {
-    n: '04', icon: 'coins', color: 'var(--sage-2)',
-    name: 'Super Fund Holdings', spec: 'super', span: 4, href: 'super/',
-    what: 'What the big default super options actually hold and where the sector exposure sits, put next to what each fund says about sustainability in its own marketing.',
-    proves: 'Turning a statutory disclosure obligation into something a member can read, with a confidence flag on every field and a last-verified date per fund.',
-    tags: ['s1017BB holdings', 'Sector exposure', 'Confidence flags'],
-    scope: '10 funds · MySuper default options · methodology on its own route',
-  },
-  {
-    n: '05', icon: 'bolt', color: 'var(--lime-bright)',
-    name: 'Grid Intensity', spec: 'grid', span: 3, href: 'grid/',
-    what: 'Reads the live National Electricity Market fuel mix and answers one question: run it now, or wait. Then explains the factor a business would actually report against.',
-    proves: 'Scope 2 accounting taught properly, location-based against market-based, with GreenPower, PPAs and LGC surrender all in the toggle.',
-    tags: ['Live AEMO data', 'Scope 2', 'Market vs location'],
-    scope: '5 NEM regions live · WA and NT named as out of scope, not invented',
-  },
-  {
-    n: '06', icon: 'house', color: 'var(--matcha)',
+    n: '02', icon: 'house', color: 'var(--matcha)',
     name: 'Life Footprint', spec: 'footprint', span: 3, href: 'footprint/',
     what: 'A full personal emissions model across ten categories, with a guided audit, an abatement planner, a forecast pathway and a reveal at the end that makes the year legible.',
     proves: 'The whole inventory arc in miniature: boundary, cited factor set, calculation, abatement pathway, and a basis of preparation kept in sync with the engine.',
     tags: ['Cited factor set', 'Abatement planner', 'Basis of preparation'],
     scope: '10 categories · every factor cites its source',
   },
+];
+
+// The drafts. Same shape as TOOLS, indexed only by /lab/, which is why the
+// hrefs climb out of that directory first. Spans run 4-2, 2-4, 3-3 so the three
+// rows fill.
+export const PRIVATE_TOOLS = [
   {
-    n: '07', icon: 'globe', color: 'var(--lime)',
-    name: "Australia's Climate Progress", spec: 'progress', span: 4, href: 'progress/',
-    what: 'Six national numbers on the energy transition, each shown against where it was and where the target needs it to be. The gap gets stated plainly, in both directions.',
+    n: '01', icon: 'target', color: 'var(--berry)',
+    name: 'Target Tracker', spec: 'targets', span: 4, href: '../targets/',
+    what: 'Every ASX50 net zero claim drawn as the trajectory the company itself stated, from base year through interim targets, with its reported Scope 1 and 2 emissions plotted on top.',
+    proves: 'Reading corporate disclosure at scale, then holding a claimed pathway against reported data with no adjective attached.',
+    tags: ['Corporate disclosure', 'Trajectory maths', 'Verification status'],
+    scope: '50 companies · each flagged sourced, partial or unverified',
+  },
+  {
+    n: '02', icon: 'shirt', color: 'var(--amber)',
+    name: 'Cost Per Wear', spec: 'fashion', span: 2, href: '../fashion/',
+    what: 'A transparency lookup across 258 fashion brands: who owns them, what they disclose, and what you still cannot find out. A garment studio sits alongside it for footprint, fabric and supply chain.',
+    proves: 'Supply chain transparency work in the sector I am aiming at, built on a disclosure vocabulary that reports status and never grades a brand good or bad.',
+    tags: ['Supply chain', 'Fashion Transparency Index', 'Ownership mapping'],
+    scope: '258 brands · disclosure status, field by field',
+  },
+  {
+    n: '03', icon: 'coins', color: 'var(--sage-2)',
+    name: 'Super Fund Holdings', spec: 'super', span: 2, href: '../super/',
+    what: 'What the big default super options actually hold and where the sector exposure sits, put next to what each fund says about sustainability in its own marketing.',
+    proves: 'Turning a statutory disclosure obligation into something a member can read, with a confidence flag on every field and a last-verified date per fund.',
+    tags: ['s1017BB holdings', 'Sector exposure', 'Confidence flags'],
+    scope: '10 funds · MySuper default options · methodology on its own route',
+  },
+  {
+    n: '04', icon: 'bolt', color: 'var(--lime-bright)',
+    name: 'Grid Intensity', spec: 'grid', span: 4, href: '../grid/',
+    what: 'Reads the live National Electricity Market fuel mix and answers one question: run it now, or wait. Then explains the factor a business would actually report against.',
+    proves: 'Scope 2 accounting taught properly, location-based against market-based, with GreenPower, PPAs and LGC surrender all in the toggle.',
+    tags: ['Live AEMO data', 'Scope 2', 'Market vs location'],
+    scope: '5 NEM regions live · WA and NT named as out of scope',
+  },
+  {
+    n: '05', icon: 'globe', color: 'var(--lime)',
+    name: "Australia's Climate Progress", spec: 'progress', span: 3, href: '../progress/',
+    what: 'Six national numbers on the energy transition. Each is drawn against its own reference point and the 2030 target, with the shortfall named wherever there is one.',
     proves: 'Keeping sourced, derived and estimated figures apart, and refusing to blend a live grid snapshot into an annual inventory because the two are different quantities.',
     tags: ['NGER and AEMO data', 'Live NEM feed', 'Target gap'],
     scope: '6 indicators · reviewed quarterly, date on the page',
   },
   {
-    n: '08', icon: 'spark', color: 'var(--amber)',
-    name: 'Sustainability Daily', spec: 'daily', span: 2, href: 'daily/',
+    n: '06', icon: 'spark', color: 'var(--amber)',
+    name: 'Sustainability Daily', spec: 'daily', span: 3, href: '../daily/',
     what: 'Two daily puzzles: guess the footprint, and call the greenwash. Both rotate deterministically by date, and streaks stay in your browser.',
     proves: 'Making a factor set legible to a non-specialist, and applying the ACCC greenwashing principles consistently enough to survive being graded every day.',
     tags: ['ACCC principles', 'Shared factor set', 'No server'],
     scope: '33 footprint items · 30 claims · figures derived from the footprint model',
   },
 ];
+
+// The passphrase screen in front of the drafts, shared by /lab/ and by each
+// draft's own page (see src/components/Gate.jsx).
+export const GATE = {
+  eyebrow: 'Not published',
+  title: 'Still on the bench',
+  body: 'This one is not finished enough to show. If you have the passphrase, it opens from here and stays open on this browser for thirty days.',
+  label: 'Passphrase',
+  submit: 'Open',
+  checking: 'Checking',
+  wrong: 'That is not it. Try again.',
+  unavailable: 'This browser will not check a passphrase on an insecure connection. Open the page over https.',
+  back: 'Back to the site',
+  homeAria: 'Chris Wang, home',
+};
 
 export const EXPERIENCE = [
   {
@@ -279,6 +330,8 @@ export const FOOTER = {
   tagline: 'Sustainability advisor · Melbourne, Australia',
   // Link columns. hrefs beginning with '#' or a sub-path are prefixed with the
   // page base at render time so the footer works from the root and /work/.
+  // How many there are drives the grid (see --footer-col-n in SiteFooter.jsx),
+  // so moving a page behind the gate can empty a column without leaving a gap.
   columns: [
     {
       head: 'Profile', icon: 'people',
@@ -295,17 +348,6 @@ export const FOOTER = {
         { label: 'Decarb Model', href: '#scenario' },
         { label: 'Work Samples', href: 'work/' },
         { label: 'Carbon Footprint', href: 'footprint/' },
-        { label: 'Cost Per Wear', href: 'fashion/' },
-      ],
-    },
-    {
-      head: 'Tools', icon: 'spark',
-      links: [
-        { label: 'Grid Intensity', href: 'grid/' },
-        { label: 'Sustainability Daily', href: 'daily/' },
-        { label: 'Super Fund Holdings', href: 'super/' },
-        { label: 'Climate Progress', href: 'progress/' },
-        { label: 'Target Tracker', href: 'targets/' },
       ],
     },
   ],

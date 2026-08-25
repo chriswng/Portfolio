@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { MotionConfig } from 'framer-motion';
-import { Grain, ScrollProgress, SkipLink } from '../components/Chrome';
+import { Grain, ScrollProgress, SkipLink, useStickyBarHeight } from '../components/Chrome';
 import Aurora from '../components/Aurora';
 import ContourField from '../components/ContourField';
 import SplitText from '../components/SplitText';
@@ -101,6 +101,12 @@ export default function FootprintApp() {
   const [storyOpen, setStoryOpen] = useState(() => !decodeSnapshot() && !storySeen());
   // Which closed year is on screen; null means the open year.
   const [pastIdx, setPastIdx] = useState(null);
+
+  // What this page pins at top:0: the mode bar always, and the site nav over it
+  // once the reveal story is behind us. --fp-chrome-h is the taller of the two,
+  // which is the headroom the planner's readout pins under. Re-measured when
+  // the story closes, because that is when the nav arrives.
+  useStickyBarHeight(['.nav', '.fp-modebar'], '--fp-chrome-h', { watch: storyOpen });
 
   const isExample = !(mode === 'mine' && own);
   const pastYear = !isExample && pastIdx != null ? (own.pastYears || [])[pastIdx] : null;

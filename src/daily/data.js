@@ -123,7 +123,7 @@ export const GUESS_POOL = [
     id: 'netflix-year', item: 'A year of Netflix', short: 'A year of streaming',
     kg: 0.055 * 2 * 365, unit: 'About two hours a day for a year, device included, European average grid',
     source: SRC.carbonTrustStreaming, estimate: true,
-    note: 'Streaming is a famous over-estimate. At the Carbon Trust figure of about 55 g an hour, two hours a night for a year lands near 40 kg. The screen is 46% of that hour and your home router another 38%, while the data centre is under 1%, so the weight sits in your lounge room rather than in the cloud. Smaller than one cheeseburger a week.',
+    note: 'Streaming is a famous over-estimate. At the Carbon Trust figure of about 55 g an hour, two hours a night for a year lands near 40 kg. The screen is 46% of that hour and your home router another 38%, while the data centre is under 1%, so your TV does far more of the work than the data centre does. Smaller than one cheeseburger a week.',
   },
   {
     id: 'dog-year', item: "A year of feeding a dog", short: 'A dog year, dry food',
@@ -135,13 +135,13 @@ export const GUESS_POOL = [
     id: 'tee', item: 'A new cotton tee or shirt', short: 'A new top',
     kg: CLOTHING_ITEMS.tops.perItem, unit: 'One new garment, cradle to grave, tops bucket average',
     source: SITE.clothing, estimate: false,
-    note: 'A single new top is about ten kilos once you count fibre, spinning, dyeing and a life of washing. The washing is folded in here, which double counts a sliver of home power, so the line reads a touch conservative rather than hiding the seam.',
+    note: 'A single new top is about ten kilos once you count fibre, spinning, dyeing and a life of washing. The washing is folded in here, which double counts a sliver of home power, so the line reads a touch conservative, and the seam is stated here.',
   },
   {
     id: 'shower-year', item: 'A daily hot shower for a year', short: 'Hot shower, every day, a year',
     kg: showerKg * 365, unit: 'An eight-minute gas-heated shower a day for 365 days',
     source: SITE.equiv, estimate: false,
-    note: 'One shower is small, about 570 grams on gas. Do it every day for a year and it stacks to roughly 200 kg. The lesson of the whole game in one item: frequency, not any single event, is what builds a footprint.',
+    note: 'One shower is small, about 570 grams on gas. Do it every day for a year and it stacks to roughly 200 kg. The lesson of the whole game in one item: frequency is what builds a footprint.',
   },
   {
     id: 'flight-london', item: 'A return flight to London', short: 'Sydney to London return',
@@ -153,7 +153,7 @@ export const GUESS_POOL = [
     id: 'diet-highmeat', item: 'A year of eating a high-meat diet', short: 'High-meat diet, one year',
     kg: dietYearKg('highMeat'), unit: 'Over 100 g of meat a day, standardised to 2,000 kcal',
     source: SITE.diet, estimate: true,
-    note: 'A heavy-meat year of food is around 2.6 tonnes, and meat and dairy are nearly all of it. Diet carries a wide range, so treat this as the right order of magnitude, not a measured number. The vegan version of the same year is about a tonne.',
+    note: 'A heavy-meat year of food is around 2.6 tonnes, and meat and dairy are nearly all of it. Diet carries a wide range, so treat this as the right order of magnitude. The vegan version of the same year is about a tonne.',
   },
   {
     id: 'cheese-kg', item: 'A kilo of cheese', short: '1 kg of cheese',
@@ -183,7 +183,7 @@ export const GUESS_POOL = [
     id: 'coffee', item: 'A cafe flat white', short: 'One flat white',
     kg: coffeeKg, unit: 'About 18 g of beans and 150 ml of dairy milk',
     source: SITE.equiv, estimate: false,
-    note: 'The milk is most of it, not the coffee. Order the same cup black and it drops by well over half. A small number that a daily habit turns into a real one.',
+    note: 'The milk is most of it. Order the same cup black and it drops by well over half. A small number that a daily habit turns into a real one.',
   },
   {
     id: 'jeans', item: 'A new pair of jeans', short: 'New jeans',
@@ -195,13 +195,13 @@ export const GUESS_POOL = [
     id: 'diet-vegan', item: 'A year of eating vegan', short: 'Vegan diet, one year',
     kg: dietYearKg('vegan'), unit: 'A fully plant-based year, standardised to 2,000 kcal',
     source: SITE.diet, estimate: true,
-    note: 'About a tonne of food for the year, and the floor for a normal diet: even a vegan still eats. It is roughly a third less than a high-meat year. Diet ranges are wide, so read the gap, not the decimals.',
+    note: 'About a tonne of food for the year, and the floor for a normal diet: even a vegan still eats. It is roughly a third less than a high-meat year. Diet ranges are wide, so read the gap.',
   },
   {
     id: 'hotel-au', item: 'A night in an Australian hotel', short: 'One hotel night, Australia',
     kg: HOTEL.countries.AU.perNight, unit: 'One occupied room-night, country average',
     source: SITE.hotel, estimate: true,
-    note: 'A room-night in Australia averages about 35 kg, priced at the country average rather than the specific hotel. Warmer, more air-conditioned countries run much higher: an Indonesian night is nearly double.',
+    note: 'A room-night in Australia averages about 35 kg, priced at the country average. Warmer, more air-conditioned countries run much higher: an Indonesian night is nearly double.',
   },
   {
     id: 'flight-la', item: 'A return flight to Los Angeles', short: 'Sydney to LA return',
@@ -231,7 +231,7 @@ export const GUESS_POOL = [
     id: 'flight-perth', item: 'A return flight to Perth', short: 'Sydney to Perth return',
     kg: flightReturnKg('SYD-PER'), unit: 'One seat, economy, Sydney to Perth and back',
     source: SITE.flight, estimate: false,
-    note: 'Domestic, but the longest domestic hop there is: about 1.6 tonnes per seat return. Distance is the whole story with flying, so a coast-to-coast domestic beats plenty of short international trips.',
+    note: 'Domestic, but the longest domestic hop there is: about 1.6 tonnes per seat return. Distance drives this far more than the domestic or international label does, so a coast-to-coast hop beats plenty of short international trips.',
   },
   {
     id: 'rice-kg', item: 'A kilo of rice', short: '1 kg of rice',
@@ -261,7 +261,7 @@ export const GUESS_POOL = [
     id: 'beer', item: 'A pint of beer', short: 'One beer',
     kg: 0.5, unit: 'A pint, roughly 570 ml, in glass; a packaging-dependent estimate',
     source: SRC.poore, estimate: true,
-    note: 'Around half a kilo, and most of that is the packaging and refrigeration rather than the brew itself. Published figures range widely with the packaging: the same beer in a returnable keg is several times lighter than in single-use glass, which is the honest lever here.',
+    note: 'Around half a kilo, and most of that is the packaging and refrigeration. Published figures range widely with the packaging: the same beer in a returnable keg is several times lighter than in single-use glass, so the container moves this more than the brew does.',
   },
   {
     id: 'dryer-load', item: 'One tumble-dryer load', short: 'A dryer load',
@@ -357,7 +357,7 @@ export const CLAIM_POOL = [
     claim: 'Committed to being carbon neutral by 2050*',
     verdict: 'greenwash', principle: 'Be transparent about your sustainability transition',
     rule: RULE.accc,
-    reasoning: 'A target three decades out with an asterisk and no interim milestone is aspiration, not a plan. The ACCC asks for the near-term steps and the current trajectory, not a headline date the people making the promise will never be held to. The asterisk is usually where the offsets and the exclusions live.',
+    reasoning: 'A target three decades out with an asterisk and no interim milestone is aspiration. The ACCC asks for the near-term steps and the current trajectory, and a headline date supplies neither, least of all one the people making the promise will never be held to. The asterisk is usually where the offsets and the exclusions live.',
   },
   {
     id: 'recycled-fibres', speaker: 'A fast-fashion label tags a dress',
@@ -385,7 +385,7 @@ export const CLAIM_POOL = [
     claim: 'This flight is carbon neutral, offset through our verified tree-planting program',
     verdict: 'greenwash', principle: 'Do not leave out or hide important information',
     rule: RULE.accc,
-    reasoning: 'The emissions still happened; they were bought off, not avoided. The ACCC expects offset-based neutrality to say so plainly, name the scheme and the vintage, and not bury the reduction that did not occur. Tree offsets carry their own additionality and permanence problems, and from late 2026 the EU bans this exact claim outright.',
+    reasoning: 'The emissions still happened and were paid for after the fact. The ACCC expects offset-based neutrality to say so plainly, name the scheme and the vintage, and not bury the reduction that did not occur. Tree offsets carry their own additionality and permanence problems, and from late 2026 the EU bans this exact claim outright.',
   },
   {
     id: 'sustainable-super', speaker: 'A super fund brochure promises',
@@ -399,7 +399,7 @@ export const CLAIM_POOL = [
     claim: 'Certified B Corporation since 2021',
     verdict: 'legit', principle: 'Make accurate and truthful claims',
     rule: RULE.accc,
-    reasoning: 'B Corp is a real, independently audited certification of a whole company against a published standard, with a date you can verify on the register. It is a governance credential, not a product carbon claim, but it is specific, checkable and true. This is the substantiated end of the spectrum.',
+    reasoning: 'B Corp is a real, independently audited certification of a whole company against a published standard, with a date you can verify on the register. It is a governance credential covering the management system, and it is specific, checkable and true. This is the substantiated end of the spectrum.',
   },
   {
     id: 'eco-friendly-range', speaker: 'A supermarket own-brand says',
@@ -420,7 +420,7 @@ export const CLAIM_POOL = [
     claim: 'We cut our Scope 1 and 2 emissions 28% against a verified 2019 baseline, disclosed to the CDP',
     verdict: 'legit', principle: 'Have evidence to back up your claims',
     rule: RULE.accc,
-    reasoning: 'Named scopes, a real percentage, a stated baseline year and third-party disclosure. It is careful to claim only Scopes 1 and 2, not the whole footprint, which is the kind of boundary honesty regulators actually reward. Substantiated and qualified.',
+    reasoning: 'Named scopes, a real percentage, a stated baseline year and third-party disclosure. It is careful to claim only Scopes 1 and 2, and says so, which is the kind of boundary honesty regulators actually reward. Substantiated and qualified.',
   },
   {
     id: 'climate-positive', speaker: 'A drinks start-up claims',
@@ -434,14 +434,14 @@ export const CLAIM_POOL = [
     claim: 'Made with natural ingredients, kind to the planet',
     verdict: 'greenwash', principle: 'Use clear and easy-to-understand language',
     rule: RULE.accc,
-    reasoning: 'Natural is not the same as low impact: crude oil and arsenic are natural. "Kind to the planet" is a feeling, not a metric, and the planet has not been consulted. Two vague terms stacked together, neither carrying a measured number.',
+    reasoning: 'Natural is not the same as low impact: crude oil and arsenic are natural. "Kind to the planet" is a feeling, and the planet has not been consulted. Two vague terms stacked together, neither carrying a measured number.',
   },
   {
     id: 'climate-active', speaker: 'A coffee roaster states',
     claim: 'Certified carbon neutral under Climate Active, offsets and boundary disclosed on our site',
     verdict: 'legit', principle: 'Explain any conditions or qualifications',
     rule: RULE.accc,
-    reasoning: 'Climate Active is a real Commonwealth certification with a public register, and the claim points to a disclosed boundary and the offsets it relies on. It leans on offsetting, which the ACCC says you must disclose, and this one does. A named, verifiable certification with its conditions on the table is the qualified end of the spectrum, not greenwash.',
+    reasoning: 'Climate Active is a real Commonwealth certification with a public register, and the claim points to a disclosed boundary and the offsets it relies on. It leans on offsetting, which the ACCC says you must disclose, and this one does. A named, verifiable certification with its conditions on the table is the qualified end of the spectrum.',
   },
   {
     id: 'plant-a-tree', speaker: 'An online store promises',
@@ -455,7 +455,7 @@ export const CLAIM_POOL = [
     claim: 'Home compostable, certified to AS 5810',
     verdict: 'legit', principle: 'Explain any conditions or qualifications',
     rule: RULE.accc,
-    reasoning: 'It names the composting condition (home, not just industrial) and the exact Australian standard it meets. That is precisely the qualification the ACCC asks for on a "compostable" claim, because a home compost heap and an industrial facility are completely different tests. Checkable and specific.',
+    reasoning: 'It names the composting condition (home composting, the harder of the two) and the exact Australian standard it meets. That is precisely the qualification the ACCC asks for on a "compostable" claim, because a home compost heap and an industrial facility are completely different tests. Checkable and specific.',
   },
   {
     id: 'green-collection', speaker: 'A fashion retailer badges a rack',
@@ -469,7 +469,7 @@ export const CLAIM_POOL = [
     claim: 'Cruelty-free vegan leather, better for the earth',
     verdict: 'greenwash', principle: 'Do not leave out or hide important information',
     rule: RULE.accc,
-    reasoning: 'Most "vegan leather" is polyurethane, which is plastic made from fossil fuels. "Vegan" answers an animal-welfare question, not an environmental one, and "better for the earth" is left undefined and unmeasured. Leaving out that the material is plastic is the hidden information here.',
+    reasoning: 'Most "vegan leather" is polyurethane, which is plastic made from fossil fuels. "Vegan" answers an animal-welfare question and leaves the environmental one open, and "better for the earth" is left undefined and unmeasured. Leaving out that the material is plastic is the hidden information here.',
   },
   {
     id: 'renewable-powered', speaker: 'A brewery\'s site says',
@@ -483,14 +483,14 @@ export const CLAIM_POOL = [
     claim: 'Made from ocean-bound plastic',
     verdict: 'greenwash', principle: 'Do not leave out or hide important information',
     rule: RULE.accc,
-    reasoning: '"Ocean-bound" is a marketing term, not a measured one: definitions stretch to any plastic collected within tens of kilometres of a coast, which is most plastic on Earth. Without the certified share and a real definition, it implies a beach cleanup that may not have happened.',
+    reasoning: '"Ocean-bound" is a marketing term: definitions stretch to any plastic collected within tens of kilometres of a coast, which is most plastic on Earth. Without the certified share and a real definition, it implies a beach cleanup that may not have happened.',
   },
   {
     id: 'lowest-impact-denim', speaker: 'A jeans campaign claims',
     claim: 'The lowest-impact denim in Australia',
     verdict: 'greenwash', principle: 'Have evidence to back up your claims',
     rule: RULE.acl,
-    reasoning: 'A superlative is a factual claim about every competitor, and it needs the comparative evidence to prove it. An unqualified "lowest" with no study, no boundary and no source is a false or misleading representation under s18 and s29 of the Australian Consumer Law, not just loose copy.',
+    reasoning: 'A superlative is a factual claim about every competitor, and it needs the comparative evidence to prove it. An unqualified "lowest" with no study, no boundary and no source is a false or misleading representation under s18 and s29 of the Australian Consumer Law.',
   },
   {
     id: 'ethical-factory', speaker: 'A brand\'s about page says',
@@ -532,28 +532,28 @@ export const CLAIM_POOL = [
     claim: 'Made with responsibly sourced wool, certified to the Responsible Wool Standard',
     verdict: 'legit', principle: 'Explain any conditions or qualifications',
     rule: RULE.accc,
-    reasoning: 'It names an actual third-party standard with published criteria and an audit chain, rather than leaving "responsible" to float. RWS covers animal welfare and land management specifically, and the claim does not overreach into a carbon promise it cannot keep. Specific and checkable.',
+    reasoning: 'It names an actual third-party standard with published criteria and an audit chain, which is what pins "responsible" down. RWS covers animal welfare and land management specifically, and the claim does not overreach into a carbon promise it cannot keep. Specific and checkable.',
   },
   {
     id: 'guilt-free', speaker: 'A swimwear brand advertises',
     claim: 'Guilt-free swimwear for a cleaner ocean',
     verdict: 'greenwash', principle: 'Use clear and easy-to-understand language',
     rule: RULE.accc,
-    reasoning: 'Feelings are not a metric, and "a cleaner ocean" is an unmeasured outcome the garment cannot deliver on its own. This is mood, not information. State what the product actually is and does, or the claim says nothing at all.',
+    reasoning: 'Feelings are not a metric, and "a cleaner ocean" is an unmeasured outcome the garment cannot deliver on its own. This is mood. State what the product actually is and does, or the claim says nothing at all.',
   },
   {
     id: 'green-energy-tariff', speaker: 'An energy retailer\'s ad says',
     claim: 'Switch to our Green plan and go 100% green',
     verdict: 'greenwash', principle: 'Use clear and easy-to-understand language',
     rule: RULE.accc,
-    reasoning: 'Green is a colour, not a measure. Whether the plan is backed by accredited GreenPower or by unbundled certificates of dubious additionality is the entire question, and the word hides it. Name the accreditation and what share it covers.',
+    reasoning: 'Green is a colour. Whether the plan is backed by accredited GreenPower or by unbundled certificates of dubious additionality is the entire question, and the word hides it. Name the accreditation and what share it covers.',
   },
   {
     id: 'plastic-free-packaging', speaker: 'A parcel states',
     claim: 'Plastic-free packaging',
     verdict: 'legit', principle: 'Make accurate and truthful claims',
     rule: RULE.accc,
-    reasoning: 'This one is narrow, specific and testable: it claims only the packaging, not the product, and "plastic-free" is a binary fact you can verify by opening the box. As long as the tape and label are genuinely plastic-free too, it is an accurate, bounded claim. Scope kept honest.',
+    reasoning: 'This one is specific and testable: it claims the packaging only, and "plastic-free" is a binary fact you can verify by opening the box. As long as the tape and label are genuinely plastic-free too, it is an accurate, bounded claim. Scope kept honest.',
   },
   {
     id: 'biodegradable-no-conditions', speaker: 'A phone case is sold as',
@@ -578,7 +578,7 @@ export const INTRO = {
   h1b: 'one a day',
   paras: [
     'The Life Footprint reveal was a one-off: audit a year, see where it went. This turns the same instinct into a daily habit. Two small puzzles, a new one every day, played in under a minute each. One trains your gut feel for the size of things. The other trains your ear for a dodgy green claim.',
-    'They share nothing but this page. Each keeps its own streak and its own shareable result. No account, no server, no tracking: your streaks live in this browser and nowhere else.',
+    'They share nothing but this page. Each keeps its own streak and its own shareable result. No account and no server: your streaks live in this browser and nowhere else.',
   ],
   chips: ['New puzzle daily', 'No account', 'Stays in your browser', 'Two streaks to keep'],
 };
@@ -595,7 +595,7 @@ export const GUESS = {
   revealAnswer: 'The answer',
   yourGuess: 'Your guess',
   sourceLabel: 'Source',
-  estimateFlag: 'Estimate, not a metered figure. Reasoning and assumption stated above.',
+  estimateFlag: 'Estimate. Reasoning and assumption stated above.',
   sitFlag: 'Priced from this site\'s own Life Footprint factor tables.',
   shareCta: 'Copy result',
   shareDone: 'Copied',
@@ -611,7 +611,7 @@ export const GUESS = {
 export const CLAIM = {
   tag: 'Greenwash or Not',
   title: 'Greenwash or Not',
-  blurb: 'One real-ish marketing claim a day. Call it legitimate or greenwash, then read the actual rule it does or does not break. Claims are generic composites, never a real company\'s words.',
+  blurb: 'One real-ish marketing claim a day. Call it legitimate or greenwash, then read the actual rule it does or does not break. Claims are generic composites, invented for the game.',
   cardKicker: "Today's claim",
   legitBtn: 'Legitimate',
   greenwashBtn: 'Greenwash',
@@ -660,21 +660,21 @@ export const METHOD = {
       title: 'Guess the Footprint: the numbers',
       paras: [
         'Wherever an item also exists in the site\'s Life Footprint model, its answer is derived live from the very same factor tables the footprint engine prices from: the DCCEEW National Greenhouse Accounts Factors 2025 for electricity, gas and fuels, the UK Government (DEFRA) conversion factors for flights, hotels and freight, and Poore & Nemecek 2018 for food. Flights are priced exactly as the calculator prices them: great-circle distance uplifted 8%, doubled for the return, at the economy factor with radiative forcing counted. Clothing uses the per-item ADEME life-cycle figures. So a factor refresh moves this game in the same change.',
-        'A handful of items sit outside the model: a year of streaming, a year of dog food, a pint of beer. Those carry a published external source and are marked an estimate on the reveal. Two of them were read back against the original documents on 13 August 2026. The streaming figure is the Carbon Trust\'s European average for 2020, about 55 g an hour on a 2018-vintage European grid, and the paper itself warns those figures are not designed to be representative of any given scenario, so an Australian hour on a dirtier grid runs higher. The dog-food figure is the median of 316 Brazilian commercial dry diets in Pedrinelli et al. 2022, a worked illustration for a 10 kg dog rather than a measured animal. Every card states its unit assumption plainly, for example "one seat, economy" or "one occupied room-night at the country average". Numbers are rounded to the confidence behind them, never past it.',
+        'A handful of items sit outside the model: a year of streaming, a year of dog food, a pint of beer. Those carry a published external source and are marked an estimate on the reveal. Two of them were read back against the original documents on 13 August 2026. The streaming figure is the Carbon Trust\'s European average for 2020, about 55 g an hour on a 2018-vintage European grid, and the paper itself warns those figures are not designed to be representative of any given scenario, so an Australian hour on a dirtier grid runs higher. The dog-food figure is the median of 316 Brazilian commercial dry diets in Pedrinelli et al. 2022, a worked illustration for a 10 kg dog. Every card states its unit assumption plainly, for example "one seat, economy" or "one occupied room-night at the country average". Numbers are rounded to the confidence behind them.',
       ],
     },
     {
       icon: 'chart',
       title: 'Guess the Footprint: the scoring',
       paras: [
-        'You are scored on how many times off you are, not on the raw difference, because these numbers span four orders of magnitude. Take the ratio between your guess and the answer, whichever way round. Within one and a half times scores three, the top mark. Within three times scores two. Within ten times scores one. More than ten times off scores zero. Guessing on a log scale is the honest way to think about a quantity that runs from a gram to ten tonnes.',
+        'You are scored on the ratio between your guess and the answer, because these numbers span four orders of magnitude. Take the ratio between your guess and the answer, whichever way round. Within one and a half times scores three, the top mark. Within three times scores two. Within ten times scores one. More than ten times off scores zero.',
       ],
     },
     {
       icon: 'list',
       title: 'Greenwash or Not: the rules',
       paras: [
-        'Each claim is judged against the ACCC\'s eight principles for environmental claims, reused word for word from the Cost Per Wear claim-check research elsewhere on this site, plus the Australian Consumer Law (sections 18 and 29) and, for financial and super claims, ASIC\'s greenwashing guidance. The reasoning names the specific rule a claim exploits, not just that it feels misleading. A legitimate claim is one that is specific, substantiated and qualified: a named standard, a real number, a stated baseline.',
+        'Each claim is judged against the ACCC\'s eight principles for environmental claims, plus the Australian Consumer Law (sections 18 and 29) and, for financial and super claims, ASIC\'s greenwashing guidance. The reasoning names the specific rule a claim exploits. A legitimate claim is one that is specific, substantiated and qualified: a named standard, a real number, a stated baseline.',
         'Every claim is a generic composite, invented to illustrate a pattern. None is attributed to a real named company, ever. Where the reasoning refers to enforcement, it points at the real regulatory pattern (the ASIC super-fund cases, the ACCC recycled-plastic case) without pinning any invented words on a real brand.',
       ],
     },
@@ -683,7 +683,7 @@ export const METHOD = {
       title: 'The daily rotation',
       paras: [
         'One puzzle per calendar day, in Australia/Melbourne time, the same for everyone. The day index counts days from a fixed launch date, and the day\'s puzzle is item number (day index modulo pool size) in each frozen pool. Once you play, the result locks for the day: no do-overs, and the next puzzle unlocks at midnight Melbourne time.',
-        'Streaks count consecutive days played and scored; miss a day and the streak resets to zero. Each card also shows the last 28 days as a grid, filled by how each day scored, so the streak number has the run behind it in view. Your streaks, your best runs, your play counts and that history (the last 120 days, as a day number and a score, nothing else) are stored in this browser\'s local storage under versioned keys, and never sent anywhere. Clear your browser data and they are gone, which is the honest trade for keeping everything private to your device.',
+        'Streaks count consecutive days played and scored; miss a day and the streak resets to zero. Each card also shows the last 28 days as a grid, filled by how each day scored, so the streak number has the run behind it in view. Your streaks, your best runs, your play counts and that history (the last 120 days, as a day number and a score, nothing else) are stored in this browser\'s local storage under versioned keys, and never sent anywhere. Clear your browser data and they are gone, which is the trade for keeping all of it on your device.',
       ],
     },
   ],

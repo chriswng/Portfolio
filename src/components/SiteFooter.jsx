@@ -68,7 +68,9 @@ export default function SiteFooter({ base = '' }) {
           </a>
         </div>
 
-        <nav className="footer-cols" aria-label="Footer">
+        {/* The column count comes from the data, so a column emptied by a page
+            moving behind the gate closes up rather than leaving a hole. */}
+        <nav className="footer-cols" aria-label="Footer" style={{ '--footer-col-n': FOOTER.columns.length }}>
           {FOOTER.columns.map((col) => (
             <div className="footer-col" key={col.head}>
               <div className="footer-col-head">{col.icon && <Icon name={col.icon} size={28} className="fpi-lead" />}{col.head}</div>

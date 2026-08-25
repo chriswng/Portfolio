@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import SplitText from '../components/SplitText';
 import { categoryById } from './data/factors';
 import { BUDGET_2030 } from './data/benchmarks';
@@ -53,6 +53,8 @@ function OptionCard({ r, on, baseline, onToggle }) {
 
 export default function Plan({ macc, pathway, plan, onToggle, dwellingNudge, onDwellingAnswer }) {
   const trackRef = useRef(null);
+  const plannerRef = useRef(null);
+  const impactRef = useRef(null);
   const [view, setView] = useState('pathway');
   const horizonYear = pathway.years[pathway.years.length - 1];
   const landing = pathway.plan[pathway.plan.length - 1];
@@ -81,6 +83,23 @@ export default function Plan({ macc, pathway, plan, onToggle, dwellingNudge, onD
     ...macc.filter((r) => !r.applicable),
   ];
 
+  // The readout pins to the top of the planner, so the chart card beside it has
+  // to stop below the readout rather than behind it. Its height is one line on
+  // a wide screen and three on a phone, so it is measured rather than assumed.
+  useEffect(() => {
+    const bar = impactRef.current;
+    const planner = plannerRef.current;
+    if (!bar || !planner) return undefined;
+    const sync = () => {
+      const h = Math.round(bar.getBoundingClientRect().height);
+      if (h > 0) planner.style.setProperty('--fp-impact-h', h + 'px');
+    };
+    sync();
+    const ro = new ResizeObserver(sync);
+    ro.observe(bar);
+    return () => ro.disconnect();
+  }, []);
+
   const nudge = (dir) => {
     const el = trackRef.current;
     if (!el) return;
@@ -97,8 +116,27 @@ export default function Plan({ macc, pathway, plan, onToggle, dwellingNudge, onD
         <p className="fp-sub">{PLAN.sub}</p>
 
         {/* Options as a carousel with the chart alongside, so a choice changes
-            the chart in view. A bottom-stuck readout keeps the effect visible. */}
-        <div className="fp-planner">
+            the chart in view. The readout heads the planner and pins there, so
+            it keeps the effect visible without ever sitting over a card. */}
+        <div className="fp-planner" ref={plannerRef}>
+          <div className="fp-impact" role="status" ref={impactRef}>
+            <span className="fp-impact-l">{PLAN.impact.label}</span>
+            {enabledCount === 0 ? (
+              <span className="fp-impact-line">{PLAN.impact.none}</span>
+            ) : (
+              <span className="fp-impact-line">
+                {fill(PLAN.impact.line, {
+                  n: enabledCount, s: enabledCount > 1 ? 's' : '',
+                  at2030: fmtT(at2030), bau2030: fmtT(bau2030), pct: cut2030,
+                })}{' · '}
+                <em className={gap > 0 ? 'over' : 'within'}>
+                  {gap > 0 ? fill(PLAN.impact.over, { gap: fmtT(gap) }) : PLAN.impact.within}
+                </em>{' · '}
+                <em className="money">{moneyLine}</em>
+              </span>
+            )}
+          </div>
+
           <div className="fp-card fp-planner-cards">
             <div className="fp-card-head">{PLAN.tableTitle}</div>
             <div className="fp-card-sub">{PLAN.tableSub}</div>
@@ -175,24 +213,6 @@ export default function Plan({ macc, pathway, plan, onToggle, dwellingNudge, onD
                     : <>{PLAN.takeaway.within} <em>{PLAN.impact.within}</em>.</>}
                 </p>
               </>
-            )}
-          </div>
-
-          <div className="fp-impact" role="status">
-            <span className="fp-impact-l">{PLAN.impact.label}</span>
-            {enabledCount === 0 ? (
-              <span className="fp-impact-line">{PLAN.impact.none}</span>
-            ) : (
-              <span className="fp-impact-line">
-                {fill(PLAN.impact.line, {
-                  n: enabledCount, s: enabledCount > 1 ? 's' : '',
-                  at2030: fmtT(at2030), bau2030: fmtT(bau2030), pct: cut2030,
-                })}{' · '}
-                <em className={gap > 0 ? 'over' : 'within'}>
-                  {gap > 0 ? fill(PLAN.impact.over, { gap: fmtT(gap) }) : PLAN.impact.within}
-                </em>{' · '}
-                <em className="money">{moneyLine}</em>
-              </span>
             )}
           </div>
         </div>

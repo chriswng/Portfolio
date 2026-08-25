@@ -4,11 +4,14 @@
 
 import { useEffect, useState } from 'react';
 import { NAV_LINKS } from '../data/content';
+import { useStickyNavHeight } from '../components/Chrome';
 import { FOOTER, NAV_UI } from './data/copy';
 import Mark from '../components/Mark';
 
 export function FootprintNav({ home = '../' }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  // Publishes --nav-h, which the footprint pages' in-page anchors clear.
+  useStickyNavHeight();
   // Escape closes the open mobile menu, matching every other dismissable
   // surface on the page.
   useEffect(() => {
