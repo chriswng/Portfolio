@@ -33,9 +33,9 @@ export const META = {
 export const INTRO = {
   tag: 'The tracker',
   kicker: 'Australia · climate transition',
-  title: ['What is actually', 'changing'],
+  title: ['What is changing,', 'and how fast'],
   sub: 'Doom is easy and cheerleading is worse. This is a handful of real numbers on Australia\'s energy transition, each shown against where it was and against what the target needs, with the distance between the two stated plainly in whichever direction it runs.',
-  read: 'Each chapter reads the same way. First the reference point, quietly: what it was, or what the target needs. Then the number as it stands now. Then one sentence on the gap between them.',
+  read: 'Each chapter reads the same way. First the reference point: what it was, or what the target needs. Then the number as it stands now. Then one sentence on the gap between them.',
   scroll: 'Scroll',
 };
 
@@ -216,7 +216,7 @@ export const CHAPTERS = [
     },
     reveal: {
       value: 24.5, decimals: 1, prefix: '', suffix: '% below',
-      label: 'where emissions actually were in the year to December 2025, against the June 2005 base year',
+      label: 'where emissions stood in the year to December 2025, against the June 2005 base year',
       sub: 'Total emissions were 458.9 Mt CO2-e, down 2.1 per cent on the year before, all sectors including land use. Take the land sector out and the same release gives 510.9 Mt, only 3.8 per cent below 2005.',
     },
     gap: 'The target is 43 per cent below 2005 by 2030. At 24.5 per cent below, Australia sits roughly 10 percentage points behind the straight line to that target, with five years to close it. The Climate Change Authority puts the same gap as a rate: emissions fell about 10 Mt in 2025 and have averaged 8 Mt a year over five years, against the 18 Mt a year the 2030 target needs. That is roughly half the required pace. The land sector heavily shapes the headline, which is why the method spells out how it is counted.',
@@ -239,7 +239,7 @@ export const CHAPTERS = [
       label: 'of rooftop solar installed by the end of 2025, across about 4.3 million homes and small businesses',
       sub: 'On the Clean Energy Council\'s read, rooftop is projected to pass its 2029/30 benchmark by about 1 GW. That benchmark is AEMO\'s 2024 ISP projection of 36.1 GW of distributed solar in the NEM, a modelled capacity requirement.',
     },
-    gap: 'This is the metric that is genuinely ahead. Households built it faster than any policy asked them to, and it now carries a real share of daytime demand: rooftop alone was 14.2 per cent of generation in the second half of 2025. It is the only line on this page running ahead of what was modelled for it.',
+    gap: 'Households built this faster than any policy asked them to, and it now carries a real share of daytime demand: rooftop alone was 14.2 per cent of generation in the second half of 2025. It is the only line on this page running ahead of what was modelled for it.',
     period: 'To end of 2025',
     status: 'sourced',
     sources: ['cec_rooftop'],
@@ -253,7 +253,7 @@ export const SUMMARY = {
   title: ['Moving, and', 'not fast enough'],
   lead: 'Both columns below are true at the same time. Picking one of them is where most coverage of this subject goes wrong.',
   moving: {
-    head: 'What is genuinely moving',
+    head: 'What is moving',
     items: [
       'Renewables passed half the NEM in the December 2025 quarter, and out-generated coal for a whole month for the first time in September 2025.',
       'Electric cars went from under 1 per cent of new sales to more than 8 per cent in five years.',

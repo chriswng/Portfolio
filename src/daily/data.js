@@ -420,7 +420,7 @@ export const CLAIM_POOL = [
     claim: 'We cut our Scope 1 and 2 emissions 28% against a verified 2019 baseline, disclosed to the CDP',
     verdict: 'legit', principle: 'Have evidence to back up your claims',
     rule: RULE.accc,
-    reasoning: 'Named scopes, a real percentage, a stated baseline year and third-party disclosure. It is careful to claim only Scopes 1 and 2, and says so, which is the kind of boundary honesty regulators actually reward. Substantiated and qualified.',
+    reasoning: 'Named scopes, a real percentage, a stated baseline year and third-party disclosure. It is careful to claim only Scopes 1 and 2, and says so, which is the kind of boundary honesty regulators reward. Substantiated and qualified.',
   },
   {
     id: 'climate-positive', speaker: 'A drinks start-up claims',
@@ -539,7 +539,7 @@ export const CLAIM_POOL = [
     claim: 'Guilt-free swimwear for a cleaner ocean',
     verdict: 'greenwash', principle: 'Use clear and easy-to-understand language',
     rule: RULE.accc,
-    reasoning: 'Feelings are not a metric, and "a cleaner ocean" is an unmeasured outcome the garment cannot deliver on its own. This is mood. State what the product actually is and does, or the claim says nothing at all.',
+    reasoning: 'Feelings are not a metric, and "a cleaner ocean" is an unmeasured outcome the garment cannot deliver on its own. This is mood. State what the product is and does, or the claim says nothing at all.',
   },
   {
     id: 'green-energy-tariff', speaker: 'An energy retailer\'s ad says',
@@ -553,7 +553,7 @@ export const CLAIM_POOL = [
     claim: 'Plastic-free packaging',
     verdict: 'legit', principle: 'Make accurate and truthful claims',
     rule: RULE.accc,
-    reasoning: 'This one is specific and testable: it claims the packaging only, and "plastic-free" is a binary fact you can verify by opening the box. As long as the tape and label are genuinely plastic-free too, it is an accurate, bounded claim. Scope kept honest.',
+    reasoning: 'This one is specific and testable: it claims the packaging only, and "plastic-free" is a binary fact you can verify by opening the box. As long as the tape and label are plastic-free too, it is an accurate, bounded claim. Scope kept honest.',
   },
   {
     id: 'biodegradable-no-conditions', speaker: 'A phone case is sold as',

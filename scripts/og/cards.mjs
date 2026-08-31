@@ -102,7 +102,7 @@ export const CARDS = [
     headline: ['Fifty promises,', 'one ledger'],
     support: [
       "Each ASX50 company's claimed path to net zero,",
-      'plotted against what it actually reported.',
+      'plotted against what it reported.',
     ],
     chips: ['Net zero', 'Interim targets', 'Reported', 'The gap'],
     ghost: { text: '2050', size: 300, baseline: 392, endX: 1178 },

@@ -1223,7 +1223,7 @@ export const FIBRES = [
   { name: 'Recycled polyester (rPET)', kind: 'Synthetic', good: 'Roughly half the carbon of virgin polyester; look for GRS certification.', watch: 'Still sheds microplastics; mostly made from drink bottles, and it recycles once.' },
   { name: 'Nylon', kind: 'Synthetic', good: 'Strong and elastic; recycled versions (e.g. ECONYL) exist.', watch: 'Fossil-derived, energy-intensive, sheds microplastics.' },
   { name: 'Viscose / rayon', kind: 'Regenerated', good: 'Soft, breathable, plant-derived from wood pulp.', watch: 'Can drive deforestation and use harsh solvents unless responsibly sourced.' },
-  { name: 'Lyocell (Tencel)', kind: 'Regenerated', good: 'Wood pulp spun in a closed-loop solvent system; look for FSC pulp.', watch: 'Genuinely lower-impact only when the pulp is responsibly sourced.' },
+  { name: 'Lyocell (Tencel)', kind: 'Regenerated', good: 'Wood pulp spun in a closed-loop solvent system; look for FSC pulp.', watch: 'Lower-impact only when the pulp is responsibly sourced.' },
   { name: 'Leather', kind: 'Animal', good: 'Durable and repairable; ages well.', watch: 'Linked to land use and deforestation; tanning can be chemically intensive.' },
   { name: 'Elastane / spandex', kind: 'Synthetic', good: 'A little adds stretch and fit.', watch: 'Even small amounts blended in can make a garment unrecyclable.' },
 ];
@@ -1342,7 +1342,7 @@ export const LENS_CONCERNS = [
   },
   {
     id: 'ownership', label: 'Ownership and governance', signals: [], ownership: true,
-    why: 'Who actually makes the decisions on targets, suppliers and wages. Cost Per Wear verifies this for every brand on file.',
+    why: 'Who makes the decisions on targets, suppliers and wages. Cost Per Wear verifies this for every brand on file.',
   },
 ];
 
@@ -1411,7 +1411,7 @@ export const VAGUE_TERMS = [
   { re: /\bclean\b/gi, term: 'clean', ask: 'Clean of what? Name the substance or drop the word.' },
   { re: /\bkind (to|on) the planet\b/gi, term: 'kind to the planet', ask: 'The planet has not been consulted. State the measured impact instead.' },
   { re: /\bplanet[- ](positive|friendly)\b/gi, term: 'planet positive', ask: 'A net-positive claim needs extraordinary evidence. Where is it?' },
-  { re: /\bguilt[- ]free\b/gi, term: 'guilt-free', ask: 'Feelings are not a metric. State what the garment actually does.' },
+  { re: /\bguilt[- ]free\b/gi, term: 'guilt-free', ask: 'Feelings are not a metric. State what the garment does.' },
   { re: /\bearth[- ]friendly\b/gi, term: 'earth-friendly', ask: 'Friendly how? Pick an impact, state the change.' },
 ];
 
@@ -1740,7 +1740,7 @@ export function scoreCircularity(g, choices) {
 
   if (!g.isBlend && g.loop === 'mono') {
     rows.push({ id: 'mono', label: 'One-fibre construction', pts: 25, max: 25,
-      why: 'A single fibre means a recycler can actually take it.' });
+      why: 'A single fibre means a recycler can take it.' });
   } else if (!g.isBlend) {
     rows.push({ id: 'mono', label: 'One-fibre construction', pts: 15, max: 25,
       why: `${g.fibreA.name} recycles in theory, rarely in practice. Points for possibility.` });
@@ -1793,7 +1793,7 @@ export const COPY = {
   hero: {
     kicker: 'Fashion brand transparency',
     headA: 'Look up the brands',
-    headB: 'you actually wear',
+    headB: 'you wear',
     stand: 'Before you buy, see what a fashion brand is willing to tell you. Search any major label to find who really owns it, how much it discloses, and what still needs checking. What comes back is a disclosure record.',
     searchLabel: 'Search a fashion brand',
     searchPlaceholder: 'Try Nike, Zara, Gucci, Kmart, Uniqlo…',
@@ -1993,14 +1993,14 @@ export const COPY = {
     icon: 'book',
     title: 'Field guide',
     sub: 'Materials, labels, rules and claims',
-    lede: 'The working knowledge behind the lookup, in one place: what the common fibres trade off, what certifications actually verify, the rules about to change what brands must tell you, and a checker for the claims on the swing tag.',
+    lede: 'The working knowledge behind the lookup, in one place: what the common fibres trade off, what certifications verify, the rules about to change what brands must tell you, and a checker for the claims on the swing tag.',
     tabs: [
       { id: 'materials', label: 'Materials' },
       { id: 'certs', label: 'Certifications' },
       { id: 'regulation', label: 'Regulation' },
       { id: 'claim', label: 'Claim check' },
     ],
-    certTitle: 'What the certifications actually verify',
+    certTitle: 'What the certifications verify',
     certLede: 'A certificate proves one specific, bounded thing. Knowing its edge is how you avoid reading a single label as a blanket "this is good".',
     certVerifies: 'Verifies',
     certEdge: 'Its edge',

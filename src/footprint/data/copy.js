@@ -11,7 +11,7 @@ export const INTRO = {
   h1a: 'Calculate your year of',
   h1b: 'carbon emissions',
   paras: [
-    'I measure carbon for a living, so I pointed the same maths at my own year. This is a plain-English carbon calculator and a visual case study in one: see where a real year of flights, power, food and freight actually goes, then run your own. Your answers stay in this browser.',
+    'I measure carbon for a living, so I pointed the same maths at my own year. This is a plain-English carbon calculator and a visual case study in one: see where a real year of flights, power, food and freight goes, then run your own. Your answers stay in this browser.',
   ],
   chips: ['No account', 'No server', 'Stays in your browser', 'Export any time'],
   ctaStart: 'Calculate your own',
@@ -304,7 +304,7 @@ export const ONBOARD = {
     entertainment: 'Entertainment and going out, $ a month',
     entertainmentNote: 'Streaming and subscriptions, the gym, gigs, cinema and events. Not meals and drinks: your diet already covers the food.',
     health: 'Health, out of pocket, $ a month',
-    healthNote: 'Gap payments, pharmacy, physio, dental, glasses: whatever actually leaves your pocket after Medicare and insurance. Typically $20 to $150 a month. Not sure? $50 is a fair estimate, about one pharmacy run plus a specialist gap fee.',
+    healthNote: 'Gap payments, pharmacy, physio, dental, glasses: whatever leaves your pocket after Medicare and insurance. Typically $20 to $150 a month. Not sure? $50 is a fair estimate, about one pharmacy run plus a specialist gap fee.',
     other: 'Other goods and services, $ a month',
     otherNote: 'Everything else in the trolley: furniture and homewares, personal care, haircuts, hobbies, gifts, pet food and vet bills. Rent, groceries and transport are counted elsewhere. Typically $100 to $400 a month. Not sure? $200 is a fair estimate, about a haircut, toiletries and a bit of pet care.',
     homeQuestion: 'Did you build or buy this home brand new?',

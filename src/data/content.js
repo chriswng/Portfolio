@@ -128,7 +128,7 @@ export const TOOLS_INTRO = {
   idx: '03 / ',
   title: ['Built,', 'not claimed'],
   paras: [
-    'Two tools, built in my own time and maintained since. Each one takes a question a sustainability team actually has to answer and answers it in public, with sourced numbers, a stated method, and the gaps named.',
+    'Two tools, built in my own time and maintained since. Each one takes a question a sustainability team has to answer and answers it in public, with sourced numbers, a stated method, and the gaps named.',
     'They run on the same discipline I bring to a reporting cycle. If a figure cannot be traced to a citation and an access date, it does not go on the page. Where a number is an estimate, the page says so beside the number.',
     'The chart on each card is drawn from that tool\'s own data, and says underneath it what stands behind the numbers.',
   ],
@@ -203,7 +203,7 @@ export const PRIVATE_TOOLS = [
   {
     n: '03', icon: 'coins', color: 'var(--sage-2)',
     name: 'Super Fund Holdings', spec: 'super', span: 2, href: '../super/',
-    what: 'What the big default super options actually hold and where the sector exposure sits, put next to what each fund says about sustainability in its own marketing.',
+    what: 'What the big default super options hold and where the sector exposure sits, put next to what each fund says about sustainability in its own marketing.',
     proves: 'Turning a statutory disclosure obligation into something a member can read, with a confidence flag on every field and a last-verified date per fund.',
     tags: ['s1017BB holdings', 'Sector exposure', 'Confidence flags'],
     scope: '10 funds · MySuper default options · methodology on its own route',
@@ -211,7 +211,7 @@ export const PRIVATE_TOOLS = [
   {
     n: '04', icon: 'bolt', color: 'var(--lime-bright)',
     name: 'Grid Intensity', spec: 'grid', span: 4, href: '../grid/',
-    what: 'Reads the live National Electricity Market fuel mix and answers one question: run it now, or wait. Then explains the factor a business would actually report against.',
+    what: 'Reads the live National Electricity Market fuel mix and answers one question: run it now, or wait. Then explains the factor a business would report against.',
     proves: 'Scope 2 accounting taught properly, location-based against market-based, with GreenPower, PPAs and LGC surrender all in the toggle.',
     tags: ['Live AEMO data', 'Scope 2', 'Market vs location'],
     scope: '5 NEM regions live · WA and NT named as out of scope',
