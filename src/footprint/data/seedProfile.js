@@ -110,7 +110,7 @@ export function buildSeedProfile() {
     entries,
     plan: {
       enabled: ['sea-not-air', 'diet-low', 'uber-to-pt'],
-      note: 'The changes I have actually committed to. The flight ones are still off, and the gap between my line and the benchmark is that decision.',
+      note: 'The changes I have committed to. The flight ones are still off, and the gap between my line and the benchmark is that decision.',
     },
   };
 }

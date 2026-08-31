@@ -388,7 +388,7 @@ export const COPY = {
     tag: 'Super Fund Holdings',
     title: ['What your default', 'super option holds'],
     paras: [
-      'Most Australians have never seen what their default super option actually holds. You are placed in a MySuper default when you start a job, and it quietly invests a large share of your retirement money for decades. This tool puts one thing next to another: the holdings picture of a fund\'s default option, and that same fund\'s own sustainability marketing, in the fund\'s own words.',
+      'You are placed in a MySuper default when you start a job, and it invests a large share of your retirement money for decades. Few members ever read what that option holds. This tool puts one thing next to another: the holdings picture of a fund\'s default option, and that same fund\'s own sustainability marketing, in the fund\'s own words.',
       'It is not an accusation. Pick a fund, read what it says about climate and responsibility, then look at what the default option holds, and make up your own mind.',
     ],
     chips: ['MySuper defaults', 'Holdings next to marketing', 'Every figure sourced or marked pending', 'Neutral and factual'],
@@ -467,7 +467,7 @@ export const METHOD = {
   boundary: {
     title: 'Boundary: default options only',
     paras: [
-      'This tool looks at one thing per fund: the default MySuper option, the one you are placed in when you start a job and never choose an option yourself. The default is where most people\'s money actually sits, most of them without ever picking it, so it is the option that describes what the fund does with a typical member\'s retirement savings.',
+      'This tool looks at one thing per fund: the default MySuper option, the one you are placed in when you start a job and never choose an option yourself. The default is where most people\'s money sits, most of them without ever picking it, so it is the option that describes what the fund does with a typical member\'s retirement savings.',
       'Most funds also offer a screened, sustainable or ethical option. Those are a member\'s active choice, they hold different things, and they are not shown here. Judging a fund\'s default by its sustainable option, or the reverse, would be misleading, so the two are kept apart. Where a fund\'s default is a lifecycle strategy that shifts with age, the tool describes the growth-stage settings a younger member sits in, and says so.',
       'The tool reads the option level. A large fund runs many options; a holding can be heavy in one and absent from another. Reporting a whole-of-fund number against a single option would overstate or understate it. The unit here is the option.',
     ],

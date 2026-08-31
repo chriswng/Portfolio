@@ -15,7 +15,7 @@ export const WORK_NARRATIVE = {
   title: 'One engagement, start to finish',
   paras: [
     'Every engagement starts in the same place. Confirm the boundary, grade the data, and name the gaps. The first finding is almost always identical: the overwhelming majority of emissions sit in the value chain, outside direct operational control. Everything downstream follows from it, starting with whether the levers worth modelling sit inside the business or across its suppliers.',
-    'From there the work runs in a fixed order. Options get quantified before any pathway is modelled, because a pathway is only as good as the levers underneath it. Targets come last, once the pathway exists, so the interim numbers are ones the roadmap can actually deliver.',
+    'From there the work runs in a fixed order. Options get quantified before any pathway is modelled, because a pathway is only as good as the levers underneath it. Targets come last, once the pathway exists, so the interim numbers are ones the roadmap can deliver.',
     'The four frameworks below are the machinery behind that arc, each shown as a live working example. The case study at the end walks one engagement through all of them, baseline to boardroom.',
   ],
 };

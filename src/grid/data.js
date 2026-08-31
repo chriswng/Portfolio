@@ -42,7 +42,7 @@ export const INTRO = {
   tag: 'Grid intensity',
   title: ['When is the grid', 'clean enough'],
   lead:
-    'Run the dishwasher now, or wait two hours. This reads the live National Electricity Market fuel mix and gives you one answer for your state, then explains the factor a business would actually report against.',
+    'Run the dishwasher now, or wait two hours. This reads the live National Electricity Market fuel mix and gives you one answer for your state, then explains the factor a business would report against.',
   chips: ['Live NEM data', 'Generation-mix estimate', 'Location vs market-based'],
   note: 'Two views, one data source. Live for the timing call, Explorer for the accounting.',
 };
@@ -218,7 +218,7 @@ export const EXPLORER_YEARS = [
 export const EXPLORER_COPY = {
   tag: 'Explorer',
   heading: 'Location-based or market-based',
-  sub: 'The same kilowatt-hour has two carbon numbers. This shows both side by side, and lets you move the one your electricity contract can actually change.',
+  sub: 'The same kilowatt-hour has two carbon numbers. This shows both side by side, and lets you move the one your electricity contract can change.',
   yearLabel: 'Reporting edition',
   yearNote:
     'Only the current edition is shown. Earlier years are left out because their exact published figures could not be verified to citation grade here, and a wrong factor is worse than a missing one. One thing is worth knowing: the 2025-26 residual mix factor is a single national figure, and the guideline applies it to every facility on the market-based method, whatever state it is in and whether or not it is on the main grid. There is no state-level residual mix factor to pick from.',

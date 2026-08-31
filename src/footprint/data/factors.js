@@ -98,7 +98,7 @@ export const ELECTRICITY_SOURCE = {
 // the default until a state is chosen.
 export const ELECTRICITY_SOURCE_NZ = {
   name: 'NZ Ministry for the Environment, Measuring Emissions Catalogue 2026',
-  detail: 'Purchased grid-average electricity for the national grid, about 85% renewable (hydro, wind, geothermal), read from Table 5.2 (annual averages, 2010 to 2025) at the 2025 annual figure. Scope 3 is the catalogue\'s own separate transmission-and-distribution loss factor from Table 5.4, so the line no longer understates by leaving losses out. The annual series is genuinely volatile because a dry hydrological year pulls thermal generation in: 2024 read 0.0993596 against 2025\'s 0.0786625, a 26% swing, so a New Zealand total moves with the year it is priced in.',
+  detail: 'Purchased grid-average electricity for the national grid, about 85% renewable (hydro, wind, geothermal), read from Table 5.2 (annual averages, 2010 to 2025) at the 2025 annual figure. Scope 3 is the catalogue\'s own separate transmission-and-distribution loss factor from Table 5.4, so the line no longer understates by leaving losses out. The annual series is volatile because a dry hydrological year pulls thermal generation in: 2024 read 0.0993596 against 2025\'s 0.0786625, a 26% swing, so a New Zealand total moves with the year it is priced in.',
   url: 'https://environment.govt.nz/publications/measuring-emissions-a-guide-for-organisations-2026-detailed-guide/',
 };
 

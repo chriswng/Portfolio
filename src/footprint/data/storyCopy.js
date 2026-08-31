@@ -153,8 +153,8 @@ export const EQUIV_ST = {
   tag: 'In real things',
   headline: { example: 'My year, counted in burgers', own: 'Your year, counted in burgers' },
   sub: {
-    example: 'Tonnes are abstract. Here is the same total counted out in things I actually choose, at published factors. Pick a unit.',
-    own: 'Tonnes are abstract. Here is your same total counted out in things you actually choose, at published factors. Pick a unit.',
+    example: 'Tonnes are abstract. Here is the same total counted out in things I choose, at published factors. Pick a unit.',
+    own: 'Tonnes are abstract. Here is your same total counted out in things you choose, at published factors. Pick a unit.',
   },
   chipsLabel: 'Count the year in a different unit',
   // {n} pre-formatted; {unit} singular or plural to match.
@@ -216,7 +216,7 @@ export const SCOPES = {
 export const HOTSPOTS_ST = {
   tag: 'Hotspots',
   rankWord: 'Hotspot',
-  headline: { example: 'Where the tonnes actually are', own: 'Where your tonnes actually are' },
+  headline: { example: 'Where the tonnes are', own: 'Where your tonnes are' },
   ofYear: 'of the year',
   punch: {
     example: 'A few categories decide almost everything. Working on the biggest ones is how I cut my carbon the most.',

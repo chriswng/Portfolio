@@ -28,7 +28,7 @@ export const INTRO = {
   tag: 'The tracker',
   kicker: 'ASX50 · corporate net zero',
   title: ['Fifty promises,', 'one ledger'],
-  sub: 'A target year is easy to announce and hard to check. This page does the checking. For each company in the S&P/ASX 50 it draws the trajectory the company itself has claimed, from its stated base year through its interim targets to its net zero date, and then plots the Scope 1 and 2 emissions it has actually reported on top of it.',
+  sub: 'A target year is easy to announce and hard to check. This page does the checking. For each company in the S&P/ASX 50 it draws the trajectory the company itself has claimed, from its stated base year through its interim targets to its net zero date, and then plots the Scope 1 and 2 emissions it has reported on top of it.',
   read: 'Every card reads the same way. The dashed line is what the company said it would do. The solid line is what it has reported. The sentence underneath states the distance between them in the latest reported year, with no adjective attached.',
   scroll: 'Scroll',
 };
@@ -2527,7 +2527,7 @@ export const SUMMARY = {
   title: ['Well stated,', 'thinly evidenced'],
   lead: 'Reading every card in one sitting leaves two impressions, and they do not cancel each other out.',
   moving: {
-    head: 'What is genuinely there',
+    head: 'What the record supports',
     items: [
       '42 of the 50 carry a dated net zero commitment, and 32 back it with an absolute tonnage target for the 2030 era. Five years ago neither count would have been close.',
       'Some targets got harder. Telstra lifted its 2030 cut from 50 to 70 per cent as it walked away from offset backed neutrality claims, and Woolworths replaced its old target with a deeper SBTi validated one.',
